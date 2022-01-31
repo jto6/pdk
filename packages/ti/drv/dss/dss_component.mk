@@ -194,6 +194,30 @@ DSS_DISPLAY_TESTAPP_MACRO_LIST := $(foreach curos, $(drvdss_RTOS_LIST), $(call D
 
 $(eval ${DSS_DISPLAY_TESTAPP_MACRO_LIST})
 
+# DSS unit test app
+define DSS_UNIT_TESTAPP_RULE
+
+export dss_unit_testapp_$(1)_COMP_LIST = dss_unit_testapp_$(1)
+dss_unit_testapp_$(1)_RELPATH = ti/drv/dss/examples/unit_test
+dss_unit_testapp_$(1)_PATH = $(PDK_DSS_COMP_PATH)/examples/unit_test
+export dss_unit_testapp_$(1)_BOARD_DEPENDENCY = yes
+export dss_unit_testapp_$(1)_CORE_DEPENDENCY = yes
+export dss_unit_testapp_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
+dss_unit_testapp_$(1)_PKG_LIST = dss_unit_testapp_$(1)
+dss_unit_testapp_$(1)_INCLUDE = $(dss_unit_testapp_$(1)_PATH)
+export dss_unit_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvdss_BOARDLIST) )
+export dss_unit_testapp_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(drvdss_$(SOC)_CORELIST))
+export dss_unit_testapp_$(1)_SBL_APPIMAGEGEN = yes
+ifneq ($(1),$(filter $(1), safertos))
+dss_EXAMPLE_LIST += dss_unit_testapp_$(1)
+endif
+
+endef
+
+DSS_UNIT_TESTAPP_MACRO_LIST := $(foreach curos, $(drvdss_RTOS_LIST), $(call DSS_UNIT_TESTAPP_RULE,$(curos)))
+
+$(eval ${DSS_UNIT_TESTAPP_MACRO_LIST})
+
 # DSS display baremetal test app
 dss_baremetal_display_testapp_COMP_LIST = dss_baremetal_display_testapp
 dss_baremetal_display_testapp_RELPATH = ti/drv/dss/examples/dss_display_test

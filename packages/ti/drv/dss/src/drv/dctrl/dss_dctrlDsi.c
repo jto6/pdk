@@ -393,13 +393,13 @@ static Dss_DctrlDsi2DpBridgeBlankingParams supportedBlanks[] =
             .fps = 60U,
             .width = 1920U,
             .height = 1080U,
-            .pixelClock = 133320000U,
-            .hFrontPorch = 8U,
-            .hBackPorch = 40U,
-            .hSyncLen = 32U,
-            .vFrontPorch = 17U,
-            .vBackPorch = 6U,
-            .vSyncLen = 8U
+            .pixelClock = 158400000U,
+            .hFrontPorch = 60U,
+            .hBackPorch = 70U,
+            .hSyncLen = 62U,
+            .vFrontPorch = 55U,
+            .vBackPorch = 60U,
+            .vSyncLen = 55U
         },
         .dsi2DpBlankingParams = {
             .standard = FVID2_STD_CUSTOM,
@@ -407,13 +407,13 @@ static Dss_DctrlDsi2DpBridgeBlankingParams supportedBlanks[] =
             .fps = 60U,
             .width = 1920U,
             .height = 1080U,
-            .pixelClock = 133320000U,
-            .hFrontPorch = 8U,
-            .hBackPorch = 40U,
-            .hSyncLen = 32U,
-            .vFrontPorch = 16U,
-            .vBackPorch = 6U,
-            .vSyncLen = 8
+            .pixelClock = 158400000U,
+            .hFrontPorch = 60U,
+            .hBackPorch = 70U,
+            .hSyncLen = 62U,
+            .vFrontPorch = 55U,
+            .vBackPorch = 60U,
+            .vSyncLen = 55U
         }
     },
 

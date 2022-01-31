@@ -157,12 +157,14 @@ typedef void (*Dss_DispUnderFlowCbFxn)(void *appData);
 /**
  * \brief Video Pipe safety error callback function prototype.
  *
+ * \param pipeId        [OUT] Pipeline Id
  * \param capturedSign  [OUT] Captured signature
  * \param appData       [OUT] Application's private data.
  *
  * \return None.
  */
-typedef void (*Dss_DispSafetyErrCbFxn)(uint32_t capturedSign,
+typedef void (*Dss_DispSafetyErrCbFxn)(uint32_t pipeId,
+                                       uint32_t capturedSign,
                                        void *appData);
 
 /**

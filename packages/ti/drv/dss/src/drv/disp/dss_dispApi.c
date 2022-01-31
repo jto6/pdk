@@ -2129,7 +2129,7 @@ static void Dss_dispSafetyErrCbFxn(const uint32_t *event,
             }
             if(NULL != instObj->safetyChkParams.safetyErrCbFxn)
             {
-                instObj->safetyChkParams.safetyErrCbFxn(
+                instObj->safetyChkParams.safetyErrCbFxn(pipeId,
                                          instObj->safetyChkParams.capturedSign,
                                          instObj->safetyChkParams.appData);
             }
