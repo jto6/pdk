@@ -75,9 +75,8 @@ extern "C" {
 /**
  *  \brief S2R_goRetention Copy the suspend sequence to SRAM and jump to it.
  *
- *  \param core_resume_addr  BL31 resume address to save.
  */
-void S2R_goRetention(uint32_t core_resume_addr);
+void S2R_goRetention(void);
 
 #ifdef __cplusplus
 }

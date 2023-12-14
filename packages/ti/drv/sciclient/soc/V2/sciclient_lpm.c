@@ -52,19 +52,10 @@ int32_t Sciclient_prepareSleep(void)
 int32_t Sciclient_enterSleep(uint32_t *msg_recv)
 {
     int32_t ret = -1;
-    uint32_t core_resume_addr;
     struct tisci_msg_enter_sleep_req *req =
         (struct tisci_msg_enter_sleep_req *) msg_recv;
 
     uint8_t mode = req->mode;
-
-    if (req->core_resume_hi != 0U)
-    {
-        S2R_debugPrintf("Adress too high, not reachable, upper 32bits=%x\n",
-                        req->core_resume_hi);
-    }
-
-    core_resume_addr = req->core_resume_lo;
 
     if (mode != TISCI_MSG_VALUE_SLEEP_MODE_DEEP_SLEEP)
     {
@@ -74,7 +65,7 @@ int32_t Sciclient_enterSleep(uint32_t *msg_recv)
     {
         (void)osal_hwip_disable();
 
-        S2R_goRetention(core_resume_addr);
+        S2R_goRetention();
         /* Never reach this point */
     }
 
