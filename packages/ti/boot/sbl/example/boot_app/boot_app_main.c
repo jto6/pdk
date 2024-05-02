@@ -65,6 +65,10 @@
 #include "boot_app_can.h"
 #endif
 #endif
+#if defined(BIST_TASK_ENABLED)
+#include <osal/sdl_osal.h>
+#include "bist.h"
+#endif
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -73,10 +77,13 @@
 /* Test application stack size */
 #define BOOT_APP_TASK_STACK               (10U * 1024U)
 
-/* Task Priority Levels, CAN Task has higher priority so that CAN Response happens 
- * first followed by the Boot Task */
+/* Task Priority Levels, CAN Task has the highest priority,
+ * followed by the BIST Task as it is recommended to test BIST before the Boot Task */
+#if defined(BIST_TASK_ENABLED)
+#define BOOT_APP_BIST_TASK_PRIORITY       (6)
+#endif
 #if defined(CAN_RESP_TASK_ENABLED)
-#define BOOT_APP_CAN_TASK_PRIORITY        (6)
+#define BOOT_APP_CAN_TASK_PRIORITY        (7)
 #endif
 #define BOOT_APP_BOOT_TASK_PRIORITY       (5)
 
@@ -92,6 +99,16 @@
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+#if defined(BIST_TASK_ENABLED)
+/* Stack for the BIST task */
+static uint8_t gBootAppBistStack[BOOT_APP_TASK_STACK] __attribute__((aligned(32)));
+TaskP_Handle gBootAppBistTask;
+/* Start and End time for BIST task */
+static uint64_t gBootAppBistTimeStart, gBootAppBistTimeFinish;
+/* Semaphore to indicate BIST Task completion */
+static SemaphoreP_Handle gBootAppBistCompletedSem = NULL;
+#endif
 
 /* Stack for the CAN response task */
 #if defined(CAN_RESP_TASK_ENABLED)
@@ -195,6 +212,17 @@ static void BootApp_bootTaskFxn(void* a0, void* a1);
 static int32_t BootApp_safetyCheckerLoop(void);
 #endif
 
+#if defined(BIST_TASK_ENABLED)
+/**
+ * \brief  BIST Task Function
+ *
+ * \param  None
+ *
+ * \return None
+ */
+static void BootApp_bistTaskFxn(void* a0, void* a1);
+#endif
+
 #if defined(CAN_RESP_TASK_ENABLED)
 /**
  * \brief  CAN Response Task Function
@@ -240,19 +268,34 @@ int32_t main(void)
 
     BootApp_armR5PmuCntrInit();
 
-    #if defined(CAN_RESP_TASK_ENABLED) 
-        /* Initialize the task params */
-        TaskP_Params_init(&canRespTaskParams);
-        canRespTaskParams.priority    = BOOT_APP_CAN_TASK_PRIORITY;
-        canRespTaskParams.stack       = gBootAppCanStack;
-        canRespTaskParams.stacksize   = sizeof (gBootAppCanStack);
+    UART_printf("MCU R5F App started at %d usecs\r\n", BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM)));
 
-        gBootAppCanTask = TaskP_create(&BootApp_canTaskFxn, &canRespTaskParams);
-        if(NULL == gBootAppCanTask)
-        {
-            OS_stop();
-        }
-    #endif
+#if defined(BIST_TASK_ENABLED)
+    /* Initialize the task params */
+    TaskP_Params bistTaskParams;
+    TaskP_Params_init(&bistTaskParams);
+    bistTaskParams.priority       = BOOT_APP_BIST_TASK_PRIORITY;
+    bistTaskParams.stack          = gBootAppBistStack;
+    bistTaskParams.stacksize      = sizeof (gBootAppBistStack);
+    gBootAppBistTask = TaskP_create(&BootApp_bistTaskFxn, &bistTaskParams);
+    if (NULL == gBootAppBistTask)
+    {
+        OS_stop();
+    }
+#endif
+
+#if defined(CAN_RESP_TASK_ENABLED) 
+    /* Initialize the task params */
+    TaskP_Params_init(&canRespTaskParams);
+    canRespTaskParams.priority    = BOOT_APP_CAN_TASK_PRIORITY;
+    canRespTaskParams.stack       = gBootAppCanStack;
+    canRespTaskParams.stacksize   = sizeof (gBootAppCanStack);
+    gBootAppCanTask = TaskP_create(&BootApp_canTaskFxn, &canRespTaskParams);
+    if(NULL == gBootAppCanTask)
+    {
+        OS_stop();
+    }
+#endif
 
     /* Initialize the task params */
     TaskP_Params_init(&bootTaskParams);
@@ -340,6 +383,46 @@ static void BootApp_armR5PmuCntrInit(void)
     return;
 }
 
+#if defined(BIST_TASK_ENABLED)
+static void BootApp_bistTaskFxn(void* a0, void* a1)
+{
+#if !defined(CAN_RESP_TASK_ENABLED)
+    Board_initCfg boardCfg;
+    boardCfg = BOARD_INIT_PINMUX_CONFIG | BOARD_INIT_UART_STDIO | BOARD_INIT_UNLOCK_MMR;
+    Board_init(boardCfg);
+#else
+    Board_initCfg boardCfg;
+    boardCfg = BOARD_INIT_UNLOCK_MMR;
+    Board_init(boardCfg);
+#endif
+
+    /* Initialize the Semaphore */
+    SemaphoreP_Params semParams;
+    SemaphoreP_Params_init(&semParams);
+    gBootAppBistCompletedSem = SemaphoreP_create(0, &semParams);
+    if(NULL == gBootAppBistCompletedSem)
+    {
+        UART_printf("Semaphore create failed\r\n");
+    }
+
+    /* SDL osal wrapper */
+    BootApp_osalWrapper();
+
+    gBootAppBistTimeStart = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    BootApp_bistFxn();
+
+    gBootAppBistTimeFinish = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    UART_printf("MCU Bist Task started at %d usecs and finished at %d usecs\r\n", (uint32_t)gBootAppBistTimeStart, (uint32_t)gBootAppBistTimeFinish);
+    
+    /* Post semaphore after BIST task completion so other tasks could start execution */
+    SemaphoreP_post(gBootAppBistCompletedSem);
+    
+    return;
+}
+#endif
+
 static uint32_t BootApp_getTimeInMicroSec(uint32_t pmuCntrVal)
 {
     uint64_t mcu_clk_freq = SBL_MCU1_CPU0_FREQ_HZ;
@@ -421,11 +504,11 @@ static void BootApp_mainDomainSetup()
     Board_init(boardCfg);
 
     /* SBL implements the SBL_SetQoS only for J721S2, J721E, J784S4, J742S2. */
-    #if !defined (SOC_J7200)
+#if !defined (SOC_J7200)
     SBL_SetQoS();
-    #endif
+#endif
 
-    #if defined(SOC_J721S2) || defined(SOC_J784S4) || defined (SOC_J742S2)
+#if defined(SOC_J721S2) || defined(SOC_J784S4) || defined (SOC_J742S2)
     /* Change the GTC Parent to MAIN_PLL3_HSDIV1_CLKOUT
        Reason :
         - for J721S2
@@ -453,7 +536,7 @@ static void BootApp_mainDomainSetup()
     {
         UART_printf("Setting GTC clock parent frequency....done \r\n");
     }
-    #endif
+#endif
 
     return;
 }
@@ -461,11 +544,16 @@ static void BootApp_mainDomainSetup()
 
 static void BootApp_bootTaskFxn(void* a0, void* a1)
 {
-    #if !defined(CAN_RESP_TASK_ENABLED)
+#if defined(BIST_TASK_ENABLED)
+    /* Wait for the BIST task completion */
+    SemaphoreP_pend(gBootAppBistCompletedSem, SemaphoreP_WAIT_FOREVER);
+#endif
+
+#if !defined(CAN_RESP_TASK_ENABLED) && !defined(BIST_TASK_ENABLED)
     Board_initCfg boardCfg;
     boardCfg = BOARD_INIT_PINMUX_CONFIG | BOARD_INIT_UART_STDIO;
     Board_init(boardCfg);
-    #endif
+#endif
     uint32_t ret = CSL_PASS;
 
     ret = BootApp_setupSciServer();
@@ -842,18 +930,18 @@ static int32_t BootApp_requestCores(uint8_t stageNum)
     {
         if (sbl_late_slave_core_stages_info[stage][i].tisci_proc_id != SBL_INVALID_ID)
         {
-            #if defined(UART_PRINT_DEBUG)
-                UART_printf("Calling Sciclient_procBootRequestProcessor, ProcId 0x%x... \r\n",
-                            sbl_late_slave_core_stages_info[stage][i].tisci_proc_id);
-            #endif
+        #if defined(UART_PRINT_DEBUG)
+            UART_printf("Calling Sciclient_procBootRequestProcessor, ProcId 0x%x... \r\n",
+                        sbl_late_slave_core_stages_info[stage][i].tisci_proc_id);
+        #endif
             status = Sciclient_procBootRequestProcessor(sbl_late_slave_core_stages_info[stage][i].tisci_proc_id,
                                                         SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != CSL_PASS)
             {
-                #if defined(UART_PRINT_DEBUG)
-                    UART_printf("Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n",
-                                        sbl_late_slave_core_stages_info[stage][i].tisci_proc_id);
-                #endif
+            #if defined(UART_PRINT_DEBUG)
+                UART_printf("Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n",
+                            sbl_late_slave_core_stages_info[stage][i].tisci_proc_id);
+            #endif
                 break;
             }
         }
@@ -872,10 +960,10 @@ static int32_t BootApp_releaseCores(uint8_t stageNum)
     {
         if (sbl_late_slave_core_stages_info[stage][i].tisci_proc_id != SBL_INVALID_ID)
         {
-            #if defined(UART_PRINT_DEBUG)
-                UART_printf("Sciclient_procBootReleaseProcessor, ProcId 0x%x...\r\n",
-                            sbl_late_slave_core_stages_info[stage][i].tisci_proc_id);
-            #endif
+        #if defined(UART_PRINT_DEBUG)
+            UART_printf("Sciclient_procBootReleaseProcessor, ProcId 0x%x...\r\n",
+                        sbl_late_slave_core_stages_info[stage][i].tisci_proc_id);
+        #endif
             status = Sciclient_procBootReleaseProcessor(sbl_late_slave_core_stages_info[stage][i].tisci_proc_id,
                                                         TISCI_MSG_FLAG_AOP,
                                                         SCICLIENT_SERVICE_WAIT_FOREVER);

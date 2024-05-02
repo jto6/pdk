@@ -32,6 +32,10 @@ ifeq ($(SAFETY_LOOP), yes)
         #Enable below flag to take the register configuration for PM, RM and TIFS modules
         #CFLAGS_LOCAL_COMMON += -DSC_REGDUMP_ENABLE
     endif
+else ifeq ($(BIST_TASK_ENABLED), yes)
+    APP_NAME = boot_app_$(BOOTMODE)_bist$(HLOS_SUFFIX)
+    LOCAL_APP_NAME = sbl_boot_app_$(BOOTMODE)_bist$(HLOS_SUFFIX)_$(BOARD)_$(CORE)_$(BUILD_OS_TYPE)_TestApp
+    CFLAGS_LOCAL_COMMON += -DBIST_TASK_ENABLED
 else
     APP_NAME = boot_app_$(BOOTMODE)$(HLOS_SUFFIX)$(HS_SUFFIX)
     LOCAL_APP_NAME = sbl_boot_app_$(BOOTMODE)$(HLOS_SUFFIX)$(HS_SUFFIX)_$(BOARD)_$(CORE)_$(BUILD_OS_TYPE)_TestApp
@@ -87,9 +91,46 @@ ifeq ($(BOOTMODE), $(filter $(BOOTMODE),ospi ospi_nand))
         CFLAGS_LOCAL_COMMON += -DBOOT_OSPI_NAND
     endif
 endif
+
 ifeq ($(CANRESP), enabled)
     CFLAGS_LOCAL_COMMON += -DCAN_RESP_TASK_ENABLED
     SRCS_COMMON += boot_app_can.c
+endif
+
+ifeq ($(BIST_TASK_ENABLED),yes)
+    # SDL Include Files
+    SDL_INSTALL_PATH=$(PDK_INSTALL_PATH)/../../sdl
+    INCDIR += $(SDL_INSTALL_PATH)/
+    INCDIR += $(SDL_INSTALL_PATH)/osal/
+    INCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
+    INCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
+    INCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+    INCDIR += $(SDL_INSTALL_PATH)/src/sdl
+    INCDIR += $(SDL_INSTALL_PATH)/include
+    INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC)
+
+    # PDK Include Files
+    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
+    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+
+    # SDL Source File Paths
+    SRCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
+    SRCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
+    SRCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+
+    # PDK Source File Paths
+    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
+    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+
+    # SDL Integration
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
+    SRCS_COMMON += osal_wrap.c
+    SRCS_COMMON += bist.c bist_core_defs.c
+    SRCS_COMMON += lbist_utils.c lbist_defs.c
+    SRCS_COMMON += pbist_utils.c pbist_defs.c
+    SRCS_COMMON += power_seq.c armv8_power_utils.c
 endif
 
 ifeq ($(HLOSBOOT), linux)
