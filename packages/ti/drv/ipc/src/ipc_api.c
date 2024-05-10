@@ -369,6 +369,7 @@ static int32_t RPMessage_enqueMsg(RPMessage_EndptPool *pool, RPMessage_MsgHeader
 
         if (NULL != obj->recv_buffer)
         {
+            /* If waiting for a live transfer, copy data into destintaion buffer */
             memcpy(obj->recv_buffer, (void *)msg->payload, msg->dataLen);
             obj->recv_buffer = NULL;
             obj->payload.len = msg->dataLen;
@@ -389,6 +390,7 @@ static int32_t RPMessage_enqueMsg(RPMessage_EndptPool *pool, RPMessage_MsgHeader
         }
         else
         {
+            /* Not waiting for a live transfer so put recv'd message into queue */
             if( obj->endPt != msg->dstAddr)
             {
                 SystemP_printf("WARNING: %d != %d\n", obj->endPt, msg->dstAddr);
@@ -1457,7 +1459,8 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
     int32_t             semStatus = IPC_SOK;
     Bool                skiplist = FALSE;
     RPMessage_MsgElem  *payload;
-    int32_t            key;
+    int32_t             key;
+    int32_t             clearTimeout = 0;
     /* Fix ME TBD, skipping the null tests, as this function check's/error
         handling would require an overhaul */
     Ipc_OsalPrms *pOsalPrms = &gIpcObject.initPrms.osalPrms;
@@ -1473,34 +1476,57 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
         obj = (RPMessage_Object *)handle;
 
         key = pOsalPrms->lockHIsrGate(module.gateSwi);
+        /* If no queued received messages, register for live copy into recv_buffer */
         if (TRUE == IpcUtils_QisEmpty(&obj->queue))
         {
             obj->recv_buffer = data;
-            skiplist =TRUE;
+            skiplist = TRUE;
         }
         pOsalPrms->unLockHIsrGate(module.gateSwi, key);
 
         /*  Block until notified. */
           semStatus = pOsalPrms->lockMutex(obj->semHandle, timeout);
 
-          if (TRUE == skiplist)
-          {
-              key = pOsalPrms->lockHIsrGate(module.gateSwi);
-              if (NULL == obj->recv_buffer)
-              {
-                  /* Incoming message filled. Clear any error flag that could be
-                   * set due to a race */
-                  semStatus = IPC_SOK;
-                  obj->unblocked = FALSE;
-              }
-              else
-              {
-                  obj->recv_buffer = NULL;
-              }
-              pOsalPrms->unLockHIsrGate(module.gateSwi, key);
-          }
+        key = pOsalPrms->lockHIsrGate(module.gateSwi);
+        /* If registered for live copy */
+        if (TRUE == skiplist)
+        {
+            /* If live copy succeeded */
+            if (NULL == obj->recv_buffer)
+            {
+                /* If we saw a timeout but managed to complete the live copy,
+                then the semaphore will be posted soon. Set flag to wait on the
+                semaphore outside of the critical section and ignore timeout */
+                if (semStatus == IPC_ETIMEOUT)
+                {
+                    clearTimeout = 1;
+                }
 
-        if (semStatus == IPC_ETIMEOUT)
+                /* Cleanup live copy status */
+                status = IPC_SOK;
+                semStatus = IPC_SOK;
+                obj->unblocked = FALSE;
+
+                /* Copy message values */
+                *len = (uint16_t)obj->payload.len;
+                *rplyEndPt = obj->payload.src;
+                *rplyProcId = obj->payload.procId;
+            }
+            else
+            {
+                /* If live copy failed, unregister from live copy */
+                obj->recv_buffer = NULL;
+            }
+        }
+        pOsalPrms->unLockHIsrGate(module.gateSwi, key);
+
+        /* If we expect semaphore to be posted late, wait to clear it. */
+        if (clearTimeout)
+        {
+            (void)pOsalPrms->lockMutex(obj->semHandle, (uint32_t)IPC_RPMESSAGE_TIMEOUT_FOREVER);
+        }
+
+        if (IPC_ETIMEOUT == semStatus)
         {
             SystemP_printf(" Warning: RPMessage_recv: IPC_ETIMEOUT\n");
             status = IPC_ETIMEOUT;
@@ -1509,13 +1535,7 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
         {
             status = IPC_E_UNBLOCKED;
         }
-        else if(TRUE == skiplist)
-        {
-            *len = (uint16_t)obj->payload.len;
-            *rplyEndPt = obj->payload.src;
-            *rplyProcId = obj->payload.procId;
-        }
-        else
+        else if(FALSE == skiplist)
         {
             key = pOsalPrms->lockHIsrGate(module.gateSwi);
 
