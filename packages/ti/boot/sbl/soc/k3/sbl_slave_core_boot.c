@@ -436,6 +436,7 @@ static void SBL_RequestCore(cpu_core_id_t core_id)
 static void SBL_RequestAllCores(void)
 {
 #if !defined(SBL_SKIP_BRD_CFG_BOARD) && !defined(SBL_SKIP_SYSFW_INIT)
+    SBL_log(SBL_LOG_MAX, "Entered the Requesting of Cores.\n");
     cpu_core_id_t core_id;
     uint32_t num_cores = sizeof(sbl_slave_core_info)/ sizeof(sblSlaveCoreInfo_t);
 
@@ -536,7 +537,7 @@ int32_t SBL_BootImage(sblEntryPoint_t *pEntry)
     for (core_id = MPU1_CPU0_ID; core_id < NUM_CORES; core_id ++)
         pEntry->CpuEntryPoint[core_id] = SBL_INVALID_ENTRY_ADDR;
 
-    /* Request SYSW for control of all cores */
+    /* Request SYSFW for control of all cores */
     SBL_RequestAllCores();
 
 #if defined(BOOT_MMCSD)

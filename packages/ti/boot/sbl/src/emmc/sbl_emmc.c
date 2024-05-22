@@ -357,6 +357,8 @@ int32_t SBL_eMMCBootImage(sblEntryPoint_t *pEntry)
     memset(&fp, 0, sizeof(fp));
     FRESULT  fresult;
 
+    /* Profile point after EEPROM copying and before eMMC init */
+    SBL_ADD_PROFILE_POINT;
 
     if (gIsEmmcBoot0Enable == BTRUE)
     {
@@ -373,6 +375,9 @@ int32_t SBL_eMMCBootImage(sblEntryPoint_t *pEntry)
         }
         fp_readData = &SBL_emmcRead;
         fp_seek     = &SBL_emmcSeek;
+
+        /* Profile point after eMMC init and before phy tuning */
+        SBL_ADD_PROFILE_POINT;
 
 #if defined(SBL_ENABLE_HLOS_BOOT) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2))
         retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem, SBL_SCRATCH_MEM_START, pEntry, SBL_SKIP_BOOT_AFTER_COPY);
@@ -398,7 +403,9 @@ int32_t SBL_eMMCBootImage(sblEntryPoint_t *pEntry)
         {
             fp_readData = &SBL_FileRead;
             fp_seek     = &SBL_FileSeek;
-
+        
+        /* Profile point after eMMC init and before phy tuning */
+        SBL_ADD_PROFILE_POINT;
 #if defined(SBL_ENABLE_HLOS_BOOT) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2))
             retVal = SBL_MulticoreImageParse((void *) &fp, 0, pEntry, SBL_SKIP_BOOT_AFTER_COPY);
 #else

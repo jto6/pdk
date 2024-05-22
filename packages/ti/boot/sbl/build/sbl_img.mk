@@ -51,13 +51,13 @@ MAX_APP_SIZE_EMMC ?= 0x7D000
 # If no address is specified from command prompt, SBL copies EEPROM content to 0x90000000 
 EEPROM_DATA_DDR_ADDRESS ?= 0x90000000
 
-ifeq ($(BOOT_PERF), yes)
+ifeq ($(BOOT_PERF), yes) 
   ifeq ($(SBL_IMAGE_TYPE),combined)
-    APP_NAME = sbl_boot_perf_$(BOOTMODE)_img_combined
-    LOCAL_APP_NAME = sbl_boot_perf_$(BOOTMODE)_img_combined_$(CORE)
+    APP_NAME = sbl_boot_perf_$(BOOTMODE)_img_combined$(HS_SUFFIX)
+    LOCAL_APP_NAME = sbl_boot_perf_$(BOOTMODE)_img_combined$(HS_SUFFIX)_$(CORE)
   else
-    APP_NAME = sbl_boot_perf_$(BOOTMODE)$(OSPI_NAND_SUFFIX)_img
-    LOCAL_APP_NAME = sbl_boot_perf_$(BOOTMODE)$(OSPI_NAND_SUFFIX)_img_$(CORE)
+    APP_NAME = sbl_boot_perf_$(BOOTMODE)$(OSPI_NAND_SUFFIX)_img$(HS_SUFFIX)
+    LOCAL_APP_NAME = sbl_boot_perf_$(BOOTMODE)$(OSPI_NAND_SUFFIX)_img$(HS_SUFFIX)_$(CORE)
   endif
 else ifeq ($(BOOTMODE), xip)
   ifeq ($(OSPI_FREQ), 133)
@@ -103,7 +103,11 @@ CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(SBL_CFLAGS)
 # Check for custom flags
 ifeq ($(BOOTMODE), cust)
   SBL_CFLAGS = $(CUST_SBL_FLAGS)
-  COMP_LIST_COMMON += sbl_lib_$(BOOTMODE)$(DMA_SUFFIX)$(HS_SUFFIX)
+  ifeq ($(BOOT_PERF), yes)
+    COMP_LIST_COMMON += sbl_boot_perf_lib_$(BOOTMODE)$(DMA_SUFFIX)$(HS_SUFFIX)
+  else  
+    COMP_LIST_COMMON += sbl_lib_$(BOOTMODE)$(DMA_SUFFIX)$(HS_SUFFIX)
+  endif
   ifeq ($(RAT), 1)
     SBL_CFLAGS += -DSBL_OCM_MAIN_DOMAIN_RAT
   endif

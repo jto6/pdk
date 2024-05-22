@@ -64,6 +64,103 @@
 #                             no source files in the module <mod> that are required
 #                             to be compiled in the application build stage.
 #
+# Index of all SBL images:
+# ~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |   Purpose   |  Boot Mode  |         Name of Target Image          |          Library Used           |                      Description of Image                  |                                     Applications Tested                                           |
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |          sbl_mmcsd_img                |          sbl_lib_mmcsd          | [GP/HS-FS] Legacy SBL to boot via MMCSD boot media         | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |           sbl_mmcsd_img_hs            |        sbl_lib_mmcsd_hs         | [HS] Legacy SBL to boot via MMCSD boot media               | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |       sbl_mmcsd_img_combined          |          sbl_lib_mmcsd          | [GP] Combined SBL to boot via MMCSD boot media             | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |    MMCSD    |    MMCSD    |     sbl_mmcsd_img_combined_hs_fs      |          sbl_lib_mmcsd          | [HS-FS] Combined SBL to boot via MMCSD boot media; tifs.bin| sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 | is different compared to GP device for combined boot       | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |       sbl_mmcsd_img_combined_hs       |        sbl_lib_mmcsd_hs         | [HS] Combined SBL to boot via MMCSD boot media             | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |         sbl_mmcsd_img_hlos            |       sbl_mmcsd_img_hlos        | [GP/HS-FS] High Level OS SBL to boot via MMCSD Boot Media  | combined_opt.appimage - boots HLOS linux using HLOS application image                             |
+# |             |             |                                       |                                 |                                                            | combined_dev.appimage - boots HLOS u-boot using HLOS application image                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |         sbl_mmcsd_img_hlos_hs         |      sbl_lib_mmcsd_hlos_hs      | [HS] High Level OS SBL to boot via MMCSD Boot Media        | combined_opt.appimage - boots HLOS linux using HLOS application image                             |
+# |             |             |                                       |                                 |                                                            | combined_dev.appimage - boots HLOS u-boot using HLOS application image                            |
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |  eMMC UDA   |          sbl_emmc_uda_img             |          sbl_lib_emmc           | [GP] Legacy SBL to boot via eMMC boot UDA partition        | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +    eMMC     +-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             | eMMC Boot0  |         sbl_emmc_boot0_img            |          sbl_lib_emmc           | [GP] Legacy SBL to boot via eMMC Boot0 partition           | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |             sbl_ospi_img              |          sbl_lib_ospi           | [GP/HS-FS] Legacy SBL to boot via OSPI NOR boot media      | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |          sbl_ospi_img_hs              |         sbl_lib_ospi_hs         | [HS] Legacy SBL to boot via OSPI NOR boot media            | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |        sbl_ospi_img_combined          |          sbl_lib_ospi           | [GP] Combined SBL to boot via OSPI NOR boot media          | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |  OSPI NOR   |     sbl_ospi_img_combined_hs_fs       |          sbl_lib_ospi           | [HS-FS] Combined SBL to boot via OSPI NOR boot media; tifs | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 | is different compared to GP device for combined boot       | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |    OSPI     |             |      sbl_ospi_img_combined_hs         |         sbl_lib_ospi_hs         | [HS] Combined SBL to boot via OSPI NOR boot media          | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |          sbl_ospi_img_hlos            |        sbl_lib_ospi_hlos        | [GP/HS-FS] High Level OS SBL to boot  via OSPI NOR Flash   | combined_opt.appimage - boots HLOS linux using HLOS application image                             |
+# |             |             |                                       |                                 |                                                            | combined_dev.appimage - boots HLOS u-boot using HLOS application image                            |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+ 
+# |             |             |         sbl_ospi_img_hlos_hs          |      sbl_lib_ospi_hlos_hs       | [HS] High Level OS SBL to boot via OSPI NOR Flash          | combined_opt.appimage - boots HLOS linux using HLOS application image                             |
+# |             |             |                                       |                                 |                                                            | combined_dev.appimage - boots HLOS u-boot using HLOS application image                            |
+# +             +-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |          sbl_ospi_nand_img            |          sbl_lib_ospi           | [GP/HS-FS] Legacy SBL to boot via OSPI NAND boot media     | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +             +  OSPI NAND  +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |        sbl_ospi_nand_img_hs           |         sbl_lib_ospi_hs         | [HS] Legacy SBL to boot via OSPI NAND boot media           | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |             sbl_uart_img              |          sbl_lib_uart           | [GP/HS-FS] Legacy SBL to boot via UART                     | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |            sbl_uart_img_hs            |         sbl_lib_uart_hs         | [HS] Legacy SBL to boot via UART                           | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# +    UART     +    UART     +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |         sbl_hsm_boot_uart_img         |          sbl_lib_uart           | [GP/HS-FS] SBL to boot HSM Core image via UART             | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |       sbl_hsm_boot_uart_img_hs        |         sbl_lib_uart_hs         | [HS] SBL to boot HSM Core image via UART                   | sbl_multicore_boot_test : Simple app to boot all the cores                                        |  
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |              sbl_xip_img              |        sbl_lib_cust_nondma      | [GP/HS-FS] OSPI SBL which executes app from OSPI NOR flash | sbl_xip_boot_test : core name printed directly from XIP-enabled OSPI Flash                        |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+ 
+# |             |             |           sbl_xip_133_img             |        sbl_lib_cust_nondma      | [GP] Used the 133 MHz OSPI XIP Mode to execute application | sbl_xip_boot_test : core name printed directly from XIP-enabled OSPI Flash                        |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |             sbl_xip_img_hs            |      sbl_lib_cust_nondma_hs     | [HS] OSPI SBL configured to execute app from Flash Memory  | sbl_xip_boot_test : core name printed directly from XIP-enabled OSPI Flash                        |
+# +   CUSTOM    +   OSPI NOR  +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+ 
+# |             |             |              sbl_cust_img             |          sbl_lib_cust           | [GP/HS-FS] OSPI NOR SBL with custom flags used for boot app| sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+ 
+# |             |             |           sbl_cust_img_hs             |         sbl_lib_cust_hs         | [HS] OSPI NOR SBL with custom flags used for boot app      | sbl_multicore_boot_test : Simple app to boot all the cores                                        |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+          
+# |             |             |       sbl_cust_rat_main_ocm_img       |       sbl_lib_cust_nondma       | [GP] CUST SBL which RAT maps Main OCM to DDR               | ocmc_memory_benchmarking_app_freertos : Memory Benchmarking Application for OCMC Memory           |
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+ 
+# |             |             |         sbl_boot_perf_cust_img        |     sbl_lib_boot_perf_cust      | [GP] Legacy SBL Early CAN Profiling of OSPI NOR SBL        | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_early_can_test : SBL Boot Time Profiling test within CAN Response Time              |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |    BOOT     |             |      sbl_boot_perf_cust_img_hs        |    sbl_lib_boot_perf_cust_hs    | [HS] Optimized Legacy SBL Profiling of OSPI NOR SBL        | sbl_boot_perf_test : SBL Boot Time Profiling Test Application                                     |
+# |             |             |                                       |                                 |                                                            | sbl_boot_perf_hs_early_can_test : SBL Boot Time Profiling test within CAN Response Time           |
+# + PERFORMANCE +  OSPI NOR   +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |    sbl_boot_perf_cust_img_combined    |     sbl_lib_boot_perf_cust      | [GP] Optimized Combined SBL Profiling of OSPI NOR SBL      | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# |             |             |                                       |                                 |                                                            | sbl_combined_boot_perf_early_can_test : SBL Boot Time Profiling test within CAN Response Time     |
+# +             +             +---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+# |             |             |   sbl_boot_perf_cust_img_combined_hs  |    sbl_lib_boot_perf_cust_hs    | [HS] Optimized Combined SBL Profiling of OSPI NOR SBL      | sbl_combined_boot_perf_test : SBL Boot Time Profiling Test Application                            |
+# |             |             |                                       |                                 |                                                            | sbl_combined_boot_perf_hs_early_can_test : SBL Boot Time Profiling test within CAN Response Time  |
+# +-------------+-------------+---------------------------------------+---------------------------------+------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+
+# [HS] - To be used for HS Devices
+# [GP] - To be used for GP Devices
+# [HS-FS] - To be used for HS-FS Devices
+
 ifeq ($(sbl_component_make_include), )
 
 sbl_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
@@ -108,9 +205,9 @@ sbl_DISABLE_PARALLEL_MAKE = yes
 # sbl_mmcsd_img_hlos_hs uses sbl_lib_mmcsd_hlos_hs
 # sbl_ospi_img_hlos_hs uses sbl_lib_ospi_hlos_hs
 ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j721e j7200 j742s2))
-  sbl_LIB_LIST = sbl_lib_mmcsd sbl_lib_ospi sbl_lib_uart sbl_lib_cust sbl_lib_emmc
+  sbl_LIB_LIST = sbl_lib_mmcsd sbl_lib_ospi sbl_lib_uart sbl_lib_cust sbl_lib_emmc sbl_boot_perf_lib_cust
   sbl_LIB_LIST += sbl_lib_mmcsd_hlos sbl_lib_ospi_hlos sbl_lib_ospi_hlos_hs sbl_lib_mmcsd_hlos_hs
-  sbl_LIB_LIST += sbl_lib_mmcsd_hs sbl_lib_ospi_hs sbl_lib_uart_hs sbl_lib_cust_hs
+  sbl_LIB_LIST += sbl_lib_mmcsd_hs sbl_lib_ospi_hs sbl_lib_uart_hs sbl_lib_cust_hs sbl_boot_perf_lib_cust_hs
   sbl_LIB_LIST += sbl_lib_cust_nondma sbl_lib_cust_nondma_hs
 endif
 
@@ -1350,7 +1447,7 @@ export sbl_boot_multicore_xip_entry_SBL_APPIMAGEGEN
 # SBL log level
 # no logs = 0, only errors =1, normal logs = 2, all logs = 3
 
-SBL_CFLAGS += -DSBL_LOG_LEVEL=2
+SBL_CFLAGS += -DSBL_LOG_LEVEL=1
 
 SBL_CFLAGS += -DSBL_ENABLE_PLL
 SBL_CFLAGS += -DSBL_ENABLE_CLOCKS
@@ -1510,6 +1607,60 @@ export sbl_lib_cust_hs_BOARDLIST
 sbl_lib_cust_hs_$(SOC)_CORELIST = mcu1_0
 export sbl_lib_cust_hs_$(SOC)_CORELIST
 
+# SBL Custom LIB - GP build variant for boot performace tests
+sbl_boot_perf_lib_cust_COMP_LIST = sbl_boot_perf_lib_cust
+sbl_boot_perf_lib_cust_RELPATH = ti/boot/sbl
+export sbl_boot_perf_lib_cust_OBJPATH = ti/boot/sbl/cust
+sbl_boot_perf_lib_cust_LIBNAME = sbl_boot_perf_lib_cust
+sbl_boot_perf_lib_cust_PATH = $(PDK_SBL_COMP_PATH)
+sbl_boot_perf_lib_cust_LIBNAME = sbl_boot_perf_lib_cust
+sbl_boot_perf_lib_cust_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust
+sbl_boot_perf_lib_cust_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_TEST_FLAGS)
+export sbl_boot_perf_lib_cust_MAKEFILE
+export sbl_boot_perf_lib_cust_LIBNAME
+export sbl_boot_perf_lib_cust_LIBPATH
+sbl_boot_perf_lib_cust_BOARD_DEPENDENCY = yes
+sbl_boot_perf_lib_cust_SOC_DEPENDENCY = yes
+sbl_boot_perf_lib_cust_CORE_DEPENDENCY = no
+export sbl_boot_perf_lib_cust_COMP_LIST
+export sbl_boot_perf_lib_cust_BOARD_DEPENDENCY
+export sbl_boot_perf_lib_cust_CORE_DEPENDENCY
+sbl_boot_perf_lib_cust_PKG_LIST = sbl_boot_perf_lib_cust
+sbl_boot_perf_lib_cust_INCLUDE = $(sbl_boot_perf_lib_cust_PATH)
+sbl_boot_perf_lib_cust_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_boot_perf_lib_cust_BOARDLIST = $(CUST_SBL_TEST_BOARDS)
+export sbl_boot_perf_lib_cust_SOCLIST
+export sbl_boot_perf_lib_cust_BOARDLIST
+sbl_boot_perf_lib_cust_$(SOC)_CORELIST = mcu1_0
+export sbl_boot_perf_lib_cust_$(SOC)_CORELIST
+
+# SBL Custom LIB - HS build variant for boot performace tests
+sbl_boot_perf_lib_cust_hs_COMP_LIST = sbl_boot_perf_lib_cust_hs
+sbl_boot_perf_lib_cust_hs_RELPATH = ti/boot/sbl
+export sbl_boot_perf_lib_cust_hs_OBJPATH = ti/boot/sbl/cust_hs
+sbl_boot_perf_lib_cust_hs_LIBNAME = sbl_boot_perf_lib_cust_hs
+sbl_boot_perf_lib_cust_hs_PATH = $(PDK_SBL_COMP_PATH)
+sbl_boot_perf_lib_cust_hs_LIBNAME = sbl_boot_perf_lib_cust_hs
+sbl_boot_perf_lib_cust_hs_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust_hs
+sbl_boot_perf_lib_cust_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BUILD_HS=yes
+export sbl_boot_perf_lib_cust_hs_MAKEFILE
+export sbl_boot_perf_lib_cust_hs_LIBNAME
+export sbl_boot_perf_lib_cust_hs_LIBPATH
+sbl_boot_perf_lib_cust_hs_BOARD_DEPENDENCY = yes
+sbl_boot_perf_lib_cust_hs_SOC_DEPENDENCY = yes
+sbl_boot_perf_lib_cust_hs_CORE_DEPENDENCY = no
+export sbl_boot_perf_lib_cust_hs_COMP_LIST
+export sbl_boot_perf_lib_cust_hs_BOARD_DEPENDENCY
+export sbl_boot_perf_lib_cust_hs_CORE_DEPENDENCY
+sbl_boot_perf_lib_cust_hs_PKG_LIST = sbl_boot_perf_lib_cust_hs
+sbl_boot_perf_lib_cust_hs_INCLUDE = $(sbl_boot_perf_lib_cust_hs_PATH)
+sbl_boot_perf_lib_cust_hs_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_boot_perf_lib_cust_hs_BOARDLIST = $(CUST_SBL_TEST_BOARDS)
+export sbl_boot_perf_lib_cust_hs_SOCLIST
+export sbl_boot_perf_lib_cust_hs_BOARDLIST
+sbl_boot_perf_lib_cust_hs_$(SOC)_CORELIST = mcu1_0
+export sbl_boot_perf_lib_cust_hs_$(SOC)_CORELIST
+
 # SBL XIP image
 # Used to boot an application directly from OSPI flash
 sbl_xip_img_COMP_LIST = sbl_xip_img
@@ -1616,7 +1767,7 @@ sbl_EXAMPLE_LIST += sbl_cust_rat_main_ocm_img
 sbl_cust_rat_main_ocm_img_SBL_IMAGEGEN = yes
 export sbl_cust_rat_main_ocm_img_SBL_IMAGEGEN
 
-# SBL perf custom image 
+# SBL perf custom image for OSPI_NOR
 sbl_boot_perf_cust_img_COMP_LIST = sbl_boot_perf_cust_img
 sbl_boot_perf_cust_img_RELPATH = ti/boot/sbl/board/k3
 sbl_boot_perf_cust_img_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/cust/bin
@@ -1643,32 +1794,59 @@ sbl_EXAMPLE_LIST += sbl_boot_perf_cust_img
 sbl_boot_perf_cust_img_SBL_IMAGEGEN = yes
 export sbl_boot_perf_cust_img_SBL_IMAGEGEN
 
-# SBL OSPI NAND performance custom image 
-sbl_boot_perf_cust_nand_img_COMP_LIST = sbl_boot_perf_cust_nand_img
-sbl_boot_perf_cust_nand_img_RELPATH = ti/boot/sbl/board/k3
-sbl_boot_perf_cust_nand_img_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/cust_nand/bin
-sbl_boot_perf_cust_nand_img_PATH = $(PDK_SBL_COMP_PATH)/board/k3
-sbl_boot_perf_cust_nand_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=no CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BOOT_PERF=yes OSPI_NAND=yes
-export sbl_boot_perf_cust_nand_img_MAKEFILE
-export sbl_boot_perf_cust_nand_img_SBL_CERT_KEY=$(SBL_CERT_KEY)
-sbl_boot_perf_cust_nand_img_BOARD_DEPENDENCY = yes
-sbl_boot_perf_cust_nand_img_SOC_DEPENDENCY = yes
-sbl_boot_perf_cust_nand_img_CORE_DEPENDENCY = no
-export sbl_boot_perf_cust_nand_img_COMP_LIST
-export sbl_boot_perf_cust_nand_img_BOARD_DEPENDENCY
-export sbl_boot_perf_cust_nand_img_SOC_DEPENDENCY
-export sbl_boot_perf_cust_nand_img_CORE_DEPENDENCY
-sbl_boot_perf_cust_nand_img_PKG_LIST = sbl
-sbl_boot_perf_cust_nand_img_INCLUDE = $(sbl_boot_perf_cust_nand_img_PATH)
-sbl_boot_perf_cust_nand_img_SOCLIST = j721s2 j784s4
-sbl_boot_perf_cust_nand_img_BOARDLIST = j721s2_evm j784s4_evm
-export sbl_boot_perf_cust_nand_img_SOCLIST
-export sbl_boot_perf_cust_nand_img_BOARDLIST
-sbl_boot_perf_cust_nand_img_$(SOC)_CORELIST = mcu1_0
-export sbl_boot_perf_cust_nand_img_$(SOC)_CORELIST
-sbl_EXAMPLE_LIST += sbl_boot_perf_cust_nand_img
-sbl_boot_perf_cust_nand_img_SBL_IMAGEGEN = yes
-export sbl_boot_perf_cust_nand_img_SBL_IMAGEGEN
+# SBL perf custom image for OSPI_NOR for HS build variant.
+sbl_boot_perf_cust_img_hs_COMP_LIST = sbl_boot_perf_cust_img_hs
+sbl_boot_perf_cust_img_hs_RELPATH = ti/boot/sbl/board/k3
+sbl_boot_perf_cust_img_hs_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)_hs/cust/bin
+sbl_boot_perf_cust_img_hs_PATH = $(PDK_SBL_COMP_PATH)/board/k3
+sbl_boot_perf_cust_img_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BOOT_PERF=yes
+export sbl_boot_perf_cust_img_hs_MAKEFILE
+export sbl_boot_perf_cust_img_hs_SBL_CERT_KEY=$(SBL_CERT_KEY_HS)
+sbl_boot_perf_cust_img_hs_BOARD_DEPENDENCY = yes
+sbl_boot_perf_cust_img_hs_SOC_DEPENDENCY = yes
+sbl_boot_perf_cust_img_hs_CORE_DEPENDENCY = no
+export sbl_boot_perf_cust_img_hs_COMP_LIST
+export sbl_boot_perf_cust_img_hs_BOARD_DEPENDENCY
+export sbl_boot_perf_cust_img_hs_SOC_DEPENDENCY
+export sbl_boot_perf_cust_img_hs_CORE_DEPENDENCY
+sbl_boot_perf_cust_img_hs_PKG_LIST = sbl
+sbl_boot_perf_cust_img_hs_INCLUDE = $(sbl_boot_perf_cust_img_hs_PATH)
+sbl_boot_perf_cust_img_hs_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_boot_perf_cust_img_hs_BOARDLIST = $(CUST_SBL_TEST_BOARDS)
+export sbl_boot_perf_cust_img_hs_SOCLIST
+export sbl_boot_perf_cust_img_hs_BOARDLIST
+sbl_boot_perf_cust_img_hs_$(SOC)_CORELIST = mcu1_0
+export sbl_boot_perf_cust_img_hs_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += sbl_boot_perf_cust_img_hs
+sbl_boot_perf_cust_img_hs_SBL_IMAGEGEN = yes
+export sbl_boot_perf_cust_img_hs_SBL_IMAGEGEN
+
+# SBL perf custom image for OSPI_NOR for HS build variant.
+sbl_boot_perf_cust_img_combined_hs_COMP_LIST = sbl_boot_perf_cust_img_combined_hs
+sbl_boot_perf_cust_img_combined_hs_RELPATH = ti/boot/sbl/board/k3
+sbl_boot_perf_cust_img_combined_hs_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)_hs/cust/bin
+sbl_boot_perf_cust_img_combined_hs_PATH = $(PDK_SBL_COMP_PATH)/board/k3
+sbl_boot_perf_cust_img_combined_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) SBL_IMAGE_TYPE=combined BOOT_PERF=yes
+export sbl_boot_perf_cust_img_combined_hs_MAKEFILE
+export sbl_boot_perf_cust_img_combined_hs_SBL_CERT_KEY=$(SBL_CERT_KEY_HS)
+sbl_boot_perf_cust_img_combined_hs_BOARD_DEPENDENCY = yes
+sbl_boot_perf_cust_img_combined_hs_SOC_DEPENDENCY = yes
+sbl_boot_perf_cust_img_combined_hs_CORE_DEPENDENCY = no
+export sbl_boot_perf_cust_img_combined_hs_COMP_LIST
+export sbl_boot_perf_cust_img_combined_hs_BOARD_DEPENDENCY
+export sbl_boot_perf_cust_img_combined_hs_SOC_DEPENDENCY
+export sbl_boot_perf_cust_img_combined_hs_CORE_DEPENDENCY
+sbl_boot_perf_cust_img_combined_hs_PKG_LIST = sbl
+sbl_boot_perf_cust_img_combined_hs_INCLUDE = $(sbl_boot_perf_cust_img_combined_hs_PATH)
+sbl_boot_perf_cust_img_combined_hs_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_boot_perf_cust_img_combined_hs_BOARDLIST = $(CUST_SBL_TEST_BOARDS)
+export sbl_boot_perf_cust_img_combined_hs_SOCLIST
+export sbl_boot_perf_cust_img_combined_hs_BOARDLIST
+sbl_boot_perf_cust_img_combined_hs_$(SOC)_CORELIST = mcu1_0
+export sbl_boot_perf_cust_img_combined_hs_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += sbl_boot_perf_cust_img_combined_hs
+sbl_boot_perf_cust_img_combined_hs_SBL_IMAGEGEN = yes
+export sbl_boot_perf_cust_img_combined_hs_SBL_IMAGEGEN
 
 # SBL XIP image
 # Used to boot an application directly from OSPI flash at 133 MHz
@@ -1722,7 +1900,7 @@ sbl_boot_perf_test_COMP_LIST = sbl_boot_perf_test
 sbl_boot_perf_test_RELPATH = ti/boot/sbl/example/k3MulticoreApp
 sbl_boot_perf_test_BINPATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp/binary
 sbl_boot_perf_test_PATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp
-sbl_boot_perf_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk BOOTMODE=cust CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS)
+sbl_boot_perf_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk
 export sbl_boot_perf_test_MAKEFILE
 sbl_boot_perf_test_BOARD_DEPENDENCY = no
 sbl_boot_perf_test_SOC_DEPENDENCY = no
@@ -1743,12 +1921,64 @@ sbl_EXAMPLE_LIST += sbl_boot_perf_test
 sbl_boot_perf_test_SBL_APPIMAGEGEN = yes
 export sbl_boot_perf_test_SBL_APPIMAGEGEN
 
+# R5 boot performance Test for Early CAN Response on GP Devices - works only with custom SBL
+sbl_boot_perf_early_can_test_COMP_LIST = sbl_boot_perf_early_can_test
+sbl_boot_perf_early_can_test_RELPATH = ti/boot/sbl/example/k3MulticoreApp
+sbl_boot_perf_early_can_test_BINPATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp/binary
+sbl_boot_perf_early_can_test_PATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp
+sbl_boot_perf_early_can_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk IS_EARLY_CAN_TEST=yes
+export sbl_boot_perf_early_can_test_MAKEFILE
+sbl_boot_perf_early_can_test_BOARD_DEPENDENCY = no
+sbl_boot_perf_early_can_test_SOC_DEPENDENCY = no
+sbl_boot_perf_early_can_test_CORE_DEPENDENCY = no
+export sbl_boot_perf_early_can_test_COMP_LIST
+export sbl_boot_perf_early_can_test_BOARD_DEPENDENCY
+export sbl_boot_perf_early_can_test_SOC_DEPENDENCY
+export sbl_boot_perf_early_can_test_CORE_DEPENDENCY
+sbl_boot_perf_early_can_test_PKG_LIST = sbl_boot_perf_early_can_test
+sbl_boot_perf_early_can_test_INCLUDE = $(sbl_boot_perf_early_can_test_PATH)
+sbl_boot_perf_early_can_test_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_boot_perf_early_can_test_BOARDLIST = $(CUST_SBL_TEST_BOARDS)
+export sbl_boot_perf_early_can_test_SOCLIST
+export sbl_boot_perf_early_can_test_BOARDLIST
+sbl_boot_perf_early_can_test_$(SOC)_CORELIST = mcu1_0
+export sbl_boot_perf_early_can_test_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += sbl_boot_perf_early_can_test
+sbl_boot_perf_early_can_test_SBL_APPIMAGEGEN = yes
+export sbl_boot_perf_early_can_test_SBL_APPIMAGEGEN
+
+# R5 boot performance Test for Early CAN Response on HS Devices - works only with custom SBL
+sbl_boot_perf_hs_early_can_test_COMP_LIST = sbl_boot_perf_hs_early_can_test
+sbl_boot_perf_hs_early_can_test_RELPATH = ti/boot/sbl/example/k3MulticoreApp
+sbl_boot_perf_hs_early_can_test_BINPATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp/binary
+sbl_boot_perf_hs_early_can_test_PATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp
+sbl_boot_perf_hs_early_can_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk IS_EARLY_CAN_TEST=yes IS_HS_TEST=yes
+export sbl_boot_perf_hs_early_can_test_MAKEFILE
+sbl_boot_perf_hs_early_can_test_BOARD_DEPENDENCY = no
+sbl_boot_perf_hs_early_can_test_SOC_DEPENDENCY = no
+sbl_boot_perf_hs_early_can_test_CORE_DEPENDENCY = no
+export sbl_boot_perf_hs_early_can_test_COMP_LIST
+export sbl_boot_perf_hs_early_can_test_BOARD_DEPENDENCY
+export sbl_boot_perf_hs_early_can_test_SOC_DEPENDENCY
+export sbl_boot_perf_hs_early_can_test_CORE_DEPENDENCY
+sbl_boot_perf_hs_early_can_test_PKG_LIST = sbl_boot_perf_hs_early_can_test
+sbl_boot_perf_hs_early_can_test_INCLUDE = $(sbl_boot_perf_hs_early_can_test_PATH)
+sbl_boot_perf_hs_early_can_test_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_boot_perf_hs_early_can_test_BOARDLIST = $(CUST_SBL_TEST_BOARDS)
+export sbl_boot_perf_hs_early_can_test_SOCLIST
+export sbl_boot_perf_hs_early_can_test_BOARDLIST
+sbl_boot_perf_hs_early_can_test_$(SOC)_CORELIST = mcu1_0
+export sbl_boot_perf_hs_early_can_test_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += sbl_boot_perf_hs_early_can_test
+sbl_boot_perf_hs_early_can_test_SBL_APPIMAGEGEN = yes
+export sbl_boot_perf_hs_early_can_test_SBL_APPIMAGEGEN
+
 # R5 combined boot performance Test - works only with custom combined SBL
 sbl_combined_boot_perf_test_COMP_LIST = sbl_combined_boot_perf_test
 sbl_combined_boot_perf_test_RELPATH = ti/boot/sbl/example/k3MulticoreApp
 sbl_combined_boot_perf_test_BINPATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp/binary
 sbl_combined_boot_perf_test_PATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp
-sbl_combined_boot_perf_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk BOOTMODE=cust CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) COMBINED_BOOT_PERF=yes
+sbl_combined_boot_perf_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk COMBINED_BOOT_PERF=yes
 export sbl_combined_boot_perf_test_MAKEFILE
 sbl_combined_boot_perf_test_BOARD_DEPENDENCY = no
 sbl_combined_boot_perf_test_SOC_DEPENDENCY = no
@@ -1761,8 +1991,6 @@ sbl_combined_boot_perf_test_PKG_LIST = sbl_combined_boot_perf_test
 sbl_combined_boot_perf_test_INCLUDE = $(sbl_combined_boot_perf_test_PATH)
 sbl_combined_boot_perf_test_SOCLIST = $(CUST_SBL_TEST_SOCS)
 sbl_combined_boot_perf_test_BOARDLIST = j7200_evm j721s2_evm j784s4_evm j742s2_evm
-
-
 export sbl_combined_boot_perf_test_SOCLIST
 export sbl_combined_boot_perf_test_BOARDLIST
 sbl_combined_boot_perf_test_$(SOC)_CORELIST = mcu1_0
@@ -1770,6 +1998,59 @@ export sbl_combined_boot_perf_test_$(SOC)_CORELIST
 sbl_EXAMPLE_LIST += sbl_combined_boot_perf_test
 sbl_combined_boot_perf_test_SBL_APPIMAGEGEN = yes
 export sbl_combined_boot_perf_test_SBL_APPIMAGEGEN
+
+# R5 combined boot performance Test for Early CAN Response on GP Devices - works only with custom combined SBL
+sbl_combined_boot_perf_early_can_test_COMP_LIST = sbl_combined_boot_perf_early_can_test
+sbl_combined_boot_perf_early_can_test_RELPATH = ti/boot/sbl/example/k3MulticoreApp
+sbl_combined_boot_perf_early_can_test_BINPATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp/binary
+sbl_combined_boot_perf_early_can_test_PATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp
+sbl_combined_boot_perf_early_can_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk COMBINED_BOOT_PERF=yes IS_EARLY_CAN_TEST=yes
+export sbl_combined_boot_perf_early_can_test_MAKEFILE
+sbl_combined_boot_perf_early_can_test_BOARD_DEPENDENCY = no
+sbl_combined_boot_perf_early_can_test_SOC_DEPENDENCY = no
+sbl_combined_boot_perf_early_can_test_CORE_DEPENDENCY = no
+export sbl_combined_boot_perf_early_can_test_COMP_LIST
+export sbl_combined_boot_perf_early_can_test_BOARD_DEPENDENCY
+export sbl_combined_boot_perf_early_can_test_SOC_DEPENDENCY
+export sbl_combined_boot_perf_early_can_test_CORE_DEPENDENCY
+sbl_combined_boot_perf_early_can_test_PKG_LIST = sbl_combined_boot_perf_early_can_test
+sbl_combined_boot_perf_early_can_test_INCLUDE = $(sbl_combined_boot_perf_early_can_test_PATH)
+sbl_combined_boot_perf_early_can_test_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_combined_boot_perf_early_can_test_BOARDLIST = j7200_evm j721s2_evm j784s4_evm j742s2_evm
+export sbl_combined_boot_perf_early_can_test_SOCLIST
+export sbl_combined_boot_perf_early_can_test_BOARDLIST
+sbl_combined_boot_perf_early_can_test_$(SOC)_CORELIST = mcu1_0
+export sbl_combined_boot_perf_early_can_test_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += sbl_combined_boot_perf_early_can_test
+sbl_combined_boot_perf_early_can_test_SBL_APPIMAGEGEN = yes
+export sbl_combined_boot_perf_early_can_test_SBL_APPIMAGEGEN
+
+
+# R5 combined boot performance Test for Early CAN Response on HS Devices - works only with custom combined SBL
+sbl_combined_boot_perf_hs_early_can_test_COMP_LIST = sbl_combined_boot_perf_hs_early_can_test
+sbl_combined_boot_perf_hs_early_can_test_RELPATH = ti/boot/sbl/example/k3MulticoreApp
+sbl_combined_boot_perf_hs_early_can_test_BINPATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp/binary
+sbl_combined_boot_perf_hs_early_can_test_PATH = $(PDK_SBL_COMP_PATH)/example/k3MulticoreApp
+sbl_combined_boot_perf_hs_early_can_test_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_mcu0_boot_perf_test.mk COMBINED_BOOT_PERF=yes IS_EARLY_CAN_TEST=yes IS_HS_TEST=yes
+export sbl_combined_boot_perf_hs_early_can_test_MAKEFILE
+sbl_combined_boot_perf_hs_early_can_test_BOARD_DEPENDENCY = no
+sbl_combined_boot_perf_hs_early_can_test_SOC_DEPENDENCY = no
+sbl_combined_boot_perf_hs_early_can_test_CORE_DEPENDENCY = no
+export sbl_combined_boot_perf_hs_early_can_test_COMP_LIST
+export sbl_combined_boot_perf_hs_early_can_test_BOARD_DEPENDENCY
+export sbl_combined_boot_perf_hs_early_can_test_SOC_DEPENDENCY
+export sbl_combined_boot_perf_hs_early_can_test_CORE_DEPENDENCY
+sbl_combined_boot_perf_hs_early_can_test_PKG_LIST = sbl_combined_boot_perf_hs_early_can_test
+sbl_combined_boot_perf_hs_early_can_test_INCLUDE = $(sbl_combined_boot_perf_hs_early_can_test_PATH)
+sbl_combined_boot_perf_hs_early_can_test_SOCLIST = $(CUST_SBL_TEST_SOCS)
+sbl_combined_boot_perf_hs_early_can_test_BOARDLIST = j7200_evm j721s2_evm j784s4_evm j742s2_evm
+export sbl_combined_boot_perf_hs_early_can_test_SOCLIST
+export sbl_combined_boot_perf_hs_early_can_test_BOARDLIST
+sbl_combined_boot_perf_hs_early_can_test_$(SOC)_CORELIST = mcu1_0
+export sbl_combined_boot_perf_hs_early_can_test_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += sbl_combined_boot_perf_hs_early_can_test
+sbl_combined_boot_perf_hs_early_can_test_SBL_APPIMAGEGEN = yes
+export sbl_combined_boot_perf_hs_early_can_test_SBL_APPIMAGEGEN
 
 # Boot App OSPI
 boot_app_ospi_COMP_LIST = boot_app_ospi

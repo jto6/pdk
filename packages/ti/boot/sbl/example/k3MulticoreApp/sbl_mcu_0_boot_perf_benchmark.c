@@ -48,16 +48,21 @@ struct tisci_boardcfg_sec sblPerfTestBoardCfg_sec __attribute((section(".sysfw_d
 /* For j721e SBL doesn't able to profile RBL boot time since it doesn't have mcu timer9 
         So SBL profile info for j721e is one index ahead of others */
 #if !defined(SOC_J721E)
-    #define SBL_BOOT_PERF_ARRAY_LENGTH 18
+    #define SBL_BOOT_PERF_ARRAY_LENGTH 23
     #define SBL_BOOT_PERF_ARRAY_SKIP_INDX 7
     /* This time includes RBL execution time */
     float expCanRespTime = 48;
+    /*This is the expected SBL execution time on HS Devices which includes image authentication */
+    float expHsCanRespTime = 98;
 #else
-    #define SBL_BOOT_PERF_ARRAY_LENGTH 17
+    #define SBL_BOOT_PERF_ARRAY_LENGTH 22
     #define SBL_BOOT_PERF_ARRAY_SKIP_INDX 6
     /* This time does not include RBL execution time */
     float expCanRespTime = 39.5;
+    /*This is the expected SBL execution time on HS Devices which includes image authentication */
+    float expHsCanRespTime = 74.5;
 #endif
+    float expBootTime = 3000;
 
 /**********************************************************************
  ************************** Internal functions ************************
@@ -138,20 +143,26 @@ static void BOOT_PERF_TEST_printSblProfileLog(sblProfileInfo_t *sblProfileLog, u
 
 static void sblBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
 {
-    char majorApis[14][100] = {"SBL : SBL_SciClientInit: ReadSysfwImage                 :", \
-                                "Load/Start SYSFW                                        :", \
-                                "Sciclient_init                                          :", \
-                                "Board Config                                            :", \
-                                "PM Config                                               :", \
-                                "Security Config                                         :", \
-                                "RM Config                                               :", \
-                                "SBL: Board_init (pinmux)                                :", \
-                                "SBL: Board_init (PLL)                                   :", \
-                                "SBL: Board_init (CLOCKS)                                :", \
-                                "SBL: OSPI init                                          :", \
-                                "OSPI PHY tuning time                                    :", \
-                                "SBL: Parsing appimage and copy to MCU SRAM & Jump to App:", \
-                                "Misc                                                    :"};
+    char majorApis[19][100] = {"SBL : SBL_SciClientInit: ReadSysfwImage                                              :", \
+                                "Load/Start SYSFW                                                                     :", \
+                                "Sciclient_init                                                                       :", \
+                                "Board Config                                                                         :", \
+                                "PM Config                                                                            :", \
+                                "Security Config                                                                      :", \
+                                "RM Config                                                                            :", \
+                                "SBL: Board_init (pinmux)                                                             :", \
+                                "SBL: Board_init (PLL)                                                                :", \
+                                "SBL: Board_init (CLOCKS)                                                             :", \
+                                "SBL: DDR init                                                                        :", \
+                                "SBL: Ethernet PHY Configuration                                                      :", \
+                                "SBL: EEPROM Data copying time                                                        :", \
+                                "SBL: HSM Core App copy time                                                          :", \
+                                "SBL: boot media initiliazation (& app copy time in case of eMMC Boot0, eMMC UDA, SD) :", \
+                                "boot media PHY tuning time (incase of OSPI)                                          :", \
+                                "SBL: Verification of Application Image (HS device)                                   :", \
+                                "SBL: Parsing appimage and copy to MCU SRAM & Jump to App                             :", \
+                                "Misc                                                                                 :"};
+
     uint64_t mcu_clk_freq = SBL_MCU1_CPU0_FREQ_HZ;
     uint32_t majorApisIndx = 0, cycles_per_usec;
 
@@ -175,7 +186,7 @@ static void sblBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
     #if !defined(SOC_J721E)
         float convertToMilli = 250000;
         float rblExecutionTime = (float)sblBootPerfLog[0].line;
-        sprintf(sbl_test_str, "RBL Execution time                                      : %.3fms \r\n", rblExecutionTime/convertToMilli);
+        sprintf(sbl_test_str, "RBL Execution time                                                                   : %.3fms\r\n", rblExecutionTime/convertToMilli);
         sbl_puts(sbl_test_str);
         totalTime += rblExecutionTime/convertToMilli;
     #endif
@@ -211,8 +222,22 @@ static void sblBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
         majorApisIndx++;
     }
     
-    sprintf(sbl_test_str, "Time taken to boot CAN application from SBL main : %.3fms \r\n", totalTime);
+    sprintf(sbl_test_str, "Time taken to boot CAN application from SBL main : %.3fms\r\n", totalTime);
     sbl_puts(sbl_test_str);
+
+#if defined(EARLY_CAN_TEST)
+#if defined(HS_TEST)
+    if(totalTime < expHsCanRespTime)
+    {
+        sprintf(sbl_test_str, "Boot Performance test has passed");
+        sbl_puts(sbl_test_str);
+    }
+    else
+    {
+        sprintf(sbl_test_str, "Boot Performance test has failed");
+        sbl_puts(sbl_test_str);
+    }
+#else
     if(totalTime < expCanRespTime)
     {
         sprintf(sbl_test_str, "Boot Performance test has passed");
@@ -223,28 +248,47 @@ static void sblBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
         sprintf(sbl_test_str, "Boot Performance test has failed");
         sbl_puts(sbl_test_str);
     }
+#endif
+#else 
+    if(totalTime < expBootTime)
+    {
+        sbl_puts("All tests have passed\r\n");
+        sprintf(sbl_test_str, "Boot Performance test has passed");
+        sbl_puts(sbl_test_str);
+    }
+    else
+    {
+        sprintf(sbl_test_str, "Boot Performance test has failed");
+        sbl_puts(sbl_test_str);
+    }
+#endif
 
 }
 
 static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
 {
-    char majorApis[14][100] = {"Sciclient Boot Notification                             :", \
-                                "Sciclient_init                                          :", \
-                                "Board Config                                            :", \
-                                "PM Config                                               :", \
-                                "Security Config                                         :", \
-                                "RM Config                                               :", \
-                                "SBL: Board_init (pinmux)                                :", \
-                                "SBL: Board_init (PLL)                                   :", \
-                                "SBL: Board_init (CLOCKS)                                :", \
-                                "SBL: OSPI init                                          :", \
-                                "OSPI PHY tuning time                                    :", \
-                                "SBL: Parsing appimage and copy to MCU SRAM & Jump to App:", \
-                                "Misc                                                    :"};
+    char majorApis[18][100] = {"Sciclient Boot Notification                                                          :", \
+                                "Sciclient_init                                                                       :", \
+                                "Board Config                                                                         :", \
+                                "PM Config                                                                            :", \
+                                "Security Config                                                                      :", \
+                                "RM Config                                                                            :", \
+                                "SBL: Board_init (pinmux)                                                             :", \
+                                "SBL: Board_init (PLL)                                                                :", \
+                                "SBL: Board_init (CLOCKS)                                                             :", \
+                                "SBL: DDR init                                                                        :", \
+                                "SBL: Ethernet PHY Configuration                                                      :", \
+                                "SBL: EEPROM Data copying time                                                        :", \
+                                "SBL: HSM Core App copy time                                                          :", \
+                                "SBL: boot media initiliazation (& app copy time in case of eMMC Boot0, eMMC UDA, SD) :", \
+                                "boot media PHY tuning time (incase of OSPI)                                          :", \
+                                "SBL: Verification of Application Image (HS device)                                   :", \
+                                "SBL: Parsing appimage and copy to MCU SRAM & Jump to App                             :", \
+                                "Misc                                                                                 :"};
     uint64_t mcuClkFreq = SBL_MCU1_CPU0_FREQ_HZ;
     uint32_t majorApisIndx = 0, cyclesPerUsec;
     uint32_t indx = 3;
-    uint32_t arrayLen = 16;
+    uint32_t arrayLen = 22;
     uint32_t skipIndex = 6;
 
     float convertMicroToMilli = 1000;
@@ -258,7 +302,7 @@ static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
     sbl_puts("\r\n           ------- SBL Combined Boot Performance Info overview -------  \r\n\n");
     float convertToMilli = 250000;
     float rblExecutionTime = (float)sblBootPerfLog[0].line;
-    sprintf(sbl_test_str, "RBL Execution time                                      : %.3fms \r\n", rblExecutionTime/convertToMilli);
+    sprintf(sbl_test_str, "RBL Execution time                                                                   : %.3fms\r\n", rblExecutionTime/convertToMilli);
     sbl_puts(sbl_test_str);
     totalTime += rblExecutionTime/convertToMilli;
 
@@ -289,9 +333,35 @@ static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
         majorApisIndx++;
     }
     
-    sprintf(sbl_test_str, "Approximated time to come to main of an application : %.3fms \r\n", totalTime);
+    sprintf(sbl_test_str, "Approximated time to come to main of an application : %.3fms\r\n", totalTime);
     sbl_puts(sbl_test_str);
+
+#if defined(EARLY_CAN_TEST)
+#if defined(HS_TEST)
+    if(totalTime < expHsCanRespTime)
+    {
+        sprintf(sbl_test_str, "Boot Performance test has passed");
+        sbl_puts(sbl_test_str);
+    }
+    else
+    {
+        sprintf(sbl_test_str, "Boot Performance test has failed");
+        sbl_puts(sbl_test_str);
+    }
+#else
     if(totalTime < expCanRespTime)
+    {
+        sprintf(sbl_test_str, "Boot Performance test has passed");
+        sbl_puts(sbl_test_str);
+    }
+    else
+    {
+        sprintf(sbl_test_str, "Boot Performance test has failed");
+        sbl_puts(sbl_test_str);
+    }
+#endif
+#else 
+    if(totalTime < expBootTime)
     {
         sbl_puts("All tests have passed\r\n");
         sprintf(sbl_test_str, "Boot Performance test has passed");
@@ -302,7 +372,7 @@ static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
         sprintf(sbl_test_str, "Boot Performance test has failed");
         sbl_puts(sbl_test_str);
     }
-
+#endif
 }
 
 static int32_t BOOT_PERF_TEST_sysfwInit(void)
@@ -402,17 +472,19 @@ static int32_t BOOT_PERF_TEST_sysfwInit(void)
 }
 
 int32_t main()
-{
+{    
+#if defined(EARLY_CAN_TEST)    
     volatile uint32_t pmuCntrVal = CSL_armR5PmuReadCntr(0x1F);
     char sbl_test_str[256];
     uint64_t mcu_clk_freq = SBL_MCU1_CPU0_FREQ_HZ;
     uint32_t cycles_per_usec;
-    char *comp_mk = "sbl_component.mk";
+#endif
 
     /* Perform the sysfw init here that was skipped */
     /* by the SBL to speed up boot times            */
     BOOT_PERF_TEST_sysfwInit();
 
+#if defined(EARLY_CAN_TEST)
     sbl_puts("\r\n");
     sprintf(sbl_test_str, "Time elapsed since start of SBL:");sbl_puts(sbl_test_str);
     cycles_per_usec = ((uint32_t)mcu_clk_freq) / 1000000;
@@ -421,6 +493,7 @@ int32_t main()
     sprintf(sbl_test_str, "fxn:%16s\t", "boot_perf_test_main");sbl_puts(sbl_test_str);
     sprintf(sbl_test_str, "cycles:%10u\t\r\n", pmuCntrVal);sbl_puts(sbl_test_str);
     sbl_puts("\r\n");
+#endif
 
     sbl_puts("Attempting board config ...");
 
@@ -434,43 +507,7 @@ int32_t main()
     Board_init(BOARD_INIT_MODULE_CLOCK_MAIN);
     sbl_puts("passed\r\n");
 
-    sbl_puts("BOARD_INIT_DDR...");
-    Board_init(BOARD_INIT_DDR);
-    sbl_puts("passed\r\n");
-
     sbl_puts("\r\nAnalyzing run results .... \r\n");
-
-    if (pmuCntrVal == 0)
-    {
-        sprintf(sbl_test_str,"Do this first: Enable SBL_SKIP_MCU_RESET and set SBL_LOG_LEVEL=1 in %s.\r\n", comp_mk);sbl_puts(sbl_test_str);
-        sbl_puts("If the regular mpu_init is good for you, then save some time by skipping/configuring only delta in mpu_init in the app.\r\n");
-        sbl_puts("Refer sbl_smp_r5.asm to see how to overrride the default mpu_init with a custom one.\r\n");
-        return 0;
-    }
-    else
-    {
-        if (pmuCntrVal > 50000000)
-        {
-            sprintf(sbl_test_str,"Do this next: Disable SBL_DISPLAY_PROFILE_INFO in %s to drastically reduce boot time.\r\n", comp_mk);sbl_puts(sbl_test_str);
-            sbl_puts("Also recheck SBL_LOG_LEVEL=1 and no log messages are displayed form the SBL\r\n");
-        }
-        else
-        {
-            if (pmuCntrVal < 20000000)
-            {
-                sbl_puts("Boot time is now optimized....\r\n");
-            }
-            else
-            {
-                sprintf(sbl_test_str,"Now Try disabling the following one by one in %s to reduce a little more boot time.\r\n", comp_mk);sbl_puts(sbl_test_str);
-                sbl_puts("SBL_ENABLE_PLL (big impact to boot time), SBL_ENABLE_DDR (must be disabled if SBL_ENABLE_PLL is disable), SBL_ENABLE_CLOCKS(least imapct).\r\n");
-                sbl_puts("Please remember to assess impact of removing PLL init, DDR init (does your app need DDR?) and clock init (does your app use PHYs\?\?) on your app. \r\n");
-                sbl_puts("As a last resort, enable (uncomment) SBL_SKIP_BRD_CFG_PM\r\n");
-                sbl_puts("Once enabled, all SBL UART logs will be garbled. Remember to call Sciclient_boardCfgPm from the app to get Uart_printf to work.\r\n");
-            }
-        }
-    }
-
     BOOT_PERF_TEST_printSblProfileLog(sblProfileLogAddr, *sblProfileLogIndxAddr, *sblProfileLogOvrFlwAddr);
 #if defined(COMBINED_BOOT_PERF)
     sblCombinedBootPerfPrint(sblProfileLogAddr);

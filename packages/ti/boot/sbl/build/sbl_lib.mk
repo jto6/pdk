@@ -24,7 +24,11 @@ else
   ifeq ($(HLOS_BOOT),yes)
     BASE_NAME = sbl_lib_$(BOOTMODE)_hlos
   else
-    BASE_NAME = sbl_lib_$(BOOTMODE)
+    ifeq ($(BOOT_PERF), yes)
+      BASE_NAME = sbl_boot_perf_lib_$(BOOTMODE)
+    else
+      BASE_NAME = sbl_lib_$(BOOTMODE)
+    endif
   endif
 endif
 
@@ -105,6 +109,16 @@ SBL_CFLAGS += -DSBL_SCRATCH_MEM_SIZE=0x4000000
 ifeq ($(BOOTMODE), cust)
   SBL_CFLAGS = $(CUST_SBL_FLAGS)
 endif # ifeq ($(BOOTMODE), cust)
+
+# Add a CAN test flag if required
+ifeq ($(IS_EARLY_CAN_TEST), yes)
+  SBL_CFLAGS += -DEARLY_CAN_TEST
+endif
+
+# Add a HS Device Only Test Flag if required
+ifeq ($(IS_HS_TEST), yes)
+  SBL_CFLAGS += -DHS_TEST
+endif
 
 # HLOS Boot flags
 ifeq ($(HLOS_BOOT),yes)

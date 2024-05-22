@@ -427,6 +427,8 @@ int main()
 
     SBL_log(SBL_LOG_MAX, "done.\n");
 #endif
+    /*Profile point after Board init Clocks and before DDR init*/
+    SBL_ADD_PROFILE_POINT;
 
 #if defined(SBL_ENABLE_DDR) && defined(SBL_ENABLE_PLL) && defined(SBL_ENABLE_CLOCKS)  && !defined(SBL_SKIP_SYSFW_INIT)
     SBL_log(SBL_LOG_MAX, "Initlialzing DDR ...");
@@ -437,6 +439,8 @@ int main()
     }
     SBL_log(SBL_LOG_MAX, "done.\n");
 #endif
+    /*Profile point after DRR init and before Ethernet Configuration*/
+    SBL_ADD_PROFILE_POINT;
 
 #if defined(SBL_ENABLE_SERDES)
     SBL_log(SBL_LOG_MAX, "Initializing SERDES ...");
@@ -459,6 +463,8 @@ int main()
     SBL_ConfigureEthernet();
 #endif
 #endif
+    /*Adding a profile point after Ethernet Configuration and before EEPROM data copying*/
+    SBL_ADD_PROFILE_POINT;
 
 #if !defined(BOOT_PERF)
     SBL_log(SBL_LOG_MAX, "Copying EEPROM content to DDR ... \n");
@@ -468,6 +474,8 @@ int main()
     }
     SBL_log(SBL_LOG_MAX, "EEPROM Data Copy Done.\n");
 #endif
+    /*Adding a profile point after EEPROM data copying and before HSM Core Boot Image copying*/
+    SBL_ADD_PROFILE_POINT;
 
 /* Defined separate target for sbl uart i.e sbl_hsm_boot_uart_img to boot HSM core 
    For MMCSD, OSPI NOR, OSPI NAND boot HSM core will be boot in with the normal sbl targets i.e 
@@ -497,7 +505,7 @@ int main()
 #endif
 
     SBL_log(SBL_LOG_MAX, "Begin parsing user application\n");
-
+    
     if (retVal != CSL_PASS)
     {
 #if !defined(BOOT_PERF)
