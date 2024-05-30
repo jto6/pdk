@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2022 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2022-2024 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,9 +30,14 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *****************************************************************************/
+
 #include <string.h>
 #include "board_ddr.h"
 #include "board_ddrRegInit.h"
+
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+#include "board_ddrRegVerify.h"
+#endif
 
 Board_DdrObject_t gBoardDdrObject[BOARD_DDR_INSTANCE_MAX];
 
@@ -272,6 +277,62 @@ static Board_STATUS Board_DDRHWRegInit(Board_DdrHandle ddrHandle)
     return BOARD_SOK;
 }
 
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+/**
+ * \brief   Verifies the DDR register values configured during init
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+static Board_STATUS Board_DDRHWRegVerify(Board_DdrHandle ddrHandle)
+{
+    uint32_t status = 0U;
+
+    status = LPDDR4_DeferredRegVerify(&ddrHandle->boardDdrPd,
+                                      LPDDR4_CTL_REGS,
+                                      ddrHandle->ddrCtlRegRef,
+                                      DDRSS_ctlRegNumRef,
+                                      (uint16_t)DDRSS_CTL_REG_VERIFY_COUNT);
+    if (status)
+    {
+        BOARD_DEBUG_LOG(" ERROR: DDR Control Register Check Failed at Index %d!!\n", index);
+        return BOARD_DDR_CTL_REG_CHECK_FAIL;
+
+    }
+
+    status = LPDDR4_DeferredRegVerify(&ddrHandle->boardDdrPd,
+                                      LPDDR4_PHY_INDEP_REGS,
+                                      ddrHandle->ddrPhyIndepRegRef,
+                                      DDRSS_phyIndepRegNumRef,
+                                      (uint16_t)DDRSS_PHY_INDEP_REG_VERIFY_COUNT);
+    if (status)
+    {
+        BOARD_DEBUG_LOG(" ERROR: DDR PHY INDEP Register Check Failed at Index %d!!\n", index);
+        return BOARD_DDR_PHYINDEP_REG_CHECK_FAIL;
+
+    }
+
+    status = LPDDR4_DeferredRegVerify(&ddrHandle->boardDdrPd,
+                                      LPDDR4_PHY_REGS,
+                                      ddrHandle->ddrPhyRegRef,
+                                      DDRSS_phyRegNumRef,
+                                      (uint16_t)DDRSS_PHY_REG_VERIFY_COUNT);
+
+    if (status)
+    {
+        BOARD_DEBUG_LOG(" ERROR: DDR PHY Register Check Failed at Index %d!!\n", index);
+        return BOARD_DDR_PHY_REG_CHECK_FAIL;
+    }
+
+    if (status)
+    {
+        BOARD_DEBUG_LOG(" ERROR: Board_DDRHWRegVerify failed!!\n");
+        return BOARD_FAIL;
+    }
+
+    return BOARD_SOK;
+}
+#endif //#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+
 /**
  * \brief   DDR start function
  *
@@ -420,32 +481,52 @@ static Board_DdrHandle Board_DDROpen(uint32_t ddrInstance)
             switch (ddrInstance)
             {
                  case BOARD_DDR_INSTANCE_0:
-                    ddrHandle->ddrCtlAddr     = (void *)BOARD_DDR0_CTL_CFG_BASE;
-                    ddrHandle->ddrCtlReg      = DDRSS0_ctlReg;
-                    ddrHandle->ddrPhyIndepReg = DDRSS0_phyIndepReg;
-                    ddrHandle->ddrPhyReg      = DDRSS0_phyReg;
-                    ddrHandle->eccAddr        = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS0_SSCFG_BASE;
+                    ddrHandle->ddrCtlAddr        = (void *)BOARD_DDR0_CTL_CFG_BASE;
+                    ddrHandle->ddrCtlReg         = DDRSS0_ctlReg;
+                    ddrHandle->ddrPhyIndepReg    = DDRSS0_phyIndepReg;
+                    ddrHandle->ddrPhyReg         = DDRSS0_phyReg;
+                    ddrHandle->eccAddr           = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS0_SSCFG_BASE;
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+                    ddrHandle->ddrCtlRegRef      = DDRSS_ctlRegRef;
+                    ddrHandle->ddrPhyIndepRegRef = DDRSS_phyIndepRegRef;
+                    ddrHandle->ddrPhyRegRef      = DDRSS_phyRegRef;
+#endif
                     break;
                  case BOARD_DDR_INSTANCE_1:
-                    ddrHandle->ddrCtlAddr     = (void *)BOARD_DDR1_CTL_CFG_BASE;
-                    ddrHandle->ddrCtlReg      = DDRSS1_ctlReg;
-                    ddrHandle->ddrPhyIndepReg = DDRSS1_phyIndepReg;
-                    ddrHandle->ddrPhyReg      = DDRSS1_phyReg;
-                    ddrHandle->eccAddr        = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS1_SSCFG_BASE;
+                    ddrHandle->ddrCtlAddr        = (void *)BOARD_DDR1_CTL_CFG_BASE;
+                    ddrHandle->ddrCtlReg         = DDRSS1_ctlReg;
+                    ddrHandle->ddrPhyIndepReg    = DDRSS1_phyIndepReg;
+                    ddrHandle->ddrPhyReg         = DDRSS1_phyReg;
+                    ddrHandle->eccAddr           = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS1_SSCFG_BASE;
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+                    ddrHandle->ddrCtlRegRef      = DDRSS_ctlRegRef;
+                    ddrHandle->ddrPhyIndepRegRef = DDRSS_phyIndepRegRef;
+                    ddrHandle->ddrPhyRegRef      = DDRSS_phyRegRef;
+#endif
                     break;
                  case BOARD_DDR_INSTANCE_2:
-                    ddrHandle->ddrCtlAddr     = (void *)BOARD_DDR2_CTL_CFG_BASE;
-                    ddrHandle->ddrCtlReg      = DDRSS2_ctlReg;
-                    ddrHandle->ddrPhyIndepReg = DDRSS2_phyIndepReg;
-                    ddrHandle->ddrPhyReg      = DDRSS2_phyReg;
-                    ddrHandle->eccAddr        = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS2_SSCFG_BASE;
+                    ddrHandle->ddrCtlAddr        = (void *)BOARD_DDR2_CTL_CFG_BASE;
+                    ddrHandle->ddrCtlReg         = DDRSS2_ctlReg;
+                    ddrHandle->ddrPhyIndepReg    = DDRSS2_phyIndepReg;
+                    ddrHandle->ddrPhyReg         = DDRSS2_phyReg;
+                    ddrHandle->eccAddr           = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS2_SSCFG_BASE;
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+                    ddrHandle->ddrCtlRegRef      = DDRSS_ctlRegRef;
+                    ddrHandle->ddrPhyIndepRegRef = DDRSS_phyIndepRegRef;
+                    ddrHandle->ddrPhyRegRef      = DDRSS_phyRegRef;
+#endif
                     break;
                  case BOARD_DDR_INSTANCE_3:
-                    ddrHandle->ddrCtlAddr     = (void *)BOARD_DDR3_CTL_CFG_BASE;
-                    ddrHandle->ddrCtlReg      = DDRSS3_ctlReg;
-                    ddrHandle->ddrPhyIndepReg = DDRSS3_phyIndepReg;
-                    ddrHandle->ddrPhyReg      = DDRSS3_phyReg;
-                    ddrHandle->eccAddr        = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS3_SSCFG_BASE;
+                    ddrHandle->ddrCtlAddr        = (void *)BOARD_DDR3_CTL_CFG_BASE;
+                    ddrHandle->ddrCtlReg         = DDRSS3_ctlReg;
+                    ddrHandle->ddrPhyIndepReg    = DDRSS3_phyIndepReg;
+                    ddrHandle->ddrPhyReg         = DDRSS3_phyReg;
+                    ddrHandle->eccAddr           = (void *)CSL_COMPUTE_CLUSTER0_VBUSP_DDRSS3_SSCFG_BASE;
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+                    ddrHandle->ddrCtlRegRef      = DDRSS_ctlRegRef;
+                    ddrHandle->ddrPhyIndepRegRef = DDRSS_phyIndepRegRef;
+                    ddrHandle->ddrPhyRegRef      = DDRSS_phyRegRef;
+#endif
                     break;
             }
         }
@@ -472,6 +553,60 @@ static Board_STATUS Board_DDRClose(Board_DdrHandle ddrHandle)
 
     return status;
 }
+
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+/**
+ * \brief DDR4 register value verification function
+ *
+ * Reads the DDR registers configured and compares with expected values.
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ *
+ */
+Board_STATUS Board_DDRRegVerify(void)
+{
+    Board_STATUS status = BOARD_SOK;
+    uint32_t ddrInstance;
+    Board_DdrHandle ddrHandle;
+
+    for(ddrInstance = 0; ddrInstance < BOARD_DDR_INSTANCE_MAX; ddrInstance++)
+    {
+        /* Check the registers for a DDR instance only if it is set active in EMIF tool generated config */
+        if(MULTI_DDR_CFG_EMIFS_ACTIVE & (1 << ddrInstance))
+        {
+            ddrHandle = Board_DDROpen(ddrInstance);
+            if(ddrHandle == NULL)
+            {
+                BOARD_DEBUG_LOG("Board_DDROpen: FAIL\n");
+                return BOARD_FAIL;
+            }
+
+            status = Board_DDRProbe(ddrHandle);
+            if(status != BOARD_SOK)
+            {
+                return status;
+            }
+
+            status = Board_DDRInitDrv(ddrHandle);
+            if(status != BOARD_SOK)
+            {
+                return status;
+            }
+
+            status = Board_DDRHWRegVerify(ddrHandle);
+            if(status != BOARD_SOK)
+            {
+                BOARD_DEBUG_LOG("Board_DDRHWRegVerify: FAIL\n");
+                return status;
+            }
+
+            Board_DDRClose(ddrHandle);
+        }
+    }
+
+    return status;
+}
+#endif //#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
 
 /**
  * \brief DDR4 Initialization function

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2021-2024 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -119,6 +119,12 @@ typedef struct Board_DdrObject_s
     uint32_t *ddrPhyIndepReg;
     /** Pointer to DDR PHY register array */
     uint32_t *ddrPhyReg;
+    /** Pointer to DDR control register golden reference array */
+    uint32_t *ddrCtlRegRef;
+    /** Pointer to DDR PHY register golden reference array */
+    uint32_t *ddrPhyIndepRegRef;
+    /** Pointer to DDR PHY register golden reference array */
+    uint32_t *ddrPhyRegRef;
 } Board_DdrObject_t;
 
 typedef Board_DdrObject_t * Board_DdrHandle;

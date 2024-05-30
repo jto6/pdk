@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2022 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2022-2024 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -262,6 +262,16 @@ Board_STATUS Board_PLLInit(uint32_t modId, uint32_t clkId, uint64_t clkRate);
  *
  */
 Board_STATUS Board_DDRInit(Bool eccEnable);
+
+/**
+ * \brief DDR4 register value verification function
+ *
+ * Reads the DDR registers configured and compares with expected values.
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ *
+ */
+Board_STATUS Board_DDRRegVerify(void);
 
 #ifdef BOARD_DDR_ENABLE_DDR_MEM_PRIME
 /**

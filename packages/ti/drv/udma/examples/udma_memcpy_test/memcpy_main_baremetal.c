@@ -42,6 +42,8 @@
 
 #include <stdint.h>
 #include <ti/board/board.h>
+#include <ti/drv/uart/UART.h>
+#include <ti/drv/uart/UART_stdio.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -79,6 +81,34 @@ int main(void)
                BOARD_INIT_PINMUX_CONFIG |
                BOARD_INIT_UART_STDIO;
     Board_init(boardCfg);
+
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+    Board_STATUS status;
+
+    UART_printf("DDR Register Check In Progress...\n");
+    status = Board_init(BOARD_INIT_DDR_REG_VERIFY);
+    if(status != BOARD_SOK)
+    {
+        if(status == BOARD_DDR_CTL_REG_CHECK_FAIL)
+        {
+            UART_printf("DDR Control Register Check Failed!!\n");
+        }
+        else if(status == BOARD_DDR_PHYINDEP_REG_CHECK_FAIL)
+        {
+            UART_printf("DDR PHY INDEP Register Check Failed!!\n");
+        }
+        else if(status == BOARD_DDR_PHY_REG_CHECK_FAIL)
+        {
+            UART_printf("DDR PHY Register Check Failed!!\n");
+        }
+
+        return -1;
+    }
+    else
+    {
+        UART_printf("DDR Register Check Successful!\n");
+    }
+#endif
 
     Udma_memcpyTest();
 

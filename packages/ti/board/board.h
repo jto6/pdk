@@ -143,6 +143,14 @@ extern "C" {
 /** Board status FAIL */
 #define BOARD_FAIL                          -10
 
+/** DDR control register check failure */
+#define BOARD_DDR_CTL_REG_CHECK_FAIL        (-20)
+/** DDR PHY independent register check failure */
+#define BOARD_DDR_PHYINDEP_REG_CHECK_FAIL   (-21)
+/** DDR PHY register check failure */
+#define BOARD_DDR_PHY_REG_CHECK_FAIL        (-22)
+
+
 /*************************************************************
  * Init/Info Definitons                                      *
  *************************************************************/
@@ -364,6 +372,9 @@ typedef uint32_t Board_initCfg;
 #define BOARD_INIT_CPSW2G_MAIN_ETH_PHY  (1 << 24U)
 #define BOARD_INIT_ENETCTRL_CPSW2G_MAIN (1 << 25U)
 
+/* Flag to initiate DDR register check post DDR initialization */
+#define BOARD_INIT_DDR_REG_VERIFY       (1 << 30U)
+
 #define BOARD_DEINIT_ALL                (0xFFFFFFFFU)
 #define BOARD_DEINIT_LOCK_MMR           (1 << 1U)
 #define BOARD_DEINIT_MODULE_CLOCK       (1 << 2U)
@@ -376,6 +387,8 @@ typedef uint32_t Board_initCfg;
 #define BOARD_RESOURCE_UART_STDIO       (3U)
 #define BOARD_RESOURCE_SCICLIENT        (4U)
 
+/* Enable the below macro to enable DDR register verification in board library */
+//#define BOARD_ENABLE_DDR_REG_VERIFY     (TRUE)
 
 typedef void (*Board_thermalMgmtCallbackFunction_t)(Board_DDRTempEventType DDRTempEventType);
 

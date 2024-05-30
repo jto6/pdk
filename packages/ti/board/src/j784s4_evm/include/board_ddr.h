@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2022 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2022-2024 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -132,6 +132,12 @@ typedef struct Board_DdrObject_s
     uint32_t *ddrPhyReg;
     /** ECC base address */
     void *eccAddr;
+    /** Pointer to DDR control register golden reference array */
+    uint32_t *ddrCtlRegRef;
+    /** Pointer to DDR PHY register golden reference array */
+    uint32_t *ddrPhyIndepRegRef;
+    /** Pointer to DDR PHY register golden reference array */
+    uint32_t *ddrPhyRegRef;
 } Board_DdrObject_t;
 
 typedef Board_DdrObject_t * Board_DdrHandle;

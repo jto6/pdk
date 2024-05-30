@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2022, Texas Instruments Incorporated
+ * Copyright (c) 2015-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -777,6 +777,7 @@ int mem_test()
 int main(void)
 {
     Board_initCfg boardCfg;
+    Board_STATUS status;
     
 #ifdef SOC_K2G
     DIAG_IntrInit();
@@ -789,7 +790,36 @@ int main(void)
 #else
     boardCfg = BOARD_INIT_UART_STDIO;
 #endif  /*  #ifdef PDK_RAW_BOOT */
-    Board_init(boardCfg);
+    status = Board_init(boardCfg);
+    if(status != BOARD_SOK)
+    {
+        return -1;
+    }
+
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+    UART_printf("DDR Register Check In Progress...\n");
+    status = Board_init(BOARD_INIT_DDR_REG_VERIFY);
+    if(status != BOARD_SOK)
+    {
+        if(status == BOARD_DDR_CTL_REG_CHECK_FAIL)
+        {
+            UART_printf("DDR Control Register Check Failed!!\n");
+        }
+        else if(status == BOARD_DDR_PHYINDEP_REG_CHECK_FAIL)
+        {
+            UART_printf("DDR PHY INDEP Register Check Failed!!\n");
+        }
+        else if(status == BOARD_DDR_PHY_REG_CHECK_FAIL)
+        {
+            UART_printf("DDR PHY Register Check Failed!!\n");
+            return -1;
+        }
+    }
+    else
+    {
+        UART_printf("DDR Register Check Successful!\n");
+    }
+#endif
 
     return mem_test();
 }
