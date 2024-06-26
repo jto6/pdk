@@ -64,8 +64,9 @@
 /* ========================================================================== */
 
 /* IPC test macros for message and end point */
-#define IPC_APP_MSGSIZE 256U
-#define IPC_APP_ENDPT1  13U
+#define IPC_APP_MSGSIZE        256U
+#define IPC_APP_ENDPT1         13U
+#define IPC_APP_INVALID_ENDPT  5U
 
 /* Macros for invalid ids */
 #define IPC_APP_INVALID_ID    50U
@@ -226,14 +227,14 @@ static void IpcApp_mailboxTests(void)
     Ipc_mailboxRegister(gIpcApp_SelfProcId, remoteProcId, func, arg, 100U);
 
     /* Test mailbox interrupt enable API for different params */
-    Ipc_mailboxEnableNewMsgInt(IPC_APP_ENDPT1, remoteProcId);
-    Ipc_mailboxEnableNewMsgInt(gIpcApp_SelfProcId, IPC_APP_ENDPT1);
+    Ipc_mailboxEnableNewMsgInt(IPC_APP_INVALID_ENDPT, remoteProcId);
+    Ipc_mailboxEnableNewMsgInt(gIpcApp_SelfProcId, IPC_APP_INVALID_ENDPT);
 
     /* Test mailbox interrupt disable API for different params */
     Ipc_mailboxDisableNewMsgInt(gIpcApp_SelfProcId, remoteProcId);
-    Ipc_mailboxDisableNewMsgInt(IPC_APP_ENDPT1, IPC_APP_ENDPT1);
-    Ipc_mailboxDisableNewMsgInt(IPC_APP_ENDPT1, 15U);
-    Ipc_mailboxDisableNewMsgInt(15U, IPC_APP_ENDPT1);
+    Ipc_mailboxDisableNewMsgInt(IPC_APP_INVALID_ENDPT, IPC_APP_INVALID_ENDPT);
+    Ipc_mailboxDisableNewMsgInt(IPC_APP_INVALID_ENDPT, 15U);
+    Ipc_mailboxDisableNewMsgInt(15U, IPC_APP_INVALID_ENDPT);
 
     /* Test mailbox send API */
     pOsalPrms -> disableAllIntr = NULL ;

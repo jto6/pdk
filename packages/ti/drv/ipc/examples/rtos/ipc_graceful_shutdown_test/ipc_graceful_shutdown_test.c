@@ -35,9 +35,9 @@
  *  \file ipc_graceful_shutdown_test.c
  *
  *  \brief IPC graceful shutdown test file:
- *         - mcu1_0, mcu2_0 and mcu3_0 do ping/pong to each other
- *         - mcu2_0 sends a shutdown message to mcu3_0
- *         - mcu3_0 shuts down after receiving the shutdown message
+ *         - mcu1_0, mcu2_0 and mcu2_1 do ping/pong to each other
+ *         - mcu2_1 sends a shutdown message to mcu2_0
+ *         - mcu2_0 shuts down after receiving the shutdown message
  *
  */
 
@@ -369,8 +369,8 @@ static void IpcApp_rpmsgSenderFxn(void *arg0, void *arg1)
     int32_t  status       = IPC_SOK;
     char     buf[256];
     uint8_t  *sendBuf;
-#if defined (BUILD_MCU2_0)
-    uint32_t  remoteShutdown = IPC_MCU3_0;
+#if defined (BUILD_MCU2_1)
+    uint32_t  remoteShutdown = IPC_MCU2_0;
 #endif
     RPMessage_Handle handle;
     RPMessage_Params params;
@@ -470,8 +470,8 @@ static void IpcApp_rpmsgSenderFxn(void *arg0, void *arg1)
     }
 #endif
 
-    /* Send shutdown message to MCU3_0 core */
-#if defined (BUILD_MCU2_0)
+    /* Send shutdown message to MCU2_0 core */
+#if defined (BUILD_MCU2_1)
     Ipc_mailboxSend(gIpcApp_SelfProcId, remoteShutdown, IPC_RP_MBOX_SHUTDOWN, 1U);
 #endif
 
@@ -490,7 +490,7 @@ static void IpcApp_rpMboxCallback(uint32_t remoteCoreId, uint32_t msgVal)
 {
     if (IPC_RP_MBOX_SHUTDOWN == msgVal) /* Shutdown request from the remotecore */
     {
-#if defined (BUILD_MCU3_0)
+#if defined (BUILD_MCU2_0)
         uint32_t i;
 
         #if defined LDRA_DYN_COVERAGE_EXIT
@@ -499,7 +499,7 @@ static void IpcApp_rpMboxCallback(uint32_t remoteCoreId, uint32_t msgVal)
         UART_printf("\n LDRA EXIT... \n");
         #endif
 
-        if (IPC_MCU2_0 == remoteCoreId)
+        if (IPC_MCU2_1 == remoteCoreId)
         {
             gIpcApp_Shutdown             = 1U;
             gIpcApp_ShutdownRemotecoreId = remoteCoreId;

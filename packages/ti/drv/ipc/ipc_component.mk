@@ -302,8 +302,8 @@ export ipc_graceful_shutdown_test_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos,
 export ipc_graceful_shutdown_test_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
 ipc_graceful_shutdown_test_$(1)_PKG_LIST = ipc_graceful_shutdown_test_$(1)
 ipc_graceful_shutdown_test_$(1)_INCLUDE = $(ipc_graceful_shutdown_test_$(1)_PATH)
-export ipc_graceful_shutdown_test_$(1)_BOARDLIST = j784s4_evm
-export ipc_graceful_shutdown_test_$(1)_$(SOC)_CORELIST = mcu1_0 mcu2_0 mcu3_0
+export ipc_graceful_shutdown_test_$(1)_BOARDLIST = j784s4_evm j721s2_evm j721e_evm j7200_evm
+export ipc_graceful_shutdown_test_$(1)_$(SOC)_CORELIST = mcu1_0 mcu2_0 mcu2_1
 export ipc_graceful_shutdown_test_$(1)_SBL_APPIMAGEGEN = yes
 ifneq ($(1),$(filter $(1), safertos))
 ipc_EXAMPLE_LIST += ipc_graceful_shutdown_test_$(1)
@@ -393,7 +393,7 @@ export ipc_extended_test_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)), y
 export ipc_extended_test_$(1)_MAKEFILE =  -fmakefile BUILD_OS_TYPE=$(1)
 ipc_extended_test_$(1)_PKG_LIST = ipc_extended_test_$(1)
 ipc_extended_test_$(1)_INCLUDE = $(ipc_extended_test_$(1)_PATH)
-export ipc_extended_test_$(1)_BOARDLIST = j784s4_evm j742s2_evm
+export ipc_extended_test_$(1)_BOARDLIST = j784s4_evm j721s2_evm j721e_evm j7200_evm
 export ipc_extended_test_$(1)_$(SOC)_CORELIST = mcu1_0
 export ipc_extended_test_$(1)_SBL_APPIMAGEGEN = yes
 ifneq ($(1),$(filter $(1), safertos))
@@ -630,8 +630,8 @@ export ipc_graceful_shutdown_multicore_test_$(1)_MAKEFILE =  -f$(PDK_IPC_COMP_PA
 export ipc_graceful_shutdown_multicore_test_$(1)_DEPENDS_ON=ipc_graceful_shutdown_test_$(1)
 ipc_graceful_shutdown_multicore_test_$(1)_PKG_LIST = ipc_graceful_shutdown_multicore_test_$(1)
 ipc_graceful_shutdown_multicore_test_$(1)_INCLUDE = $(ipc_graceful_shutdown_multicore_test_$(1)_PATH)
-export ipc_graceful_shutdown_multicore_test_$(1)_BOARDLIST = j784s4_evm
-export ipc_graceful_shutdown_multicore_test_$(1)_$(SOC)_CORELIST := mcu3_0
+export ipc_graceful_shutdown_multicore_test_$(1)_BOARDLIST = j784s4_evm j721s2_evm j721e_evm j7200_evm
+export ipc_graceful_shutdown_multicore_test_$(1)_$(SOC)_CORELIST := mcu2_1
 export ipc_graceful_shutdown_multicore_test_SBL_APPIMAGEGEN = no
 ifneq ($(1),$(filter $(1), safertos))
 ipc_DUP_EXAMPLE_LIST += ipc_graceful_shutdown_multicore_test_$(1)

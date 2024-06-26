@@ -90,7 +90,7 @@ uint8_t *gIpcApp_SysVqBufPtr     = gIpcApp_SysVqBuf;
 uint32_t gIpcApp_SelfProcId = IPC_MCU1_0;
 uint32_t gIpcApp_RemoteProc[] =
 {
-    IPC_MCU2_0, IPC_MCU3_0
+    IPC_MCU2_0, IPC_MCU2_1
 };
 #endif
 
@@ -98,12 +98,12 @@ uint32_t gIpcApp_RemoteProc[] =
 uint32_t gIpcApp_SelfProcId = IPC_MCU2_0;
 uint32_t gIpcApp_RemoteProc[] =
 {
-    IPC_MCU1_0, IPC_MCU3_0
+    IPC_MCU1_0, IPC_MCU2_1
 };
 #endif
 
-#ifdef BUILD_MCU3_0
-uint32_t gIpcApp_SelfProcId = IPC_MCU3_0;
+#ifdef BUILD_MCU2_1
+uint32_t gIpcApp_SelfProcId = IPC_MCU2_1;
 uint32_t gIpcApp_RemoteProc[] =
 {
     IPC_MCU1_0, IPC_MCU2_0
