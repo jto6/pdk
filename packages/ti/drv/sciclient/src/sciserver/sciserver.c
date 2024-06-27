@@ -183,12 +183,9 @@ int32_t Sciserver_deinit(void)
 
     if (gSciserverState.initDone == (uint8_t)SCISERVER_INIT_DONE)
     {
-        if (CSL_PASS == ret)
-        {
-            gSciserverState.ctrlState = SCISERVER_CTRL_CMD_HALT;
-            gSciserverState.processState = SCISERVER_PROCESS_STATE_WAIT;
-            gSciserverState.initDone = SCISERVER_INIT_NOT_DONE;
-        }
+        gSciserverState.ctrlState = SCISERVER_CTRL_CMD_HALT;
+        gSciserverState.processState = SCISERVER_PROCESS_STATE_WAIT;
+        gSciserverState.initDone = SCISERVER_INIT_NOT_DONE;
     }
     else
     {
@@ -224,14 +221,11 @@ int32_t Sciserver_interruptHandler(Sciserver_hwiData *uhd, bool* soft_error)
     uint32_t hw_host = 0U;
 
     *soft_error = false;
-    if (ret == CSL_PASS)
-    {
-        (void) memset(uhd->hw_msg_buffer, 0, SCISERVER_HW_QUEUE_SIZE);
-        msg_words = ((uint32_t) SCISERVER_HW_QUEUE_SIZE + 3U) / 4U;
-        ret = Sciserver_SproxyMsgRead(uhd->hw_msg_queue_id, 
-                                      uhd->hw_msg_buffer,
-                                      msg_words);
-    }
+    (void) memset(uhd->hw_msg_buffer, 0, SCISERVER_HW_QUEUE_SIZE);
+    msg_words = ((uint32_t) SCISERVER_HW_QUEUE_SIZE + 3U) / 4U;
+    ret = Sciserver_SproxyMsgRead(uhd->hw_msg_queue_id, 
+                                    uhd->hw_msg_buffer,
+                                    msg_words);
 
     if (ret == CSL_PASS)
     {

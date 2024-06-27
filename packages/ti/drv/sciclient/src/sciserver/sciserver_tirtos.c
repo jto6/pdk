@@ -142,10 +142,6 @@ int32_t Sciserver_tirtosInit(Sciserver_TirtosCfgPrms_t *pAppPrms)
     if (ret == CSL_PASS)
     {
         Sciserver_setCtrlState(SCISERVER_PROCESS_STATE_RUN);
-        if (Sciserver_getCtrlState() != (uint8_t)SCISERVER_PROCESS_STATE_RUN)
-        {
-            ret = CSL_EFAIL;
-        }
     }
     return ret;
 }
