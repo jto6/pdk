@@ -91,6 +91,7 @@ int32_t UdmaTestRingCSLProxy(UdmaTestTaskObj *taskObj)
     Udma_RingHandle      ringHandle;
     Udma_ProxyHandle     proxyHandle;
     Udma_ProxyCfg        proxyCfg;
+    CSL_ProxyCfg         cslProxyCfg;
     CSL_ProxyThreadCfg   threadCfg;
     uint32_t             backupbufferSizeBytes;
 
@@ -265,7 +266,30 @@ int32_t UdmaTestRingCSLProxy(UdmaTestTaskObj *taskObj)
 
                 if(UDMA_SOK == retVal)
                 {
-                    /* Test scenario 7: Validate CSL_proxyCfgThread API when elSz is less than
+                    /* Test scenario 7: Validate CSL_proxyGetDataAddr when pProxyTargetParams is NULL */
+                    GT_1trace(taskObj->traceMask, GT_INFO1,
+                              " |TEST INFO|:: Task:%d: Test CSL_proxyGetDataAddr ::\r\n",
+                              taskObj->taskId);
+                    
+                    memset(&cslProxyCfg,0, sizeof(cslProxyCfg));
+
+                    retVal = CSL_proxyGetDataAddr(&cslProxyCfg,0,drvHandle->initPrms.rmInitPrms.proxyThreadNum, elemCnt);
+                    if(0 == retVal)
+                    {
+                        retVal = UDMA_SOK;
+                    }
+                    else
+                    {
+                        GT_0trace(taskObj->traceMask, GT_ERR,
+                                  " |TEST INFO|:: FAIL:: UDMA:: CSL_proxyGetDataAddr:: neg:: "
+                                  " Validate CSL_proxyGetDataAddr when pProxyTargetParams is NULL!!\n");
+                        retVal = UDMA_EFAIL;
+                    }
+                }
+
+                if(UDMA_SOK == retVal)
+                {
+                    /* Test scenario 8: Validate CSL_proxyCfgThread API when elSz is less than
                      *                  pProxyCfg->numTargets
                      */
                     GT_1trace(taskObj->traceMask, GT_INFO1,
@@ -290,7 +314,7 @@ int32_t UdmaTestRingCSLProxy(UdmaTestTaskObj *taskObj)
 
                 if(UDMA_SOK == retVal)
                 {
-                    /* Test scenario 8: Validate CSL_proxyCfgThread API when elSz is invalid */
+                    /* Test scenario 9: Validate CSL_proxyCfgThread API when elSz is invalid */
                     GT_1trace(taskObj->traceMask, GT_INFO1,
                               " |TEST INFO|:: Task:%d: Test CSL_proxyCfgThread ::\r\n",
                               taskObj->taskId);
@@ -312,7 +336,7 @@ int32_t UdmaTestRingCSLProxy(UdmaTestTaskObj *taskObj)
 
                 if(UDMA_SOK == retVal)
                 {
-                    /* Test scenario 9: Validate CSL_proxyCfgThread API when queueNum is UDMA_PROXY_ANY */
+                    /* Test scenario 10: Validate CSL_proxyCfgThread API when queueNum is UDMA_PROXY_ANY */
                     GT_1trace(taskObj->traceMask, GT_INFO1,
                               " |TEST INFO|:: Task:%d: Test CSL_proxyCfgThread ::\r\n",
                               taskObj->taskId);

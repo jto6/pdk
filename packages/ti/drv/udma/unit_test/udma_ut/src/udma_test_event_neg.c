@@ -290,7 +290,8 @@ int32_t UdmaTestEventRegisterNeg(UdmaTestTaskObj *taskObj)
  * Test Case Description: Verifies the function Udma_eventUnRegister for
  * 1)Test scenario 1: Check when eventHandle is NULL.
  * 2)Test scenario 2: Check when drvInitDone is UDMA_INIT_DONE.
- * 3)Test scenario 3: Check to get print message [Error] Free Event resource failed!!.
+ * 3)Test scenario 3: Check when eventInitDone is UDMA_DEINIT_DONE
+ * 4)Test scenario 4: Check to get print message [Error] Free Event resource failed!!.
  */
 int32_t UdmaTestEventUnRegisterNeg(UdmaTestTaskObj *taskObj)
 {
@@ -344,7 +345,31 @@ int32_t UdmaTestEventUnRegisterNeg(UdmaTestTaskObj *taskObj)
 
     if(UDMA_SOK == retVal)
     {
-        /* Test scenario 3: Check to get print message [Error] Free Event resource failed!! */
+        /* Test scenario 3: Check when eventInitDone is UDMA_DEINIT_DONE */
+        instId                              = UDMA_TEST_INST_ID_MAIN_0;
+        eventHandle                         = &eventObj;
+        backUpDrvObj                        = taskObj->testObj->drvObj[instId];
+        eventHandle->drvHandle              = &taskObj->testObj->drvObj[instId];
+        eventHandle->drvHandle->drvInitDone = UDMA_INIT_DONE;
+        eventHandle -> eventInitDone        = UDMA_DEINIT_DONE; 
+        retVal                              = Udma_eventUnRegister(eventHandle);
+        if(UDMA_SOK != retVal)
+        {
+            retVal = UDMA_SOK;
+        }
+        else
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR," |TEST INFO|:: FAIL:: UDMA::"
+                      " EventUnRegister:: Neg:: Check when eventInitDone is "
+                      " UDMA_DEINIT_DONE !!\n");
+            retVal = UDMA_EFAIL;
+        }
+        taskObj->testObj->drvObj[instId] = backUpDrvObj;
+    }
+
+    if(UDMA_SOK == retVal)
+    {
+        /* Test scenario 4: Check to get print message [Error] Free Event resource failed!! */
         eventHandle->eventInitDone               = UDMA_INIT_DONE;
         eventHandle->eventPrms.chHandle          = &chObj;
         eventHandle->globalEvent                 = UDMA_EVENT_INVALID;

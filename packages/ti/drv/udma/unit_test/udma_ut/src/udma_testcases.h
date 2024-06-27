@@ -9044,10 +9044,9 @@ static UdmaTestParams gUdmaTestCases[] =
         .ringPrmId  = UDMA_TEST_RING_PRMID_EVENT_POLLED,
     },
     #endif
-#if defined (SOC_J784S4) || defined (SOC_J742S2) || defined (SOC_J721S2) || defined (SOC_J7200)
+#if defined (SOC_J784S4) || defined (SOC_J742S2) || defined (SOC_J721S2) || defined (SOC_J7200) || defined (SOC_J721E)
     #if (UDMA_SOC_CFG_BCDMA_PRESENT == 1)
     {
-      #if (UDMA_SOC_CFG_BCDMA_PRESENT == 1)
         .enableTest = TEST_ENABLE,
         .tcId       = 14364U,
         .tcName     = "UDMA CSL LCDMA RingAcc Test",
@@ -9199,7 +9198,6 @@ static UdmaTestParams gUdmaTestCases[] =
         .runFlag    = (UDMA_TEST_RF_BCDMA | UDMA_TEST_RF_CFG_DEF | UDMA_TEST_RF_CFG_DYN),
         .ringPrmId  = UDMA_TEST_RING_PRMID_EVENT_NONE,
     },
-    #endif
     {
         .enableTest = TEST_ENABLE,
         .tcId       = 14366U,

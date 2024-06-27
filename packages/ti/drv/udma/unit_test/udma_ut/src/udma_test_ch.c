@@ -1206,7 +1206,8 @@ int32_t UdmaTestChSetSwTriggerRegister(UdmaTestTaskObj *taskObj)
 /* 
  * Test Case Description: Verifies the function Udma_chGetStats when
  * Test scenario 1: Check when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_TX
- * Test scenario 2: Check when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX
+ * Test scenario 2: Check Udma_chGetDefaultFlowHandle when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX
+ * Test scenario 3: Check Udma_chGetStats when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX
  */
 int32_t UdmaChGetStatsTest(UdmaTestTaskObj *taskObj)
 {
@@ -1220,14 +1221,12 @@ int32_t UdmaChGetStatsTest(UdmaTestTaskObj *taskObj)
     uint32_t           chType;
     Udma_ChTxPrms      txChPrms;
     Udma_ChRxPrms      rxChPrms;
-    struct Udma_DrvObj backUpDrvObj;
 
     /* Test scenario 1: Check when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_TX */
     chHandle         = &chObj;
     chType           = UDMA_CH_TYPE_TX;
     UdmaChPrms_init(&chPrms, chType);
     instID           = UDMA_TEST_DEFAULT_UDMA_INST;
-    backUpDrvObj     = taskObj->testObj->drvObj[instID];
     drvHandle        = &taskObj->testObj->drvObj[instID];
     chPrms.peerChNum = UDMA_PSIL_CH_MCU_CPSW0_TX;
     retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
@@ -1252,9 +1251,8 @@ int32_t UdmaChGetStatsTest(UdmaTestTaskObj *taskObj)
         }
         Udma_chClose(chHandle);
     }
-    taskObj->testObj->drvObj[instID] = backUpDrvObj;
 
-    /* Test scenario 2: Check when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX */
+    /* Test scenario 2: Check Udma_chGetDefaultFlowHandle when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX */
     chType           = UDMA_CH_TYPE_RX;
     UdmaChPrms_init(&chPrms, chType);
     drvHandle        = &taskObj->testObj->drvObj[instID];
@@ -1263,25 +1261,35 @@ int32_t UdmaChGetStatsTest(UdmaTestTaskObj *taskObj)
     UdmaChRxPrms_init(&rxChPrms, chType);
     if(UDMA_SOK == retVal)
     {
-        retVal = Udma_chConfigRx(chHandle, &rxChPrms); 
-        if(UDMA_SOK == retVal)
+        if(Udma_chGetDefaultFlowHandle(chHandle) == NULL_PTR)
         {
-            retVal = Udma_chGetStats(chHandle, &chStats);
-            if(UDMA_SOK != retVal)
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                      " |TEST INFO|:: FAIL:: UDMA:: chGetDefaultFlowHandle:: "
+                      " Pos:: Check when instType is UDMA_INST_TYPE_NORMAL!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = Udma_chConfigRx(chHandle, &rxChPrms); 
+            if(UDMA_SOK == retVal)
             {
-                GT_0trace(taskObj->traceMask, GT_ERR,
-                          " |TEST INFO|:: FAIL:: UDMA:: chGetStats:: Pos:: when instType"
-                          " is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX!!\n");
-                retVal = UDMA_EFAIL;
-            }
-            else
-            {
-                retVal = UDMA_SOK;
+                /* Test scenario 3: Check Udma_chGetStats when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX */
+                retVal = Udma_chGetStats(chHandle, &chStats);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR,
+                              " |TEST INFO|:: FAIL:: UDMA:: chGetStats:: Pos:: when instType"
+                              " is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_RX!!\n");
+                    retVal = UDMA_EFAIL;
+                }
+                else
+                {
+                    retVal = UDMA_SOK;
+                }
             }
         }
         Udma_chClose(chHandle);
     }
-    taskObj->testObj->drvObj[instID] = backUpDrvObj;
     
     return retVal;
 }

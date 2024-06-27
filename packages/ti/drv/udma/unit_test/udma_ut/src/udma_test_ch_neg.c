@@ -751,6 +751,7 @@ int32_t UdmaTestChCloseNeg(UdmaTestTaskObj *taskObj)
  * Test scenario 6: Check when chType is UDMA_CH_TYPE_TR_BLK_COPY 
  *                  and instType is UDMA_INST_TYPE_LCDMA_BCDMA
  * Test scenario 7: Check when chType is not UDMA_CH_TYPE_TX 
+ * Test scenario 8: Error check for UDMA Tx config
  */
 int32_t UdmaTestChConfigTxNeg(UdmaTestTaskObj *taskObj)
 {
@@ -889,6 +890,25 @@ int32_t UdmaTestChConfigTxNeg(UdmaTestTaskObj *taskObj)
             GT_0trace(taskObj->traceMask, GT_ERR,
                       " |TEST INFO|:: FAIL:: UDMA:: chConfigTx:: Neg:: "
                       " Check when chType is not UDMA_CH_TYPE_TX!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+
+    /* Test scenario 8: Error check for UDMA Tx config */
+    if(UDMA_SOK == retVal)
+    {
+        chHandle->drvHandle = &taskObj->testObj->drvObj[UDMA_TEST_INST_ID_MAIN_0]; 
+        chHandle->chType    = UDMA_CH_TYPE_TX;
+        retVal              = Udma_chConfigTx(chHandle, &txPrms);
+        if(UDMA_SOK == retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                      " |TEST INFO|:: FAIL:: UDMA:: chConfigTx:: Neg:: "
+                      " Error check for UDMA Tx config!!\n");
             retVal = UDMA_EFAIL;
         }
         else
@@ -2145,7 +2165,8 @@ int32_t UdmaTestChBreakChainingNeg(UdmaTestTaskObj *taskObj)
  * Test scenario 1: NULL check for chHandle
  * Test scenario 2: Invalid args check when chInitDone is Invalid
  * Test scenario 3: NULL check for drvHandle
- * Test scenario 4: Check when drvInitDone is not UDMA_INIT_DONE
+ * Test scenario 4: Check when chType is UDMA_CH_FLAG_RX
+ * Test scenario 5: Check when drvInitDone is not UDMA_INIT_DONE
  */ 
 int32_t UdmaTestChGetNumNeg(UdmaTestTaskObj *taskObj)
 {
@@ -2210,7 +2231,27 @@ int32_t UdmaTestChGetNumNeg(UdmaTestTaskObj *taskObj)
         }
     }
 
-    /* Test scenario 4: Check when drvInitDone is not UDMA_INIT_DONE */
+    /* Test scenario 4: Check when chType is UDMA_CH_FLAG_RX */
+    chHandle->drvHandle  = &taskObj->testObj->drvObj[UDMA_TEST_INST_ID_MAIN_0];
+    chHandle->chInitDone = UDMA_INIT_DONE;
+    chHandle -> chType   = UDMA_CH_FLAG_RX;
+    if(UDMA_SOK == retVal)
+    {
+        retVal = Udma_chGetNum(chHandle);
+        if(retVal == UDMA_DMA_CH_INVALID)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                      " |TEST INFO|:: FAIL:: UDMA:: chGetNum:: Neg:: "
+                      " Check when chType is UDMA_CH_FLAG_RX!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+
+    /* Test scenario 5: Check when drvInitDone is not UDMA_INIT_DONE */
     chHandle->drvHandle              = &taskObj->testObj->drvObj[UDMA_TEST_INST_ID_MAIN_0];
     backUpDrvInitDone                = chHandle->drvHandle->drvInitDone;
     chHandle->drvHandle->drvInitDone = UDMA_DEINIT_DONE;
