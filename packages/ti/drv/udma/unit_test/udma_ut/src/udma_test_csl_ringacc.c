@@ -311,7 +311,7 @@ static int32_t UdmaTestInitRingAcc(Udma_DrvHandle drvHandle, Udma_ChHandle chHan
     {
         chType                        = UDMA_CH_TYPE_TX;
         UdmaChPrms_init(&chPrms, chType);
-        chPrms.peerChNum              = UDMA_PSIL_CH_MAIN_CSI_TX;
+        chPrms.peerChNum              = UDMA_PSIL_CH_MCU_CPSW0_TX;
         chPrms.fqRingPrms.ringMem     = ringMem;
         chPrms.fqRingPrms.ringMemSize = ringMemSize;
         chPrms.fqRingPrms.elemCnt     = elemCnt;

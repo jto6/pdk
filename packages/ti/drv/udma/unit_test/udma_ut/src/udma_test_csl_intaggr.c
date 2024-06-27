@@ -75,7 +75,7 @@ static int32_t UdmaTestDeInitIntaggr(Udma_ChHandle chHandle, Udma_EventHandle ev
 int32_t udmaTestCslIntaggr(UdmaTestTaskObj *taskObj)
 {
     int32_t                     retVal    = UDMA_SOK;
-    Udma_DrvHandle              drvHandle = &taskObj->testObj->drvObj[UDMA_TEST_INST_ID_MAIN_0];
+    Udma_DrvHandle              drvHandle = &taskObj->testObj->drvObj[UDMA_TEST_DEFAULT_UDMA_INST];
     struct Udma_ChObj           chObj;
     Udma_ChHandle               chHandle  = &chObj;
     uint32_t                    elemCnt   = 10U;
@@ -231,7 +231,7 @@ static int32_t UdmaTestInitIntaggr(Udma_DrvHandle drvHandle, Udma_ChHandle chHan
     {
         chType                        = UDMA_CH_TYPE_TX;
         UdmaChPrms_init(&chPrms, chType);
-        chPrms.peerChNum              = UDMA_PSIL_CH_MAIN_CSI_TX;
+        chPrms.peerChNum              = UDMA_PSIL_CH_MCU_CPSW0_TX;
         chPrms.fqRingPrms.ringMem     = ringMem;
         chPrms.fqRingPrms.ringMemSize = ringMemSize;
         chPrms.fqRingPrms.elemCnt     = elemCnt;

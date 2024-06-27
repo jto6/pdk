@@ -47,7 +47,11 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define UDMA_UTC_BASE_DRU0   (CSL_COMPUTE_CLUSTER0_MMR_DRU0_MMR_CFG_DRU_BASE)
+#if defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
+  #define UDMA_UTC_BASE_DRU0   (CSL_COMPUTE_CLUSTER0_MMR_DRU0_MMR_CFG_DRU_BASE)
+#else
+  #define UDMA_UTC_BASE_DRU0   (CSL_COMPUTE_CLUSTER0_DRU_BASE)
+#endif 
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

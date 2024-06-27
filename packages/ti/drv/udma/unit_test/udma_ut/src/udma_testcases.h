@@ -9044,7 +9044,7 @@ static UdmaTestParams gUdmaTestCases[] =
         .ringPrmId  = UDMA_TEST_RING_PRMID_EVENT_POLLED,
     },
     #endif
-#if defined (SOC_J784S4) || defined (SOC_J742S2) || defined (SOC_J721S2)
+#if defined (SOC_J784S4) || defined (SOC_J742S2) || defined (SOC_J721S2) || defined (SOC_J7200)
     #if (UDMA_SOC_CFG_BCDMA_PRESENT == 1)
     {
       #if (UDMA_SOC_CFG_BCDMA_PRESENT == 1)
@@ -9386,7 +9386,7 @@ static UdmaTestParams gUdmaTestCases[] =
         .heapIdDest = {DEF_HEAP_ID},
         .srcBufSize = {UDMA_TEST_DEF_ICNT0},
         .destBufSize= {UDMA_TEST_DEF_DICNT0},
-        .runFlag    = (UDMA_TEST_RF_SOC_J784S4 | UDMA_TEST_RF_CORE_ALL | UDMA_TEST_RF_CFG_DEF | UDMA_TEST_RF_CFG_DYN),
+        .runFlag    = (UDMA_TEST_RF_SOC_ALL | UDMA_TEST_RF_CORE_ALL | UDMA_TEST_RF_CFG_DEF | UDMA_TEST_RF_CFG_DYN),
         .ringPrmId  = UDMA_TEST_RING_PRMID_EVENT_POLLED,
     },
     #if (UDMA_NUM_UTC_INSTANCE > 0)
