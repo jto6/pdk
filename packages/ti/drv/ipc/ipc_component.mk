@@ -149,7 +149,7 @@ export ipc_echo_test_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
 ipc_echo_test_$(1)_PKG_LIST = ipc_echo_test_$(1)
 ipc_echo_test_$(1)_INCLUDE = $(ipc_echo_test_$(1)_PATH)
 export ipc_echo_test_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvipc_BOARDLIST))
-export ipc_echo_test_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(drvipc_$(SOC)_RTOS_CORELIST))
+export ipc_echo_test_$(1)_$(SOC)_CORELIST = $(filter-out mcu1_0, $(drvipc_$(SOC)_RTOS_CORELIST))
 ifneq ($(1),$(filter $(1), safertos))
 ipc_EXAMPLE_LIST += ipc_echo_test_$(1)
 else
@@ -196,7 +196,7 @@ export ipc_echo_testb_$(1)_MAKEFILE = -fmakefile.btcm BUILD_OS_TYPE=$(1)
 ipc_echo_testb_$(1)_PKG_LIST = ipc_echo_testb_$(1)
 ipc_echo_testb_$(1)_INCLUDE = $(ipc_echo_testb_$(1)_PATH)
 export ipc_echo_testb_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvipc_BOARDLIST))
-export ipc_echo_testb_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(drvipc_$(SOC)_RTOS_CORELIST))
+export ipc_echo_testb_$(1)_$(SOC)_CORELIST = mcu1_0
 ifneq ($(1),$(filter $(1), safertos))
 ipc_EXAMPLE_LIST += ipc_echo_testb_$(1)
 else
