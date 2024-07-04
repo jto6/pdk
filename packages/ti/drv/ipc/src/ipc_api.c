@@ -227,7 +227,9 @@ static RPMessage_Module module;
 /**< IPC Object */
 Ipc_Object gIpcObject;
 
+#ifndef IPC_EXCLUDE_CTRL_TASKS
 static RPMessage_WaiterElem gRPMessageWaiterElemPool[MAXENDPOINTS];
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -719,6 +721,7 @@ static Bool RPMessage_lookupName(uint32_t procId, const char* name, uint32_t *re
     return found;
 }
 
+#ifndef IPC_EXCLUDE_CTRL_TASKS
 static RPMessage_WaiterElem *RPMessage_getFreeTaskWaiter(void)
 {
     int32_t i;
@@ -749,6 +752,7 @@ static RPMessage_WaiterElem *RPMessage_lookupTaskWaiter(const char* name, uint32
 
     return &gRPMessageWaiterElemPool[i];
 }
+#endif
 
 /**
  *  \brief RPMessage_getRemoteEndPtToken
