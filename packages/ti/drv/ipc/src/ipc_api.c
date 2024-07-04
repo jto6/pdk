@@ -823,7 +823,7 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
             if(rtnVal == IPC_SOK)
             {
                 /* Find the task waiter from pool when the task
-                 * woken up
+                 * is woken up
                  */
                 taskWaiterAnnounced = RPMessage_lookupTaskWaiter(name, currProcId);
                 /* The endPt and procId in taskWaiter is assigned
