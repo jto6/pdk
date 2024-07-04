@@ -47,23 +47,23 @@ drvipc_SOCLIST         = j721e j7200 j721s2 j784s4 j742s2
 drvipc_BOARDLIST       = j721e_sim j721e_qt j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 drvipc_j721e_CORELIST  = mpu1_0 mcu1_0 mcu2_0 mcu3_0 mcu1_1 mcu2_1 mcu3_1 c66xdsp_1 c66xdsp_2 c7x_1
 drvipc_j721e_LASTCORE := $(word $(words $(drvipc_j721e_CORELIST)), $(drvipc_j721e_CORELIST))
-drvipc_j721e_BAREMETAL_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1
+drvipc_j721e_BAREMETAL_CORELIST = mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1
 drvipc_j721e_RTOS_CORELIST = $(drvipc_j721e_CORELIST)
 drvipc_j7200_CORELIST  = mpu1_0 mcu1_0 mcu2_0 mcu1_1 mcu2_1
 drvipc_j7200_LASTCORE := $(word $(words $(drvipc_j7200_CORELIST)), $(drvipc_j7200_CORELIST))
-drvipc_j7200_BAREMETAL_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1
+drvipc_j7200_BAREMETAL_CORELIST = mcu1_1 mcu2_0 mcu2_1
 drvipc_j7200_RTOS_CORELIST = $(drvipc_j7200_CORELIST)
 drvipc_j721s2_CORELIST  = mpu1_0 mcu1_0 mcu2_0 mcu3_0 mcu1_1 mcu2_1 mcu3_1 c7x_1 c7x_2
 drvipc_j721s2_LASTCORE := $(word $(words $(drvipc_j721s2_CORELIST)), $(drvipc_j721s2_CORELIST))
-drvipc_j721s2_BAREMETAL_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1
+drvipc_j721s2_BAREMETAL_CORELIST = mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1
 drvipc_j721s2_RTOS_CORELIST = $(drvipc_j721s2_CORELIST)
 drvipc_j784s4_CORELIST  = mpu1_0 mcu1_0 mcu2_0 mcu3_0 mcu4_0 mcu1_1 mcu2_1 mcu3_1 mcu4_1 c7x_1 c7x_2 c7x_3 c7x_4
 drvipc_j784s4_LASTCORE := $(word $(words $(drvipc_j784s4_CORELIST)), $(drvipc_j784s4_CORELIST))
-drvipc_j784s4_BAREMETAL_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1
+drvipc_j784s4_BAREMETAL_CORELIST = mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1
 drvipc_j784s4_RTOS_CORELIST = $(drvipc_j784s4_CORELIST)
 drvipc_j742s2_CORELIST  = mpu1_0 mcu1_0 mcu2_0 mcu3_0 mcu4_0 mcu1_1 mcu2_1 mcu3_1 mcu4_1 c7x_1 c7x_2 c7x_3
 drvipc_j742s2_LASTCORE := $(word $(words $(drvipc_j742s2_CORELIST)), $(drvipc_j742s2_CORELIST))
-drvipc_j742s2_BAREMETAL_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1
+drvipc_j742s2_BAREMETAL_CORELIST = mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1
 drvipc_j742s2_RTOS_CORELIST = $(drvipc_j742s2_CORELIST)
 drvipc_DISABLE_PARALLEL_MAKE = yes
 
@@ -162,27 +162,6 @@ endef
 
 IPC_ECHO_TEST_MACRO_LIST := $(foreach curos, $(drvipc_RTOS_LIST) safertos, $(call IPC_ECHO_TEST_RULE,$(curos)))
 $(eval ${IPC_ECHO_TEST_MACRO_LIST})
-
-# Test Configuration: Linux on A72, baremetal on R5 cores other than mcu1_0, FreeRTOS on mcu1_0 and DSP cores(C66x,C7x)
-ipc_echo_baremetal_test_COMP_LIST = ipc_echo_baremetal_test
-ipc_echo_baremetal_test_RELPATH = ti/drv/ipc/examples/linux/echo_test_baremetal
-ipc_echo_baremetal_test_PATH = $(PDK_IPC_COMP_PATH)/examples/linux/echo_test_baremetal
-ipc_echo_baremetal_test_MAKEFILE = -fmakefile.baremetal
-ipc_echo_baremetal_test_BOARD_DEPENDENCY = yes
-ipc_echo_baremetal_test_CORE_DEPENDENCY = yes
-ipc_echo_baremetal_test_XDC_CONFIGURO = no
-export ipc_echo_baremetal_test_MAKEFILE
-export ipc_echo_baremetal_test_COMP_LIST
-export ipc_echo_baremetal_test_BOARD_DEPENDENCY
-export ipc_echo_baremetal_test_CORE_DEPENDENCY
-export ipc_echo_baremetal_test_XDC_CONFIGURO
-ipc_echo_baremetal_test_PKG_LIST = ipc_echo_baremetal_test
-ipc_echo_baremetal_test_INCLUDE = $(ipc_echo_baremetal_test_PATH)
-ipc_echo_baremetal_test_BOARDLIST = $(drvipc_BOARDLIST)
-export ipc_echo_baremetal_test_BOARDLIST
-ipc_echo_baremetal_test_$(SOC)_CORELIST = $(drvipc_$(SOC)_BAREMETAL_CORELIST)
-export ipc_echo_baremetal_test_$(SOC)_CORELIST
-ipc_EXAMPLE_LIST += ipc_echo_baremetal_test
 
 # Test Configuration: Linux on A72, all other cores running FreeRTOS with all R5F cores having reset vectors in BTCM
 define IPC_ECHO_TESTB_RULE
@@ -348,7 +327,7 @@ ipc_baremetal_echo_test_PKG_LIST = ipc_baremetal_echo_test
 ipc_baremetal_echo_test_INCLUDE = $(ipc_baremetal_echo_test_PATH)
 ipc_baremetal_echo_test_BOARDLIST = $(drvipc_BOARDLIST)
 export ipc_baremetal_echo_test_BOARDLIST
-ipc_baremetal_echo_test_$(SOC)_CORELIST = $(filter-out mcu1_0,$(drvipc_$(SOC)_BAREMETAL_CORELIST))
+ipc_baremetal_echo_test_$(SOC)_CORELIST = $(drvipc_$(SOC)_BAREMETAL_CORELIST)
 export ipc_baremetal_echo_test_$(SOC)_CORELIST
 ipc_EXAMPLE_LIST += ipc_baremetal_echo_test
 export ipc_baremetal_echo_test_SBL_APPIMAGEGEN = yes
