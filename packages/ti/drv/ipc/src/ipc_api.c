@@ -120,6 +120,14 @@ typedef struct RPMessage_Waiter_s
     char               name[SERVICENAMELEN];
     uint32_t           token;
 } RPMessage_Waiter;
+
+/* list element for the waiter pool list */
+typedef struct RPMessage_WaiterElem_s
+{
+    uint32_t           occupied;
+    RPMessage_Waiter   waiterElem;
+} RPMessage_WaiterElem;
+
 /**
  *  \brief Element to hold payload copied onto receiver's queue.
  */
@@ -218,6 +226,8 @@ static RPMessage_Module module;
 
 /**< IPC Object */
 Ipc_Object gIpcObject;
+
+static RPMessage_WaiterElem gRPMessageWaiterElemPool[MAXENDPOINTS];
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -709,6 +719,37 @@ static Bool RPMessage_lookupName(uint32_t procId, const char* name, uint32_t *re
     return found;
 }
 
+static RPMessage_WaiterElem *RPMessage_getFreeTaskWaiter(void)
+{
+    int32_t i;
+    for(i=0; i<MAXENDPOINTS; i++)
+    {
+        if(gRPMessageWaiterElemPool[i].occupied == 0)
+        {
+            gRPMessageWaiterElemPool[i].occupied = 1;
+            break;
+        }
+    }
+
+    return &gRPMessageWaiterElemPool[i];
+}
+
+static RPMessage_WaiterElem *RPMessage_lookupTaskWaiter(const char* name, uint32_t procId)
+{
+    int32_t i;
+    for(i=0; i<MAXENDPOINTS; i++)
+    {
+        if((gRPMessageWaiterElemPool[i].occupied == 1) &&
+           (procId == gRPMessageWaiterElemPool[i].waiterElem.procId) &&
+           (strncmp(name, gRPMessageWaiterElemPool[i].waiterElem.name, SERVICENAMELEN-1U) == 0))
+        {
+            break;
+        }
+    }
+
+    return &gRPMessageWaiterElemPool[i];
+}
+
 /**
  *  \brief RPMessage_getRemoteEndPtToken
  */
@@ -720,7 +761,8 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
     int32_t            rtnVal = IPC_SOK;
 #ifndef IPC_EXCLUDE_CTRL_TASKS
     void              *semHandle;
-    RPMessage_Waiter   taskWaiter;
+    RPMessage_WaiterElem   *taskWaiter = RPMessage_getFreeTaskWaiter();
+    RPMessage_WaiterElem   *taskWaiterAnnounced;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
     size_t             namelen;
     Ipc_OsalPrms      *pOsalPrms = &gIpcObject.initPrms.osalPrms;
@@ -749,12 +791,12 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
     {
 #ifndef IPC_EXCLUDE_CTRL_TASKS
         semHandle   = pOsalPrms->createMutex();
-        taskWaiter.semHandle = semHandle;
-        strncpy(taskWaiter.name, name, SERVICENAMELEN-1U);
-        taskWaiter.name[SERVICENAMELEN-1U] = '\0';
-        taskWaiter.procId = currProcId;
-        taskWaiter.endPt  = 0;
-        taskWaiter.token = token;
+        taskWaiter->waiterElem.semHandle = semHandle;
+        strncpy(taskWaiter->waiterElem.name, name, SERVICENAMELEN-1U);
+        taskWaiter->waiterElem.name[SERVICENAMELEN-1U] = '\0';
+        taskWaiter->waiterElem.procId = currProcId;
+        taskWaiter->waiterElem.endPt  = 0;
+        taskWaiter->waiterElem.token = token;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
 
         /* The order of steps is critical here.  There must
@@ -767,7 +809,7 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
         if(FALSE == lookupStatus)
         {
 #ifndef IPC_EXCLUDE_CTRL_TASKS
-            IpcUtils_Qput(&module.waitingTasks, &taskWaiter.elem);
+            IpcUtils_Qput(&module.waitingTasks, &taskWaiter->waiterElem.elem);
 #else
             rtnVal = IPC_E_NO_ENDPOINT;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
@@ -780,15 +822,25 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
             rtnVal = pOsalPrms->lockMutex(semHandle, timeout);
             if(rtnVal == IPC_SOK)
             {
+                /* Find the task waiter from pool when the task
+                 * woken up
+                 */
+                taskWaiterAnnounced = RPMessage_lookupTaskWaiter(name, currProcId);
                 /* The endPt and procId in taskWaiter is assigned
                  * by RPMessage_processAnnounceMsg() when it
                  * wakes up this task.
                  */
-                *remoteEndPt = taskWaiter.endPt;
-                *remoteProcId = taskWaiter.procId;
+                *remoteEndPt = taskWaiterAnnounced->waiterElem.endPt;
+                *remoteProcId = taskWaiterAnnounced->waiterElem.procId;
+            }
+            else
+            {
+                /* Lock failed; hence announce has already happened */
+                taskWaiterAnnounced = taskWaiter;
             }
             key = pOsalPrms->lockHIsrGate(module.gateSwi);
-            IpcUtils_Qremove((IpcUtils_QElem*)&taskWaiter.elem);
+            taskWaiterAnnounced->occupied = 0;
+            IpcUtils_Qremove((IpcUtils_QElem*)&taskWaiterAnnounced->waiterElem.elem);
             pOsalPrms->unLockHIsrGate(module.gateSwi, key);
         }
 
