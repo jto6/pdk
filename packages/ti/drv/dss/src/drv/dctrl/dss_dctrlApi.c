@@ -1385,13 +1385,13 @@ static int32_t Dss_dctrlDrvSetLayerParamsIoctl(
             if(CSL_DSS_OVERLAY_LAYER_INVALID != layerParams->pipeLayerNum[i])
             {
                 layerCfg.layerEnable = UTRUE;
-                layerCfg.layerNum = layerParams->pipeLayerNum[i];
-                layerCfg.inputPipe = i;
             }
             else
             {
                 layerCfg.layerEnable = UFALSE;
             }
+            layerCfg.layerNum = layerParams->pipeLayerNum[i];
+            layerCfg.inputPipe = i;
             CSL_dssOverlaySetLayerConfig(
                                     overlayRegs,
                                     (const CSL_DssOverlayLayerCfg *) &layerCfg);
