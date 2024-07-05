@@ -44,6 +44,8 @@
 
 #include <ti/board/board.h>
 #include <ti/osal/DebugP.h>
+#include <ti/osal/TaskP.h>
+#include <ti/osal/osal.h>
 #include <stdint.h>
 #include <ti/csl/arch/csl_arch.h>
 #include <ti/drv/uart/UART_stdio.h>
@@ -53,7 +55,7 @@
 /*                             Macros & Typedefs                             */
 /*===========================================================================*/
 
-/* None */
+#define APP_TSK_STACK_MAIN              (32U * 1024U)
 
 /* ==========================================================================*/
 /*                            Global Variables                               */
@@ -135,6 +137,7 @@ extern const CSL_ArmR5MpuRegionCfg __attribute__((section(".startupData"))) gCsl
     
 };
 #endif
+static uint8_t  gAppTskStackMain[APP_TSK_STACK_MAIN] __attribute__(( aligned( APP_TSK_STACK_MAIN ))) = { 0 };
 
 /* ==========================================================================*/
 /*                         Structure Declarations                            */
@@ -166,7 +169,7 @@ static void OsalApp_generateException(void);
 
 static Board_STATUS OsalApp_boardInit(void)
 {
-    return Board_init(BOARD_INIT_UART_STDIO);
+    return Board_init(BOARD_INIT_PINMUX_CONFIG | BOARD_INIT_UART_STDIO);
 }
 
 static void OsalApp_generateException()
@@ -214,13 +217,10 @@ static void OsalApp_debugNegativeTest(void)
     DebugP_deRegisterExcptnLogFxn();
 }
 
-/*
- *  ======== main ========
- */
- 
-int main(void)
+void osal_test(void *arg0, void *arg1)
 {
     int32_t status = CSL_PASS;
+
     if(BOARD_SOK != OsalApp_boardInit())
     {
         status = CSL_EFAIL;
@@ -239,8 +239,26 @@ int main(void)
         OSAL_log("\n All tests have passed. \n");
         OsalApp_generateException();
     }
+}
 
-    return (status);
+
+/*
+ *  ======== main ========
+ */
+int main(void)
+{
+    TaskP_Params taskParams;
+
+    OS_init();
+    TaskP_Params_init(&taskParams);
+    taskParams.priority     = 2;
+    taskParams.stack        = gAppTskStackMain;
+    taskParams.stacksize    = sizeof (gAppTskStackMain);
+
+    TaskP_create(&osal_test, &taskParams);
+    OS_start();
+
+    return (0);
 }
 
 #if defined (BUILD_C7X)
