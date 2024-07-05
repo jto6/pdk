@@ -724,12 +724,12 @@ static Bool RPMessage_lookupName(uint32_t procId, const char* name, uint32_t *re
 #ifndef IPC_EXCLUDE_CTRL_TASKS
 static RPMessage_WaiterElem *RPMessage_getFreeTaskWaiter(void)
 {
-    int32_t i;
+    uint32_t i;
     for(i=0; i<MAXENDPOINTS; i++)
     {
-        if(gRPMessageWaiterElemPool[i].occupied == 0)
+        if(gRPMessageWaiterElemPool[i].occupied == 0U)
         {
-            gRPMessageWaiterElemPool[i].occupied = 1;
+            gRPMessageWaiterElemPool[i].occupied = 1U;
             break;
         }
     }
@@ -739,10 +739,10 @@ static RPMessage_WaiterElem *RPMessage_getFreeTaskWaiter(void)
 
 static RPMessage_WaiterElem *RPMessage_lookupTaskWaiter(const char* name, uint32_t procId)
 {
-    int32_t i;
+    uint32_t i;
     for(i=0; i<MAXENDPOINTS; i++)
     {
-        if((gRPMessageWaiterElemPool[i].occupied == 1) &&
+        if((gRPMessageWaiterElemPool[i].occupied == 1U) &&
            (procId == gRPMessageWaiterElemPool[i].waiterElem.procId) &&
            (strncmp(name, gRPMessageWaiterElemPool[i].waiterElem.name, SERVICENAMELEN-1U) == 0))
         {
