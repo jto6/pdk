@@ -307,9 +307,7 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
-
-                if ((ret == CSL_PASS) &&
-                        ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
+                if((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK)
                 {
                     /*
                      * This message is forwarded to DMSC for continued
@@ -347,7 +345,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 if ((ret == CSL_PASS) &&
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
-
                     memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                     ret = Sciclient_ProcessRmMessage(message);
                     if (pRespPrm->pRespPayload != NULL)

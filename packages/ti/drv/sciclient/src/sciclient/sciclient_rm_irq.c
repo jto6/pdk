@@ -2375,9 +2375,7 @@ static int32_t Sciclient_rmIrqVintDelete(struct Sciclient_rmIrqCfg  *cfg)
     struct Sciclient_rmIaInst *ia_inst = NULL;
     struct tisci_msg_rm_irq_release_req req;
 
-    if (r == CSL_PASS) {
-        r = Sciclient_rmIaVintGetInfo(cfg->s_ia, cfg->vint, &num_evts);
-    }
+    r = Sciclient_rmIaVintGetInfo(cfg->s_ia, cfg->vint, &num_evts);
 
     if (r == CSL_PASS) {
         if (num_evts == 0u) {

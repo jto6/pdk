@@ -495,8 +495,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
         if(status == CSL_PASS){
             if (pCfgPrms != NULL)
             {
-                if( (CSL_PASS==status) && ((pCfgPrms->isSecureMode==0U) ||
-                        (pCfgPrms->isSecureMode==1U)) )
+                if((pCfgPrms->isSecureMode == 0U) || (pCfgPrms->isSecureMode == 1U))
                 {
                     gSciclientHandle.isSecureMode = pCfgPrms->isSecureMode;
                 }
@@ -1054,9 +1053,7 @@ int32_t Sciclient_deinit(void)
     if (1U == doDeInit)
     {
         uint32_t i = 0U;
-        if ((gSciclientHandle.opModeFlag ==
-         SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT) &&
-        (status == CSL_PASS))
+        if(gSciclientHandle.opModeFlag == SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
         {
             /* Delete Sciclient_ServiceHandle_t.semHandles */
             for (i = 0U; i < SCICLIENT_MAX_QUEUE_SIZE; i++)
