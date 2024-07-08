@@ -48,8 +48,6 @@
 
 #define OSAL_ARCH_UTIL_ZERO          ((uint32_t) 0U)
 
-#define MAX_CPU_INTERRUPTS           (512U)
-
 /* Local hwi structures */
 
 typedef struct HwiP_nonOs_s {
@@ -59,7 +57,6 @@ typedef struct HwiP_nonOs_s {
 
 /* Local hwi structures */
 static HwiP_nonOs hwiStructs[OSAL_NONOS_CONFIGNUM_HWI];
-static uint32_t   gRegisteredInterrupts[MAX_CPU_INTERRUPTS/32U];
 
 osalArch_Config_t gOsalArchConfig =
 {
@@ -136,7 +133,6 @@ HwiP_Handle OsalArch_HwiPCreate(uint32_t interruptNum, HwiP_Fxn hwiFxn,
     /* Check if user has specified any memory block to be used, which gets
      * the precedence over the internal static memory block
      */
-    key = OsalArch_globalDisableInterrupt();
     if ((uintptr_t)(0U) != gOsal_HwAttrs.extHwiPBlock.base)
     {
         /* pick up the external memory block configured */
@@ -160,69 +156,35 @@ HwiP_Handle OsalArch_HwiPCreate(uint32_t interruptNum, HwiP_Fxn hwiFxn,
 
     if (NULL_PTR != params)
     {
-        if(interruptNum < MAX_CPU_INTERRUPTS)
-        {
-            if(((uint32_t)1U << (interruptNum%32U)) == ((gRegisteredInterrupts[interruptNum/32U]) & ((uint32_t)1U << (interruptNum%32U))))
-            {
-                retHandle  = (HwiP_Handle)(NULL);
-            }
-            else
-            {  
-                gRegisteredInterrupts[interruptNum/32U] |= (uint32_t)1U << (interruptNum%32U);
-                for (i = 0U; i < maxHwi; i++) {
-                    if (BFALSE == hwiPool[i].used) {
-                        hwiPool[i].used = BTRUE;
-                        break;
-                    }
-                }
-                if (i != maxHwi)
-                {
-                    hwi_handle = &(hwiPool[i].hwi);
-                    retHandle  = (HwiP_Handle)&hwiPool[i];
-                }
-                else
-                {
-                    retHandle  = (HwiP_Handle)(NULL);
-                }
-            }
-        }
-        else
-        {
-            retHandle  = (HwiP_Handle)(NULL);
-        }
 
-        if (NULL_PTR != hwi_handle)
+    key = OsalArch_globalDisableInterrupt();
+    for (i = 0U; i < maxHwi; i++) {
+        if (BFALSE == hwiPool[i].used) {
+            hwiPool[i].used = BTRUE;
+            break;
+        }
+    }
+    OsalArch_globalRestoreInterrupt(key);
+
+    if (i != maxHwi)
+    {
+      hwi_handle = &(hwiPool[i].hwi);
+      retHandle  = (HwiP_Handle)&hwiPool[i];
+    }
+    else
+    {
+      retHandle  = (HwiP_Handle)(NULL);
+    }
+
+    if (NULL_PTR != hwi_handle)
+    {
+        if (BTRUE == gFirstTime)
         {
-            if (BTRUE == gFirstTime)
-            {
-                Intc_Init();
-                CSL_armR5GetCpuID(&info);
+            Intc_Init();
+            CSL_armR5GetCpuID(&info);
 #if defined(CSL_MAIN_DOMAIN_VIM_BASE_ADDR0) && defined(CSL_MAIN_DOMAIN_VIM_BASE_ADDR1)
-                if (CSL_ARM_R5_CLUSTER_GROUP_ID_0 == info.grpId)
-                {
-                    /* MCU SS Pulsar R5 SS */
-                    if (CSL_ARM_R5_CPU_ID_0 == info.cpuID)
-                    {
-                        gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MCU_DOMAIN_VIM_BASE_ADDR0;
-                    }
-                    else
-                    {
-                        gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MCU_DOMAIN_VIM_BASE_ADDR1;
-                    }
-                }
-                else
-                {
-                    /* MAIN SS Pulsar R5 SS */
-                    if (CSL_ARM_R5_CPU_ID_0 == info.cpuID)
-                    {
-                        gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MAIN_DOMAIN_VIM_BASE_ADDR0;
-                    }
-                    else
-                    {
-                        gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MAIN_DOMAIN_VIM_BASE_ADDR1;
-                    }
-                }
-#else
+            if (CSL_ARM_R5_CLUSTER_GROUP_ID_0 == info.grpId)
+            {
                 /* MCU SS Pulsar R5 SS */
                 if (CSL_ARM_R5_CPU_ID_0 == info.cpuID)
                 {
@@ -232,63 +194,84 @@ HwiP_Handle OsalArch_HwiPCreate(uint32_t interruptNum, HwiP_Fxn hwiFxn,
                 {
                     gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MCU_DOMAIN_VIM_BASE_ADDR1;
                 }
-#endif
-                gFirstTime = BFALSE;
-                if (BFALSE == gOsalArchConfig.disableIrqOnInit)
+            }
+            else
+            {
+                /* MAIN SS Pulsar R5 SS */
+                if (CSL_ARM_R5_CPU_ID_0 == info.cpuID)
                 {
-                    Intc_SystemEnable();
+                    gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MAIN_DOMAIN_VIM_BASE_ADDR0;
+                }
+                else
+                {
+                    gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MAIN_DOMAIN_VIM_BASE_ADDR1;
                 }
             }
-
-            /* Disable the interrupt first */
-            Intc_IntDisable((uint16_t)interruptNum);
-
-            /* Set the trigger type */
-            if ((OSAL_ARM_GIC_TRIG_TYPE_HIGH_LEVEL == params->triggerSensitivity) ||
-                (OSAL_ARM_GIC_TRIG_TYPE_LEVEL      == params->triggerSensitivity) ||
-                (OSAL_ARM_GIC_TRIG_TYPE_LOW_LEVEL  == params->triggerSensitivity))
+#else
+            /* MCU SS Pulsar R5 SS */
+            if (CSL_ARM_R5_CPU_ID_0 == info.cpuID)
             {
-                Intc_IntSetSrcType((uint16_t)interruptNum, CSL_VIM_INTR_TYPE_LEVEL);
+                gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MCU_DOMAIN_VIM_BASE_ADDR0;
             }
             else
             {
-                Intc_IntSetSrcType((uint16_t)interruptNum, CSL_VIM_INTR_TYPE_PULSE);
+                gVimRegs = (CSL_vimRegs *)(uintptr_t)CSL_MCU_DOMAIN_VIM_BASE_ADDR1;
             }
-
-            hwi_handle->intNum = interruptNum;
-
-            /* Set the priority to default priority if priority is set un-initialized */
-            if ((params->priority > CSL_VIM_PRI_INT_VAL_MAX) ||
-                (HWIP_USE_DEFAULT_PRIORITY == params->priority))
+#endif
+            gFirstTime = BFALSE;
+            if (BFALSE == gOsalArchConfig.disableIrqOnInit)
             {
-                priority = (uint16_t)HWIP_R5F_DEFAULT_PRIORITY;
-            }
-            else
-            {
-                priority = (uint16_t)params->priority;
-            }
-
-            /* Setting the priority for the UART interrupt in INTC. */
-            Intc_IntPrioritySet((uint16_t)interruptNum, priority, 0);
-
-            /* Registering the Interrupt Service Routine(ISR). */
-            Intc_IntRegister((uint16_t)interruptNum, (IntrFuncPtr) hwiFxn, (void *)params->arg);
-
-            /* Enabling the interrupt if configured */
-            if (UTRUE == params->enableIntr)
-            {
-                /* Enabling the interrupt in INTC. */
-                Intc_IntEnable((uint16_t)interruptNum);
-            }
-            else
-            {
-                /* Disabling the interrupt in INTC. */
-                Intc_IntDisable((uint16_t)interruptNum);
+                Intc_SystemEnable();
             }
         }
-    }
 
-    OsalArch_globalRestoreInterrupt(key);
+        /* Disable the interrupt first */
+        Intc_IntDisable((uint16_t)interruptNum);
+
+        /* Set the trigger type */
+        if ((OSAL_ARM_GIC_TRIG_TYPE_HIGH_LEVEL == params->triggerSensitivity) ||
+            (OSAL_ARM_GIC_TRIG_TYPE_LEVEL      == params->triggerSensitivity) ||
+            (OSAL_ARM_GIC_TRIG_TYPE_LOW_LEVEL  == params->triggerSensitivity))
+        {
+            Intc_IntSetSrcType((uint16_t)interruptNum, CSL_VIM_INTR_TYPE_LEVEL);
+        }
+        else
+        {
+            Intc_IntSetSrcType((uint16_t)interruptNum, CSL_VIM_INTR_TYPE_PULSE);
+        }
+
+        hwi_handle->intNum = interruptNum;
+
+        /* Set the priority to default priority if priority is set un-initialized */
+        if ((params->priority > CSL_VIM_PRI_INT_VAL_MAX) ||
+            (HWIP_USE_DEFAULT_PRIORITY == params->priority))
+        {
+            priority = (uint16_t)HWIP_R5F_DEFAULT_PRIORITY;
+        }
+        else
+        {
+            priority = (uint16_t)params->priority;
+        }
+
+        /* Setting the priority for the UART interrupt in INTC. */
+        Intc_IntPrioritySet((uint16_t)interruptNum, priority, 0);
+
+        /* Registering the Interrupt Service Routine(ISR). */
+        Intc_IntRegister((uint16_t)interruptNum, (IntrFuncPtr) hwiFxn, (void *)params->arg);
+
+        /* Enabling the interrupt if configured */
+        if (UTRUE == params->enableIntr)
+        {
+            /* Enabling the interrupt in INTC. */
+            Intc_IntEnable((uint16_t)interruptNum);
+        }
+        else
+        {
+            /* Disabling the interrupt in INTC. */
+            Intc_IntDisable((uint16_t)interruptNum);
+        }
+    }
+  }
     return ((HwiP_Handle) (retHandle) );
 
 }
@@ -448,15 +431,12 @@ HwiP_Status OsalArch_HwiPDelete(HwiP_Handle handle)
 {
     HwiP_nonOs *hwi_hnd = (HwiP_nonOs*) handle;
     uintptr_t   key;
-    uint32_t    intNum;
     HwiP_Status ret_val = HwiP_OK;
 
     /* mark that handle as free */
     key = OsalArch_globalDisableInterrupt();
     if (BTRUE == hwi_hnd->used)
     {
-        intNum = hwi_hnd->hwi.intNum;
-        gRegisteredInterrupts[intNum/32U] &= ~((uint32_t)1U<<(intNum%32U));
         hwi_hnd->used = BFALSE;
         Intc_IntUnregister((uint16_t)(hwi_hnd->hwi.intNum));
         /* Disabling the interrupt in INTC. */

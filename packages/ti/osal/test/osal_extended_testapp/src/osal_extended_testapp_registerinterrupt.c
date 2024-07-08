@@ -48,7 +48,6 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define OSAL_APP_REGISTER_INT_NUM    (11U)
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -82,7 +81,6 @@ static int32_t OsalApp_regIntrPositiveTest(void);
  */
 static int32_t OsalApp_regIntrNegativeTest(void);
 #endif
-
 /* ========================================================================== */
 /*                       Internal Function Definitions                        */
 /* ========================================================================== */
@@ -113,8 +111,16 @@ static int32_t OsalApp_regIntrNullTest(void)
     {
         result = osal_FAILURE;
     }
-    if((osal_OK == result))
+    if((osal_OK == result) || (NULL_PTR != hwiPHandlePtr))
     {
+        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr,intrPrms->corepacConfig.corepacEventNum))
+        {
+            result = osal_FAILURE;
+        }
+        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr,intrPrms->corepacConfig.corepacEventNum))
+        {
+            result = osal_FAILURE;
+        }
         if(OSAL_INT_SUCCESS == Osal_DeleteInterrupt(NULL_PTR,intrPrms->corepacConfig.corepacEventNum))
         {
             result = osal_FAILURE;
@@ -131,32 +137,30 @@ static int32_t OsalApp_regIntrNullTest(void)
 
 static int32_t OsalApp_regIntrPositiveTest(void)
 {
-    OsalRegisterIntrParams_t    intrPrms;
+    OsalRegisterIntrParams_t    *intrPrms = NULL_PTR;
     HwiP_Handle                 hwiPHandlePtr, hwiPDirectHandlePtr;
     int32_t                     result = osal_OK;
 
-    Osal_RegisterInterrupt_initParams(NULL_PTR);
-    Osal_RegisterInterrupt_initParams(&intrPrms);
+    Osal_RegisterInterrupt_initParams(intrPrms);
 
-    intrPrms.corepacConfig.isrRoutine      = (Osal_IsrRoutine)OsalApp_regIntrISR;
-    intrPrms.corepacConfig.intVecNum       = OSAL_APP_REGISTER_INT_NUM;
-    intrPrms.corepacConfig.corepacEventNum = OSAL_APP_REGISTER_INT_NUM;
+    intrPrms->corepacConfig.isrRoutine      = (Osal_IsrRoutine)OsalApp_regIntrISR;
+    intrPrms->corepacConfig.corepacEventNum = EventP_ID_00;
 
-    if(OSAL_INT_SUCCESS != Osal_RegisterInterrupt(&intrPrms, &hwiPHandlePtr))
+    if(OSAL_INT_SUCCESS != Osal_RegisterInterrupt(intrPrms, &hwiPHandlePtr))
     {
         result = osal_FAILURE;
     }
-    if(OSAL_INT_SUCCESS != Osal_RegisterInterruptDirect(&intrPrms, (HwiP_DirectFxn)OsalApp_regIntrISR, &hwiPDirectHandlePtr))
+    if(OSAL_INT_SUCCESS != Osal_RegisterInterruptDirect(intrPrms, (HwiP_DirectFxn)OsalApp_regIntrISR, &hwiPDirectHandlePtr))
     {
         result = osal_FAILURE;
     }
     if(osal_OK == result)
     {
-        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr,intrPrms.corepacConfig.intVecNum))
+        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr,intrPrms->corepacConfig.corepacEventNum))
         {
             result = osal_FAILURE;
         }
-        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr,intrPrms.corepacConfig.intVecNum))
+        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr,intrPrms->corepacConfig.corepacEventNum))
         {
             result = osal_FAILURE;
         }

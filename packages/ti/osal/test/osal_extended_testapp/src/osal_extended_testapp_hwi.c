@@ -196,12 +196,17 @@ static int32_t OsalApp_hwiNullTest(void)
     HwiP_Params_init(&hwiParams);
 
     hwiHandle = HwiP_create(CSL_INVALID_VEC_ID, NULL_PTR, NULL_PTR);
-
+#if defined(BUILD_MCU)
     if(NULL_PTR != hwiHandle)
     {
         result = osal_FAILURE;
     }
-
+#else
+    if(NULL_PTR == hwiHandle)
+    {
+        result = osal_FAILURE;
+    }
+#endif
     if(NULL_PTR != hwiHandle)
     {
         if(HwiP_OK != HwiP_delete(hwiHandle))

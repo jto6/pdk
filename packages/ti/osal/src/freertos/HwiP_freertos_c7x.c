@@ -58,8 +58,6 @@
 #define NULL_PTR ((void *)0x0)
 #endif
 
-#define MAX_CPU_INTERRUPTS                  (64U)
-
 extern Osal_HwAttrs  gOsal_HwAttrs;
 
 extern void Osal_DebugP_assert(int32_t expression, const char *file, int32_t line);
@@ -78,7 +76,6 @@ typedef struct HwiP_freeRtos_s {
 
 /* global pool of statically allocated semaphore pools */
 static HwiP_freeRtos gOsalHwiPFreeRtosPool[OSAL_FREERTOS_C7X_CONFIGNUM_HWI];
-static uint32_t      gRegisteredInterrupts[MAX_CPU_INTERRUPTS/32U];
 
 /*
  *  ======== HwiP_clearInterrupt ========
@@ -106,7 +103,6 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
     /* Check if user has specified any memory block to be used, which gets
      * the precedence over the internal static memory block
      */
-    key = HwiP_disable();
     if ((uintptr_t)(0U) != gOsal_HwAttrs.extHwiPBlock.base)
     {
         /* pick up the external memory block configured */
@@ -125,42 +121,31 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
             (void)memset((void *)gOsalHwiPFreeRtosPool,0,sizeof(gOsalHwiPFreeRtosPool));
 		}
     }
+
     /* Grab the memory */
-    if (interruptNum < OSAL_FREERTOS_C7X_CONFIGNUM_HWI)
+    key = HwiP_disable();
+
+    for (i = 0U; i < maxHwi; i++)
     {
-        if(((uint32_t)1U << (interruptNum%32U)) == ((gRegisteredInterrupts[interruptNum/32U]) & ((uint32_t)1U << (interruptNum%32U))))
+        if (BFALSE == hwiPool[i].used)
         {
-            handle = NULL_PTR;
-        }
-        else
-        {
-            gRegisteredInterrupts[interruptNum/32U] |= ((uint32_t)1U << (interruptNum%32U));
-            for (i = 0U; i < maxHwi; i++)
+            hwiPool[i].used = BTRUE;
+            /* Update statistics */
+            gOsalHwiAllocCnt++;
+            if (gOsalHwiAllocCnt > gOsalHwiPeak)
             {
-                if (BFALSE == hwiPool[i].used)
-                {
-                    hwiPool[i].used = BTRUE;
-                    /* Update statistics */
-                    gOsalHwiAllocCnt++;
-                    if (gOsalHwiAllocCnt > gOsalHwiPeak)
-                    {
-                        gOsalHwiPeak = gOsalHwiAllocCnt;
-                    }
-                    break;
-                }
+                gOsalHwiPeak = gOsalHwiAllocCnt;
             }
-            if (i < maxHwi)
-            {
-                /* Grab the memory */
-                handle = (HwiP_freeRtos *) &hwiPool[i];
-            }
+            break;
         }
-    }
-    else
-    {
-        handle = NULL_PTR;
     }
     HwiP_restore(key);
+
+    if (i < maxHwi)
+    {
+        /* Grab the memory */
+        handle = (HwiP_freeRtos *) &hwiPool[i];
+    }
 
     if (NULL_PTR != handle)
     {
@@ -231,15 +216,12 @@ HwiP_Status HwiP_delete(HwiP_Handle handle)
 {
     uintptr_t   key;
     HwiP_Status ret;
-    uint32_t    intNum;
     
     HwiP_freeRtos *hwi = (HwiP_freeRtos *)handle;
 
     if((NULL_PTR != hwi) && (BTRUE == hwi->used)) {
       Hwi_destruct(&hwi->hwi);
       key = HwiP_disable();
-      intNum = hwi->hwi.intNum;
-      gRegisteredInterrupts[intNum/32U] &= ~((uint32_t)1U << (intNum%32U));
       hwi->used = BFALSE;
       /* Found the osal hwi object to delete */
       if (0U < gOsalHwiAllocCnt)
