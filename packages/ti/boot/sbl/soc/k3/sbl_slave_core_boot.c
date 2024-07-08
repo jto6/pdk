@@ -536,7 +536,7 @@ int32_t SBL_BootImage(sblEntryPoint_t *pEntry)
     for (core_id = MPU1_CPU0_ID; core_id < NUM_CORES; core_id ++)
         pEntry->CpuEntryPoint[core_id] = SBL_INVALID_ENTRY_ADDR;
 
-    /* Request SYSW for control of all cores */
+    /* Request SYSFW for control of all cores */
     SBL_RequestAllCores();
 
 #if defined(BOOT_MMCSD)

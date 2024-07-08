@@ -3,13 +3,27 @@
 #
 include $(PDK_INSTALL_PATH)/ti/build/Rules.make
 
+EARLY_CAN_TEST_SUFFIX=
+# Add a CAN test flag if required
+ifeq ($(IS_EARLY_CAN_TEST), yes)
+  SBL_CFLAGS += -DEARLY_CAN_TEST
+  EARLY_CAN_TEST_SUFFIX=_early_can
+endif
+
+HS_TEST_SUFFIX=
+# Add a HS Device Only Test Flag if required
+ifeq ($(IS_HS_TEST), yes)
+  SBL_CFLAGS += -DHS_TEST
+  HS_TEST_SUFFIX=_hs
+endif
+
 BUILD_OS_TYPE = baremetal
 ifeq ($(COMBINED_BOOT_PERF), yes)
-  LOCAL_APP_NAME = sbl_$(BUILD_OS_TYPE)_combined_boot_perf_$(BOARD)_$(CORE)TestApp
-  APP_NAME = sbl_combined_boot_perf_test
+  LOCAL_APP_NAME = sbl_$(BUILD_OS_TYPE)_combined_boot_perf$(HS_TEST_SUFFIX)$(EARLY_CAN_TEST_SUFFIX)_$(BOARD)_$(CORE)TestApp
+  APP_NAME = sbl_combined_boot_perf$(HS_TEST_SUFFIX)$(EARLY_CAN_TEST_SUFFIX)_test
 else
-  LOCAL_APP_NAME = sbl_$(BUILD_OS_TYPE)_boot_perf_$(BOARD)_$(CORE)TestApp
-  APP_NAME = sbl_boot_perf_test
+  LOCAL_APP_NAME = sbl_$(BUILD_OS_TYPE)_boot_perf$(HS_TEST_SUFFIX)$(EARLY_CAN_TEST_SUFFIX)_$(BOARD)_$(CORE)TestApp
+  APP_NAME = sbl_boot_perf$(HS_TEST_SUFFIX)$(EARLY_CAN_TEST_SUFFIX)_test
 endif
 
 SBL_SRC_DIR =  $(PDK_INSTALL_PATH)/ti/boot/sbl

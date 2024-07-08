@@ -24,7 +24,11 @@ else
   ifeq ($(HLOS_BOOT),yes)
     BASE_NAME = sbl_lib_$(BOOTMODE)_hlos
   else
-    BASE_NAME = sbl_lib_$(BOOTMODE)
+    ifeq ($(BOOT_PERF), yes)
+      BASE_NAME = sbl_boot_perf_lib_$(BOOTMODE)
+    else
+      BASE_NAME = sbl_lib_$(BOOTMODE)
+    endif
   endif
 endif
 
