@@ -344,7 +344,7 @@ int32_t SBL_VerifyMulticoreImage(void **img_handle,
         /* Read first 4 bytes of image to */
         /* determine if it is a x509 img  */
         fp_readData(x509Header, *img_handle, 4);
-        /* Profile point after phy tuning before Application Image Verfication */
+        /* Profile point after phy tuning before app copy */
         SBL_ADD_PROFILE_POINT;
         fp_seek(*img_handle, *ImageOffsetPtr);
         cert_len = SBL_GetCertLen(x509Header);
@@ -443,9 +443,6 @@ int32_t SBL_VerifyMulticoreImage(void **img_handle,
             retVal = E_PASS;
         }
     }
-
-    /*Adding a profile point before Application Copying and after Application Image Verfication*/
-    SBL_ADD_PROFILE_POINT;
 
     if ((auth_retval != CSL_PASS) &&
         (SBL_IsAuthReq() != SBL_NEVER_AUTH_APP))

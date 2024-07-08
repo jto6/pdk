@@ -26,16 +26,6 @@ ifeq ($(BOOTMODE), cust)
   SBL_CFLAGS = $(CUST_SBL_FLAGS)
 endif # ifeq ($(BOOTMODE), cust)
 
-# Add a CAN test flag if required
-ifeq ($(IS_EARLY_CAN_TEST), yes)
-  SBL_CFLAGS += -DEARLY_CAN_TEST
-endif
-
-# Add a HS Device Only Test Flag if required
-ifeq ($(IS_HS_TEST), yes)
-  SBL_CFLAGS += -DHS_TEST
-endif
-
 CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(SBL_CFLAGS)
 PACKAGE_SRCS_COMMON = .
 
