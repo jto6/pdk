@@ -60,6 +60,7 @@
 /** \brief Defines the various Sciserver test cases. */
 SciApp_TestParams_t gSciApp_TestcaseParams[] =
 {
+#if defined(SOC_J784S4)
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -71,7 +72,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         "PDK-14050",
 
         /** *testCaseName **/
-        "Sciserver Negative Testcase",
+        "Sciserver Testcase",
 
         /** *userInfo **/
         "None",
@@ -81,7 +82,8 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
 
         /** *passFailCriteria **/
         "Sciserver functions should fail when \
-         called with invalid parameters ",
+         called with invalid parameters and pass when \
+         called with valid parameters ",
 
         /** cpuID **/
         SCI_APP_CORE_TYPE_R5F,
@@ -92,6 +94,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
+#endif
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -136,7 +139,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         "PDK-14052",
 
         /** *testCaseName **/
-        "Sciserver secproxyRoutingDescription Negative Testcase",
+        "Sciserver secproxyRoutingDescription Testcase",
 
         /** *userInfo **/
         "None",
@@ -146,7 +149,8 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
 
         /** *passFailCriteria **/
         "Sciserver_secproxyRoutingDescription functions should fail when \
-         called with invalid parameters ",
+         called with invalid parameters and should pass when called with \
+         valid parameters. ",
 
         /** cpuID **/
         SCI_APP_CORE_TYPE_R5F,
@@ -168,7 +172,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         "PDK-14227",
 
         /** *testCaseName **/
-        "Sciserver tirtos Negative Testcase",
+        "Sciserver tirtos Testcase",
 
         /** *userInfo **/
         "None",
@@ -178,40 +182,8 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
 
         /** *passFailCriteria **/
         "Sciserver tirtos functions should fail when \
-         called with invalid parameters ",
-
-        /** cpuID **/
-        SCI_APP_CORE_TYPE_R5F,
-
-        /** printEnable **/
-        SCI_APP_PRINT_ENABLE,
-
-        /** testType **/
-        (SCI_APP_TEST_TYPE_SANITY)
-    },
-    {
-        /** enableTest **/
-        SCI_APP_TEST_ENABLE,
-
-        /** testCaseId **/
-        5U,
-
-        /** *reqId **/
-        "PDK-14452",
-
-        /** *testCaseName **/
-        "Sciserver Testcase",
-
-        /** *userInfo **/
-        "None",
-
-        /** *disableReason **/
-        "None",
-
-        /** *passFailCriteria **/
-        "Sciserver functions should pass when \
-         called with valid parameters should fail when \
-         called with invalid parameters ",
+         called with invalid parameters and should pass when \
+         called with valid parameters. ",
 
         /** cpuID **/
         SCI_APP_CORE_TYPE_R5F,
