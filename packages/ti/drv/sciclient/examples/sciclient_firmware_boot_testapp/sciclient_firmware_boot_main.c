@@ -68,6 +68,7 @@
 volatile static uint64_t gTimeUSecs[5] = { 0 };
 volatile uint32_t gLoop = 1U;
 uint32_t gSciclient_firmware[(SCICLIENT_FIRMWARE_SIZE_IN_BYTES + 3)/4] __attribute__((section(".firmware"))) = SCICLIENT_FIRMWARE;
+uint32_t gSciclient_firmwareNull[5] __attribute__((section(".firmware"))) = { 0 };
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -85,7 +86,7 @@ void _resetvectors(void);
 /*                          Internal Function Declarations                    */
 /* ========================================================================== */
 
-static int32_t SciclientApp_loadFirmwareTest(void);
+static int32_t SciclientApp_loadFirmwareTest(const void * firmwarePtr);
 static void SciclientApp_printPerfStats(void);
 static int32_t SciclientApp_boardCfgTest(void);
 static int32_t SciclientApp_getRevisionTestPol(void);
@@ -104,7 +105,14 @@ int32_t main(void)
     /* Relocate CSL Vectors to ATCM*/
     memcpy((void *)CSL_R5FSS0_ATCM_BASE, (void *)_resetvectors, 0x100);
 #endif
-    status = SciclientApp_loadFirmwareTest();
+   /*Loading incorrect Firmware*/ 
+    status = SciclientApp_loadFirmwareTest((void *)gSciclient_firmwareNull);
+   /*Loading correct Firmware*/
+    if (status == CSL_EFAIL)
+    {
+        status = SciclientApp_loadFirmwareTest((void *)gSciclient_firmware);
+    }
+
 #ifdef SCICLIENT_APP_PRINT_UART
     SciApp_consoleInit();
 #endif
@@ -141,19 +149,17 @@ int32_t main(void)
 /*                 Internal Function Definitions                              */
 /* ========================================================================== */
 
-static int32_t SciclientApp_loadFirmwareTest(void)
+static int32_t SciclientApp_loadFirmwareTest(const void * firmwarePtr)
 {
     uint64_t startTicks      = 0;
     uint64_t stopTicks       = 0;
     int32_t  status          = CSL_EFAIL;
-    void     *sysFwPtr       = gSciclient_firmware;
-    sysFwPtr                 = (void *)&gSciclient_firmware;
 
     /*Do a cache writeback*/
-    CacheP_wbInv(sysFwPtr, SCICLIENT_FIRMWARE_SIZE_IN_BYTES);
+    CacheP_wbInv(firmwarePtr, SCICLIENT_FIRMWARE_SIZE_IN_BYTES);
 
     startTicks     = TimerP_getTimeInUsecs();
-    status         = Sciclient_loadFirmware(sysFwPtr);
+    status         = Sciclient_loadFirmware(firmwarePtr);
     stopTicks      = TimerP_getTimeInUsecs();
 
     gTimeUSecs[0U] = (stopTicks-startTicks);
