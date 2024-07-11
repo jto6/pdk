@@ -275,7 +275,7 @@ export mcspi_baremetal_slave_testapp_CORE_DEPENDENCY
 export mcspi_baremetal_slave_testapp_MAKEFILE
 mcspi_baremetal_slave_testapp_PKG_LIST = mcspi_baremetal_slave_testapp
 mcspi_baremetal_slave_testapp_INCLUDE = $(mcspi_baremetal_slave_testapp_PATH)
-mcspi_baremetal_slave_testapp_BOARDLIST = am65xx_evm am65xx_idk j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
+mcspi_baremetal_slave_testapp_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 export mcspi_baremetal_slave_testapp_BOARDLIST
 ifeq ($(SOC),$(filter $(SOC), am65xx))
 mcspi_baremetal_slave_testapp_$(SOC)_CORELIST = mcu1_1
@@ -290,7 +290,7 @@ endif
 # SPI baremetal MasterSlave Test app
 export mcspi_baremetal_masterslave_testapp_COMP_LIST = mcspi_baremetal_masterslave_testapp
 mcspi_baremetal_masterslave_testapp_RELPATH = ti/drv/spi/example/mcspi_slavemode
-mcspi_baremetal_masterslave_testapp_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_baremetal_master_testapp/bin
+mcspi_baremetal_masterslave_testapp_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_baremetal_masterslave_testapp/bin
 mcspi_baremetal_masterslave_testapp_PATH = $(PDK_SPI_COMP_PATH)/example/mcspi_slavemode
 export mcspi_baremetal_masterslave_testapp_BOARD_DEPENDENCY = yes
 export mcspi_baremetal_masterslave_testapp_CORE_DEPENDENCY = yes
@@ -299,7 +299,7 @@ export mcspi_baremetal_masterslave_testapp_MAKEFILE = -f$(PDK_SPI_COMP_PATH)/exa
 export mcspi_baremetal_masterslave_testapp_DEPENDS_ON = mcspi_baremetal_master_testapp mcspi_baremetal_slave_testapp
 mcspi_baremetal_masterslave_testapp_PKG_LIST = mcspi_baremetal_masterslave_testapp
 mcspi_baremetal_masterslave_testapp_INCLUDE = $(mcspi_baremetal_masterslave_testapp_PATH)
-export mcspi_baremetal_masterslave_testapp_BOARDLIST = j721e_evm j7200_evm j721s2_evm
+export mcspi_baremetal_masterslave_testapp_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 export mcspi_baremetal_masterslave_testapp_$(SOC)_CORELIST:= mcu2_1
 export mcspi_baremetal_masterslave_testapp_SBL_APPIMAGEGEN = no
 spi_EXAMPLE_LIST +=mcspi_baremetal_masterslave_testapp
@@ -342,7 +342,7 @@ export mcspi_baremetal_slave_dma_testapp_CORE_DEPENDENCY
 export mcspi_baremetal_slave_dma_testapp_MAKEFILE
 mcspi_baremetal_slave_dma_testapp_PKG_LIST = mcspi_baremetal_slave_dma_testapp
 mcspi_baremetal_slave_dma_testapp_INCLUDE = $(mcspi_baremetal_slave_dma_testapp_PATH)
-mcspi_baremetal_slave_dma_testapp_BOARDLIST = am65xx_evm am65xx_idk j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
+mcspi_baremetal_slave_dma_testapp_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 export mcspi_baremetal_slave_dma_testapp_BOARDLIST
 ifeq ($(SOC),$(filter $(SOC), am65xx))
 mcspi_baremetal_slave_dma_testapp_$(SOC)_CORELIST = mcu1_1
@@ -357,7 +357,7 @@ endif
 # SPI baremetal MasterSlave Dma Test app
 export mcspi_baremetal_masterslave_dma_testapp_COMP_LIST = mcspi_baremetal_masterslave_dma_testapp
 mcspi_baremetal_masterslave_dma_testapp_RELPATH = ti/drv/spi/example/mcspi_slavemode
-mcspi_baremetal_masterslave_dma_testapp_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_baremetal_master_dma_testapp/bin
+mcspi_baremetal_masterslave_dma_testapp_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_baremetal_masterslave_dma_testapp/bin
 mcspi_baremetal_masterslave_dma_testapp_PATH = $(PDK_SPI_COMP_PATH)/example/mcspi_slavemode
 export mcspi_baremetal_masterslave_dma_testapp_BOARD_DEPENDENCY = yes
 export mcspi_baremetal_masterslave_dma_testapp_CORE_DEPENDENCY = yes
@@ -366,7 +366,7 @@ export mcspi_baremetal_masterslave_dma_testapp_MAKEFILE = -f$(PDK_SPI_COMP_PATH)
 export mcspi_baremetal_masterslave_dma_testapp_DEPENDS_ON = mcspi_baremetal_master_dma_testapp mcspi_baremetal_slave_dma_testapp
 mcspi_baremetal_masterslave_dma_testapp_PKG_LIST = mcspi_baremetal_masterslave_dma_testapp
 mcspi_baremetal_masterslave_dma_testapp_INCLUDE = $(mcspi_baremetal_masterslave_dma_testapp_PATH)
-export mcspi_baremetal_masterslave_dma_testapp_BOARDLIST = j721e_evm j7200_evm j721s2_evm
+export mcspi_baremetal_masterslave_dma_testapp_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 export mcspi_baremetal_masterslave_dma_testapp_$(SOC)_CORELIST:= mcu2_1
 export mcspi_baremetal_masterslave_dma_testapp_SBL_APPIMAGEGEN = no
 spi_EXAMPLE_LIST +=mcspi_baremetal_masterslave_dma_testapp
@@ -422,7 +422,7 @@ define mcspi_slave_testapp_RULE
 
     mcspi_slave_testapp_$(1)_PKG_LIST = mcspi_slave_testapp_$(1)
     mcspi_slave_testapp_$(1)_INCLUDE = $(mcspi_slave_testapp_$(1)_PATH)
-    export mcspi_slave_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), j721e_evm j7200_evm am64x_evm am65xx_evm am65xx_idk j784s4_evm j742s2_evm j721s2_evm)
+    export mcspi_slave_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), j721e_evm j7200_evm j784s4_evm j742s2_evm j721s2_evm)
 
     ifeq ($(SOC),$(filter $(SOC), am65xx))
     export mcspi_slave_testapp_$(1)_$(SOC)_CORELIST = mcu1_1
@@ -452,7 +452,7 @@ define mcspi_masterslave_testapp_RULE
 
 export mcspi_masterslave_testapp_$(1)_COMP_LIST = mcspi_masterslave_testapp_$(1)
 mcspi_masterslave_testapp_$(1)_RELPATH = ti/drv/spi/example/mcspi_slavemode
-mcspi_masterslave_testapp_$(1)_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_master_testapp_$(1)/bin
+mcspi_masterslave_testapp_$(1)_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_masterslave_testapp_$(1)/bin
 mcspi_masterslave_testapp_$(1)_PATH = $(PDK_SPI_COMP_PATH)/example/mcspi_slavemode
 export mcspi_masterslave_testapp_$(1)_BOARD_DEPENDENCY = yes
 export mcspi_masterslave_testapp_$(1)_CORE_DEPENDENCY = yes
@@ -527,7 +527,7 @@ define mcspi_slave_dma_testapp_RULE
 
     mcspi_slave_dma_testapp_$(1)_PKG_LIST = mcspi_slave_dma_testapp_$(1)
     mcspi_slave_dma_testapp_$(1)_INCLUDE = $(mcspi_slave_dma_testapp_$(1)_PATH)
-    export mcspi_slave_dma_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), j721e_evm j7200_evm am64x_evm am65xx_evm am65xx_idk j784s4_evm j742s2_evm j721s2_evm)
+    export mcspi_slave_dma_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), j721e_evm j7200_evm j784s4_evm j742s2_evm j721s2_evm)
 
     ifeq ($(SOC),$(filter $(SOC), am65xx))
     export mcspi_slave_dma_testapp_$(1)_$(SOC)_CORELIST = mcu1_1
@@ -557,7 +557,7 @@ define mcspi_masterslave_dma_testapp_RULE
 
 export mcspi_masterslave_dma_testapp_$(1)_COMP_LIST = mcspi_masterslave_dma_testapp_$(1)
 mcspi_masterslave_dma_testapp_$(1)_RELPATH = ti/drv/spi/example/mcspi_slavemode
-mcspi_masterslave_dma_testapp_$(1)_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_master_dma_testapp_$(1)/bin
+mcspi_masterslave_dma_testapp_$(1)_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/mcspi_masterslave_dma_testapp_$(1)/bin
 mcspi_masterslave_dma_testapp_$(1)_PATH = $(PDK_SPI_COMP_PATH)/example/mcspi_slavemode
 export mcspi_masterslave_dma_testapp_$(1)_BOARD_DEPENDENCY = yes
 export mcspi_masterslave_dma_testapp_$(1)_CORE_DEPENDENCY = yes
@@ -566,7 +566,7 @@ export mcspi_masterslave_dma_testapp_$(1)_MAKEFILE =  -f$(PDK_SPI_COMP_PATH)/exa
 export mcspi_masterslave_dma_testapp_$(1)_DEPENDS_ON=mcspi_master_dma_testapp_$(1) mcspi_slave_dma_testapp_$(1)
 mcspi_masterslave_dma_testapp_$(1)_PKG_LIST = mcspi_masterslave_dma_testapp_$(1)
 mcspi_masterslave_dma_testapp_$(1)_INCLUDE = $(mcspi_masterslave_dma_testapp_$(1)_PATH)
-export mcspi_masterslave_dma_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)),j721s2_evm j721e_evm j7200_evm )
+export mcspi_masterslave_dma_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)),j721s2_evm j721e_evm j7200_evm j784s4_evm j742s2_evm )
 export mcspi_masterslave_dma_testapp_$(1)_$(SOC)_CORELIST := mcu2_1
 export mcspi_masterslave_dma_testapp_SBL_APPIMAGEGEN = no
 ifneq ($(1),$(filter $(1), safertos))

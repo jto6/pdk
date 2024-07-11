@@ -63,19 +63,20 @@ COMP_LIST_COMMON =
 SRCS_COMMON = force_multi_core_img_gen.c
 
 force_multi_core_img_gen.c:
+	$(MKDIR) -p $(BINDIR)
 	$(ECHO) "# Combining RPRC images to generate multicore image...."
 	$(ECHO) "# BINDIR is $(BINDIR) CORELIST is mcu2_0 mcu2_1"
 	$(ECHO) "# MULTICORE_IMG_PARAMS are $(MULTICORE_IMG_PARAMS)"
-	$(SBL_IMAGE_GEN) LE $(SBL_DEV_ID) $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_multicore_$(BUILD_PROFILE_$(CORE)).appimage $(MULTICORE_IMG_PARAMS)
+	$(SBL_IMAGE_GEN) LE $(SBL_DEV_ID) $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_mcu2_1_$(BUILD_PROFILE_$(CORE)).appimage $(MULTICORE_IMG_PARAMS)
 	$(ECHO) "#"
-	$(ECHO) "# Multicore IPC App image $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_multicore_$(BUILD_PROFILE_$(CORE)).appimage created."
+	$(ECHO) "# Multicore IPC App image $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_mcu2_1_$(BUILD_PROFILE_$(CORE)).appimage created."
 	$(ECHO) "#"
 	$(ECHO) "# Signing the multicore image...."
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(SBL_CERT_GEN)
 endif
-	$(SBL_CERT_GEN) -b $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_multicore_$(BUILD_PROFILE_$(CORE)).appimage -o $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_multicore_$(BUILD_PROFILE_$(CORE)).appimage.signed -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY_HS)
-	$(SBL_CERT_GEN) -b $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_multicore_$(BUILD_PROFILE_$(CORE)).appimage -o $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_multicore_$(BUILD_PROFILE_$(CORE)).appimage.hs_fs -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY)
+	$(SBL_CERT_GEN) -b $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_mcu2_1_$(BUILD_PROFILE_$(CORE)).appimage -o $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_mcu2_1_$(BUILD_PROFILE_$(CORE)).appimage.signed -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY_HS)
+	$(SBL_CERT_GEN) -b $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_mcu2_1_$(BUILD_PROFILE_$(CORE)).appimage -o $(BINDIR)/$(RPRC_PREFIX_MASTERSLAVE)_mcu2_1_$(BUILD_PROFILE_$(CORE)).appimage.hs_fs -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY)
 
 # Include common make files
 ifeq ($(MAKERULEDIR), )
