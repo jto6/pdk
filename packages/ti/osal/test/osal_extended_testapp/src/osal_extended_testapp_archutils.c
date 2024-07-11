@@ -49,7 +49,12 @@
 /* ========================================================================== */
 
 #define OSAL_APP_IRQ_INT_NUM           (28U)
-#define OSAL_APP_HWIP_BLOCK_SIZE (1U * OSAL_NONOS_HWIP_SIZE_BYTES)
+#if defined(BUILD_C7X)
+#define OSAL_APP_HWIP_BLOCK_SIZE       (1U * OSAL_SAFERTOS_HWIP_C7X_SIZE_BYTES)
+#else
+#define OSAL_APP_HWIP_BLOCK_SIZE       (1U * OSAL_NONOS_HWIP_SIZE_BYTES)
+#endif
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -92,15 +97,17 @@ static int32_t OsalApp_archUtilsGeneralTest(void)
     int32_t         result = osal_OK;
 
     HwiP_Params_init(&hwiParams);
-    
+
     if(CSL_INVALID_EVENT_ID != OsalArch_getEventId(intNum))
     {
         result = osal_FAILURE;
     }
+
     if(NULL_PTR != OsalArch_HwiPCreate(intNum, OsalApp_hwiIRQ, NULL_PTR))
     {
         result = osal_FAILURE;
     }
+
     hwiHandle = OsalArch_HwiPCreate(intNum, OsalApp_hwiIRQ, &hwiParams);
     if((NULL_PTR == hwiHandle) || (NULL_PTR != OsalArch_getHandle(intNum)))
     {
@@ -136,7 +143,7 @@ static int32_t OsalApp_archUtilsGeneralTest(void)
 
     if(osal_OK != result)
     {
-        OSAL_log("\n Arch utils general test for c7x have failed!\n");
+        OSAL_log("\n Arch utils general test have failed!\n");
     }
 
     return result;
@@ -191,7 +198,7 @@ static int32_t OsalApp_archUtilsExtBlockTest(void)
 
     if(osal_OK != result)
     {
-        OSAL_log("\n Extended block test for c7x have failed!\n");
+        OSAL_log("\n Extended block test have failed!\n");
     }
 
     return result;
@@ -239,7 +246,7 @@ static int32_t OsalApp_archUtilsMaxTest(void)
 
     if(osal_OK != result)
     {
-        OSAL_log("\n Multiple hwi create for c7x test failed! \n");
+        OSAL_log("\n Multiple hwi create test failed! \n");
     }
 
     return result;
@@ -252,18 +259,17 @@ static int32_t OsalApp_archUtilsMaxTest(void)
 int32_t OsalApp_ArchutilsTests(void)
 {
     int32_t result = osal_OK;
-    
     result += OsalApp_archUtilsGeneralTest();
     result += OsalApp_archUtilsExtBlockTest();
     result += OsalApp_archUtilsMaxTest();
-    
+
     if(osal_OK == result)
     {
-        OSAL_log("\n All Arch utils tests for c7x have passed!!\n");
+        OSAL_log("\n All Arch utils tests have passed!!\n");
     }
     else
     {
-        OSAL_log("\n Some or All Arch utils tests for c7x have failed!!\n");
+        OSAL_log("\n Some or All Arch utils tests have failed!!\n");
     }
     
     return result;

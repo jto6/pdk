@@ -50,10 +50,10 @@
 
 #define OSAL_APP_INT_NUM_IRQ      (29U)
 /* Offset for uxEventMirror of EventP safertos object structure */
-#if defined(BUILD_MCU)
-#define OSAL_APP_EVTMIRROR_OFFSET (0x0EU)
-#elif defined(BUILD_C7X)
+#if defined(BUILD_C7X)
 #define OSAL_APP_EVTMIRROR_OFFSET (0x0EU*2U)
+#else
+#define OSAL_APP_EVTMIRROR_OFFSET (0x0EU)
 #endif
 #define OSAL_APP_EVTHANDLE_OFFSET (0x0FU)
 #if defined (FREERTOS)
@@ -73,10 +73,18 @@ volatile uint32_t gOsalAppEventMaskA = EventP_ID_01, gOsalAppEventMaskB = EventP
 /*                           Function Declarations                            */
 /* ========================================================================== */
 
+
 /*
  * Description  : Event Callback Function
  */
 static void OsalApp_eventIRQ(void *arg);
+
+#if defined(SAFERTOS)
+/*
+ * Description: Testing Negative condition for eventPost APIs on safertos
+ */
+static int32_t OsalApp_eventSafeNegPostTest(void);
+#endif
 
 /*
  * Description  : Test EventP_post and EventP_getPostedEvents APIs from ISR context
@@ -98,13 +106,6 @@ static int32_t OsalApp_eventisUsedTest(void);
  */
 static int32_t OsalApp_maxEventTest(void);
 
-#if defined(SAFERTOS)
-/*
- * Description: Testing Negative condition for eventPost APIs on safertos
- */
-static int32_t OsalApp_eventSafeNegPostTest(void);
-#endif
-
 /* ========================================================================== */
 /*                          Internal Function Definitions                     */
 /* ========================================================================== */
@@ -119,6 +120,130 @@ static void OsalApp_eventIRQ(void *arg)
         gOsalAppISRisExecuted = 0U;
     }
 }
+
+#if defined(SAFERTOS) 
+static int32_t OsalApp_eventSafeNegPostTest(void)
+{
+    EventP_Params   params;
+    EventP_Handle   eventHandle;
+    uint32_t        *handleAddr;
+    int32_t         result = osal_OK;
+
+    EventP_Params_init(&params);
+
+    eventHandle = EventP_create(&params);
+    /* Here handleAddr is used to get the memory location of the handle and eventHndl of EventP structure*/
+    handleAddr = (uint32_t *)eventHandle;
+    if((NULL_PTR == eventHandle) || (EventP_OK != EventP_delete(&eventHandle)))
+    {
+          result = osal_FAILURE;
+    }
+    /* This handle is already deleted, we are corrupting the content of the handle "used" parameter
+     * (forcfully corrupting) and evthandle of struct EventP and 
+     * passing in a corrupt handle to the driver to check how the driver reacts */
+    (*handleAddr) = 1U;
+    *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET) = 0U;
+    if((EventP_OK == EventP_post(eventHandle, EventP_ID_01)) || (0U != EventP_getPostedEvents(eventHandle)))
+    {
+        result = osal_FAILURE;
+    }
+    if(EventP_OK == EventP_delete(&eventHandle))
+    {
+        result = osal_FAILURE;
+    }
+
+    if(osal_OK != result)
+    {
+        OSAL_log("\t Safertos Negative test for Eventpost has failed!! \n");
+    }
+
+    return result;
+}
+
+static int32_t OsalApp_isInISRCNegEventTest(void)
+{
+    uint32_t      interruptNum = OSAL_APP_INT_NUM_IRQ, timeout = 0x10000U;
+    int32_t       result = osal_OK;
+    HwiP_Params   hwipParams;
+    HwiP_Handle   handle;
+    EventP_Params eventParams;
+
+    EventP_Params_init(&eventParams);
+    HwiP_Params_init(&hwipParams);
+    handle = HwiP_create(interruptNum, (HwiP_Fxn)OsalApp_eventIRQ, &hwipParams);
+    gOsalAppISRCtxEventHandle = EventP_create(&eventParams);
+
+    /* Storing the handle, Eventhandler in the temp which will be corrupted later */
+    uint32_t * handleAddr = (uint32_t *)gOsalAppISRCtxEventHandle;
+    uint32_t temp = *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET);
+    if((NULL_PTR == handle) || (NULL_PTR == gOsalAppISRCtxEventHandle))
+    {
+        result = osal_FAILURE;
+    }
+
+    if(osal_OK == result)
+    {
+        HwiP_enableInterrupt(interruptNum);
+
+        /* Corrupting the eventHandler with zero value*/
+        *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET) = 0U;
+#if defined(BUILD_C66X)
+        /* Posting interrupt is not supported fro c66x cores */
+        if(osal_UNSUPPORTED != HwiP_post(interruptNum))
+#else
+        if(HwiP_OK != HwiP_post(interruptNum))
+#endif
+        {
+            result = osal_FAILURE;
+        }
+    }
+
+    if(osal_OK == result)
+    {
+        /* Wait for software timeout, ISR should hit
+        * otherwise return the test as failed */
+        while(timeout--)
+        {
+            if(1U == gOsalAppISRisExecuted)
+            {
+                break;
+            }
+        }
+        /* Wait is over - did not get any interrupts posted/received
+        * declare the test as fail
+        */
+        if(0U == timeout)
+        {
+            result = osal_FAILURE;
+        }
+    }
+
+    if(NULL_PTR != handle)
+    {
+        if(HwiP_OK != HwiP_delete(handle))
+        {
+            result = osal_FAILURE;
+        }
+    }
+    /* Restoring eventHandler value and deleting the event */
+    *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET) = temp;
+    if(NULL_PTR != gOsalAppISRCtxEventHandle)
+    {
+        if(EventP_OK != EventP_delete((EventP_Handle)&gOsalAppISRCtxEventHandle))
+        {
+            result = osal_FAILURE;
+        }
+    }
+
+    if(result != osal_OK)
+    {
+        OSAL_log("\t ISR context Negative test for Event has failed!! \n");
+    }
+    
+    return result;
+}
+
+#endif
 
 static int32_t OsalApp_isInISRCtxEventTest(void)
 {
@@ -139,16 +264,19 @@ static int32_t OsalApp_isInISRCtxEventTest(void)
         result = osal_FAILURE;
     }
 
+#if !defined(BUILD_C66X)
     if(osal_OK == result)
     {
         HwiP_enableInterrupt(interruptNum);
 
         EventP_post(gOsalAppISRCtxEventHandle, gOsalAppEventMaskB);
+
         if(HwiP_OK != HwiP_post(interruptNum))
         {
             result = osal_FAILURE;
         }
     }
+#endif
 
     if(osal_OK == result)
     {
@@ -161,6 +289,7 @@ static int32_t OsalApp_isInISRCtxEventTest(void)
                 break;
             }
         }
+#if !defined(BUILD_C66X)
         /* Wait is over - did not get any interrupts posted/received
         * declare the test as fail
         */
@@ -168,6 +297,7 @@ static int32_t OsalApp_isInISRCtxEventTest(void)
         {
             result = osal_FAILURE;
         }
+#endif
     }
 
     if(NULL_PTR != handle)
@@ -321,126 +451,6 @@ static int32_t OsalApp_maxEventTest(void)
     return result;
 }
 
-#if defined(SAFERTOS) 
-
-static int32_t OsalApp_eventSafeNegPostTest(void)
-{
-    EventP_Params   params;
-    EventP_Handle   eventHandle;
-    uint32_t        *handleAddr;
-    int32_t         result = osal_OK;
-
-    EventP_Params_init(&params);
-
-    eventHandle = EventP_create(&params);
-    /* Here handleAddr is used to get the memory location of the handle and eventHndl of EventP structure*/
-    handleAddr = (uint32_t *)eventHandle;
-    if((NULL_PTR == eventHandle) || (EventP_OK != EventP_delete(&eventHandle)))
-    {
-          result = osal_FAILURE;
-    }
-    /* This handle is already deleted, we are corrupting the content of the handle "used" parameter
-     * (forcfully corrupting) and evthandle of struct EventP and 
-     * passing in a corrupt handle to the driver to check how the driver reacts */
-    (*handleAddr) = 1U;
-    *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET) = 0U;
-    if((EventP_OK == EventP_post(eventHandle, EventP_ID_01)) || (0U != EventP_getPostedEvents(eventHandle)))
-    {
-        result = osal_FAILURE;
-    }
-    if(EventP_OK == EventP_delete(&eventHandle))
-    {
-        result = osal_FAILURE;
-    }
-
-    if(osal_OK != result)
-    {
-        OSAL_log("\t Safertos Negative test for Eventpost has failed!! \n");
-    }
-
-    return result;
-}
-
-static int32_t OsalApp_isInISRCNegEventTest(void)
-{
-    uint32_t      interruptNum = OSAL_APP_INT_NUM_IRQ, timeout = 0x10000U;
-    int32_t       result = osal_OK;
-    HwiP_Params   hwipParams;
-    HwiP_Handle   handle;
-    EventP_Params eventParams;
-
-    EventP_Params_init(&eventParams);
-    HwiP_Params_init(&hwipParams);
-    handle = HwiP_create(interruptNum, (HwiP_Fxn)OsalApp_eventIRQ, &hwipParams);
-    gOsalAppISRCtxEventHandle = EventP_create(&eventParams);
-
-    /* Storing the handle, Eventhandler in the temp which will be corrupted later */
-    uint32_t * handleAddr = (uint32_t *)gOsalAppISRCtxEventHandle;
-    uint32_t temp = *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET);
-    if((NULL_PTR == handle) || (NULL_PTR == gOsalAppISRCtxEventHandle))
-    {
-        result = osal_FAILURE;
-    }
-
-    if(osal_OK == result)
-    {
-        HwiP_enableInterrupt(interruptNum);
-
-        /* Corrupting the eventHandler with zero value*/
-        *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET) = 0U;
-        if(HwiP_OK != HwiP_post(interruptNum))
-        {
-            result = osal_FAILURE;
-        }
-    }
-
-    if(osal_OK == result)
-    {
-        /* Wait for software timeout, ISR should hit
-        * otherwise return the test as failed */
-        while(timeout--)
-        {
-            if(1U == gOsalAppISRisExecuted)
-            {
-                break;
-            }
-        }
-        /* Wait is over - did not get any interrupts posted/received
-        * declare the test as fail
-        */
-        if(0U == timeout)
-        {
-            result = osal_FAILURE;
-        }
-    }
-
-    if(NULL_PTR != handle)
-    {
-        if(HwiP_OK != HwiP_delete(handle))
-        {
-            result = osal_FAILURE;
-        }
-    }
-    /* Restoring eventHandler value and deleting the event */
-    *(handleAddr + OSAL_APP_EVTHANDLE_OFFSET) = temp;
-    if(NULL_PTR != gOsalAppISRCtxEventHandle)
-    {
-        if(EventP_OK != EventP_delete((EventP_Handle)&gOsalAppISRCtxEventHandle))
-        {
-            result = osal_FAILURE;
-        }
-    }
-
-    if(result != osal_OK)
-    {
-        OSAL_log("\t ISR context Negative test for Event has failed!! \n");
-    }
-    
-    return result;
-}
-
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -448,7 +458,7 @@ static int32_t OsalApp_isInISRCNegEventTest(void)
 int32_t OsalApp_eventTests(void)
 {
     int32_t result = osal_OK;
-    
+
     result += OsalApp_isInISRCtxEventTest();
     result += OsalApp_eventNullTest();
     result += OsalApp_eventisUsedTest();

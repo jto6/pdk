@@ -73,6 +73,7 @@ volatile bool gOsalAppsemISRisExecuted = BFALSE;
 /*                           Function Declarations                            */
 /* ========================================================================== */
 
+#if !defined(BUILD_C66X)
 /*
  * Description : Semaphore Callback Function
  */
@@ -82,6 +83,7 @@ static void OsalApp_semaphoreISR(void *arg);
  * Description : Testing SemaphoreP_post and SemaphoreP_pend APIs from ISR context
  */
 static int32_t OsalApp_isInISRsemaphoreTest(void);
+#endif
 
 /*
  * Description : Testing Null check on below semaphore APIs
@@ -117,6 +119,7 @@ static int32_t OsalApp_semaphoreConstructTest(void);
 /*                    Internal Function Definitions                           */
 /* ========================================================================== */
 
+#if !defined(BUILD_C66X)
 static void OsalApp_semaphoreISR(void *arg)
 {
     gOsalAppsemISRisExecuted = BTRUE;
@@ -184,6 +187,7 @@ static int32_t OsalApp_isInISRsemaphoreTest(void)
 
     return result;
 }
+#endif
 
 static int32_t OsalApp_semaphoreNullTest(void)
 {
@@ -402,7 +406,9 @@ int32_t OsalApp_semaphoreTests(void)
     result += OsalApp_semaphoreNullTest();
     result += OsalApp_semaphorePendTest();
     result += OsalApp_semaphoreMaxTest();
+#if !defined(BUILD_C66X)
     result += OsalApp_isInISRsemaphoreTest();
+#endif
     result += OsalApp_semaphoreConstructTest();
     result += OsalApp_semaphoreNegativeTest();
 

@@ -250,7 +250,7 @@ void DebugP_log_Test()
 
     DebugP_log4(format, p1, p2, p3, p4);
 
-    OSAL_log("\nDebugP_log_Test passed!!\n");
+    OSAL_log("\n DebugP_log_Test passed!!\n");
 }
 
 #if defined(BARE_METAL)
@@ -263,7 +263,7 @@ void OSAL_tests(void *arg0, void *arg1)
     Board_initOSAL();
 
 #if defined(SAFERTOS)
-#if defined(BUILD_C7X_1)
+#if defined(BUILD_C7X)
     result += OsalApp_ArchutilsTests();
 #endif
 #endif
@@ -299,16 +299,18 @@ void OSAL_tests(void *arg0, void *arg1)
 #if !defined(BARE_METAL)
 
 #if defined(BUILD_MCU)
-
     result += OsalApp_taskTests();
-
 #endif
-  
+
     result += OsalApp_mailboxTests();
 
     result += OsalApp_eventTests();
-    
+
+#if !defined(BUILD_C66X)
     result += OsalApp_clockTests();
+
+    result += OsalApp_registerIntrTests();
+#endif
 
     result += OsalApp_c7xArchTests();
 
@@ -317,8 +319,6 @@ void OSAL_tests(void *arg0, void *arg1)
     result += OsalApp_cacheTests();
 
     result += OsalApp_mutexTests();
-
-    result += OsalApp_registerIntrTests();
 
     result += OsalApp_semaphoreTests();
 

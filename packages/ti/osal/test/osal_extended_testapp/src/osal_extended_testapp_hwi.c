@@ -196,13 +196,13 @@ static int32_t OsalApp_hwiNullTest(void)
     HwiP_Params_init(&hwiParams);
 
     hwiHandle = HwiP_create(CSL_INVALID_VEC_ID, NULL_PTR, NULL_PTR);
-#if defined(BUILD_MCU)
-    if(NULL_PTR != hwiHandle)
+#if defined(BUILD_C7X)
+    if(NULL_PTR == hwiHandle)
     {
         result = osal_FAILURE;
     }
 #else
-    if(NULL_PTR == hwiHandle)
+    if(NULL_PTR != hwiHandle)
     {
         result = osal_FAILURE;
     }
@@ -397,8 +397,8 @@ static int32_t OsalApp_hwiCreateAllocOvrflwTest(void)
 #endif
     handle2 = HwiP_createDirect(OSAL_APP_IRQ_SECONDARY_INT_NUM, (HwiP_DirectFxn)OsalApp_hwiIRQ, &hwiParams);
 
-    /* handle2 is not deleted for C7x as HwiP_createDirect returns NULL for C7x */
-#if defined(BUILD_C7X)
+    /* handle2 is not deleted for C7x anf c66x as HwiP_createDirect returns NULL */
+#if defined(BUILD_C7X) || defined(BUILD_C66X)
     if((NULL_PTR == handle1) || (NULL_PTR != handle2))
 #else
     if((NULL_PTR == handle1) || (NULL_PTR == handle2) || (HwiP_OK != HwiP_delete(handle2)))
@@ -409,7 +409,12 @@ static int32_t OsalApp_hwiCreateAllocOvrflwTest(void)
 
     if(osal_OK == result)
     {
-        HwiP_post(OSAL_APP_IRQ_INT_NUM);
+#if defined(BUILD_C66X)
+        /* Posting interrupt is not supported fro c66x cores */
+        if(osal_UNSUPPORTED != HwiP_post(OSAL_APP_IRQ_INT_NUM))
+#else
+        if(HwiP_OK != HwiP_post(OSAL_APP_IRQ_INT_NUM))
+#endif
         /* Wait till the interupt is hit */
         while(UFALSE == gOsalAppFlagHwiTest)
         {

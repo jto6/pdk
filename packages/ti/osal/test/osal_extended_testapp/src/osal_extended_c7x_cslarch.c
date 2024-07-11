@@ -64,25 +64,35 @@
 /*                           Function Declarations                            */
 /* ========================================================================== */
 
-/* None */
+/*
+ * Description: Testing MMU API for c7x
+ */
+static int32_t OsalApp_mmuTests(void);
+
+/*
+ * Description: Testing negative Hwi check for c7x
+ */
+static int32_t OsalApp_c7xHwiTests(void);
 
 /* ========================================================================== */
 /*                          Internal Function Definitions                     */
 /* ========================================================================== */
 
-static int32_t OsalApp_mmuTests(void){
-
+static int32_t OsalApp_mmuTests(void)
+{
     int32_t result = osal_OK;
+
 #if defined (BUILD_C7X)
     /* Disable and then enable the MMU. Below APIs dont return anything. */
     Mmu_enable();
     Mmu_disable();
     Mmu_enable();
+
 #endif
     return result;
 }
 
-int32_t OsalApp_c7xHwiTests(void)
+static int32_t OsalApp_c7xHwiTests(void)
 {
     int32_t result = osal_OK;
 
@@ -92,10 +102,10 @@ int32_t OsalApp_c7xHwiTests(void)
     /* Pass invalid interrupt number to event map. It should return abruptly.
      * Does not return any value, hence nothing to check it against.
      */
-    Hwi_eventMap( OSAL_APP_HWI_MAX_NUM, 0);
+    Hwi_eventMap(OSAL_APP_HWI_MAX_NUM, 0);
 
     status = Hwi_getStackInfo(&stkInfo, BTRUE);
-    if(0 == stkInfo.hwiStackPeak || status != BFALSE)
+    if((0 == stkInfo.hwiStackPeak) || (BFALSE != status))
     {
         result = osal_FAILURE;
     }
@@ -110,10 +120,10 @@ int32_t OsalApp_c7xHwiTests(void)
 int32_t OsalApp_c7xArchTests(void)
 {
     int32_t result = osal_OK;
-#if defined (BUILD_C7X)
+
     result += OsalApp_mmuTests();
     result += OsalApp_c7xHwiTests();
-#endif
+
     return result;
 }
 

@@ -128,7 +128,12 @@ static int32_t OsalApp_isInISRMutexTest(void)
     {
         HwiP_enableInterrupt(interruptNum);
 
+#if defined(BUILD_C66X)
+        /* Posting interrupt is not supported fro c66x cores */
+        if(osal_UNSUPPORTED != HwiP_post(interruptNum))
+#else
         if(HwiP_OK != HwiP_post(interruptNum))
+#endif
         {
             result = osal_FAILURE;
         }

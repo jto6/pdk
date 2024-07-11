@@ -18,7 +18,11 @@ INCDIR = . ../src ../../src/safertos
 SRCS_COMMON += osal_extended_testapp.c
 SRCS_COMMON += osal_extended_testapp_hwi.c osal_extended_testapp_mutex.c osal_extended_testapp_cache.c
 SRCS_COMMON += osal_extended_testapp_mailbox.c osal_extended_testapp_task.c osal_extended_testapp_semaphore.c
-SRCS_COMMON += osal_extended_testapp_event.c osal_extended_testapp_registerinterrupt.c osal_extended_testapp_clock.c osal_extended_c7x_cslarch.c
+SRCS_COMMON += osal_extended_testapp_event.c osal_extended_c7x_cslarch.c
+
+ifneq ($(CORE),$(filter $(CORE), c66xdsp_1 c66xdsp_2))
+SRCS_COMMON += osal_extended_testapp_clock.c osal_extended_testapp_registerinterrupt.c
+endif
 
 ifeq ($(BUILD_OS_TYPE),freertos)
 CFLAGS_OS_DEFINES = -DFREERTOS
@@ -32,7 +36,7 @@ ifeq ($(BUILD_OS_TYPE),safertos)
 CFLAGS_OS_DEFINES = -DSAFERTOS
 EXTERNAL_INTERFACES = safertos
 COMP_LIST_COMMON    = $(PDK_COMMON_SAFERTOS_COMP)
-ifeq ($(CORE),$(filter $(CORE), c7x_1))
+ifeq ($(CORE),$(filter $(CORE), c7x_1 c7x_2 c7x_3 c7x_4))
 SRCS_COMMON += osal_extended_testapp_archutils.c
 endif
 endif
