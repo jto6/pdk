@@ -60,7 +60,6 @@
 /** \brief Defines the various Sciserver test cases. */
 SciApp_TestParams_t gSciApp_TestcaseParams[] =
 {
-#if defined(SOC_J784S4)
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -94,7 +93,6 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
-#endif
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,

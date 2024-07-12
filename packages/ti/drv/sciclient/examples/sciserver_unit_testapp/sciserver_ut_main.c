@@ -96,9 +96,7 @@ extern SemaphoreP_Handle gSciserverUserSemHandles[];
 /* ========================================================================== */
 
 void mainTask(void* arg0, void* arg1);
-#if defined(SOC_J784S4)
 static int32_t SciserverApp_serverTest(void);
-#endif
 static int32_t SciserverApp_secProxyTransferTest(void);
 static int32_t SciserverApp_secproxyRoutingDescriptionTest(void);
 static int32_t SciserverApp_rtosTest(void);
@@ -159,11 +157,9 @@ int32_t SciApp_testMain(SciApp_TestParams_t *testParams)
 {
     switch (testParams->testcaseId)
     {
-#if defined(SOC_J784S4)
         case 1:
             testParams->testResult = SciserverApp_serverTest();
             break;
-#endif
         case 2:
             testParams->testResult = SciserverApp_secProxyTransferTest();
             break;
@@ -370,14 +366,27 @@ static int32_t SciserverApp_serverTest(void)
        SciApp_printf ("Sciserver_processtask: Sciserver_SetMsgHostId Test Failed.\n");
     }
 
+    Sciserver_msgData invalid_user_msg_data = 
+    {
+      .host = 0U,
+      .hwi_id = 0U,
+      .is_pending = false
+    };
+    Sciserver_msgData *const invalid_user_msg_data_list[SCISERVER_SECPROXY_INSTANCE_COUNT] =
+    {
+      &invalid_user_msg_data,
+      &invalid_user_msg_data
+    };
     Sciserver_taskData utdTestFail =
     {
+        .user_msg_data       = invalid_user_msg_data_list,
         .task_id             = SCISERVER_TASK_USER_HI,
         .hw_msg_buffer_count = SCISERVER_SECPROXY_INSTANCE_COUNT,
         .hw_msg_buffer_sz    = SCISERVER_HW_QUEUE_SIZE,
         .semaphore_id        = SCISERVER_SEMAPHORE_USER_HI,
     };
     utdTestFail.state->state = SCISERVER_TASK_PROCESSING_SECURE_MSG;
+    utdTestFail.state->current_buffer_idx   = 1;
     /* Passing task state as SCISERVER_TASK_PROCESSING_SECURE_MSG to cover fail condition in Sciserver_processtask */
     status = Sciserver_processtask(&utdTestFail);
     if (status == CSL_EFAIL)
@@ -401,9 +410,10 @@ static int32_t SciserverApp_serverTest(void)
         user_hi_msg_buffer,
         user_hi_main_msg_buffer
     };
+    invalid_user_msg_data.is_pending = true;
     Sciserver_taskData utdTisciMsgResponseFail =
     {
-        .user_msg_data      = (void *)-1,
+        .user_msg_data      = invalid_user_msg_data_list,
         .hw_msg_buffer_list = user_hi_msg_buffer_list
     };
     utdTisciMsgResponseFail.state->state                = SCISERVER_TASK_PROCESSING_USER_MSG;
