@@ -65,6 +65,10 @@ extern "C" {
 #include <SafeRTOS_API.h>
 #endif
 
+#if defined(_TMS320C6X) || defined(BUILD_C66X)
+#include <ti/osal/EventCombinerP.h>
+#endif
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -126,7 +130,7 @@ int32_t OsalApp_cycleProfilerTest(void);
 /* Top level function for load tests */
 int32_t OsalApp_freertosLoadTests(void);
 
-/* Top level function for c7x Arch utils tests */
+/* Top level function for c7x and c66x Arch utils tests */
 int32_t OsalApp_ArchutilsTests(void);
 
 /* Top level function for Register interrupt tests */

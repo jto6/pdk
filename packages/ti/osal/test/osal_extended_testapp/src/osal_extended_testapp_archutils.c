@@ -66,19 +66,38 @@ uint8_t gOsalApphwiPMemBlock[OSAL_APP_HWIP_BLOCK_SIZE];
 /* ========================================================================== */
 
 /*
- * Description: Testing Arch utils API for c7x
+ * Description: Testing Arch utils API
  */
 static int32_t OsalApp_archUtilsGeneralTest(void);
 
 /*
- * Description: Testing External block test for c7x
+ * Description: Testing External block test
  */
 static int32_t OsalApp_archUtilsExtBlockTest(void);
 
+#if defined(BUILD_C7X)
 /*
  * Description: Testing Max creation test for c7x
  */
-static int32_t OsalApp_archUtilsMaxTest(void);
+static int32_t OsalApp_archUtilsC7xMaxTest(void);
+#endif
+
+#if defined(BUILD_C66X)
+/*
+ * Description: Testing Negative checks for Hwi delete isused parameter for c66x
+ */
+static int32_t OsalApp_archUtilsIsUsedTest(void);
+
+/*
+ * Description: Testing Max creation test for c66x
+ */
+static int32_t OsalApp_archUtilsC66xMaxTest(void);
+
+/*
+ * Description: Testing Negative check for Hwi create with invalid parameters for c66x
+ */
+static int32_t OsalApp_archUtilsNegativeTest(void);
+#endif
 /* ========================================================================== */
 /*                    Internal Function Definitions                           */
 /* ========================================================================== */
@@ -109,7 +128,16 @@ static int32_t OsalApp_archUtilsGeneralTest(void)
     }
 
     hwiHandle = OsalArch_HwiPCreate(intNum, OsalApp_hwiIRQ, &hwiParams);
-    if((NULL_PTR == hwiHandle) || (NULL_PTR != OsalArch_getHandle(intNum)))
+    if(NULL_PTR == hwiHandle)
+    {
+        result = osal_FAILURE;
+    }
+
+#if defined(BUILD_C7X)
+    if(NULL_PTR != OsalArch_getHandle(intNum))
+#else
+    if(NULL_PTR == OsalArch_getHandle(intNum))
+#endif
     {
         result = osal_FAILURE;
     }
@@ -175,6 +203,16 @@ static int32_t OsalApp_archUtilsExtBlockTest(void)
         {
             result = osal_FAILURE;
         }
+
+#if defined(BUILD_C7X)
+        if(NULL_PTR != OsalArch_getHandle(OSAL_APP_IRQ_INT_NUM))
+#else
+        if(NULL_PTR == OsalArch_getHandle(OSAL_APP_IRQ_INT_NUM))
+#endif
+        {
+            result = osal_FAILURE;
+        }
+
         /* Verify the block created is in the extended memory block range */
         if((osal_OK == result) && (hwiHandle != (HwiP_Handle) &gOsalApphwiPMemBlock[0]))
         {
@@ -204,7 +242,8 @@ static int32_t OsalApp_archUtilsExtBlockTest(void)
     return result;
 }
 
-static int32_t OsalApp_archUtilsMaxTest(void)
+#if defined(BUILD_C7X)
+static int32_t OsalApp_archUtilsC7xMaxTest(void)
 {
     HwiP_Params     hwiParams;
     HwiP_Handle     hwiHandle[OSAL_NONOS_CONFIGNUM_HWI];
@@ -251,6 +290,144 @@ static int32_t OsalApp_archUtilsMaxTest(void)
 
     return result;
 }
+#endif
+
+#if defined(BUILD_C66X)
+static int32_t OsalApp_archUtilsIsUsedTest(void)
+{
+    HwiP_Params     hwiParams;
+    HwiP_Handle     hwiHandle;
+    uint32_t        intNum = OSAL_APP_IRQ_INT_NUM;
+    int32_t         result = osal_OK;
+
+    HwiP_Params_init(&hwiParams);
+    
+    hwiParams.enableIntr = BFALSE;
+
+    hwiHandle = OsalArch_HwiPCreate(intNum, OsalApp_hwiIRQ, &hwiParams);
+    if(NULL_PTR == hwiHandle)
+    {
+        result = osal_FAILURE;
+    }
+
+    /* Here handleAddr is used to get the memory location of the handle
+    * we are corrupting the content of the handle and passing in a corrupt handle to the driver
+    * to test negative condition for HeapP_alloc API
+    */
+    uint32_t *handleAddr = (uint32_t *)hwiHandle;
+
+    if(NULL_PTR == OsalArch_getHandle(intNum))
+    {
+        result = osal_FAILURE;
+    }
+
+    if(HwiP_OK != OsalArch_HwiPDelete(hwiHandle))
+    {
+        result = osal_FAILURE;
+    }
+    /* handle is deleted already, 
+     * enabling the is used parameter, and clearing the VecID and handle
+     * to check the negative condition for OsalArch_HwiPDelete API */
+    (*handleAddr) = 1U;
+    *(handleAddr + 3U) = 0U;
+    *(handleAddr + 4U) = 0U;
+    if(HwiP_OK == OsalArch_HwiPDelete(hwiHandle))
+    {
+        result = osal_FAILURE;
+    }
+
+    if(osal_OK != result)
+    {
+        OSAL_log("\n Hwi delete is used parameter negative test have failed!\n");
+    }
+
+    return result;
+}
+
+static int32_t OsalApp_archUtilsNegativeTest(void)
+{
+    HwiP_Params     hwiParams;
+    HwiP_Handle     hwiHandle;
+    int32_t         result = osal_OK;
+
+    HwiP_Params_init(&hwiParams);
+
+    hwiParams.enableIntr = BFALSE;
+    hwiParams.evtId = CSL_INVALID_EVENT_ID;
+
+    hwiHandle = OsalArch_HwiPCreate(0U, OsalApp_hwiIRQ, &hwiParams);
+    if(NULL_PTR != hwiHandle)
+    {
+        OSAL_log("hwiHandle = %x\n",hwiHandle);
+        OsalArch_HwiPDelete(hwiHandle);
+        result = osal_FAILURE;
+    }
+
+    if(osal_OK != result)
+    {
+        OSAL_log("\n Hwi Create negative test have failed!\n");
+    }
+
+    return result;
+}
+
+static int32_t OsalApp_archUtilsC66xMaxTest(void)
+{
+    HwiP_Params     hwiParams;
+    HwiP_Handle     hwiHandle[OSAL_NONOS_CONFIGNUM_HWI];
+    uint32_t        hwiIndex = 0U, maxIndex = 0U;
+    int32_t         result = osal_OK;
+
+    HwiP_Params_init(&hwiParams);
+
+    /* Testing Maximum Hwi creation */
+    for(hwiIndex = 0U; hwiIndex < (OSAL_NONOS_CONFIGNUM_HWI + 2U); hwiIndex++)
+    {
+        if((21U != hwiIndex) && (16U != hwiIndex) && (14U != hwiIndex))
+        {
+            hwiParams.evtId = hwiIndex;
+            hwiHandle[hwiIndex] = OsalArch_HwiPCreate(hwiIndex, OsalApp_hwiIRQ, &hwiParams);
+            if(NULL_PTR == hwiHandle[hwiIndex])
+            {
+                result = osal_FAILURE;
+                break;
+            }
+        }
+    }
+
+    if(osal_OK == result)
+    {
+        hwiParams.evtId = hwiIndex;
+        if(NULL_PTR != OsalArch_HwiPCreate(hwiIndex, OsalApp_hwiIRQ, &hwiParams))
+        {
+            result = osal_FAILURE;
+        }
+    }
+
+    maxIndex = hwiIndex;
+    if(osal_OK == result)
+    {
+        for(hwiIndex = 0U; hwiIndex < maxIndex; hwiIndex++)
+        {
+            if((21U != hwiIndex) && (16U != hwiIndex) && (14U != hwiIndex))
+            {
+                if(HwiP_OK != OsalArch_HwiPDelete(hwiHandle[hwiIndex]))
+                {
+                    result = osal_FAILURE;
+                    break;
+                }
+            }
+        }
+    }
+
+    if(osal_OK != result)
+    {
+        OSAL_log("\n Multiple hwi create test failed! \n");
+    }
+
+    return result;
+}
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -261,7 +438,13 @@ int32_t OsalApp_ArchutilsTests(void)
     int32_t result = osal_OK;
     result += OsalApp_archUtilsGeneralTest();
     result += OsalApp_archUtilsExtBlockTest();
-    result += OsalApp_archUtilsMaxTest();
+#if defined(BUILD_C7X)
+    result += OsalApp_archUtilsC7xMaxTest();
+#elif defined(BUILD_C66X)
+    result += OsalApp_archUtilsC66xMaxTest();
+    result += OsalApp_archUtilsIsUsedTest();
+    result += OsalApp_archUtilsNegativeTest();
+#endif
 
     if(osal_OK == result)
     {

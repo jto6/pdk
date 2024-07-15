@@ -263,7 +263,7 @@ void OSAL_tests(void *arg0, void *arg1)
     Board_initOSAL();
 
 #if defined(SAFERTOS)
-#if defined(BUILD_C7X)
+#if defined(BUILD_C7X) || defined(BUILD_C66X)
     result += OsalApp_ArchutilsTests();
 #endif
 #endif

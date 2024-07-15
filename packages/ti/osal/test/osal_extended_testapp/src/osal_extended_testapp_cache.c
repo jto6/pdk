@@ -45,6 +45,8 @@
 #include "osal_extended_test.h"
 #if defined (BUILD_C7X)
 #include "Cache.h"
+#elif defined (BUILD_C66X)
+#include <ti/csl/csl_chipAux.h>
 #endif
 
 /* ========================================================================== */
@@ -104,7 +106,7 @@ int32_t OsalApp_cacheTests(void)
     /*  Write back the cache */
     CacheP_wb(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE);
 #if defined (BUILD_MCU)
-    CSL_armR5CacheWb(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, false);
+    CSL_armR5CacheWb(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, BFALSE);
 #elif defined (BUILD_C7X)
     Cache_wb((void *)gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, Cache_Type_ALL, BFALSE);
 #endif
@@ -112,7 +114,7 @@ int32_t OsalApp_cacheTests(void)
     /* Invalidate the cache */
     CacheP_Inv(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE);
 #if defined (BUILD_MCU)
-    CSL_armR5CacheInv(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, false);
+    CSL_armR5CacheInv(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, BFALSE);
 #elif defined (BUILD_C7X)
     Cache_inv((void *)gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, Cache_Type_ALL, BFALSE);
 #endif
@@ -120,10 +122,20 @@ int32_t OsalApp_cacheTests(void)
     /*  Write back and invalidate the cache */
     CacheP_wbInv(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE);
 #if defined (BUILD_MCU)
-    CSL_armR5CacheWbInv(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, false);
+    CSL_armR5CacheWbInv(gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, BFALSE);
     CSL_armR5CacheWait();
 #elif defined (BUILD_C7X)
     Cache_wbInv((void *)gOsalAppCacheTestArr, OSAL_APP_CACHE_TEST_ARR_SIZE, Cache_Type_ALL, BFALSE);
+#endif
+
+    /* To cover the branch coverage of for loop where it expects the size of the address more than zero */
+#if defined (BUILD_C66X) && defined (SAFERTOS)
+    CacheP_setMar((void *)configDDR_START, configDDR_START, CacheP_Mar_ENABLE);
+    uint32_t marAddr = CacheP_getMar(configDDR_START);
+    if(marAddr != CacheP_Mar_ENABLE)
+    {
+        result = osal_FAILURE;
+    }
 #endif
 
     OSAL_log("\n All Cache Tests have passed!!\n");

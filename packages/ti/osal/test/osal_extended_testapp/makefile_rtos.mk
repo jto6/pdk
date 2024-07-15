@@ -36,7 +36,7 @@ ifeq ($(BUILD_OS_TYPE),safertos)
 CFLAGS_OS_DEFINES = -DSAFERTOS
 EXTERNAL_INTERFACES = safertos
 COMP_LIST_COMMON    = $(PDK_COMMON_SAFERTOS_COMP)
-ifeq ($(CORE),$(filter $(CORE), c7x_1 c7x_2 c7x_3 c7x_4))
+ifeq ($(CORE),$(filter $(CORE), c7x_1 c7x_2 c7x_3 c7x_4 c66xdsp_1 c66xdsp_2))
 SRCS_COMMON += osal_extended_testapp_archutils.c
 endif
 endif

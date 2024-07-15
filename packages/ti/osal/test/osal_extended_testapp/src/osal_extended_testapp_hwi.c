@@ -58,6 +58,11 @@
 /* ========================================================================== */
 
 #define OSAL_APP_IRQ_SECONDARY_INT_NUM (29U)
+#if defined(SOC_J721E)
+#define OSAL_INUSE_INTR                (16U)
+#else
+#define OSAL_INUSE_INTR                (14U)
+#endif
 /* C7x cores can serve only 64 interrupts, numbered 0 to 63. */
 #if defined (BUILD_C7X)
 #define INVALID_INT_NUM_C7X            (64U)
@@ -409,18 +414,21 @@ static int32_t OsalApp_hwiCreateAllocOvrflwTest(void)
 
     if(osal_OK == result)
     {
+        HwiP_post(OSAL_APP_IRQ_INT_NUM);
 #if defined(BUILD_C66X)
         /* Posting interrupt is not supported fro c66x cores */
         if(osal_UNSUPPORTED != HwiP_post(OSAL_APP_IRQ_INT_NUM))
 #else
-        if(HwiP_OK != HwiP_post(OSAL_APP_IRQ_INT_NUM))
+        if(HwiP_OK == HwiP_post(OSAL_APP_IRQ_INT_NUM))
 #endif
-        /* Wait till the interupt is hit */
-        while(UFALSE == gOsalAppFlagHwiTest)
         {
-            /* Do nothing */
+            /* Wait till the interupt is hit */
+            while(UFALSE == gOsalAppFlagHwiTest)
+            {
+                /* Do nothing */
+            }
+            gOsalAppFlagHwiTest = UFALSE;
         }
-        gOsalAppFlagHwiTest = UFALSE;
 
 #if defined(BUILD_C7X)
         hwiParamsCsl.maskSetting = Hwi_MaskingOption_NONE;
@@ -586,7 +594,7 @@ static int32_t OsalApp_hwiCreateMaxTest(void)
         handle[hwiIndex] = HwiP_create(hwiIndex, (HwiP_Fxn)OsalApp_hwiIRQ, &hwiParams);
         if(NULL_PTR == handle[hwiIndex])
         {
-            if(14U != hwiIndex)
+            if(OSAL_INUSE_INTR != hwiIndex)
             {
                 break;
             }
@@ -597,7 +605,7 @@ static int32_t OsalApp_hwiCreateMaxTest(void)
     {
         if(HwiP_OK != HwiP_delete(handle[hwiIndex]))
         {
-            if(14U != hwiIndex)
+            if(OSAL_INUSE_INTR != hwiIndex)
             {
                 result = osal_FAILURE;
             }
