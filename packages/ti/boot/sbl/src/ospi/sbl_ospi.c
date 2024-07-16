@@ -657,9 +657,10 @@ int32_t SBL_OSPIBootImage(sblEntryPoint_t *pEntry)
     bool isNandBootEnabled = BFALSE;
     /* Profile point after Board init Clocks and before OSPI init */
     SBL_ADD_PROFILE_POINT;
-#if defined(OSPI_NAND_BOOT)
-    isNandBootEnabled = BTRUE;
-#endif
+    if (BTRUE == gIsNandBootEnable)
+    {
+        isNandBootEnabled = BTRUE;
+    }
     /* Initialization of the driver. */
     SBL_OSPI_Initialize(isNandBootEnabled);
 
