@@ -101,6 +101,13 @@ typedef struct I2C_Tests_s
 
 #define I2C_TRANSACTION_TIMEOUT         (10000U)
 
+/* Number of I2C Bitrate tests */
+#if defined (SOC_J784S4)
+#define I2C_BITRATE_TEST_MAX_COUNT      (4U)
+#else
+#define I2C_BITRATE_TEST_MAX_COUNT      (2U)
+#endif
+
 #if defined (SOC_J721E)
 /* By default for, first available output from IR */
 #define I2C_INST_WKUP_I2C0_INT_NUM_MAIN (CSLR_R5FSS0_CORE0_INTR_R5FSS0_INTROUTER0_OUTL_0)
@@ -114,7 +121,15 @@ typedef struct I2C_Tests_s
 #define I2C_INST_WKUP_I2C0_INT_NUM_MAIN (CSLR_R5FSS0_CORE0_INTR_WKUP_I2C0_POINTRPEND_0)
 #define I2C_INST_WKUP_I2C0_INT_NUM_MCU (CSLR_MCU_R5FSS0_CORE0_INTR_WKUP_I2C0_POINTRPEND_0)
 /* Interrupt reserved for Core ID 1. 128 is based on RM */
-#define I2C_INST_WKUP_I2C0_INT_OFFSET   (0)
+#define I2C_INST_WKUP_I2C0_INT_OFFSET   (0U)
+#endif
+
+#if defined (SOC_J721S2)
+/* WKUP I2C0 interrupt goes directly into MAIN R5 cores. Interrupt Numbers for all R5 main cores are same. */
+#define I2C_INST_WKUP_I2C0_INT_NUM_MAIN (CSLR_R5FSS0_CORE0_INTR_WKUP_I2C0_POINTRPEND_0)
+#define I2C_INST_WKUP_I2C0_INT_NUM_MCU (CSLR_MCU_R5FSS0_CORE0_INTR_WKUP_I2C0_POINTRPEND_0)
+/* Interrupt reserved for Core ID 1. 128 is based on RM */
+#define I2C_INST_WKUP_I2C0_INT_OFFSET   (0U)
 #endif
 
 #if defined (SOC_J7200)
@@ -162,7 +177,6 @@ bool Board_initI2C(void)
     I2C_socGetInitCfg(I2C_EEPROM_INSTANCE, &i2c_cfg);
 
     /* Modify the default I2C configurations if necessary */
-#if defined (SOC_J721E) || defined(SOC_J7200) || defined (SOC_J784S4) || defined (SOC_J742S2)
     /* No I2C instanced connected to eeprom in main domain, use i2c instance in wakeup domain */
     i2c_cfg.baseAddr = CSL_WKUP_I2C0_CFG_BASE;
 #if defined (BUILD_MPU)
@@ -198,7 +212,6 @@ bool Board_initI2C(void)
 
 #if defined (BUILD_C7X_1)
     i2c_cfg.eventId = CSLR_COMPUTE_CLUSTER0_CLEC_SOC_EVENTS_IN_WKUP_I2C0_POINTRPEND_0 + 992U, /* eventId, input event # to CLEC */
-#endif
 #endif
 
     /* Set the default I2C init configurations */
@@ -354,7 +367,7 @@ static bool I2C_bitrate_test(void *arg)
     bool       testResult = BTRUE;
     uint32_t   i;
 
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < I2C_BITRATE_TEST_MAX_COUNT; i++)
     {
         testResult = i2c_bitrate_test((I2C_BitRate)i, (I2C_Tests *)arg);
         if (BFALSE == testResult)
@@ -366,8 +379,6 @@ static bool I2C_bitrate_test(void *arg)
     return (testResult);
 }
 
-
-#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J784S4) || defined (SOC_J742S2)
 static bool I2C_Probe_BusFrequency_test(void *arg)
 {
     I2C_Handle      handle;
@@ -578,7 +589,6 @@ Err:
 
     return status;
 }
-#endif
 
 void I2C_test_print_test_desc(I2C_Tests *test)
 {
@@ -596,15 +606,13 @@ I2C_Tests I2c_tests[] =
 {
     /* testFunc                   testID                       dma     intr    cbMode  timeout                  testDesc */
     {I2C_bitrate_test,            I2C_TEST_ID_BIT_RATE,        BFALSE, BTRUE,  BFALSE, SemaphoreP_WAIT_FOREVER, "\r\n I2C bit rate test in interrupt mode"},
-#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J784S4) || defined (SOC_J742S2)
     {I2C_Probe_BusFrequency_test, I2C_TEST_ID_PROBE_BUS_FREQ,  BFALSE, BTRUE,  BFALSE, SemaphoreP_WAIT_FOREVER, "\r\n I2C probe bus freq test in interrupt mode"},
     {I2C_timeout_test,            I2C_TEST_ID_TIMEOUT_INT,     BFALSE, BTRUE,  BFALSE, 1,                       "\r\n I2C timeout test in interrupt mode"},
-#endif
     {NULL, },
 };
 
 
-#if defined(UNITY_INCLUDE_CONFIG_H) && (defined(SOC_J721E) || defined (SOC_J784S4) || defined (SOC_J742S2) || defined(SOC_J7200))
+#if defined(UNITY_INCLUDE_CONFIG_H)
 /*
  *  ======== Unity set up and tear down ========
  */
@@ -736,7 +744,7 @@ void i2c_test(void *arg0, void *arg1)
 int main ()
 #endif
 {
-#if defined(UNITY_INCLUDE_CONFIG_H) && (defined(SOC_J721E) || defined (SOC_J784S4) || defined (SOC_J742S2) || defined(SOC_J7200))
+#if defined(UNITY_INCLUDE_CONFIG_H)
     test_I2C_Eeprom_TestApp_runner();
 #else
     bool       testResult = BTRUE;

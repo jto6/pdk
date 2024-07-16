@@ -71,7 +71,7 @@ drvi2c_SOCLIST             = j721e j7200 j721s2 j784s4 j742s2
 drvi2c_j721e_CORELIST      = $(DEFAULT_j721e_CORELIST)
 drvi2c_j721e_CORELISTARM   = mpu1_0 mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1
 drvi2c_j721s2_CORELIST     = mpu1_0 mcu1_0 mcu2_0 mcu3_0 c7x_1
-drvi2c_j721s2_CORELISTARM  = mcu1_0 mcu2_0 mcu3_0
+drvi2c_j721s2_CORELISTARM  = mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1
 drvi2c_j784s4_CORELIST     = mpu1_0 mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1 c7x_1
 drvi2c_j784s4_CORELISTARM  = mpu1_0 mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1
 drvi2c_j742s2_CORELIST     = mpu1_0 mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1 c7x_1
@@ -152,7 +152,7 @@ export i2c_baremetal_eeprom_testApp_CORE_DEPENDENCY
 export i2c_baremetal_eeprom_testApp_MAKEFILE
 i2c_baremetal_eeprom_testApp_PKG_LIST = i2c_baremetal_eeprom_testApp
 i2c_baremetal_eeprom_testApp_INCLUDE = $(i2c_baremetal_eeprom_testApp_PATH)
-i2c_baremetal_eeprom_testApp_BOARDLIST = j721e_evm j784s4_evm j742s2_evm j7200_evm
+i2c_baremetal_eeprom_testApp_BOARDLIST = j721e_evm j784s4_evm j742s2_evm j7200_evm j721s2_evm
 export i2c_baremetal_eeprom_testApp_BOARDLIST
 ifeq ($(SOC),$(filter $(SOC), j721e))
 i2c_baremetal_eeprom_testApp_$(SOC)_CORELIST = $(drvi2c_j721e_CORELISTARM)
@@ -160,6 +160,8 @@ else ifeq ($(SOC),$(filter $(SOC), j784s4))
 i2c_baremetal_eeprom_testApp_$(SOC)_CORELIST = $(drvi2c_j784s4_CORELISTARM)
 else ifeq ($(SOC),$(filter $(SOC), j742s2))
 i2c_baremetal_eeprom_testApp_$(SOC)_CORELIST = $(drvi2c_j742s2_CORELISTARM)
+else ifeq ($(SOC),$(filter $(SOC), j721s2))
+i2c_baremetal_eeprom_testApp_$(SOC)_CORELIST = $(drvi2c_j721s2_CORELISTARM)
 else
 i2c_baremetal_eeprom_testApp_$(SOC)_CORELIST = $(drvi2c_$(SOC)_CORELIST)
 endif
