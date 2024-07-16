@@ -768,16 +768,24 @@ int32_t Udma_ringMonConfig(Udma_RingMonHandle monHandle,
             memset(&rmRingMonResp, 0, sizeof(rmRingMonResp));
             rmRingMonReq.valid_params   = TISCI_MSG_VALUE_RM_MON_SOURCE_VALID |
                                         TISCI_MSG_VALUE_RM_MON_MODE_VALID |
-                                        TISCI_MSG_VALUE_RM_MON_QUEUE_VALID |
-                                        TISCI_MSG_VALUE_RM_MON_DATA0_VAL_VALID |
-                                        TISCI_MSG_VALUE_RM_MON_DATA1_VAL_VALID;
+                                        TISCI_MSG_VALUE_RM_MON_QUEUE_VALID;
+            if((monPrms->mode != TISCI_MSG_VALUE_RM_MON_MODE_WATERMARK) &&
+               (monPrms->mode != TISCI_MSG_VALUE_RM_MON_MODE_STARVATION))
+            {
+                rmRingMonReq.valid_params |= TISCI_MSG_VALUE_RM_MON_DATA0_VAL_VALID |
+                                             TISCI_MSG_VALUE_RM_MON_DATA1_VAL_VALID;
+            }
             rmRingMonReq.nav_id         = drvHandle->devIdRing;
             rmRingMonReq.index          = monHandle->ringMonNum;
             rmRingMonReq.source         = monPrms->source;
             rmRingMonReq.mode           = monPrms->mode;
             rmRingMonReq.queue          = monPrms->ringNum;
-            rmRingMonReq.data0_val      = monPrms->data0;
-            rmRingMonReq.data1_val      = monPrms->data1;
+            if((monPrms->mode != TISCI_MSG_VALUE_RM_MON_MODE_WATERMARK) &&
+               (monPrms->mode != TISCI_MSG_VALUE_RM_MON_MODE_STARVATION))
+            {
+                rmRingMonReq.data0_val      = monPrms->data0;
+                rmRingMonReq.data1_val      = monPrms->data1;
+            }
             retVal = Sciclient_rmRingMonCfg(
                         &rmRingMonReq, &rmRingMonResp, UDMA_SCICLIENT_TIMEOUT);
             if(CSL_PASS != retVal)

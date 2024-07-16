@@ -671,6 +671,8 @@ int32_t udmaTestRingMonLowThresholdTc(UdmaTestTaskObj *taskObj);
 int32_t udmaTestRingMonHighThresholdTc(UdmaTestTaskObj *taskObj);
 int32_t UdmaTestRingMonGetNum(UdmaTestTaskObj *taskObj);
 int32_t UdmaTestRingMonAlloc(UdmaTestTaskObj *taskObj);
+int32_t udmaTestRingMonStarvationTc(UdmaTestTaskObj *taskObj);
+int32_t udmaTestRingMonWatermarkTc(UdmaTestTaskObj *taskObj);
 /*
  * UDMA proxy test functions
  */
