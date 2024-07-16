@@ -56,6 +56,14 @@ number of OTP bits. The width of these registers is always 32 bits irrespective
 of width of the underlying hardware OTP rows. These registers are only refreshed
 on a POR of the device and not on a warm reset.
 
+.. note::
+
+   (1) On all SMS based devices, extended OTP region starts from column 2 of the first row. 
+   First 2 bits of first row of exteneded OTP region are reserved.
+
+   (2) For the last row of extended OTP region of each device, only remaining valid bits are useable 
+   from the total number of bits.
+   
 The hardware allows each individual OTP row (not MMR) to be locked to prevent
 modification. Once the OTP row is locked, any bit in the row can never be
 modified.
