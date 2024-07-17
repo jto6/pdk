@@ -210,6 +210,10 @@ const FATFS_Config FATFS_config[_VOLUMES + 1] = {
 #define SBL_MAIN_DEVSTAT_BACKUP_BOOT_MASK       (0xEU)
 #define SBL_MAIN_DEVSTAT_BACKUP_BOOT_MMCSD      (0xAU)
 #define SBL_MAIN_DEVSTAT_PRIMARY_BOOT_B_MASK    (0x1U)
+/*  eMMC Micron Flash ID  */
+#define EMMC_MICRON_FLASH_MANUFACTURER_ID       (0X13U)
+
+
 #endif
 
 #ifdef BUILD_MCU
@@ -230,6 +234,8 @@ int32_t SBL_ReadSysfwImage(void **pBuffer, uint32_t num_bytes)
     const TCHAR *fileName = "0:/tifs.bin";
     void *sysfw_ptr = *pBuffer;
     MMCSD_v2_HwAttrs hwAttrsConfig;
+    uint32_t** cidPtr = NULL;
+    uint8_t emmcManufacturerId = 0U;
 
      if(MMCSD_socGetInitCfg(FATFS_initCfg[0].drvInst,&hwAttrsConfig)!=0) {
        UART_printf("\nUnable to get config.Exiting. TEST FAILED.\r\n");
@@ -285,8 +291,47 @@ int32_t SBL_ReadSysfwImage(void **pBuffer, uint32_t num_bytes)
     if (gIsEmmcBoot0Enable == BTRUE)
     {
         MMCSD_init();
-        retVal = MMCSD_open(FATFS_initCfg[0].drvInst, NULL, &gHandle);
-        if (retVal != CSL_PASS)
+        retVal = MMCSD_readcid(FATFS_initCfg[0].drvInst,cidPtr);
+        if(retVal != CSL_PASS)
+        {
+            UART_printf("Failed to get CID Register\n");
+        }
+
+        if (retVal == CSL_PASS)
+        {
+          emmcManufacturerId = *(*cidPtr+3) >> 24;
+
+          if (EMMC_MICRON_FLASH_MANUFACTURER_ID == emmcManufacturerId)
+          {
+            if(MMCSD_socGetInitCfg(FATFS_initCfg[0].drvInst,&hwAttrsConfig)!=0)
+            {
+                UART_printf("Unable to get MMC init config, MMCSD_socGetInitCfg failed.\r\n");
+                retVal = E_FAIL;
+            }
+            else
+            {
+                hwAttrsConfig.drvStrength=0;
+                hwAttrsConfig.phydrvStrength=0;
+            }
+            if(MMCSD_socSetInitCfg(FATFS_initCfg[0].drvInst,&hwAttrsConfig)!=0) 
+            {
+                UART_printf("Unable to set MMC init config, MMCSD_socSetInitCfg failed.\r\n");
+                retVal = E_FAIL;
+            }
+            else
+            {
+                /* Do Nothing */
+            }
+          }
+          else
+          {
+            /* User Can add different Drive strength based on flash manufacturer IDs */
+          }
+        }
+
+	retVal = MMCSD_open(FATFS_initCfg[0].drvInst, NULL, &gHandle);
+
+    if (retVal != CSL_PASS)
         {
             UART_printf("\n MMCSD open fails for eMMC Boot \n");
         }

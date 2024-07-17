@@ -161,6 +161,13 @@ typedef enum {
 
 /** \brief  Set boot partition of eMMC */
 #define MMCSD_CMD_ENABLEBOOTPARTITION   (MMCSD_CMD_RESERVED + 6U)
+
+/** \brief  Get CID register of eMMC */
+#define MMCSD_GET_CID_REGISTER       (MMCSD_CMD_RESERVED + 7U)
+
+/** \brief get drive Strength of eMMC */
+#define MMCSD_GET_EXD_CSD_REGISTER   (MMCSD_CMD_RESERVED + 8U)
+
 /* MMC function table pointer */
 extern const MMCSD_FxnTable MMCSD_v2_FxnTable;
 
@@ -401,7 +408,9 @@ typedef struct MMCSD_v2_HwAttrs_s {
     
      MMCSD_v2_socConfigIntrPath configSocIntrPath;
      MMCSD_PhyType_e phyType; /* HW/SW phy */
-     MMCSD_TuningType_e tuningType; /*! This selects manual SW tuning or auto HW tuning for SDR104/HS200/HS400 modes  */ 
+     MMCSD_TuningType_e tuningType; /*! This selects manual SW tuning or auto HW tuning for SDR104/HS200/HS400 modes  */
+     uint32_t drvStrength; /*Drive strength to be configure in emmc device as well on the phy ctrl register*/
+     uint32_t phydrvStrength; /*Drive strength to be configure in emmc device as well on the phy ctrl register*/
 } MMCSD_v2_HwAttrs;
 
 

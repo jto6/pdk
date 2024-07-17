@@ -393,6 +393,22 @@ extern MMCSD_Error MMCSD_open(uint32_t index,
                               MMCSD_Handle *handle);
 
 /*!
+ *  @brief  Function to Read the CID of a given emmc peripheral specified by the
+ *          particular index value.
+ *
+ *  @pre    SD controller has been initialized
+ *
+ *  @param  index         Logical peripheral number for the SD indexed into
+ *                        the MMCSD_config table
+ *  @param  arg           A pointer to buffer for CID
+ *
+ *  @return. True on successful read and false on an error.
+ *
+ *  @sa     MMCSD_init()
+ */
+extern MMCSD_Error MMCSD_readcid(uint32_t index,void *arg);
+
+/*!
  *  @brief  Function to initialize the MMCSD_Params struct to its defaults
  *
  *  @param  params      An pointer to MMCSD_Params structure for

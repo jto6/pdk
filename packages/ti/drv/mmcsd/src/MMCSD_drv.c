@@ -97,6 +97,22 @@ MMCSD_Error MMCSD_init(void)
 }
 
 /*
+ *  ======== MMCSD_readcid ========
+ */
+MMCSD_Error MMCSD_readcid(uint32_t index,void *arg)
+{
+    MMCSD_Error retVal = MMCSD_ERR;
+    MMCSD_Handle mmcsdHandle = (MMCSD_Handle)&(MMCSD_config[index]);
+
+    /* Input parameter validation */
+    if (mmcsdHandle != NULL)
+    {
+        retVal = ((MMCSD_Config *)mmcsdHandle)->fxnTablePtr->controlFxn(mmcsdHandle,MMCSD_GET_CID_REGISTER, (uint32_t**)arg);
+    }
+    return retVal;
+}
+
+/*
  *  ======== MMCSD_open ========
  */
 MMCSD_Error MMCSD_open(uint32_t index, MMCSD_Params params, MMCSD_Handle *handle)

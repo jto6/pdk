@@ -464,6 +464,9 @@ static MMCSD_Error MMCSD_v2_getBusWidth(MMCSD_Handle handle, uint32_t *busWidth)
 static MMCSD_Error MMCSD_v2_getBusFreq(MMCSD_Handle handle, uint32_t *busFreq);
 static MMCSD_Error MMCSD_v2_getMediaParams(MMCSD_Handle handle, MMCSD_mediaParams *params);
 static MMCSD_Error MMCSD_v2_getErrorStatus(MMCSD_Handle handle, uint32_t *errorStat);
+static MMCSD_Error MMCSD_v2_getCidRegister(MMCSD_Handle handle, uint32_t **cidReg);
+static MMCSD_Error MMCSD_v2_getExtCsdRegister(MMCSD_Handle handle, uint8_t **extCidReg);
+
 void MMCSD_v2_hwiFxn(uintptr_t arg);
 static void MMCSD_v2_cmdStatusFxn(uintptr_t arg);
 static void MMCSD_v2_xferStatusFxn(uintptr_t arg);
@@ -2062,13 +2065,14 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
     MMCSD_v2_HwAttrs const *hwAttrs = NULL;
     MMCSD_v2_Transaction    transaction;
     uint32_t drvStrength_controller=0;
-
+    uint8_t  **extCid = NULL;
+    uint8_t  driveStrengthSupportRegInExdCsd = 0;
     /* Get the pointer to the object and hwAttrs */
     object = (MMCSD_v2_Object *)((MMCSD_Config *) handle)->object;
     hwAttrs = (MMCSD_v2_HwAttrs const *)((MMCSD_Config *) handle)->hwAttrs;
 
-    drvStrength = object->ecsd[185] >> 4;/* To be obtained from the EXT_CSD */
-
+    drvStrength = hwAttrs->drvStrength;
+    phyDriverType= hwAttrs->phydrvStrength;
 
    if((mode == MMCSD_SUPPORT_MMC_HS200) || (mode == MMCSD_SUPPORT_MMC_HS400))
    {
@@ -2120,6 +2124,20 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
       clk_freq = 26000000;
 	}
 
+      ret = MMCSD_v2_getExtCsdRegister(handle, extCid);
+
+     /* Check if drive strength configured is supported by the MMC device or not */
+     /* Read the DRIVER_STRENGTH field (at an offset of 197) of the Extended CSD register to find
+        the supported device Driver Strengths */
+     driveStrengthSupportRegInExdCsd = *(*extCid + 197);
+     if(drvStrength <= 4U && (driveStrengthSupportRegInExdCsd >> drvStrength) & 1)
+     {
+         ret = MMCSD_OK;
+     }
+     else
+     {
+         ret = MMCSD_ERR;
+     }
 
       /* Send the Switch command to change the HS TIMINIG bit of the EXT_CSD[185]  */
      if(MMCSD_OK == ret)
@@ -3324,6 +3342,19 @@ static MMCSD_Error MMCSD_v2_control(MMCSD_Handle handle, uint32_t cmd, const voi
 				ret = MMCSD_v2_getErrorStatus(handle, (uint32_t *)arg);
 				break;
 			}
+
+            case MMCSD_GET_CID_REGISTER:
+            {
+               ret = MMCSD_v2_getCidRegister(handle, (uint32_t**)arg);
+               break;
+            }
+
+            case MMCSD_GET_EXD_CSD_REGISTER:
+            {
+                ret = MMCSD_v2_getExtCsdRegister(handle, (uint8_t**)arg);
+                break;
+            }
+
             default:
             ret = MMCSD_UNDEFINEDCMD;
             break;
@@ -3579,6 +3610,252 @@ static MMCSD_Error MMCSD_v2_getErrorStatus(MMCSD_Handle handle, uint32_t *errorS
       }
     }
     return(ret);
+}
+
+/*
+ *  ======== MMCSD_v2_getCidRegister ========
+ */
+/*!
+ *  @brief      A function to return Cid Register
+ *
+ */
+static MMCSD_Error MMCSD_v2_getCidRegister(MMCSD_Handle handle, uint32_t** cidReg)
+{
+    MMCSD_Error                 ret = MMCSD_OK;
+    uint32_t                    retry = 0xFFFFU;
+    MMCSD_v2_Object            *object = NULL;
+    MMCSD_v2_HwAttrs const     *hwAttrs = NULL;
+    MMCSD_v2_Transaction        transaction;
+    volatile int32_t            status = -1;
+
+    /* Get the pointer to the object and hwAttrs */
+    object = (MMCSD_v2_Object *)((MMCSD_Config *) handle)->object;
+    hwAttrs = (MMCSD_v2_HwAttrs const *)((MMCSD_Config *) handle)->hwAttrs;
+
+    if(MMCSD_OK == ret)
+    {
+        /* MMC Controller Soft Reset */
+        status = HSMMCSDSoftReset(hwAttrs->baseAddr);
+
+        if (STW_SOK != status)
+        {
+#ifdef LOG_EN
+            MMCSD_drv_log4(Diags_USER1,
+                    "MMCSD:(%p) HS MMC/SD Reset failed\n", hwAttrs->baseAddr);
+#endif
+            ret = MMCSD_ERR;
+        }
+        else
+        {
+            ret = MMCSD_OK;
+        }
+    }
+
+    if (MMCSD_OK == ret)
+    {
+        /* Lines Reset */
+        status=HSMMCSDLinesReset(hwAttrs->baseAddr, HS_MMCSD_ALL_RESET);
+        if(status!=STW_SOK) {
+           MMCSD_DEBUG_TRAP
+         }
+
+        /* Set the bus width */
+        status=HSMMCSDBusWidthSet(hwAttrs->baseAddr, HS_MMCSD_BUS_WIDTH_1BIT);
+        if(status!=STW_SOK) {
+           MMCSD_DEBUG_TRAP
+         }
+
+        /* Set the bus voltage */
+        status=HSMMCSDBusVoltSet(hwAttrs->baseAddr, MMC_HCTL_SDVS_1V8);
+
+        if(status!=STW_SOK) {
+           MMCSD_DEBUG_TRAP
+         }
+
+   if(MMCSD_OK == ret)
+   {
+      uint32_t slotType,reg=0;
+      slotType = CSL_MMC_CTLCFG_CAPABILITIES_SLOT_TYPE_VAL_EMBEDDED;
+
+      reg = *(&(((CSL_mmc_sscfgRegs *)(hwAttrs->ssBaseAddr))->CTL_CFG_2_REG));
+      reg = Bitfield_csl_set (reg, slotType,
+                            CSL_MMC_SSCFG_CTL_CFG_2_REG_SLOTTYPE_MASK,
+                            CSL_MMC_SSCFG_CTL_CFG_2_REG_SLOTTYPE_SHIFT);
+       *(&(((CSL_mmc_sscfgRegs *)(hwAttrs->ssBaseAddr))->CTL_CFG_2_REG))=reg;
+
+      /* Enable pins by setting the IO mux field in the phy to 0. */
+      reg = *(&(((CSL_mmc_sscfgRegs *)(hwAttrs->ssBaseAddr))->PHY_CTRL_1_REG));
+      reg = Bitfield_csl_set (reg, 0,
+                            CSL_MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE_MASK,
+                            CSL_MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE_SHIFT);
+      *(&(((CSL_mmc_sscfgRegs *)(hwAttrs->ssBaseAddr))->PHY_CTRL_1_REG))=reg;
+
+      //
+      /* Wait for card detect */
+       {
+		   uint32_t ins=0;
+
+	       do {
+              ins = HSMMCSDIsCardInserted(hwAttrs->baseAddr);
+           } while(ins==0);
+       }
+    }
+
+        MMCSD_socPhyInit(hwAttrs);
+
+        /* Bus power on */
+        status = ((int32_t)(HSMMCSDBusPower(hwAttrs->baseAddr, MMC_HCTL_SDBP_PWRON)));
+        if(status!=STW_SOK) {
+           MMCSD_DEBUG_TRAP
+         }
+
+        if (STW_SOK != status)
+        {
+#ifdef LOG_EN
+            MMCSD_drv_log4(Diags_USER1,
+                    "MMCSD:(%p) HS MMC/SD Power on failed\n", hwAttrs->baseAddr);
+#endif
+            ret = MMCSD_ERR;
+        }
+    }
+
+    if (MMCSD_OK == ret)
+    {
+        /* Set the initialization frequency */
+        status = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk,400000,UFALSE);
+
+        if (STW_SOK != status)
+        {
+#ifdef LOG_EN
+        MMCSD_drv_log4(Diags_USER1,
+          "MMCSD:(%p) HS MMC/SD Bus Frequency set failed\n", hwAttrs->baseAddr);
+#endif
+            ret = MMCSD_ERR;
+        }
+
+    }
+
+    if(MMCSD_OK == ret)
+    {
+        /* CMD0 - reset card */
+        if(MMCSD_OK == ret)
+        {
+            transaction.cmd = MMCSD_CMD(0U);
+            transaction.flags = MMCSD_CMDRSP_NONE;
+            transaction.arg = 0U;
+            ret = MMCSD_v2_transfer(handle, &transaction);
+        }
+
+        /* NOTE: Add delay */
+        Osal_delay(50U);
+
+        if(MMCSD_OK == ret)
+        {
+            stSDMMCHCCapability hcCapab={0,0,0,0};
+            uint32_t hostOcr=0;
+            #define MMC_VDD_27_33       				0x00FF8000U
+            #define MMC_VDD_17_19       				0x00000080U
+            #define SECTOR_MODE         				0x4U
+
+            //Reading the Capability Register
+		    hcCapab.flag1 = HS_MMCSD_VOLT_3V3_SUPPORT;
+
+	       HSMMCSDHostCapabilityGet(hwAttrs->baseAddr, &hcCapab);
+	       if(hcCapab.retValue1)
+	       {
+             hostOcr |= MMC_VDD_27_33;
+	       }
+
+		   hcCapab.flag1 = HS_MMCSD_VOLT_3V0_SUPPORT;
+	       HSMMCSDHostCapabilityGet(hwAttrs->baseAddr, &hcCapab);
+
+	       if (hcCapab.retValue1)
+	       {
+		hostOcr |= MMC_VDD_27_33;
+	       }
+	       hostOcr |= MMC_VDD_17_19;
+
+            /* Poll until we get the card status (BIT31 of OCR) is powered up */
+            do
+            {
+                /* APP cmd should be preceeded by a CMD55 */
+                transaction.cmd = MMCSD_CMD(1U);
+                transaction.flags = MMCSD_CMDRSP_48BITS;
+                // transaction.arg = 0xC0FF8080U;
+                transaction.arg = ( (0x80000000) |  (SECTOR_MODE << 28U) | hostOcr );
+                ret = MMCSD_v2_transfer(handle, &transaction);
+                retry--;
+            } while (((transaction.response[0U] & ((uint32_t)BIT(31U))) == 0U) && (retry != 0));
+
+            if (0U == retry)
+            {
+                /* No point in continuing */
+                ret = MMCSD_ERR;
+            }
+        }
+        object->cmd23Supported = BTRUE; /* MMC should always support CMD23 */
+
+        if(MMCSD_OK == ret)
+        {
+            object->ocr = transaction.response[0U];
+
+            object->highCap = (object->ocr & MMCSD_OCR_HIGH_CAPACITY) ? 1U : 0U;
+
+            /* Send CMD2, to get the card identification register */
+            transaction.cmd = MMCSD_CMD(2U);
+            transaction.flags = MMCSD_CMDRSP_136BITS;
+            transaction.arg = 0U;
+
+            ret = MMCSD_v2_transfer(handle, &transaction);
+
+            //  memcpy(object->cid, transaction.response, 16U);
+            object->cid[3]= (transaction.response[3] << 8)| (transaction.response[2] >> 24);
+            object->cid[2]= (transaction.response[2] << 8)| (transaction.response[1] >> 24);
+            object->cid[1]= (transaction.response[1] << 8)| (transaction.response[0] >> 24);
+            object->cid[0]= (transaction.response[0] << 8);
+
+            *cidReg = object->cid;
+        }
+
+    }
+
+    return ret;
+}
+
+/*
+ *  ======== MMCSD_v2_getExtCsdRegister ========
+ */
+/*!
+ *  @brief      A function to get the ext csd Register
+ *
+ */
+static MMCSD_Error MMCSD_v2_getExtCsdRegister(MMCSD_Handle handle, uint8_t **extCidReg)
+{
+    MMCSD_v2_Transaction    transaction;
+    MMCSD_v2_Object         *object;
+    MMCSD_Error             ret = MMCSD_OK;
+
+    /* Get the pointer to the object */
+    object = (MMCSD_v2_Object *)((MMCSD_Config *) handle)->object;
+
+    if(MMCSD_OK == ret)
+    {
+        transaction.cmd = MMCSD_CMD(8U);
+        transaction.flags = MMCSD_CMDRSP_READ | MMCSD_CMDRSP_DATA;
+        transaction.arg = object->rca << 16U;
+        transaction.blockCount = 1U;
+        transaction.blockSize = 512U;
+        transaction.dataBuf = object->ecsd;
+
+        ret = MMCSD_v2_transfer(handle, &transaction);
+    }
+
+    /* NOTE: Add delay */
+    delay(100U);
+
+    *extCidReg = object->ecsd;
+
+    return ret;
 }
 
 /*

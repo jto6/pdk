@@ -100,7 +100,9 @@ MMCSD_v2_HwAttrs MMCSDInitCfg[MMCSD_CNT] =
         MMCSD_SUPPORT_MMC_ALL, /* Supported modes */
         MMCSD_configSocIntrPath,
         MMCSD_HW_PHY,
-        MMCSD_AUTO_HW_TUNING
+        MMCSD_AUTO_HW_TUNING,
+        0, /*Device Drive strength*/
+        0 /*Phy Drive Strength*/
     },
     {
         2,
@@ -148,7 +150,9 @@ MMCSD_v2_HwAttrs MMCSDInitCfg[MMCSD_CNT] =
         (MMCSD_SUPPORT_SD_DS | MMCSD_SUPPORT_SD_HS | MMCSD_SUPPORT_SD_SDR50 | MMCSD_SUPPORT_SD_DDR50), /* Supported modes - SDR104 is not supported */
         MMCSD_configSocIntrPath,
         MMCSD_SW_PHY,
-        MMCSD_AUTO_HW_TUNING
+        MMCSD_AUTO_HW_TUNING,
+        0, /*Device Drive Strength*/
+        0 /*Phy Drive Strength*/
     }
 };
 
