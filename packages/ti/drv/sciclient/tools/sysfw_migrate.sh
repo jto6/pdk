@@ -45,7 +45,7 @@ export CAT=cat
 ################################################################################
 # Parse CLI arguments
 RELEASE_TAG=$1
-SOC_LIST="j721e j7200 j721s2 j784s4"
+SOC_LIST="j721e j7200 j721s2 j784s4 j742s2"
 for i in "$@"; do
 case $i in
     -sr|--skip-reset) # Skips the PDK reset and rebase step
@@ -166,9 +166,12 @@ if [ "$SKIP_CHECKOUT" != "YES" ]; then
     $COPY -r system-firmware-releases/include/tisci sysfw/include
     for SOC in $SOC_LIST
     do
+        if [ "$SOC" = "j742s2" ]; then
+            echo "j742s2 uses same sysfw include folder as j784s4. Skipping further actions."
+            continue
+        fi
         $RM -fr sysfw/include/$SOC
         $MV system-firmware-releases/include/$SOC sysfw/include
-    
     done
 
     $RM -fr system-firmware-release
@@ -328,6 +331,7 @@ if [ "$GEN_DM_IPC" == "YES" ]; then
     ipc_corelist_j7200_evm="mcu1_1 mcu2_0 mcu2_1"
     ipc_corelist_j721s2_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 c7x_1 c7x_2"
     ipc_corelist_j784s4_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1 c7x_1 c7x_2 c7x_3 c7x_4"
+    ipc_corelist_j742s2_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1 c7x_1 c7x_2 c7x_3"
 
     cd $ROOTDIR/ti/build
     mkdir -p $ROOTDIR/ti/binary/firmware/{ti-dm,ti-sysfw,ti-ipc}
@@ -374,6 +378,9 @@ if [ "$GEN_DM_IPC" == "YES" ]; then
     #There is only one common tifs.bin for all gp device for a device. Remove other tifs.bin for gp devices.
     cd $SYSFWF_DIR
     rm -rf ti-fs*j7*sr*gp.bin
+    #Copy j784s4 hs-fs tifs as j742s2 hs-fs for ti-linux-firmware
+    cp ti-fs-firmware-j784s4-hs-fs-enc.bin ti-fs-firmware-j742s2-hs-fs-enc.bin
+    cp ti-fs-firmware-j784s4-hs-fs-cert.bin ti-fs-firmware-j742s2-hs-fs-cert.bin
 fi
 
 ################################################################################
