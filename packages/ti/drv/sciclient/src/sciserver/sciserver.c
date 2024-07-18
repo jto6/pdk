@@ -342,7 +342,7 @@ static int32_t Sciserver_MsgVerifyHost(uint32_t *msg, uint8_t known_host)
     int32_t ret = CSL_PASS;
     struct tisci_header *hdr = (struct tisci_header *) msg;
 
-    if (ret == CSL_PASS) { if (hdr->host != known_host) {
+    if (hdr->host != known_host) {
             /*
              * We check the header against the queue id to verify that the host
              * has not spoofed the request. The special case is when a message
@@ -355,7 +355,6 @@ static int32_t Sciserver_MsgVerifyHost(uint32_t *msg, uint8_t known_host)
             if (known_host != TISCI_HOST_ID_DMSC2DM) {
                 ret = CSL_EFAIL;
             }
-        }
     }
 
     return ret;
