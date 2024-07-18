@@ -50,13 +50,13 @@ endif
 #ISA specific C files
 ifeq ($(ISA),$(filter $(ISA), c66))
 SRCS_COMMON += \
-    port_Hwi.c \
+    port_Hwi_c66.c \
     port_c66.c
 endif
 
 ifeq ($(ISA),$(filter $(ISA), r5f))
 SRCS_COMMON += \
-    port_Hwi.c \
+    port_Hwi_r5f.c \
     port_r5f.c
 endif
 
