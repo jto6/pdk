@@ -182,13 +182,9 @@ export i2c_extended_testapp_CORE_DEPENDENCY
 export i2c_extended_testapp_MAKEFILE
 i2c_extended_testapp_PKG_LIST = i2c_extended_testapp
 i2c_extended_testapp_INCLUDE = $(i2c_extended_testapp_PATH)
-i2c_extended_testapp_BOARDLIST = j784s4_evm j742s2_evm
+i2c_extended_testapp_BOARDLIST = j784s4_evm j742s2_evm j721s2_evm j721e_evm j7200_evm
 export i2c_extended_testapp_BOARDLIST
-ifeq ($(SOC),$(filter $(SOC), j784s4 j742s2))
 i2c_extended_testapp_$(SOC)_CORELIST = mcu1_0
-else
-i2c_extended_testapp_$(SOC)_CORELIST = $(drvi2c_$(SOC)_CORELIST)
-endif
 export i2c_extended_testapp_$(SOC)_CORELIST
 i2c_EXAMPLE_LIST += i2c_extended_testapp
 export i2c_extended_testapp_SBL_APPIMAGEGEN = yes
