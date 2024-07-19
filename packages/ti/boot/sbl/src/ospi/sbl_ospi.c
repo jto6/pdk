@@ -222,7 +222,7 @@ int32_t SBL_ReadSysfwImage(void **pBuffer, uint32_t num_bytes)
     }
     OSPI_socSetInitCfg(BOARD_OSPI_DOMAIN, BOARD_OSPI_NOR_INSTANCE, &ospi_cfg);
 
-#if defined(SOC_J721S2) || defined(SOC_J784S4)
+#if defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
     if (gIsNandBootEnable == BTRUE)
     {
         flashHandle = Board_flashOpen(BOARD_FLASH_ID_W35N01JWTBAG,
@@ -247,7 +247,7 @@ int32_t SBL_ReadSysfwImage(void **pBuffer, uint32_t num_bytes)
         /* Disable PHY pipeline mode */
         CSL_ospiPipelinePhyEnable((const CSL_ospi_flash_cfgRegs *)(ospi_cfg.baseAddr), UFALSE);
 
-#if defined(SOC_J721S2) || defined(SOC_J784S4)
+#if defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
         /* Until OSPI PHY + DMA is enabled at this early stage, the
          * ROM can more efficiently load the SYSFW directly from xSPI flash */
         if(pBuffer)
@@ -465,7 +465,7 @@ int32_t SBL_ospiInit(void *handle, bool isNandBootEnabled)
 
     }
 
-#if defined(SOC_J721S2) || defined(SOC_J784S4)
+#if defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
     if (isNandBootEnabled == BTRUE)
     {
         flashHandle = Board_flashOpen(BOARD_FLASH_ID_W35N01JWTBAG,
@@ -612,7 +612,7 @@ int32_t SBL_ospiLeaveConfigSPI()
     /* Set the default SPI init configurations */
     OSPI_socSetInitCfg(BOARD_OSPI_DOMAIN, BOARD_OSPI_NOR_INSTANCE, &ospi_cfg);
 
-#if defined(SOC_J721S2) || defined(SOC_J784S4)
+#if defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
     if (gIsNandBootEnable == BTRUE)
     {
         h = Board_flashOpen(BOARD_FLASH_ID_W35N01JWTBAG,
@@ -721,7 +721,7 @@ int32_t SBL_ospiCopyHsmImage(uint8_t** dstAddr, uint32_t srcOffsetAddr, uint32_t
             ospi_cfg.cacheEnable = BTRUE;
         }
         OSPI_socSetInitCfg(BOARD_OSPI_DOMAIN, BOARD_OSPI_NOR_INSTANCE, &ospi_cfg);
-#if defined(SOC_J721S2) || defined(SOC_J784S4)
+#if defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
         if (gIsNandBootEnable == BTRUE)
         {
             h = Board_flashOpen(BOARD_FLASH_ID_W35N01JWTBAG,
