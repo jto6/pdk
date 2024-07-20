@@ -60,7 +60,7 @@ void Osal_DebugP_assert_fcn(bool expression, const char *file, int32_t line)
 #endif
 
 #if DebugP_LOG_ENABLED
-DebugP_exptnLogFxn Osal_exptnLogFxn;
+DebugP_exptnLogFxn Osal_exptnLogFxn = NULL;
 
 /*
  *  ======== DebugP_registerExcptnLogFxn ========
