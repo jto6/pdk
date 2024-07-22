@@ -2100,3 +2100,118 @@ int32_t UdmaTestRingGetRdIdx(UdmaTestTaskObj *taskObj)
     return retVal;
 }
 
+/* 
+ * Test Case Description: Verifies the function Udma_ringFlushAll when
+ * Test scenario 1: Check when ringHandle is NULL
+ * Test scenario 2: Check when ringInitDone is not UDMA_INIT_DONE
+ * Test scenario 3: Check when ringNum is invalid
+ * Test scenario 4: Check when drvHandle is NULL
+ * Test scenario 5: Check when drvInitDone is not UDMA_INIT_DONE
+ * Test scenario 6: Check when retryCnt is not greater than curRetryCnt 
+ */
+int32_t UdmaTestringFlushAllNeg(UdmaTestTaskObj *taskObj)
+{
+    int32_t            retVal = UDMA_SOK;
+    struct Udma_RingObj ringObj;
+    Udma_RingHandle     ringHandle = &ringObj;
+    uint64_t            ringData;
+    uint32_t            elemCnt = 50U;
+    uint32_t            instId;
+
+    /* Test scenario 1: Check when ringHandle is NULL */
+    instId = UDMA_TEST_DEFAULT_UDMA_INST;
+    ringHandle->ringNum = UDMA_RING_ANY;
+    ringHandle->drvHandle = &taskObj->testObj->drvObj[instId];
+    retVal = Udma_ringFlushAll(NULL, &ringData, elemCnt + 1U);
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_ERR,
+                  " |TEST INFO|:: FAIL:: UDMA:: Udma_ringFlushAll:: Neg::"
+                  " Check when ringHandle is NULL!!\n");
+        retVal = UDMA_EFAIL;
+    }
+    else
+    {
+        retVal = UDMA_SOK;
+    }
+
+    /* Test scenario 2: Check when ringInitDone is not UDMA_INIT_DONE */
+    ringHandle->ringInitDone = UDMA_DEINIT_DONE;
+    retVal = Udma_ringFlushAll(ringHandle, &ringData, elemCnt + 1U);
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_ERR,
+                  " |TEST INFO|:: FAIL:: UDMA:: Udma_ringFlushAll:: Neg::"
+                  " Check when ringInitDone is not UDMA_INIT_DONE!!\n");
+        retVal = UDMA_EFAIL;
+    }
+    else
+    {
+        retVal = UDMA_SOK;
+    }
+
+    /* Test scenario 3: Check when ringNum is invalid */
+    ringHandle->ringInitDone = UDMA_INIT_DONE;
+    ringHandle->ringNum = UDMA_RING_INVALID;
+    retVal = Udma_ringFlushAll(ringHandle, &ringData, elemCnt + 1U);
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_ERR,
+                  " |TEST INFO|:: FAIL:: UDMA:: Udma_ringFlushAll:: Neg::"
+                  " Check when ringNum is invalid!!\n");
+        retVal = UDMA_EFAIL;
+    }
+    else
+    {
+        retVal = UDMA_SOK;
+    }
+        
+    /* Test scenario 4: Check when drvHandle is NULL */
+    ringHandle->ringNum = UDMA_RING_ANY;
+    ringHandle->drvHandle = NULL;
+    retVal = Udma_ringFlushAll(ringHandle, &ringData, elemCnt + 1U);
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_ERR,
+                  " |TEST INFO|:: FAIL:: UDMA:: Udma_ringFlushAll:: Neg::"
+                  " Check when drvHandle is NULL!!\n");
+        retVal = UDMA_EFAIL;
+    }
+    else
+    {
+        retVal = UDMA_SOK;
+    }
+
+    /* Test scenario 5: Check when drvInitDone is not UDMA_INIT_DONE */
+    ringHandle->drvHandle = &taskObj->testObj->drvObj[instId];
+    ringHandle->drvHandle->drvInitDone = UDMA_DEINIT_DONE;
+    retVal = Udma_ringFlushAll(ringHandle, &ringData, elemCnt + 1U);
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_ERR,
+                  " |TEST INFO|:: FAIL:: UDMA:: Udma_ringFlushAll:: Neg::"
+                  " Check when drvInitDone is not UDMA_INIT_DONE!!\n");
+        retVal = UDMA_EFAIL;
+    }
+    else
+    {
+        retVal = UDMA_SOK;
+    }
+
+    /* Test scenario 6: Check when retryCnt is not greater than curRetryCnt */
+    ringHandle->drvHandle->drvInitDone = UDMA_INIT_DONE;
+    retVal = Udma_ringFlushAll(ringHandle, &ringData, 0U);
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_ERR,
+                  " |TEST INFO|:: FAIL:: UDMA:: Udma_ringFlushAll:: Neg::"
+                  " Check when retryCnt is not greater than curRetryCnt!!\n");
+        retVal = UDMA_EFAIL;
+    }
+    else
+    {
+        retVal = UDMA_SOK;
+    }
+
+    return retVal;
+}

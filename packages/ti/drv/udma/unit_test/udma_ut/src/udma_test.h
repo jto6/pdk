@@ -662,6 +662,7 @@ int32_t udmaTestRingPrimeTc(UdmaTestTaskObj *taskObj);
 int32_t udmaTestRingPrimeLcdmaTc(UdmaTestTaskObj *taskObj);
 int32_t UdmaTestRingGetRdIdxNormal(UdmaTestTaskObj *taskObj);
 int32_t UdmaTestRingGetRdIdx(UdmaTestTaskObj *taskObj);
+int32_t UdmaTestringFlushAllNeg(UdmaTestTaskObj *taskObj);
 /*
  * UDMA ring monitor test functions
  */
