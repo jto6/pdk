@@ -569,7 +569,7 @@ static int32_t SciclientApp_fw_test(
         /* Access memory region to make sure unable to read and write */
         volatile uint32_t* pointer = (volatile uint32_t*)fail_start_address;
         volatile uint32_t value = 0U;
-        uint32_t i = 0U;
+        volatile uint32_t i = 0U;
         for (i = 0U; i < (fail_end_address + 1 - fail_start_address)/4U; i++)
         {
             value += *(pointer + i);
