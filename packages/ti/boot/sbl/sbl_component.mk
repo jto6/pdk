@@ -974,7 +974,7 @@ sbl_boot_perf_cust_img_combined_COMP_LIST = sbl_boot_perf_cust_img_combined
 sbl_boot_perf_cust_img_combined_RELPATH = ti/boot/sbl/board/k3
 sbl_boot_perf_cust_img_combined_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/cust_combined/bin
 sbl_boot_perf_cust_img_combined_PATH = $(PDK_SBL_COMP_PATH)/board/k3
-sbl_boot_perf_cust_img_combined_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust BUILD_HS=no SBL_IMAGE_TYPE=combined CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BOOT_PERF=yes
+sbl_boot_perf_cust_img_combined_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust BUILD_HS=no SBL_IMAGE_TYPE=combined CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_IMG) BOOT_PERF=yes
 export sbl_boot_perf_cust_img_combined_MAKEFILE
 export sbl_boot_perf_cust_img_combined_SBL_CERT_KEY=$(SBL_CERT_KEY)
 sbl_boot_perf_cust_img_combined_BOARD_DEPENDENCY = yes
@@ -1547,9 +1547,10 @@ CUST_SBL_TEST_SOCS = j721e j7200 j721s2 j784s4 j742s2
 CUST_SBL_TEST_BOARDS = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 ifeq ($(SOC),$(filter $(SOC), j721e j7200 j721s2 j784s4 j742s2))
 CUST_SBL_TEST_FLAGS =" -DSBL_LOG_LEVEL=1 -DSBL_SCRATCH_MEM_START=0xB8000000 -DSBL_SCRATCH_MEM_SIZE=0x4000000 -DSBL_ENABLE_PLL -DSBL_ENABLE_CLOCKS -DSBL_ENABLE_DDR -DSBL_SKIP_MCU_RESET -DBOOT_OSPI ${OCM_RAT_STRING}"
-CUST_SBL_BOOT_PERF_TEST_FLAGS =" -DSBL_LOG_LEVEL=1 -DSBL_SCRATCH_MEM_START=0x41cc0000 -DSBL_SCRATCH_MEM_SIZE=0x40000 -DSBL_ENABLE_PLL -DSBL_ENABLE_CLOCKS -DSBL_SKIP_MCU_RESET -DBOOT_OSPI -DSBL_HLOS_OWNS_FLASH -DSBL_SKIP_LATE_INIT -DSBL_USE_MCU_DOMAIN_ONLY"
+CUST_SBL_BOOT_PERF_TEST_FLAGS_IMG =" -DSBL_LOG_LEVEL=1 -DSBL_SCRATCH_MEM_START=0x41cc0000 -DSBL_SCRATCH_MEM_SIZE=0x40000 -DSBL_ENABLE_PLL -DSBL_ENABLE_CLOCKS -DSBL_SKIP_MCU_RESET -DBOOT_OSPI -DSBL_HLOS_OWNS_FLASH -DSBL_SKIP_LATE_INIT -DSBL_USE_MCU_DOMAIN_ONLY"
 # NOTE: To measure Early CAN response uncomment below line and comment above line
-#CUST_SBL_BOOT_PERF_TEST_FLAGS =" -DSBL_LOG_LEVEL=1 -DSBL_SCRATCH_MEM_START=0x41cc0000 -DSBL_SCRATCH_MEM_SIZE=0x40000 -DSBL_ENABLE_PLL -DSBL_ENABLE_CLOCKS -DSBL_SKIP_MCU_RESET -DBOOT_OSPI -DSBL_HLOS_OWNS_FLASH -DSBL_SKIP_LATE_INIT -DSBL_SKIP_PINMUX_ENABLE -DSBL_USE_MCU_DOMAIN_ONLY"
+#CUST_SBL_BOOT_PERF_TEST_FLAGS_IMG =" -DSBL_LOG_LEVEL=1 -DSBL_SCRATCH_MEM_START=0x41cc0000 -DSBL_SCRATCH_MEM_SIZE=0x40000 -DSBL_ENABLE_PLL -DSBL_ENABLE_CLOCKS -DSBL_SKIP_MCU_RESET -DBOOT_OSPI -DSBL_HLOS_OWNS_FLASH -DSBL_SKIP_LATE_INIT -DSBL_SKIP_PINMUX_ENABLE -DSBL_USE_MCU_DOMAIN_ONLY"
+CUST_SBL_BOOT_PERF_TEST_FLAGS_LIB =" -DSBL_LOG_LEVEL=1 -DSBL_SCRATCH_MEM_START=0x41cc0000 -DSBL_SCRATCH_MEM_SIZE=0x40000 -DSBL_ENABLE_PLL -DSBL_ENABLE_CLOCKS -DSBL_SKIP_MCU_RESET -DBOOT_OSPI -DSBL_SKIP_LATE_INIT -DSBL_SKIP_PINMUX_ENABLE"
 endif
 
 # SBL Custom LIB
@@ -1615,7 +1616,7 @@ sbl_boot_perf_lib_cust_LIBNAME = sbl_boot_perf_lib_cust
 sbl_boot_perf_lib_cust_PATH = $(PDK_SBL_COMP_PATH)
 sbl_boot_perf_lib_cust_LIBNAME = sbl_boot_perf_lib_cust
 sbl_boot_perf_lib_cust_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust
-sbl_boot_perf_lib_cust_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BOOT_PERF=yes
+sbl_boot_perf_lib_cust_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_LIB) BOOT_PERF=yes
 export sbl_boot_perf_lib_cust_MAKEFILE
 export sbl_boot_perf_lib_cust_LIBNAME
 export sbl_boot_perf_lib_cust_LIBPATH
@@ -1642,7 +1643,7 @@ sbl_boot_perf_lib_cust_hs_LIBNAME = sbl_boot_perf_lib_cust_hs
 sbl_boot_perf_lib_cust_hs_PATH = $(PDK_SBL_COMP_PATH)
 sbl_boot_perf_lib_cust_hs_LIBNAME = sbl_boot_perf_lib_cust_hs
 sbl_boot_perf_lib_cust_hs_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust_hs
-sbl_boot_perf_lib_cust_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BUILD_HS=yes BOOT_PERF=yes
+sbl_boot_perf_lib_cust_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_LIB) BUILD_HS=yes BOOT_PERF=yes
 export sbl_boot_perf_lib_cust_hs_MAKEFILE
 export sbl_boot_perf_lib_cust_hs_LIBNAME
 export sbl_boot_perf_lib_cust_hs_LIBPATH
@@ -1772,7 +1773,7 @@ sbl_boot_perf_cust_img_COMP_LIST = sbl_boot_perf_cust_img
 sbl_boot_perf_cust_img_RELPATH = ti/boot/sbl/board/k3
 sbl_boot_perf_cust_img_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/cust/bin
 sbl_boot_perf_cust_img_PATH = $(PDK_SBL_COMP_PATH)/board/k3
-sbl_boot_perf_cust_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=no CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BOOT_PERF=yes
+sbl_boot_perf_cust_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=no CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_IMG) BOOT_PERF=yes
 export sbl_boot_perf_cust_img_MAKEFILE
 export sbl_boot_perf_cust_img_SBL_CERT_KEY=$(SBL_CERT_KEY)
 sbl_boot_perf_cust_img_BOARD_DEPENDENCY = yes
@@ -1799,7 +1800,7 @@ sbl_boot_perf_cust_img_hs_COMP_LIST = sbl_boot_perf_cust_img_hs
 sbl_boot_perf_cust_img_hs_RELPATH = ti/boot/sbl/board/k3
 sbl_boot_perf_cust_img_hs_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)_hs/cust/bin
 sbl_boot_perf_cust_img_hs_PATH = $(PDK_SBL_COMP_PATH)/board/k3
-sbl_boot_perf_cust_img_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) BOOT_PERF=yes
+sbl_boot_perf_cust_img_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_IMG) BOOT_PERF=yes
 export sbl_boot_perf_cust_img_hs_MAKEFILE
 export sbl_boot_perf_cust_img_hs_SBL_CERT_KEY=$(SBL_CERT_KEY_HS)
 sbl_boot_perf_cust_img_hs_BOARD_DEPENDENCY = yes
@@ -1826,7 +1827,7 @@ sbl_boot_perf_cust_img_combined_hs_COMP_LIST = sbl_boot_perf_cust_img_combined_h
 sbl_boot_perf_cust_img_combined_hs_RELPATH = ti/boot/sbl/board/k3
 sbl_boot_perf_cust_img_combined_hs_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)_hs/cust/bin
 sbl_boot_perf_cust_img_combined_hs_PATH = $(PDK_SBL_COMP_PATH)/board/k3
-sbl_boot_perf_cust_img_combined_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS) SBL_IMAGE_TYPE=combined BOOT_PERF=yes
+sbl_boot_perf_cust_img_combined_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_IMG) SBL_IMAGE_TYPE=combined BOOT_PERF=yes
 export sbl_boot_perf_cust_img_combined_hs_MAKEFILE
 export sbl_boot_perf_cust_img_combined_hs_SBL_CERT_KEY=$(SBL_CERT_KEY_HS)
 sbl_boot_perf_cust_img_combined_hs_BOARD_DEPENDENCY = yes
