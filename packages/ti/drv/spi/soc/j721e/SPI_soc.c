@@ -698,6 +698,7 @@ OSPI_v0_HwAttrs ospiInitCfg[SPI_OSPI_DOMAIN_CNT][SPI_OSPI_PER_CNT + 1U] =
             256,                               /* device page size is 256 bytes  */
             17,                                /* device block size is 2 ^ 17 = 128K bytes */
             OSPI_XFER_LINES_OCTAL,             /* xferLines */
+            OSPI_XFER_LINES_SINGLE,            /* numAddrLines */
             BFALSE,                            /* Interrupt mode */
             BTRUE,                             /* Direct Access Controller mode */
             BFALSE,                            /* DMA mode */
@@ -740,6 +741,7 @@ OSPI_v0_HwAttrs ospiInitCfg[SPI_OSPI_DOMAIN_CNT][SPI_OSPI_PER_CNT + 1U] =
             256,
             17,
             OSPI_XFER_LINES_OCTAL,
+            OSPI_XFER_LINES_SINGLE,
             BFALSE,
             BTRUE,
             BFALSE,

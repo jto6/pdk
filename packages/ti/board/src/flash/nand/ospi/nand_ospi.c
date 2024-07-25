@@ -417,9 +417,11 @@ static void Nand_ospiSetOpcode(OSPI_Handle handle)
     uint32_t               readCmd;
     uint32_t               progCmd;
     uint32_t               rx_lines;
+    uint32_t               addr_lines;
     OSPI_v0_HwAttrs const *hwAttrs = (OSPI_v0_HwAttrs const *)handle->hwAttrs;
 
-    rx_lines = hwAttrs->xferLines;
+    rx_lines    = hwAttrs->xferLines;
+    addr_lines  = hwAttrs->numAddrLines;
     if (OSPI_XFER_LINES_OCTAL == rx_lines)
     {
         if (hwAttrs->dacEnable)
@@ -437,8 +439,16 @@ static void Nand_ospiSetOpcode(OSPI_Handle handle)
             readCmd         = NAND_CMD_FAST_READ_DDR;
             progCmd         = NAND_CMD_PAGE_PROG;
         }
+        else if(addr_lines == OSPI_XFER_LINES_OCTAL)
+        {
+            /* Set to SDR 1-8-8 mode */
+            cmdDummyCycles  = NAND_OCTAL_SDR_CMD_READ_DUMMY_CYCLE;
+            readCmd         = NAND_CMD_OCTAL_IO_FAST_RD;
+            progCmd         = NAND_CMD_EXT_OCTAL_FAST_PROG;
+        }
         else
         {
+            /* Set to SDR 1-1-8 mode */
             cmdDummyCycles  = NAND_OCTAL_SDR_CMD_READ_DUMMY_CYCLE;
             readCmd         = NAND_CMD_OCTAL_DDR_O_FAST_RD;
             progCmd         = NAND_CMD_EXT_OCTAL_FAST_PROG;

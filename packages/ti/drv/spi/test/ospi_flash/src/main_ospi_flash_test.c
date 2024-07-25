@@ -185,6 +185,8 @@ typedef struct OSPI_Tests_s
 #define OSPI_NAND_TEST_ID_DAC_OSDR_50M     17   /* OSPI flash test in Direct Acess Controller legacy SPI mode at 50MHz RCLK */
 #define OSPI_NAND_TEST_ID_DAC_OSDR_166M    18   /* OSPI flash test in Direct Acess Controller legacy SPI mode at 166MHz RCLK */
 #define OSPI_NAND_TEST_ID_WR_TUNING        19   /* OSPI flash test in Direct Acess Controller legacy SPI mode to write tuning data */
+#define OSPI_NAND_TEST_ID_DAC_1_8_8_50M     20   /* OSPI flash test in Direct Acess Controller legacy SPI mode at 50MHz RCLK */
+#define OSPI_NAND_TEST_ID_DAC_1_8_8_166M    21   /* OSPI flash test in Direct Acess Controller legacy SPI mode at 166MHz RCLK */
 
 /* OSPI NOR flash offset address for read/write test */
 #define TEST_ADDR_OFFSET   (0U)
@@ -871,6 +873,14 @@ void OSPI_initConfig(OSPI_Tests *test)
         ospi_cfg.dtrEnable = BFALSE;
         ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
     }
+    if (OSPI_NAND_TEST_ID_DAC_1_8_8_50M == test->testId)
+    {
+        ospi_cfg.phyEnable = BFALSE;
+        ospi_cfg.baudRateDiv = 4U;
+        ospi_cfg.dtrEnable = BFALSE;
+        ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
+        ospi_cfg.numAddrLines = OSPI_XFER_LINES_OCTAL;
+    }
 
     if (OSPI_NAND_TEST_ID_DAC_OSDR_166M == test->testId)
     {
@@ -878,6 +888,18 @@ void OSPI_initConfig(OSPI_Tests *test)
         ospi_cfg.baudRateDiv = 0U;
         ospi_cfg.dtrEnable = BFALSE;
         ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
+        ospi_cfg.devDelays[0] = 0x01U;
+        ospi_cfg.devDelays[1] = 0x00U;
+        ospi_cfg.devDelays[2] = 0x00U;
+        ospi_cfg.devDelays[3] = 0x00U;
+    }
+    if (OSPI_NAND_TEST_ID_DAC_1_8_8_166M == test->testId)
+    {
+        ospi_cfg.phyEnable = BTRUE;
+        ospi_cfg.baudRateDiv = 0U;
+        ospi_cfg.dtrEnable = BFALSE;
+        ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
+        ospi_cfg.numAddrLines = OSPI_XFER_LINES_OCTAL;
         ospi_cfg.devDelays[0] = 0x01U;
         ospi_cfg.devDelays[1] = 0x00U;
         ospi_cfg.devDelays[2] = 0x00U;
@@ -1165,7 +1187,8 @@ static bool OSPI_flash_test(void *arg)
 #endif
 
 #ifdef OSPI_WRITE
-    if((OSPI_NAND_TEST_ID_DAC_OSDR_50M != test->testId) && (OSPI_NAND_TEST_ID_DAC_OSDR_166M != test->testId))
+    if((OSPI_NAND_TEST_ID_DAC_OSDR_50M != test->testId) && (OSPI_NAND_TEST_ID_DAC_OSDR_166M != test->testId) && \
+       (OSPI_NAND_TEST_ID_DAC_1_8_8_50M != test->testId) && (OSPI_NAND_TEST_ID_DAC_1_8_8_166M != test->testId))
     {
     #if defined(SOC_J7200) || defined(SOC_AM64X) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
         if (test->norFlash && test->dacMode)                          /* DAC writes are not supported on Cypress xSPI Flash - Switch to INDAC mode for write as WA to PDK-7115 */
@@ -1286,12 +1309,29 @@ static bool OSPI_flash_test(void *arg)
             ospi_cfg.dtrEnable = BFALSE;
             ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
         }
+        else if (OSPI_NAND_TEST_ID_DAC_1_8_8_50M == test->testId)
+        {
+            /* Disable PHY in legacy SPI mode (1-1-8) */
+            ospi_cfg.phyEnable = BFALSE;
+            ospi_cfg.baudRateDiv = 4U;
+            ospi_cfg.dtrEnable = BFALSE;
+            ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
+            ospi_cfg.numAddrLines = OSPI_XFER_LINES_OCTAL;
+        }
         else if (OSPI_NAND_TEST_ID_DAC_OSDR_166M == test->testId)
         {
             ospi_cfg.phyEnable = BTRUE;
             ospi_cfg.baudRateDiv = 4U;
             ospi_cfg.dtrEnable = BFALSE;
             ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
+        }
+        else if (OSPI_NAND_TEST_ID_DAC_1_8_8_166M == test->testId)
+        {
+            ospi_cfg.phyEnable = BTRUE;
+            ospi_cfg.baudRateDiv = 0U;
+            ospi_cfg.dtrEnable = BFALSE;
+            ospi_cfg.xferLines = OSPI_XFER_LINES_OCTAL;
+            ospi_cfg.numAddrLines = OSPI_XFER_LINES_OCTAL;
         }
         else
         {
@@ -1317,7 +1357,8 @@ static bool OSPI_flash_test(void *arg)
 #ifdef OSPI_PROFILE
     if((test->dacMode) && (OSPI_NAND_TEST_ID_DAC_OSDR_50M != test->testId) &&\
        (OSPI_TEST_ID_DAC_133M_SPI != test->testId) && (OSPI_TEST_ID_WR_TUNING != test->testId) &&\
-       (OSPI_NAND_TEST_ID_DAC_133M_SPI != test->testId) && (OSPI_NAND_TEST_ID_WR_TUNING != test->testId))
+       (OSPI_NAND_TEST_ID_DAC_133M_SPI != test->testId) && (OSPI_NAND_TEST_ID_WR_TUNING != test->testId) && \
+       (OSPI_NAND_TEST_ID_DAC_1_8_8_50M != test->testId) && (OSPI_NAND_TEST_ID_DAC_1_8_8_166M != test->testId))
     {
         uint64_t    startPhyTuningTick;
         uint64_t    elapsedPhyTuningTicks;
@@ -1435,8 +1476,10 @@ OSPI_Tests Ospi_tests[] =
     {OSPI_flash_test,       OSPI_NAND_TEST_ID_INDAC_166M,     BFALSE, BFALSE,  BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_166M, "\r\n OSPI NAND flash test slave in INDAC mode at 166MHz RCLK"},
     {OSPI_flash_test,       OSPI_NAND_TEST_ID_DAC_133M_SPI,   BTRUE,  BFALSE,  BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_133M, "\r\n OSPI NAND flash test slave in DAC Legacy SPI mode at 133MHz RCLK"},
     {OSPI_flash_test,       OSPI_NAND_TEST_ID_DAC_OSDR_50M,   BTRUE,  BFALSE,  BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_200M, "\r\n OSPI flash test slave in DAC SDR OSPI mode at 50MHz RCLK"},
+    {OSPI_flash_test,       OSPI_NAND_TEST_ID_DAC_1_8_8_50M,   BTRUE,  BFALSE,  BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_200M, "\r\n OSPI flash test slave in DAC SDR 1-8-8 mode at 50MHz RCLK"},
 #ifdef SPI_DMA_ENABLE
     {OSPI_flash_test,       OSPI_NAND_TEST_ID_DAC_OSDR_166M,  BTRUE,  BTRUE,   BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_166M, "\r\n OSPI flash test slave in DAC SDR OSPI mode at 166MHz RCLK"},
+    {OSPI_flash_test,       OSPI_NAND_TEST_ID_DAC_1_8_8_166M,  BTRUE,  BTRUE,   BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_166M, "\r\n OSPI flash test slave in DAC SDR 1-8-8 mode at 166MHz RCLK"},
 #endif
     {OSPI_flash_test,       OSPI_NAND_TEST_ID_INDAC_133M,     BFALSE, BFALSE,  BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_133M, "\r\n OSPI NAND flash test slave in INDAC mode at 133MHz RCLK"},
     {OSPI_flash_test,       OSPI_NAND_TEST_ID_DAC_133M,       BTRUE,  BFALSE,  BFALSE,      CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_133M, "\r\n OSPI NAND flash test slave in DAC mode at 133MHz RCLK"},

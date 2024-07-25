@@ -254,6 +254,8 @@ typedef struct OSPI_v0_HwAttrs_s {
     uint32_t        blkSize;
     /*! Number of lines used for OSPI reading/writing */
     OSPI_xferLines  xferLines;
+    /*! Number of lines used for OSPI reading/writing */
+    uint32_t        numAddrLines;
     /*! Enable interrupts. */
     bool            intrEnable;
     /*! Direct Access Controller Enable */
@@ -296,6 +298,7 @@ typedef struct OSPI_v0_Object_s {
     uint32_t          transferCmd;      /* Transfer command */
     uint32_t          ospiMode;         /* Config or Memory map mode */
     uint32_t          xferLines;        /* Number of transfer Lines */
+    uint32_t          numAddrLines;     /* Number of address Lines */
     uint32_t          rdDummyClks;      /* Number of dummy clock cycles for read op */
     uint32_t          extRdDummyClks;   /* Number of dummy clock cycles for extended opcode command read op */
     uint32_t          extRdCmdLen;      /* command length for extended opcode command read op */

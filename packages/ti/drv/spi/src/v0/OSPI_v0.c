@@ -1699,10 +1699,44 @@ static int32_t OSPI_control_v0(OSPI_Handle handle, uint32_t cmd, const void *arg
             {
                 object->transferCmd = *ctrlData;
                 ctrlData++;
-                CSL_ospiConfigRead((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
-                                   object->transferCmd,
-                                   object->xferLines,
-                                   object->rdDummyClks);
+                
+                if(hwAttrs->dtrEnable == true)
+                {
+                    /* If dtr enable is true program the controller in 8D-8D-8D mode */
+                    CSL_ospiConfigRead((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
+                                    object->transferCmd,
+                                    CSL_OSPI_CFG_XFER_MODE_8D_8D_8D,
+                                    object->rdDummyClks);
+                }
+                else if(hwAttrs->xferLines == OSPI_XFER_LINES_OCTAL)
+                {
+                    if(hwAttrs->numAddrLines == OSPI_XFER_LINES_OCTAL)
+                    {
+                        /* Program the controller in 1S-8S-8S mode */
+                        CSL_ospiConfigRead((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
+                                        object->transferCmd,
+                                        CSL_OSPI_CFG_XFER_MODE_1S_8S_8S,
+                                        object->rdDummyClks);
+                    }
+                    else
+                    {
+                        /* Program the controller in 1S-1S-8S mode */
+                        CSL_ospiConfigRead((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
+                                        object->transferCmd,
+                                        CSL_OSPI_CFG_XFER_MODE_1S_1S_8S,
+                                        object->rdDummyClks);
+                    }
+                }
+                else
+                {
+                    /* Program the controller in 1S-1S-1S mode */
+                    CSL_ospiConfigRead((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
+                                    object->transferCmd,
+                                    CSL_OSPI_CFG_XFER_MODE_1S_1S_1S,
+                                    object->rdDummyClks);
+                }
+
+
                 object->transferCmd = *ctrlData;
                 ctrlData++;
                 CSL_ospiWriteSetup((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
