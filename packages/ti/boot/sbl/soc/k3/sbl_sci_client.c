@@ -349,19 +349,13 @@ void SBL_getSysfwVersion()
     {
         if (respPrm.flags == (uint32_t)TISCI_MSG_FLAG_ACK)
         {
-#if defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
+            SBL_ADD_PROFILE_POINT;
             SBL_log(SBL_LOG_MIN,"TIFS  ver: %s\n", (char *) response.str);
-#else
-            SBL_log(SBL_LOG_MIN,"SYSFW  ver: %s\n", (char *) response.str);
-#endif
+            SBL_ADD_PROFILE_POINT;
         }
         else
         {
-#if defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
             SBL_log(SBL_LOG_ERR,"TIFS Get Version failed \n");
-#else
-            SBL_log(SBL_LOG_ERR,"SYSFW Get Version failed \n");
-#endif
             SblErrLoop(__FILE__, __LINE__);
         }
     }

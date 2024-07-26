@@ -294,8 +294,9 @@ int main()
         /* Init UART for logging. */
         UART_stdioInit(BOARD_UART_INSTANCE);
     }
-
+    SBL_ADD_PROFILE_POINT;
     SBL_log(SBL_LOG_MIN, "%s (%s - %s)\n", SBL_VERSION_STR, __DATE__, __TIME__);
+    SBL_ADD_PROFILE_POINT;
 
     /* Initialize the ATCM */
     atcm_size = sblAtcmSize();
