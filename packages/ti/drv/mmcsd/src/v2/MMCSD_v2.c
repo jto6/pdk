@@ -1045,15 +1045,18 @@ static MMCSD_Error MMCSD_v2_open(MMCSD_Handle handle, MMCSD_Params params)
         /*
          * Construct thread safe handles for this MMCSD peripheral
          * Semaphore to provide exclusive access to the MMCSD peripheral
+         * if not done with the MMCSD_v2_getCidRegister
          */
-        MMCSD_osalSemParamsInit(&semParams);
-        semParams.mode = SemaphoreP_Mode_BINARY;
-        object->commandMutex = MMCSD_osalCreateBlockingLock(1U, &semParams);
-        object->transferMutex = MMCSD_osalCreateBlockingLock(1U, &semParams);
-        object->commandComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
-		object->dataBufferCopyComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
-        object->transferComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
 
+        if(object->commandMutex == NULL) {
+          MMCSD_osalSemParamsInit(&semParams);
+          semParams.mode = SemaphoreP_Mode_BINARY;
+          object->commandMutex = MMCSD_osalCreateBlockingLock(1U, &semParams);
+          object->transferMutex = MMCSD_osalCreateBlockingLock(1U, &semParams);
+          object->commandComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
+		  object->dataBufferCopyComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
+          object->transferComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
+        }
     }
 
     if ((MMCSD_OK == ret) && (hwAttrs->inputClockControl)) {
@@ -3627,10 +3630,24 @@ static MMCSD_Error MMCSD_v2_getCidRegister(MMCSD_Handle handle, uint32_t** cidRe
     MMCSD_v2_HwAttrs const     *hwAttrs = NULL;
     MMCSD_v2_Transaction        transaction;
     volatile int32_t            status = -1;
-
+    SemaphoreP_Params           semParams;
     /* Get the pointer to the object and hwAttrs */
     object = (MMCSD_v2_Object *)((MMCSD_Config *) handle)->object;
     hwAttrs = (MMCSD_v2_HwAttrs const *)((MMCSD_Config *) handle)->hwAttrs;
+
+     /*
+     * If we are reading cid before doing a open() we will
+     * Construct thread safe handles for this MMCSD peripheral
+     * Semaphore to provide exclusive access to the MMCSD peripheral
+     */
+    MMCSD_osalSemParamsInit(&semParams);
+    semParams.mode = SemaphoreP_Mode_BINARY;
+    object->commandMutex = MMCSD_osalCreateBlockingLock(1U, &semParams);
+    object->transferMutex = MMCSD_osalCreateBlockingLock(1U, &semParams);
+    object->commandComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
+    object->dataBufferCopyComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
+    object->transferComplete = MMCSD_osalCreateBlockingLock(0, &semParams);
+
 
     if(MMCSD_OK == ret)
     {
