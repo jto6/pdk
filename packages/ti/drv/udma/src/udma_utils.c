@@ -235,3 +235,12 @@ void Udma_printf(Udma_DrvHandle drvHandle, const char *format, ...)
 
     return;
 }
+
+CSL_UdmapTR1 *UdmaUtils_getTrpdTr1Pointer(uint8_t *trpdMem, uint32_t trIndex)
+{
+    CSL_UdmapTR1  *pTr;
+
+    pTr = (CSL_UdmapTR1 *)(trpdMem + UDMA_TR1_OFFSET + (UDMA_TR1_OFFSET * trIndex));
+
+    return (pTr);
+}

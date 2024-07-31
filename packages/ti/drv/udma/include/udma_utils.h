@@ -82,6 +82,22 @@ extern "C" {
 #define UDMA_TR_TYPE_15                 (CSL_UDMAP_TR_FLAGS_TYPE_4D_BLOCK_MOVE_REPACKING_INDIRECTION)
 /* @} */
 
+/**
+ *  \brief UDMA TR15 packet descriptor memory size in bytes.
+ *  This contains the CSL_UdmapCppi5TRPD + Padding to sizeof(CSL_UdmapTR15) +
+ *  N* Type_15 TR (CSL_UdmapTR15) + N* TR response of 4 bytes.
+ *  Since CSL_UdmapCppi5TRPD header is less than CSL_UdmapTR15, CSL_UdmapTR15
+ *  itself is used for size alignment.
+ *
+ *  n - Number of TR's present in the TRPD
+ */
+#define UDMA_GET_TRPD_TR15_SIZE(n)      (UDMA_ALIGN_SIZE(sizeof(CSL_UdmapTR15) + ((n) * (sizeof(CSL_UdmapTR15) + 4U))))
+
+/**
+ * \brief Offset for TR1 type TR from TRPD start address
+ */
+#define UDMA_TR1_OFFSET                 (64U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -140,6 +156,16 @@ uint32_t UdmaUtils_getTrSizeEncoded(uint32_t trType);
  *  \return Size of the TR record in bytes.
  */
 uint32_t UdmaUtils_getTrSizeBytes(uint32_t trType);
+
+/**
+ *  \brief Returns the TR1 pointer in the TRPD memory based on the index
+ *
+ *  \param trpdMem  [IN] TRPD memory pointer
+ *  \param trIndex  [IN] Index to the TR to get the TR1 pointer address
+ *
+ *  \return TR1 pointer address
+ */
+CSL_UdmapTR1 *UdmaUtils_getTrpdTr1Pointer(uint8_t *trpdMem,uint32_t trIndex);
 
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
