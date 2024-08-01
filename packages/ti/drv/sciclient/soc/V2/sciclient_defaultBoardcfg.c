@@ -106,9 +106,9 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .size = (uint16_t) sizeof(struct tisci_boardcfg_msmc),
         },
         /* If the whole memory is X MB the value you write to this field is n.
-         * The value of n sets the cache size as n * X/32. The value of n should
+         * The value of n sets the cache size as n * X/8. The value of n should
          * be given in steps of 4, which makes the size of cache to be
-         * configured in steps on X/8 MB.
+         * configured in steps on X/2 MB.
          */
         .msmc_cache_size = 0x00,
     },
