@@ -593,7 +593,10 @@ int32_t Ipc_echo_test(void)
     taskParams.priority   = 4;
     taskParams.stack      = &gCheckerTskStack;
     taskParams.stacksize  = APP_CHECKER_TSK_STACK;
-    TaskP_create(&ipc_checker_task, &taskParams);
+    if (NULL == TaskP_create(&ipc_checker_task, &taskParams))
+    {
+        App_printf("IPC Checker task creation failed!!!");
+    }
 #endif
     /* Step 3: Initialize RPMessage */
     RPMessage_Params cntrlParam;
@@ -618,7 +621,10 @@ int32_t Ipc_echo_test(void)
     params.stacksize  = IPC_TASK_STACKSIZE;
     params.arg0       = (void *)&service_ping.endPt;
     params.arg1       = (void *)&service_ping.name[0];
-    TaskP_create(&rpmsg_responderFxn, &params);
+    if (NULL == TaskP_create(&rpmsg_responderFxn, &params))
+    {
+        App_printf("IPC Responder task creation failed!!!");
+    }
 
 #if !defined(BUILD_MPU1_0) && defined(A72_LINUX_OS)
     /* Respond to messages coming in to endPt ENDPT_CHRDEV (for testing rpmsg_chrdev) */
@@ -628,7 +634,10 @@ int32_t Ipc_echo_test(void)
     params.stacksize  = IPC_TASK_STACKSIZE;
     params.arg0       = (void *)&service_chrdev.endPt;
     params.arg1       = (void *)&service_chrdev.name[0];
-    TaskP_create(&rpmsg_responderFxn, &params);
+    if (NULL == TaskP_create(&rpmsg_responderFxn, &params))
+    {
+        App_printf("IPC Responder task creation failed!!!");
+    }
 #endif
 
     for(t = 0; t < numProc; t++, index++)
@@ -648,8 +657,10 @@ int32_t Ipc_echo_test(void)
         params.stacksize = IPC_TASK_STACKSIZE;
         params.arg0      = (void *)&pRemoteProcArray[t];
         params.arg1      = (void *)&gSendTaskBufIdx[t];
-        TaskP_create(&rpmsg_senderFxn, &params);
-
+        if (NULL == TaskP_create(&rpmsg_senderFxn, &params))
+        {
+            App_printf("IPC Sender task creation failed!!!");
+        }
     }
 
 #if !defined(BUILD_MPU1_0) && defined(A72_LINUX_OS) && defined(A72_LINUX_OS_IPC_ATTACH)
@@ -658,7 +669,10 @@ int32_t Ipc_echo_test(void)
     params.priority = IPC_SETUP_TASK_PRI;
     params.stacksize = 0x1000;
     params.arg0 = 0;
-    TaskP_create(&rpmsg_vdevMonitorFxn, &params);
+    if (NULL == TaskP_create(&rpmsg_vdevMonitorFxn, &params))
+    {
+        App_printf("IPC VDEV Monitor task creation failed!!!");
+    }
 #endif /* !defined(BUILD_MPU1_0) && defined(A72_LINUX_OS) && defined(A72_LINUX_OS_IPC_ATTACH) */
 
     return 1;

@@ -53,6 +53,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+/* None */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -64,6 +65,7 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
+/* None */
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -95,11 +97,12 @@
  * enough for 9 task_stack, so creating task_stack on global.
  * C7x cfg has 256k default heap, so no need to put task_stack on global
  */
-#if !defined(BUILD_C7X)
-
-uint8_t  g_taskStackBuf[(CORE_IN_TEST+3)*IPC_TASK_STACKSIZE];
-
+#if defined(SAFERTOS) && defined (BUILD_MCU)
+uint8_t  g_taskStackBuf[(CORE_IN_TEST+3)*IPC_TASK_STACKSIZE]
+__attribute__ ((aligned(IPC_TASK_STACKSIZE)));
 #else
+uint8_t  g_taskStackBuf[(CORE_IN_TEST+3)*IPC_TASK_STACKSIZE];
+#endif
 
 /* IMPORTANT NOTE: For C7x,
  * - stack size and stack ptr MUST be 8KB aligned
