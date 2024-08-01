@@ -61,6 +61,9 @@
 
 /* Global variable to check whether EMMC_BOOT0 is defined or not */
 bool gIsEmmcBoot0Enable = BFALSE;
+/* This variable is used to initialize cidPtr pointer to pointer variable.
+   If initialized to NULL, it is showing SA issues which is dereferencing NULL Ptr */
+uint32_t gCidAddr;
 
 /* eMMC Sector size */
 #define SECTORSIZE                      (512U) //0x200
@@ -234,7 +237,7 @@ int32_t SBL_ReadSysfwImage(void **pBuffer, uint32_t num_bytes)
     const TCHAR *fileName = "0:/tifs.bin";
     void *sysfw_ptr = *pBuffer;
     MMCSD_v2_HwAttrs hwAttrsConfig;
-    uint32_t** cidPtr = NULL;
+    uint32_t** cidPtr = (uint32_t**)&gCidAddr;
     uint8_t emmcManufacturerId = 0U;
 
      if(MMCSD_socGetInitCfg(FATFS_initCfg[0].drvInst,&hwAttrsConfig)!=0) {
@@ -299,8 +302,10 @@ int32_t SBL_ReadSysfwImage(void **pBuffer, uint32_t num_bytes)
 
         if (retVal == CSL_PASS)
         {
-          emmcManufacturerId = *(*cidPtr+3) >> 24;
-
+            if (cidPtr != NULL)
+            {
+                emmcManufacturerId = *(*cidPtr+3) >> 24;
+            }
           if (EMMC_MICRON_FLASH_MANUFACTURER_ID == emmcManufacturerId)
           {
             if(MMCSD_socGetInitCfg(FATFS_initCfg[0].drvInst,&hwAttrsConfig)!=0)
