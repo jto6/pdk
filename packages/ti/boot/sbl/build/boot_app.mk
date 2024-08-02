@@ -32,10 +32,10 @@ ifeq ($(SAFETY_LOOP), yes)
         #Enable below flag to take the register configuration for PM, RM and TIFS modules
         #CFLAGS_LOCAL_COMMON += -DSC_REGDUMP_ENABLE
     endif
-else ifeq ($(BIST_TASK_ENABLED), yes)
-    APP_NAME = boot_app_$(BOOTMODE)_bist$(HLOS_SUFFIX)
-    LOCAL_APP_NAME = sbl_boot_app_$(BOOTMODE)_bist$(HLOS_SUFFIX)_$(BOARD)_$(CORE)_$(BUILD_OS_TYPE)_TestApp
-    CFLAGS_LOCAL_COMMON += -DBIST_TASK_ENABLED
+else ifeq ($(SDL_SAFETY_TASK_ENABLED), yes)
+    APP_NAME = boot_app_$(BOOTMODE)_sdl_safety$(HLOS_SUFFIX)
+    LOCAL_APP_NAME = sbl_boot_app_$(BOOTMODE)_sdl_safety$(HLOS_SUFFIX)_$(BOARD)_$(CORE)_$(BUILD_OS_TYPE)_TestApp
+    CFLAGS_LOCAL_COMMON += -DSDL_SAFETY_TASK_ENABLED
 else
     APP_NAME = boot_app_$(BOOTMODE)$(HLOS_SUFFIX)$(HS_SUFFIX)
     LOCAL_APP_NAME = sbl_boot_app_$(BOOTMODE)$(HLOS_SUFFIX)$(HS_SUFFIX)_$(BOARD)_$(CORE)_$(BUILD_OS_TYPE)_TestApp
@@ -97,21 +97,39 @@ ifeq ($(CANRESP), enabled)
     SRCS_COMMON += boot_app_can.c
 endif
 
-ifeq ($(BIST_TASK_ENABLED),yes)
+ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
     # SDL Include Files
     SDL_INSTALL_PATH=$(PDK_INSTALL_PATH)/../../sdl
     INCDIR += $(SDL_INSTALL_PATH)/
+    INCDIR += $(SDL_INSTALL_PATH)/src/sdl
+    INCDIR += $(SDL_INSTALL_PATH)/include
+    INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC)
     INCDIR += $(SDL_INSTALL_PATH)/osal/
     INCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
     INCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
     INCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
-    INCDIR += $(SDL_INSTALL_PATH)/src/sdl
-    INCDIR += $(SDL_INSTALL_PATH)/include
-    INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC)
+    INCDIR += $(SDL_INSTALL_PATH)/src/ip/r5
+
+    # SDL Integration
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
+    SRCS_COMMON += boot_app_osal_wrap.c
+    SRCS_COMMON += bist.c bist_core_defs.c
+    SRCS_COMMON += lbist_utils.c lbist_defs.c
+    SRCS_COMMON += pbist_utils.c pbist_defs.c
+    SRCS_COMMON += power_seq.c armv8_power_utils.c
+    SRCS_COMMON += vtm.c event_trigger.c
+    SRCS_COMMON += pok.c
+    SRCS_COMMON += tog.c
+    SRCS_ASM_COMMON += 	tog_utils.asm
 
     # PDK Include Files
     INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
     INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
+    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
+    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
 
     # SDL Source File Paths
     SRCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
@@ -121,16 +139,10 @@ ifeq ($(BIST_TASK_ENABLED),yes)
     # PDK Source File Paths
     SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
     SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
+    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
+    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
 
-    # SDL Integration
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
-    SRCS_COMMON += osal_wrap.c
-    SRCS_COMMON += bist.c bist_core_defs.c
-    SRCS_COMMON += lbist_utils.c lbist_defs.c
-    SRCS_COMMON += pbist_utils.c pbist_defs.c
-    SRCS_COMMON += power_seq.c armv8_power_utils.c
 endif
 
 ifeq ($(HLOSBOOT), linux)

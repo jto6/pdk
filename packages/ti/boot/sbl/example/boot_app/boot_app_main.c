@@ -65,9 +65,12 @@
 #include "boot_app_can.h"
 #endif
 #endif
-#if defined(BIST_TASK_ENABLED)
+#if defined(SDL_SAFETY_TASK_ENABLED)
 #include <osal/sdl_osal.h>
 #include "bist.h"
+#include "vtm.h"
+#include "pok.h"
+#include "tog.h"
 #endif
 
 /* ========================================================================== */
@@ -78,12 +81,15 @@
 #define BOOT_APP_TASK_STACK               (10U * 1024U)
 
 /* Task Priority Levels, CAN Task has the highest priority,
- * followed by the BIST Task as it is recommended to test BIST before the Boot Task */
-#if defined(BIST_TASK_ENABLED)
-#define BOOT_APP_BIST_TASK_PRIORITY       (6)
+ * followed by the safety tasks as it is recommended to test them before the Boot Task */
+#if defined(SDL_SAFETY_TASK_ENABLED)
+#define BOOT_APP_BIST_TASK_PRIORITY       (9)
+#define BOOT_APP_VTM_TASK_PRIORITY       (8)
+#define BOOT_APP_POK_TASK_PRIORITY       (6)
+#define BOOT_APP_TOG_TASK_PRIORITY       (7)
 #endif
 #if defined(CAN_RESP_TASK_ENABLED)
-#define BOOT_APP_CAN_TASK_PRIORITY        (7)
+#define BOOT_APP_CAN_TASK_PRIORITY        (10)
 #endif
 #define BOOT_APP_BOOT_TASK_PRIORITY       (5)
 
@@ -100,7 +106,31 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-#if defined(BIST_TASK_ENABLED)
+#if defined(SDL_SAFETY_TASK_ENABLED)
+/* Stack for the TOG task */
+static uint8_t gBootAppTogStack[BOOT_APP_TASK_STACK] __attribute__((aligned(32)));
+TaskP_Handle gBootAppTogTask;
+/* Start and End time for TOG task */
+static uint64_t gBootAppTogTimeStart, gBootAppTogTimeFinish;
+/* Semaphore to indicate TOG Task completion */
+static SemaphoreP_Handle gBootAppTogCompletedSem = NULL;
+
+/* Stack for the POK task */
+static uint8_t gBootAppPokStack[BOOT_APP_TASK_STACK] __attribute__((aligned(32)));
+TaskP_Handle gBootAppPokTask;
+/* Start and End time for POK task */
+static uint64_t gBootAppPokTimeStart, gBootAppPokTimeFinish;
+/* Semaphore to indicate POK Task completion */
+static SemaphoreP_Handle gBootAppPokCompletedSem = NULL;
+
+/* Stack for the VTM task */
+static uint8_t gBootAppVtmStack[BOOT_APP_TASK_STACK] __attribute__((aligned(32)));
+TaskP_Handle gBootAppVtmTask;
+/* Start and End time for VTM task */
+static uint64_t gBootAppVtmTimeStart, gBootAppVtmTimeFinish;
+/* Semaphore to indicate VTM Task completion */
+static SemaphoreP_Handle gBootAppVtmCompletedSem = NULL;
+
 /* Stack for the BIST task */
 static uint8_t gBootAppBistStack[BOOT_APP_TASK_STACK] __attribute__((aligned(32)));
 TaskP_Handle gBootAppBistTask;
@@ -212,7 +242,34 @@ static void BootApp_bootTaskFxn(void* a0, void* a1);
 static int32_t BootApp_safetyCheckerLoop(void);
 #endif
 
-#if defined(BIST_TASK_ENABLED)
+#if defined(SDL_SAFETY_TASK_ENABLED)
+/**
+ * \brief  TOG Task Function
+ *
+ * \param  None
+ *
+ * \return None
+ */
+static void BootApp_togTaskFxn(void* a0, void* a1);
+
+/**
+ * \brief  POK Task Function
+ *
+ * \param  None
+ *
+ * \return None
+ */
+static void BootApp_pokTaskFxn(void* a0, void* a1);
+
+/**
+ * \brief  VTM Task Function
+ *
+ * \param  None
+ *
+ * \return None
+ */
+static void BootApp_vtmTaskFxn(void* a0, void* a1);
+
 /**
  * \brief  BIST Task Function
  *
@@ -270,8 +327,44 @@ int32_t main(void)
 
     UART_printf("MCU R5F App started at %d usecs\r\n", BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM)));
 
-#if defined(BIST_TASK_ENABLED)
-    /* Initialize the task params */
+#if defined(SDL_SAFETY_TASK_ENABLED)
+    /* Initialize the TOG task params */
+    TaskP_Params togTaskParams;
+    TaskP_Params_init(&togTaskParams);
+    togTaskParams.priority       = BOOT_APP_TOG_TASK_PRIORITY;
+    togTaskParams.stack          = gBootAppTogStack;
+    togTaskParams.stacksize      = sizeof (gBootAppTogStack);
+    gBootAppTogTask = TaskP_create(&BootApp_togTaskFxn, &togTaskParams);
+    if (NULL == gBootAppTogTask)
+    {
+        OS_stop();
+    }
+
+    /* Initialize the POK task params */
+    TaskP_Params pokTaskParams;
+    TaskP_Params_init(&pokTaskParams);
+    pokTaskParams.priority       = BOOT_APP_POK_TASK_PRIORITY;
+    pokTaskParams.stack          = gBootAppPokStack;
+    pokTaskParams.stacksize      = sizeof (gBootAppPokStack);
+    gBootAppPokTask = TaskP_create(&BootApp_pokTaskFxn, &pokTaskParams);
+    if (NULL == gBootAppPokTask)
+    {
+        OS_stop();
+    }
+
+    /* Initialize the VTM task params */
+    TaskP_Params vtmTaskParams;
+    TaskP_Params_init(&vtmTaskParams);
+    vtmTaskParams.priority       = BOOT_APP_VTM_TASK_PRIORITY;
+    vtmTaskParams.stack          = gBootAppVtmStack;
+    vtmTaskParams.stacksize      = sizeof (gBootAppVtmStack);
+    gBootAppVtmTask = TaskP_create(&BootApp_vtmTaskFxn, &vtmTaskParams);
+    if (NULL == gBootAppVtmTask)
+    {
+        OS_stop();
+    }
+
+    /* Initialize the BIST task params */
     TaskP_Params bistTaskParams;
     TaskP_Params_init(&bistTaskParams);
     bistTaskParams.priority       = BOOT_APP_BIST_TASK_PRIORITY;
@@ -383,7 +476,82 @@ static void BootApp_armR5PmuCntrInit(void)
     return;
 }
 
-#if defined(BIST_TASK_ENABLED)
+#if defined(SDL_SAFETY_TASK_ENABLED)
+static void BootApp_togTaskFxn(void* a0, void* a1)
+{
+    /* Initialize the Semaphore */
+    SemaphoreP_Params semParams;
+    SemaphoreP_Params_init(&semParams);
+    gBootAppTogCompletedSem = SemaphoreP_create(0, &semParams);
+    if(NULL == gBootAppTogCompletedSem)
+    {
+        UART_printf("Semaphore create failed\r\n");
+    }
+
+    gBootAppTogTimeStart = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    BootApp_togFxn();
+
+    gBootAppTogTimeFinish = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    UART_printf("MCU TOG Task started at %d usecs and finished at %d usecs\r\n", (uint32_t)gBootAppTogTimeStart, (uint32_t)gBootAppTogTimeFinish);
+
+    /* Post semaphore after TOG task completion so other tasks could start execution */
+    SemaphoreP_post(gBootAppTogCompletedSem);
+
+    return;
+}
+
+static void BootApp_pokTaskFxn(void* a0, void* a1)
+{
+    /* Initialize the Semaphore */
+    SemaphoreP_Params semParams;
+    SemaphoreP_Params_init(&semParams);
+    gBootAppPokCompletedSem = SemaphoreP_create(0, &semParams);
+    if(NULL == gBootAppPokCompletedSem)
+    {
+        UART_printf("Semaphore create failed\r\n");
+    }
+
+    gBootAppPokTimeStart = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    BootApp_pokFxn();
+
+    gBootAppPokTimeFinish = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    UART_printf("MCU POK Task started at %d usecs and finished at %d usecs\r\n", (uint32_t)gBootAppPokTimeStart, (uint32_t)gBootAppPokTimeFinish);
+
+    /* Post semaphore after POK task completion so other tasks could start execution */
+    SemaphoreP_post(gBootAppPokCompletedSem);
+
+    return;
+}
+
+static void BootApp_vtmTaskFxn(void* a0, void* a1)
+{
+    /* Initialize the Semaphore */
+    SemaphoreP_Params semParams;
+    SemaphoreP_Params_init(&semParams);
+    gBootAppVtmCompletedSem = SemaphoreP_create(0, &semParams);
+    if(NULL == gBootAppVtmCompletedSem)
+    {
+        UART_printf("Semaphore create failed\r\n");
+    }
+
+    gBootAppVtmTimeStart = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    BootApp_vtmFxn();
+
+    gBootAppVtmTimeFinish = BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM));
+
+    UART_printf("MCU VTM Task started at %d usecs and finished at %d usecs\r\n", (uint32_t)gBootAppVtmTimeStart, (uint32_t)gBootAppVtmTimeFinish);
+
+    /* Post semaphore after VTM task completion so other tasks could start execution */
+    SemaphoreP_post(gBootAppVtmCompletedSem);
+
+    return;
+}
+
 static void BootApp_bistTaskFxn(void* a0, void* a1)
 {
 #if !defined(CAN_RESP_TASK_ENABLED)
@@ -544,12 +712,21 @@ static void BootApp_mainDomainSetup()
 
 static void BootApp_bootTaskFxn(void* a0, void* a1)
 {
-#if defined(BIST_TASK_ENABLED)
+#if defined(SDL_SAFETY_TASK_ENABLED)
+    /* Wait for the TOG task completion */
+    SemaphoreP_pend(gBootAppTogCompletedSem, SemaphoreP_WAIT_FOREVER);
+
+    /* Wait for the POK task completion */
+    SemaphoreP_pend(gBootAppPokCompletedSem, SemaphoreP_WAIT_FOREVER);
+
+    /* Wait for the VTM task completion */
+    SemaphoreP_pend(gBootAppVtmCompletedSem, SemaphoreP_WAIT_FOREVER);
+
     /* Wait for the BIST task completion */
     SemaphoreP_pend(gBootAppBistCompletedSem, SemaphoreP_WAIT_FOREVER);
 #endif
 
-#if !defined(CAN_RESP_TASK_ENABLED) && !defined(BIST_TASK_ENABLED)
+#if !defined(CAN_RESP_TASK_ENABLED) && !defined(SDL_SAFETY_TASK_ENABLED)
     Board_initCfg boardCfg;
     boardCfg = BOARD_INIT_PINMUX_CONFIG | BOARD_INIT_UART_STDIO;
     Board_init(boardCfg);

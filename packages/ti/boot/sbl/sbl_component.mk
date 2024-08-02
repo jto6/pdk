@@ -2105,31 +2105,31 @@ sbl_EXAMPLE_LIST += boot_app_ospi_nand
 boot_app_ospi_nand_SBL_APPIMAGEGEN = yes
 export boot_app_ospi_nand_SBL_APPIMAGEGEN
 
-# Boot App OSPI with BIST
-boot_app_ospi_bist_COMP_LIST = boot_app_ospi_bist
-boot_app_ospi_bist_RELPATH = ti/boot/sbl/example/boot_app
-boot_app_ospi_bist_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/ospi
-boot_app_ospi_bist_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
-boot_app_ospi_bist_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=ospi BUILD_HS=no HLOSBOOT=none CANRESP=disabled BIST_TASK_ENABLED=yes
-export boot_app_ospi_bist_MAKEFILE
-boot_app_ospi_bist_BOARD_DEPENDENCY = yes
-boot_app_ospi_bist_SOC_DEPENDENCY = yes
-boot_app_ospi_bist_CORE_DEPENDENCY = yes
-export boot_app_ospi_bist_COMP_LIST
-export boot_app_ospi_bist_BOARD_DEPENDENCY
-export boot_app_ospi_bist_SOC_DEPENDENCY
-export boot_app_ospi_bist_CORE_DEPENDENCY
-boot_app_ospi_bist_PKG_LIST = boot_app_ospi_bist
-boot_app_ospi_bist_INCLUDE = $(boot_app_ospi_bist_PATH)
-boot_app_ospi_bist_SOCLIST = j784s4
-boot_app_ospi_bist_BOARDLIST = j784s4_evm
-export boot_app_ospi_bist_SOCLIST
-export boot_app_ospi_bist_BOARDLIST
-boot_app_ospi_bist_$(SOC)_CORELIST = mcu1_0
-export boot_app_ospi_bist_$(SOC)_CORELIST
-sbl_EXAMPLE_LIST += boot_app_ospi_bist
-boot_app_ospi_bist_SBL_APPIMAGEGEN = yes
-export boot_app_ospi_bist_SBL_APPIMAGEGEN
+# Boot App OSPI with SDL Safety Tests
+boot_app_ospi_sdl_safety_COMP_LIST = boot_app_ospi_sdl_safety
+boot_app_ospi_sdl_safety_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_ospi_sdl_safety_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/ospi
+boot_app_ospi_sdl_safety_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_ospi_sdl_safety_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=ospi BUILD_HS=no HLOSBOOT=none CANRESP=disabled SDL_SAFETY_TASK_ENABLED=yes
+export boot_app_ospi_sdl_safety_MAKEFILE
+boot_app_ospi_sdl_safety_BOARD_DEPENDENCY = yes
+boot_app_ospi_sdl_safety_SOC_DEPENDENCY = yes
+boot_app_ospi_sdl_safety_CORE_DEPENDENCY = yes
+export boot_app_ospi_sdl_safety_COMP_LIST
+export boot_app_ospi_sdl_safety_BOARD_DEPENDENCY
+export boot_app_ospi_sdl_safety_SOC_DEPENDENCY
+export boot_app_ospi_sdl_safety_CORE_DEPENDENCY
+boot_app_ospi_sdl_safety_PKG_LIST = boot_app_ospi_sdl_safety
+boot_app_ospi_sdl_safety_INCLUDE = $(boot_app_ospi_sdl_safety_PATH)
+boot_app_ospi_sdl_safety_SOCLIST = j784s4
+boot_app_ospi_sdl_safety_BOARDLIST = j784s4_evm
+export boot_app_ospi_sdl_safety_SOCLIST
+export boot_app_ospi_sdl_safety_BOARDLIST
+boot_app_ospi_sdl_safety_$(SOC)_CORELIST = mcu1_0
+export boot_app_ospi_sdl_safety_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_ospi_sdl_safety
+boot_app_ospi_sdl_safety_SBL_APPIMAGEGEN = yes
+export boot_app_ospi_sdl_safety_SBL_APPIMAGEGEN
 
 # Boot App OSPI to boot qnx
 boot_app_ospi_qnx_COMP_LIST = boot_app_ospi_qnx
@@ -2183,31 +2183,31 @@ sbl_EXAMPLE_LIST += boot_app_ospi_linux
 boot_app_ospi_linux_SBL_APPIMAGEGEN = yes
 export boot_app_ospi_linux_SBL_APPIMAGEGEN
 
-# Boot App OSPI with BIST to boot linux
-boot_app_ospi_bist_linux_COMP_LIST = boot_app_ospi_bist_linux
-boot_app_ospi_bist_linux_RELPATH = ti/boot/sbl/example/boot_app
-boot_app_ospi_bist_linux_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/ospi
-boot_app_ospi_bist_linux_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
-boot_app_ospi_bist_linux_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=ospi BUILD_HS=no HLOSBOOT=linux CANRESP=disabled BIST_TASK_ENABLED=yes
-export boot_app_ospi_bist_linux_MAKEFILE
-boot_app_ospi_bist_linux_BOARD_DEPENDENCY = yes
-boot_app_ospi_bist_linux_SOC_DEPENDENCY = yes
-boot_app_ospi_bist_linux_CORE_DEPENDENCY = yes
-export boot_app_ospi_bist_linux_COMP_LIST
-export boot_app_ospi_bist_linux_BOARD_DEPENDENCY
-export boot_app_ospi_bist_linux_SOC_DEPENDENCY
-export boot_app_ospi_bist_linux_CORE_DEPENDENCY
-boot_app_ospi_bist_linux_PKG_LIST = boot_app_ospi_bist_linux
-boot_app_ospi_bist_linux_INCLUDE = $(boot_app_ospi_bist_linux_PATH)
-boot_app_ospi_bist_linux_SOCLIST = j784s4
-boot_app_ospi_bist_linux_BOARDLIST = j784s4_evm
-export boot_app_ospi_bist_linux_SOCLIST
-export boot_app_ospi_bist_linux_BOARDLIST
-boot_app_ospi_bist_linux_$(SOC)_CORELIST = mcu1_0
-export boot_app_ospi_bist_linux_$(SOC)_CORELIST
-sbl_EXAMPLE_LIST += boot_app_ospi_bist_linux
-boot_app_ospi_bist_linux_SBL_APPIMAGEGEN = yes
-export boot_app_ospi_bist_linux_SBL_APPIMAGEGEN
+# Boot App OSPI with SDL Safety Tests to boot linux
+boot_app_ospi_sdl_safety_linux_COMP_LIST = boot_app_ospi_sdl_safety_linux
+boot_app_ospi_sdl_safety_linux_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_ospi_sdl_safety_linux_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/ospi
+boot_app_ospi_sdl_safety_linux_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_ospi_sdl_safety_linux_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=ospi BUILD_HS=no HLOSBOOT=linux CANRESP=disabled SDL_SAFETY_TASK_ENABLED=yes
+export boot_app_ospi_sdl_safety_linux_MAKEFILE
+boot_app_ospi_sdl_safety_linux_BOARD_DEPENDENCY = yes
+boot_app_ospi_sdl_safety_linux_SOC_DEPENDENCY = yes
+boot_app_ospi_sdl_safety_linux_CORE_DEPENDENCY = yes
+export boot_app_ospi_sdl_safety_linux_COMP_LIST
+export boot_app_ospi_sdl_safety_linux_BOARD_DEPENDENCY
+export boot_app_ospi_sdl_safety_linux_SOC_DEPENDENCY
+export boot_app_ospi_sdl_safety_linux_CORE_DEPENDENCY
+boot_app_ospi_sdl_safety_linux_PKG_LIST = boot_app_ospi_sdl_safety_linux
+boot_app_ospi_sdl_safety_linux_INCLUDE = $(boot_app_ospi_sdl_safety_linux_PATH)
+boot_app_ospi_sdl_safety_linux_SOCLIST = j784s4
+boot_app_ospi_sdl_safety_linux_BOARDLIST = j784s4_evm
+export boot_app_ospi_sdl_safety_linux_SOCLIST
+export boot_app_ospi_sdl_safety_linux_BOARDLIST
+boot_app_ospi_sdl_safety_linux_$(SOC)_CORELIST = mcu1_0
+export boot_app_ospi_sdl_safety_linux_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_ospi_sdl_safety_linux
+boot_app_ospi_sdl_safety_linux_SBL_APPIMAGEGEN = yes
+export boot_app_ospi_sdl_safety_linux_SBL_APPIMAGEGEN
 
 # Boot App MMCSD
 boot_app_mmcsd_COMP_LIST = boot_app_mmcsd
@@ -2261,31 +2261,31 @@ sbl_EXAMPLE_LIST += boot_app_mmcsd_safety
 boot_app_mmcsd_safety_SBL_APPIMAGEGEN = yes
 export boot_app_mmcsd_safety_SBL_APPIMAGEGEN
 
-# Boot App MMCSD with BIST
-boot_app_mmcsd_bist_COMP_LIST = boot_app_mmcsd_bist
-boot_app_mmcsd_bist_RELPATH = ti/boot/sbl/example/boot_app
-boot_app_mmcsd_bist_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/mmcsd
-boot_app_mmcsd_bist_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
-boot_app_mmcsd_bist_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=mmcsd BUILD_HS=no HLOSBOOT=none BIST_TASK_ENABLED=yes
-export boot_app_mmcsd_bist_MAKEFILE
-boot_app_mmcsd_bist_BOARD_DEPENDENCY = yes
-boot_app_mmcsd_bist_SOC_DEPENDENCY = yes
-boot_app_mmcsd_bist_CORE_DEPENDENCY = yes
-export boot_app_mmcsd_bist_COMP_LIST
-export boot_app_mmcsd_bist_BOARD_DEPENDENCY
-export boot_app_mmcsd_bist_SOC_DEPENDENCY
-export boot_app_mmcsd_bist_CORE_DEPENDENCY
-boot_app_mmcsd_bist_PKG_LIST = boot_app_mmcsd_bist
-boot_app_mmcsd_bist_INCLUDE = $(boot_app_mmcsd_bist_PATH)
-boot_app_mmcsd_bist_SOCLIST = j784s4
-boot_app_mmcsd_bist_BOARDLIST = j784s4_evm
-export boot_app_mmcsd_bist_SOCLIST
-export boot_app_mmcsd_bist_BOARDLIST
-boot_app_mmcsd_bist_$(SOC)_CORELIST = mcu1_0
-export boot_app_mmcsd_bist_$(SOC)_CORELIST
-sbl_EXAMPLE_LIST += boot_app_mmcsd_bist
-boot_app_mmcsd_bist_SBL_APPIMAGEGEN = yes
-export boot_app_mmcsd_bist_SBL_APPIMAGEGEN
+# Boot App MMCSD with SDL Safety Tests
+boot_app_mmcsd_sdl_safety_COMP_LIST = boot_app_mmcsd_sdl_safety
+boot_app_mmcsd_sdl_safety_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_mmcsd_sdl_safety_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/mmcsd
+boot_app_mmcsd_sdl_safety_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_mmcsd_sdl_safety_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=mmcsd BUILD_HS=no HLOSBOOT=none SDL_SAFETY_TASK_ENABLED=yes
+export boot_app_mmcsd_sdl_safety_MAKEFILE
+boot_app_mmcsd_sdl_safety_BOARD_DEPENDENCY = yes
+boot_app_mmcsd_sdl_safety_SOC_DEPENDENCY = yes
+boot_app_mmcsd_sdl_safety_CORE_DEPENDENCY = yes
+export boot_app_mmcsd_sdl_safety_COMP_LIST
+export boot_app_mmcsd_sdl_safety_BOARD_DEPENDENCY
+export boot_app_mmcsd_sdl_safety_SOC_DEPENDENCY
+export boot_app_mmcsd_sdl_safety_CORE_DEPENDENCY
+boot_app_mmcsd_sdl_safety_PKG_LIST = boot_app_mmcsd_sdl_safety
+boot_app_mmcsd_sdl_safety_INCLUDE = $(boot_app_mmcsd_sdl_safety_PATH)
+boot_app_mmcsd_sdl_safety_SOCLIST = j784s4
+boot_app_mmcsd_sdl_safety_BOARDLIST = j784s4_evm
+export boot_app_mmcsd_sdl_safety_SOCLIST
+export boot_app_mmcsd_sdl_safety_BOARDLIST
+boot_app_mmcsd_sdl_safety_$(SOC)_CORELIST = mcu1_0
+export boot_app_mmcsd_sdl_safety_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_mmcsd_sdl_safety
+boot_app_mmcsd_sdl_safety_SBL_APPIMAGEGEN = yes
+export boot_app_mmcsd_sdl_safety_SBL_APPIMAGEGEN
 
 # Boot App MMCSD to boot qnx
 boot_app_mmcsd_qnx_COMP_LIST = boot_app_mmcsd_qnx
@@ -2339,31 +2339,31 @@ sbl_EXAMPLE_LIST += boot_app_mmcsd_linux
 boot_app_mmcsd_linux_SBL_APPIMAGEGEN = yes
 export boot_app_mmcsd_linux_SBL_APPIMAGEGEN
 
-# Boot App MMCSD with BIST to boot linux
-boot_app_mmcsd_bist_linux_COMP_LIST = boot_app_mmcsd_bist_linux
-boot_app_mmcsd_bist_linux_RELPATH = ti/boot/sbl/example/boot_app
-boot_app_mmcsd_bist_linux_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/mmcsd
-boot_app_mmcsd_bist_linux_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
-boot_app_mmcsd_bist_linux_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=mmcsd BUILD_HS=no HLOSBOOT=linux BIST_TASK_ENABLED=yes
-export boot_app_mmcsd_bist_linux_MAKEFILE
-boot_app_mmcsd_bist_linux_BOARD_DEPENDENCY = yes
-boot_app_mmcsd_bist_linux_SOC_DEPENDENCY = yes
-boot_app_mmcsd_bist_linux_CORE_DEPENDENCY = yes
-export boot_app_mmcsd_bist_linux_COMP_LIST
-export boot_app_mmcsd_bist_linux_BOARD_DEPENDENCY
-export boot_app_mmcsd_bist_linux_SOC_DEPENDENCY
-export boot_app_mmcsd_bist_linux_CORE_DEPENDENCY
-boot_app_mmcsd_bist_linux_PKG_LIST = boot_app_mmcsd_bist_linux
-boot_app_mmcsd_bist_linux_INCLUDE = $(boot_app_mmcsd_bist_linux_PATH)
-boot_app_mmcsd_bist_linux_SOCLIST = j784s4
-boot_app_mmcsd_bist_linux_BOARDLIST = j784s4_evm
-export boot_app_mmcsd_bist_linux_SOCLIST
-export boot_app_mmcsd_bist_linux_BOARDLIST
-boot_app_mmcsd_bist_linux_$(SOC)_CORELIST = mcu1_0
-export boot_app_mmcsd_bist_linux_$(SOC)_CORELIST
-sbl_EXAMPLE_LIST += boot_app_mmcsd_bist_linux
-boot_app_mmcsd_bist_linux_SBL_APPIMAGEGEN = yes
-export boot_app_mmcsd_bist_linux_SBL_APPIMAGEGEN
+# Boot App MMCSD with SDL Safety Tests to boot linux
+boot_app_mmcsd_sdl_safety_linux_COMP_LIST = boot_app_mmcsd_sdl_safety_linux
+boot_app_mmcsd_sdl_safety_linux_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_mmcsd_sdl_safety_linux_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/mmcsd
+boot_app_mmcsd_sdl_safety_linux_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_mmcsd_sdl_safety_linux_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=mmcsd BUILD_HS=no HLOSBOOT=linux SDL_SAFETY_TASK_ENABLED=yes
+export boot_app_mmcsd_sdl_safety_linux_MAKEFILE
+boot_app_mmcsd_sdl_safety_linux_BOARD_DEPENDENCY = yes
+boot_app_mmcsd_sdl_safety_linux_SOC_DEPENDENCY = yes
+boot_app_mmcsd_sdl_safety_linux_CORE_DEPENDENCY = yes
+export boot_app_mmcsd_sdl_safety_linux_COMP_LIST
+export boot_app_mmcsd_sdl_safety_linux_BOARD_DEPENDENCY
+export boot_app_mmcsd_sdl_safety_linux_SOC_DEPENDENCY
+export boot_app_mmcsd_sdl_safety_linux_CORE_DEPENDENCY
+boot_app_mmcsd_sdl_safety_linux_PKG_LIST = boot_app_mmcsd_sdl_safety_linux
+boot_app_mmcsd_sdl_safety_linux_INCLUDE = $(boot_app_mmcsd_sdl_safety_linux_PATH)
+boot_app_mmcsd_sdl_safety_linux_SOCLIST = j784s4
+boot_app_mmcsd_sdl_safety_linux_BOARDLIST = j784s4_evm
+export boot_app_mmcsd_sdl_safety_linux_SOCLIST
+export boot_app_mmcsd_sdl_safety_linux_BOARDLIST
+boot_app_mmcsd_sdl_safety_linux_$(SOC)_CORELIST = mcu1_0
+export boot_app_mmcsd_sdl_safety_linux_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_mmcsd_sdl_safety_linux
+boot_app_mmcsd_sdl_safety_linux_SBL_APPIMAGEGEN = yes
+export boot_app_mmcsd_sdl_safety_linux_SBL_APPIMAGEGEN
 
 # Boot App OSPI HS
 boot_app_ospi_hs_COMP_LIST = boot_app_ospi_hs
