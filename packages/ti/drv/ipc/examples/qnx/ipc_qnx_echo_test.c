@@ -98,7 +98,7 @@
 #if defined(SAFERTOS) && defined (BUILD_MCU)
 uint8_t  g_taskStackBuf[(CORE_IN_TEST+3)*IPC_TASK_STACKSIZE]
 __attribute__ ((aligned(IPC_TASK_STACKSIZE)));
-#else
+#elif defined (BUILD_C7X)
 
 /* IMPORTANT NOTE: For C7x,
  * - stack size and stack ptr MUST be 8KB aligned
@@ -108,8 +108,9 @@ __attribute__ ((aligned(IPC_TASK_STACKSIZE)));
 */
 uint8_t g_taskStackBuf[(CORE_IN_TEST+3)*IPC_TASK_STACKSIZE]
 __attribute__ ((section(".bss:taskStackSection")))
-__attribute__ ((aligned(8192)))
-    ;
+__attribute__ ((aligned(8192)));
+#else
+uint8_t g_taskStackBuf[(CORE_IN_TEST+3)*IPC_TASK_STACKSIZE];
 #endif
 #endif
 
