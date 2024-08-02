@@ -121,7 +121,7 @@ drvspi_FIRM_LIST = $(spi_FIRM_LIST)
 spi_EXAMPLE_LIST = drv_mcspi_loopback_app
 spi_EXAMPLE_LIST += mcspi_baremetal_master_testapp mcspi_baremetal_slave_testapp
 spi_EXAMPLE_LIST += mcspi_baremetal_master_dma_testapp mcspi_baremetal_slave_dma_testapp
-spi_EXAMPLE_LIST += OSPI_Baremetal_Flash_TestApp  OSPI_Baremetal_Flash_Dma_TestApp OSPI_Flash_TestApp OSPI_Flash_Dma_TestApp OSPI_Baremetal_Flash_Cache_TestApp  OSPI_Baremetal_Flash_Dma_Cache_TestApp OSPI_Flash_Cache_TestApp OSPI_Flash_Dma_Cache_TestApp QSPI_Baremetal_Flash_TestApp QSPI_Baremetal_Flash_Dma_TestApp QSPI_FileFlashWrite_Dma_TestApp
+spi_EXAMPLE_LIST += OSPI_Baremetal_Flash_TestApp  OSPI_Baremetal_Flash_Dma_TestApp OSPI_Flash_TestApp OSPI_Flash_Dma_TestApp OSPI_Baremetal_Flash_Cache_TestApp  OSPI_Baremetal_Flash_Dma_Cache_TestApp OSPI_Flash_Cache_TestApp OSPI_Flash_Dma_Cache_TestApp OSPI_NAND_Flash_OTP_TestApp QSPI_Baremetal_Flash_TestApp QSPI_Baremetal_Flash_Dma_TestApp QSPI_FileFlashWrite_Dma_TestApp
 
 #
 # SPI Modules
@@ -837,6 +837,29 @@ endef
 OSPI_FLASH_DMA_CACHE_TESTAPP_MACRO_LIST := $(foreach curos, $(ospi_RTOS_LIST), $(call OSPI_FLASH_DMA_CACHE_TESTAPP_RULE,$(curos)))
 
 $(eval ${OSPI_FLASH_DMA_CACHE_TESTAPP_MACRO_LIST})
+
+# OSPI NAND Flash OTP Test app
+OSPI_NAND_Flash_OTP_TestApp_COMP_LIST = OSPI_NAND_Flash_OTP_TestApp
+OSPI_NAND_Flash_OTP_TestApp_RELPATH = ti/drv/spi/test/ospi_flash_nand_test
+OSPI_NAND_Flash_OTP_TestApp_PATH = $(PDK_SPI_COMP_PATH)/test/ospi_flash_nand_test
+OSPI_NAND_Flash_OTP_TestApp_BOARD_DEPENDENCY = yes
+OSPI_NAND_Flash_OTP_TestApp_CORE_DEPENDENCY = no
+OSPI_NAND_Flash_OTP_TestApp_MAKEFILE = -fmakefile BUILD_OS_TYPE=baremetal
+export OSPI_NAND_Flash_OTP_TestApp_COMP_LIST
+export OSPI_NAND_Flash_OTP_TestApp_BOARD_DEPENDENCY
+export OSPI_NAND_Flash_OTP_TestApp_CORE_DEPENDENCY
+export OSPI_NAND_Flash_OTP_TestApp_MAKEFILE
+OSPI_NAND_Flash_OTP_TestApp_PKG_LIST = OSPI_NAND_Flash_OTP_TestApp
+OSPI_NAND_Flash_OTP_TestApp_INCLUDE = $(OSPI_NAND_Flash_OTP_TestApp_PATH)
+OSPI_NAND_Flash_OTP_TestApp_BOARDLIST = j721s2_evm j784s4_evm j742s2_evm
+export OSPI_NAND_Flash_OTP_TestApp_BOARDLIST
+OSPI_NAND_Flash_OTP_TestApp_$(SOC)_CORELIST = $(drvspi_$(SOC)_CORELIST)
+export OSPI_NAND_Flash_OTP_TestApp_$(SOC)_CORELIST
+
+ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j742s2))
+OSPI_NAND_Flash_OTP_TestApp_SBL_APPIMAGEGEN = yes
+export OSPI_NAND_Flash_OTP_TestApp_SBL_APPIMAGEGEN
+endif
 
 # QSPI Baremetal Flash Test app
 QSPI_Baremetal_Flash_TestApp_COMP_LIST = QSPI_Baremetal_Flash_TestApp

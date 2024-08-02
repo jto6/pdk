@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020, Texas Instruments Incorporated
+ * Copyright (c) 2016-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -111,5 +111,13 @@ NAND_STATUS NAND_write(NAND_HANDLE handle, uint32_t addr,
 NAND_STATUS NAND_erase(NAND_HANDLE handle, int32_t blk)
 {
     return (Nand_config[Nand_intf].fxnTablePtr->eraseFxn(handle, blk));
+}
+
+/*
+ *  ======== NAND_control ========
+ */
+NAND_STATUS NAND_control(NAND_HANDLE handle, uint32_t command, void *args)
+{
+    return (Nand_config[Nand_intf].fxnTablePtr->controlFxn(handle, command, args));
 }
 

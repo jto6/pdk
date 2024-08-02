@@ -762,4 +762,51 @@ Board_flash_STATUS Board_flashEraseBlk(Board_flashHandle handle,
     return BOARD_FLASH_EUNSUPPORTED;
 }
 
+/**
+ *  @brief       Executes flash control and configurations commands
+ *
+ *  @param[in]   handle  Flash device handle from the open
+ *	@param[in]	 command Flash command to execute
+ *  @param[in]   args    Command arguments based on type of the command
+ *
+ *  @retval      BOARD_FLASH_EOK on Success
+ *
+ */
+Board_flash_STATUS Board_flashControl(Board_flashHandle handle,
+                                      uint32_t          command,
+                                      void              *args)
+{
+    Board_FlashInfo    *flashInfo;
+
+    if (!handle)
+    {
+        return BOARD_FLASH_EFAIL;
+    }
+
+    flashInfo = (Board_FlashInfo *)handle;
+    if (!flashInfo->flashHandle)
+    {
+        return BOARD_FLASH_EFAIL;
+    }
+
+#if defined (BOARD_NAND_FLASH_IN)
+    NAND_STATUS status;
+
+    if ((BOARD_FLASH_ID_W35N01JWTBAG == flashInfo->device_id))
+    {
+        status = NAND_control(flashInfo->flashHandle, command, args);
+        if (NAND_PASS != status)
+        {
+            return (BOARD_FLASH_EFAIL);
+        }
+        else
+        {
+            return (BOARD_FLASH_EOK);
+        }
+    }
+#endif
+
+    return BOARD_FLASH_EUNSUPPORTED;
+}
+
 

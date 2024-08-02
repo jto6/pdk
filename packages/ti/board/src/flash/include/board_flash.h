@@ -129,6 +129,16 @@ typedef int32_t Board_flash_STATUS;       /** Board Flash API return type */
 #define BOARD_FLASH_ID_W35N01JWTBAG        (0xDC21U) /**< Winbond 1GB NAND flash */
 
 /**
+ * @brief 	Macros for flash control commands.
+ *
+ * These macros shall be used as 'command' parameter of Board_flashControl API
+ *
+ */
+#define BOARD_FLASH_CTRL_ENABLE_OTP_ACCESS    (0)  /**< Control command to enable OTP area access */
+#define BOARD_FLASH_CTRL_DISABLE_OTP_ACCESS   (1U) /**< Control command to disable OTP area access */
+#define BOARD_FLASH_CTRL_LOCK_OTP             (2U) /**< Control command to lock OTP area */
+
+/**
  * @brief 	Board specific Flash Device Identifiers.
  *
  */
@@ -415,6 +425,19 @@ Board_flash_STATUS Board_flashOffsetToSectorPage(Board_flashHandle  handle,
 Board_flash_STATUS Board_flashEraseBlk(Board_flashHandle handle,
                                        uint32_t          block_number);
 
+/**
+ *  @brief       Executes flash control and configurations commands
+ *
+ *  @param[in]   handle  Flash device handle from the open
+ *	@param[in]	 command Flash command to execute
+ *  @param[in]   args    Command arguments based on type of the command
+ *
+ *  @retval      BOARD_FLASH_EOK on Success
+ *
+ */
+Board_flash_STATUS Board_flashControl(Board_flashHandle handle,
+                                      uint32_t          command,
+                                      void              *args);
 
 #ifdef __cplusplus
 }

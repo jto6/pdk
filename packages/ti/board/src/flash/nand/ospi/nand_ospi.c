@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Texas Instruments Incorporated
+ * Copyright (c) 2021-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,6 +56,8 @@ static NAND_STATUS Nand_ospiCmdWrite(OSPI_Handle handle, uint8_t *cmdBuf,
 
 static NAND_STATUS Nand_ospiWaitReady(OSPI_Handle handle, uint32_t timeOut);
 
+static NAND_STATUS Nand_ospiControl(NAND_HANDLE handle, uint32_t command, void *args);
+
 /* NAND function table for NAND OSPI interface implementation */
 const NAND_FxnTable Nand_ospiFxnTable =
 {
@@ -64,6 +66,7 @@ const NAND_FxnTable Nand_ospiFxnTable =
     &Nand_ospiRead,
     &Nand_ospiWrite,
     &Nand_ospiErase,
+    &Nand_ospiControl
 };
 
 NAND_Info Nand_ospiInfo =
@@ -143,6 +146,26 @@ static NAND_STATUS Nand_ospiReadStatusReg(OSPI_Handle handle, uint8_t regAddr, u
 
         cmdDummyCycles = 8U;
         OSPI_control(handle, OSPI_V0_CMD_EXT_RD_DUMMY_CLKS, (void *)&cmdDummyCycles);
+    }
+
+    return status;
+}
+
+static NAND_STATUS Nand_ospiWriteStatusReg(OSPI_Handle handle, uint8_t regAddr, uint8_t *regData)
+{
+    NAND_STATUS     status;
+    uint8_t         cmd[3];
+
+    cmd[0] = NAND_CMD_WRITE_STATUS;
+    cmd[1] = regAddr;
+    cmd[2] = *regData;
+
+    status = Nand_ospiCmdWrite(handle, cmd, 2, 1);
+
+    /* Check BUSY bit of Flash */
+    if (Nand_ospiWaitReady(handle, NAND_WRR_WRITE_TIMEOUT))
+    {
+        status = NAND_FAIL;
     }
 
     return status;
@@ -1140,4 +1163,60 @@ NAND_STATUS Nand_ospiErase(NAND_HANDLE handle, int32_t erLoc)
     }
 
     return NAND_PASS;
+}
+
+NAND_STATUS Nand_ospiControl(NAND_HANDLE handle, uint32_t command, void *args)
+{
+    uint8_t        regData = 0U;
+    NAND_Info      *nandOspiInfo;
+    OSPI_Handle    ospiHandle;
+    NAND_STATUS    status;
+
+    if (!handle)
+    {
+        return NAND_FAIL;
+    }
+
+    nandOspiInfo = (NAND_Info *)handle;
+    if (!nandOspiInfo->hwHandle)
+    {
+        return NAND_FAIL;
+    }
+    ospiHandle = (OSPI_Handle)nandOspiInfo->hwHandle;
+
+    switch (command)
+    {
+        case NAND_FLASH_CTRL_ENABLE_OTP_ACCESS:
+            status = Nand_ospiReadStatusReg(ospiHandle, NAND_SR2_ADDR, &regData);
+            if(!status)
+            {
+                regData |= 0x40;
+                status = Nand_ospiWriteStatusReg(ospiHandle, NAND_SR2_ADDR, &regData);
+            }
+            break;
+
+        case NAND_FLASH_CTRL_DISABLE_OTP_ACCESS:
+            status = Nand_ospiReadStatusReg(ospiHandle, NAND_SR2_ADDR, &regData);
+            if(!status)
+            {
+                regData &= ~0x40;
+                status = Nand_ospiWriteStatusReg(ospiHandle, NAND_SR2_ADDR, &regData);
+            }
+            break;
+
+        case NAND_FLASH_CTRL_LOCK_OTP:
+            status = Nand_ospiReadStatusReg(ospiHandle, NAND_SR2_ADDR, &regData);
+            if(!status)
+            {
+                regData |= 0x80;
+                status = Nand_ospiWriteStatusReg(ospiHandle, NAND_SR2_ADDR, &regData);
+            }
+            break;
+
+        default:
+            status = NAND_FAIL;
+            break;
+    }
+
+    return status;
 }

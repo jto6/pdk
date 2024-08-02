@@ -117,6 +117,14 @@ typedef uintptr_t NAND_HANDLE;
 #define NAND_BAD_BLOCK                    (1U)
 #define NAND_GOOD_BLOCK                   (0U)
 
+/**
+ * @brief 	Macros for NAND flash control commands.
+ *
+ */
+#define NAND_FLASH_CTRL_ENABLE_OTP_ACCESS    (0)  /**< Control command to enable OTP area access */
+#define NAND_FLASH_CTRL_DISABLE_OTP_ACCESS   (1U) /**< Control command to disable OTP area access */
+#define NAND_FLASH_CTRL_LOCK_OTP             (2U) /**< Control command to lock OTP area */
+
 /** \brief Enumerates the different ECC algorithms used for Error Correction. */
 typedef enum NAND_EccAlgo
 {
@@ -209,6 +217,13 @@ typedef NAND_STATUS (*NAND_WriteFxn)(NAND_HANDLE handle,
 typedef NAND_STATUS (*NAND_EraseFxn)(NAND_HANDLE handle,
                                      int32_t blk);
 
+/*!
+ *  @brief      A function pointer to a driver specific implementation of
+ *              NAND_ControlFxn().
+ */
+typedef NAND_STATUS (*NAND_ControlFxn)(NAND_HANDLE handle,
+                                       uint32_t command,
+                                       void *args);
 
 typedef struct NAND_FxnTable_s {
     /*! Function to initialize the given data object */
@@ -221,6 +236,8 @@ typedef struct NAND_FxnTable_s {
     NAND_WriteFxn           writeFxn;
     /*! Function to erase blocks from the specified peripheral */
     NAND_EraseFxn           eraseFxn;
+    /*! Function to execute flash control commands */
+    NAND_ControlFxn         controlFxn;
 
 } NAND_FxnTable;
 
@@ -307,6 +324,19 @@ extern NAND_STATUS NAND_write(NAND_HANDLE handle, uint32_t addr, uint32_t len, u
  *  @return NAND_STATUS.
  */
 extern NAND_STATUS NAND_erase(NAND_HANDLE handle, int32_t blk);
+
+/*!
+ *  @brief  NAND flash control function
+ *
+ *  This function executes the NAND flash control/configuration commands.
+ *
+ *  @param  handle      A NAND_HANDLE
+ *  @param  command     Flash command to execute
+ *  @param  args        Command arguments based on type of the command
+ *
+ *  @return NAND_STATUS.
+ */
+extern NAND_STATUS NAND_control(NAND_HANDLE handle, uint32_t command, void *args);
 
 extern const NAND_FxnTable Nand_gpmcFxnTable;
 extern const NAND_FxnTable Nand_ospiFxnTable;
