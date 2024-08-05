@@ -72,12 +72,18 @@ static int32_t Sciclient_setBoardConfigHeader ();
 #if defined(SOC_J721E)
 #define MCU_FSS0_S0_FWID           CSL_STD_FW_MCU_FSS0_FSS_S0_ID
 #define MCU_FSS0_S0_FW_REGIONS     CSL_STD_FW_MCU_FSS0_FSS_S0_NUM_REGIONS
+#define MCU_FSS0_S1_FWID           CSL_STD_FW_MCU_FSS0_FSS_S1_ID
+#define MCU_FSS0_S1_FW_REGIONS     CSL_STD_FW_MCU_FSS0_FSS_S1_NUM_REGIONS
 #elif defined(SOC_J7200)
 #define MCU_FSS0_S0_FWID           CSL_STD_FW_MCU_FSS0_DAT_REG1_ID
 #define MCU_FSS0_S0_FW_REGIONS     CSL_STD_FW_MCU_FSS0_DAT_REG1_NUM_REGIONS
+#define MCU_FSS0_S1_FWID           CSL_STD_FW_MCU_FSS0_OSPI1_OSPI_DATA_VBP_R1_MAP_ID
+#define MCU_FSS0_S1_FW_REGIONS     CSL_STD_FW_MCU_FSS0_OSPI1_OSPI_DATA_VBP_R1_MAP_NUM_REGIONS
 #else
 #define MCU_FSS0_S0_FWID           CSL_STD_FW_MCU_FSS0_FSAS_0_DAT_REG1_ID
 #define MCU_FSS0_S0_FW_REGIONS     CSL_STD_FW_MCU_FSS0_FSAS_0_DAT_REG1_NUM_REGIONS
+#define MCU_FSS0_S1_FWID           CSL_STD_FW_MCU_FSS0_OSPI_1_OSPI1_OSPI_DATA_VBP_R1_MAP_ID
+#define MCU_FSS0_S1_FW_REGIONS     CSL_STD_FW_MCU_FSS0_OSPI_1_OSPI1_OSPI_DATA_VBP_R1_MAP_NUM_REGIONS
 #endif
 
 #if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
@@ -97,6 +103,10 @@ const sblFwlData gFwlDisableInfo [] =
     {
         MCU_FSS0_S0_FWID,
         MCU_FSS0_S0_FW_REGIONS
+    },
+    {
+        MCU_FSS0_S1_FWID,
+        MCU_FSS0_S1_FW_REGIONS
     },
     /* Firewall data for OCMC Region */
     {
@@ -118,6 +128,10 @@ const sblFwlData gFwlDisableInfo [] =
     {
         MCU_FSS0_S0_FWID,
         MCU_FSS0_S0_FW_REGIONS
+    },
+    {
+        MCU_FSS0_S1_FWID,
+        MCU_FSS0_S1_FW_REGIONS
     },
     /* Firewall data for OCMC Region */
     {
