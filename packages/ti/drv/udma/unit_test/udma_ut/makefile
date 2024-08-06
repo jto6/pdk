@@ -67,7 +67,7 @@ SRCS_COMMON += udma_test_proxy_neg.c
 SRCS_COMMON += udma_test_event_neg.c
 SRCS_COMMON += udma_test_ring_monitor_neg.c
 SRCS_COMMON += udma_test_osal_neg.c
-ifeq ($(SOC),$(filter $(SOC), j784s4 j742s2))
+ifeq ($(SOC),$(filter $(SOC), j784s4 j742s2 j721s2))
 SRCS_COMMON += udma_test_csl_ringacc.c udma_test_csl_udmap.c udma_test_csl_lcdma_ringacc.c udma_test_csl_dru.c udma_test_csl_proxy.c udma_test_csl_bcdma.c udma_test_csl_intaggr.c
 ifeq ($(ISA), c7x)
 SRCS_COMMON += udma_test_csl_clec.c
