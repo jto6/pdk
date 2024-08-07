@@ -65,10 +65,8 @@
 #                             to be compiled in the application build stage.
 #
 ifeq ($(keywriter_component_make_include), )
-#keywriter_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm
-#keywriter_SOCLIST = j721e j7200 j721s2 j784s4
-keywriter_BOARDLIST =
-keywriter_SOCLIST =
+keywriter_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm
+keywriter_SOCLIST = j721e j7200 j721s2 j784s4
 keywriter_j721e_CORELIST := mcu1_0
 keywriter_j7200_CORELIST := mcu1_0
 
