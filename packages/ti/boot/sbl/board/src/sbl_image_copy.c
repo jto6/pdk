@@ -48,7 +48,7 @@
 #include "sbl_qspi.h"
 #elif defined(BOOT_MMCSD)
 #include "sbl_mmcsd.h"
-#elif defined(BOOT_EMMC)
+#elif defined(BOOT_EMMC_UDA) || defined(BOOT_EMMC_BOOT0)
 #include "sbl_emmc.h"
 #elif defined(BOOT_SPI)
 #include "sbl_spi.h"
@@ -62,7 +62,7 @@ int32_t SBL_ImageCopy(sblEntryPoint_t *pEntry)
 #if defined(BOOT_MMCSD)
     /* MMCSD Boot Mode Image Copy function. */
     if (SBL_MMCBootImage(pEntry) != 1U)
-#elif defined(BOOT_EMMC)
+#elif defined(BOOT_EMMC_UDA) || defined(BOOT_EMMC_BOOT0)
     if (SBL_eMMCBootImage(pEntry) != 1U)
 #elif defined(BOOT_QSPI)
     if (SBL_QSPIBootImage(pEntry) != 1U)

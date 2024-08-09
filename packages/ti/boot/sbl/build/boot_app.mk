@@ -65,13 +65,11 @@ ifeq ($(SAFETY_LOOP), yes)
 endif
 
 SRCS_COMMON = boot_app_main.c soc/$(SOC_DIR)/boot_core_defs.c r5_mpu_freertos.c
-
 ifeq ($(BOOTMODE), $(filter $(BOOTMODE),ospi ospi_nand))
     SRCS_COMMON += boot_app_ospi.c
-else ifeq ($(BOOTMODE), mmcsd)
+else ifeq ($(BOOTMODE), $(filter $(BOOTMODE),mmcsd emmc_uda))
     SRCS_COMMON += boot_app_mmcsd.c
 endif
-
 ifeq ($(BOOTMODE), mmcsd)
     ifeq ($(BUILD_HS), yes)
         COMP_LIST_COMMON += mmcsd sbl_lib_mmcsd_hs fatfs_indp
@@ -80,6 +78,12 @@ ifeq ($(BOOTMODE), mmcsd)
     endif
     CFLAGS_LOCAL_COMMON += -DBOOT_MMCSD
 endif
+
+ifeq ($(BOOTMODE), emmc_uda)
+    COMP_LIST_COMMON += mmcsd sbl_lib_emmc fatfs_indp
+    CFLAGS_LOCAL_COMMON += -DBOOT_EMMC_UDA
+endif
+
 ifeq ($(BOOTMODE), $(filter $(BOOTMODE),ospi ospi_nand))
     ifeq ($(BUILD_HS), yes)
         COMP_LIST_COMMON += spi_dma sbl_lib_cust_hs

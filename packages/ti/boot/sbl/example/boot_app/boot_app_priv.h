@@ -46,6 +46,7 @@ extern "C" {
 /* files related to SBL */
 #include <ti/boot/sbl/src/rprc/sbl_rprc_parse.h>
 #include <ti/boot/sbl/src/mmcsd/sbl_mmcsd.h>
+#include <ti/boot/sbl/src/emmc/sbl_emmc.h>
 #include <ti/boot/sbl/src/ospi/sbl_ospi.h>
 #include <ti/boot/sbl/soc/sbl_soc.h>
 #include <ti/boot/sbl/soc/k3/sbl_slave_core_boot.h>

@@ -59,7 +59,7 @@
 #include <sbl_sci_client.h>
 #endif
 
-/* Global variable to check whether EMMC_BOOT0 is defined or not */
+/* Global variable to check whether BOOT_EMMC_BOOT0 is defined or not */
 bool gIsEmmcBoot0Enable = BFALSE;
 /* This variable is used to initialize cidPtr pointer to pointer variable.
    If initialized to NULL, it is showing SA issues which is dereferencing NULL Ptr */

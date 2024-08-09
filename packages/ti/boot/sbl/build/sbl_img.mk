@@ -27,11 +27,6 @@ ifeq ($(BOOTMODE), $(filter $(BOOTMODE),ospi cust xip))
   endif
 endif
 EMMC_SUFFIX=
-ifeq ($(EMMC_BOOT0), yes)
-  EMMC_SUFFIX=_boot0
-else ifeq ($(EMMC_BOOT0), no)
-  EMMC_SUFFIX=_uda
-endif
 OSPI_NAND_SUFFIX=
 ifeq ($(OSPI_NAND), yes)
   OSPI_NAND_SUFFIX=_nand
@@ -123,6 +118,8 @@ else ifeq ($(BOOTMODE), xip)
     SBL_CFLAGS += -DOSPI_FREQ_166
   endif
   COMP_LIST_COMMON += sbl_lib_cust$(DMA_SUFFIX)$(HS_SUFFIX)
+else ifeq ($(BOOTMODE), $(filter $(BOOTMODE), emmc_uda emmc_boot0))
+  COMP_LIST_COMMON += sbl_lib_emmc$(DMA_SUFFIX)$(HLOS_SUFFIX)$(HS_SUFFIX)
 else
   COMP_LIST_COMMON += sbl_lib_$(BOOTMODE)$(DMA_SUFFIX)$(HLOS_SUFFIX)$(HS_SUFFIX)
 endif # ifeq ($(BOOTMODE), cust)
@@ -154,12 +151,11 @@ ifeq ($(BOOTMODE), mmcsd)
   SBL_CFLAGS += -DBOOT_MMCSD
 endif # ifeq ($(BOOTMODE), mmcsd)
 
-ifeq ($(BOOTMODE), emmc)
-  SBL_CFLAGS += -DBOOT_EMMC
-  ifeq ($(EMMC_BOOT0), yes)
-    SBL_CFLAGS += -DEMMC_BOOT0
-  endif
-endif # ifeq ($(BOOTMODE), emmc)
+ifeq ($(BOOTMODE), emmc_uda)
+  SBL_CFLAGS += -DBOOT_EMMC_UDA
+else ifeq ($(BOOTMODE), emmc_boot0)
+  SBL_CFLAGS += -DBOOT_EMMC_BOOT0
+endif # ifeq ($(BOOTMODE), emmc_uda)
 
 ifeq ($(BOOTMODE), ospi)
   SBL_CFLAGS += -DBOOT_OSPI
@@ -188,9 +184,13 @@ ifeq ($(filter $(SBL_CFLAGS), -DBOOT_MMCSD), -DBOOT_MMCSD)
   COMP_LIST_COMMON += mmcsd fatfs_indp
 endif # ifeq ($(filter $(SBL_CFLAGS), -DBOOT_MMCSD), -DBOOT_MMCSD)
 
-ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC), -DBOOT_EMMC)
+ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC_UDA), -DBOOT_EMMC_UDA)
   COMP_LIST_COMMON += mmcsd fatfs_indp
-endif # ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC), -DBOOT_EMMC)
+endif # ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC_UDA), -DBOOT_EMMC_UDA)
+
+ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC_BOOT0), -DBOOT_EMMC_BOOT0)
+  COMP_LIST_COMMON += mmcsd fatfs_indp
+endif # ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC_BOOT0), -DBOOT_EMMC_BOOT0)
 
 ifeq ($(filter $(SBL_CFLAGS), -DBOOT_HYPERFLASH), -DBOOT_HYPERFLASH)
   COMP_LIST_COMMON += spi

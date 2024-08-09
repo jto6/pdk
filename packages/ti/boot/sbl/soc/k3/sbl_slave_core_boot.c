@@ -66,7 +66,7 @@
 #include "sbl_mmcsd.h"
 #endif
 
-#if defined(BOOT_EMMC)
+#if defined(BOOT_EMMC_UDA) || defined(BOOT_EMMC_BOOT0)
 #include "sbl_emmc.h"
 #endif
 
@@ -542,7 +542,7 @@ int32_t SBL_BootImage(sblEntryPoint_t *pEntry)
 #if defined(BOOT_MMCSD)
     /* MMCSD Boot Mode Image Copy function. */
     if (SBL_MMCBootImage(pEntry) != E_PASS)
-#elif defined(BOOT_EMMC)
+#elif defined(BOOT_EMMC_UDA) || defined(BOOT_EMMC_BOOT0) 
     if (SBL_eMMCBootImage(pEntry) != E_PASS)
 #elif defined(BOOT_OSPI)
     if (SBL_OSPIBootImage(pEntry) != E_PASS)

@@ -206,7 +206,7 @@ sbl_DISABLE_PARALLEL_MAKE = yes
 # sbl_ospi_img_hlos_hs uses sbl_lib_ospi_hlos_hs
 ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j721e j7200 j742s2))
   sbl_LIB_LIST = sbl_lib_mmcsd sbl_lib_ospi sbl_lib_uart sbl_lib_cust sbl_lib_emmc sbl_boot_perf_lib_cust
-  sbl_LIB_LIST += sbl_lib_mmcsd_hlos sbl_lib_ospi_hlos sbl_lib_ospi_hlos_hs sbl_lib_mmcsd_hlos_hs
+  sbl_LIB_LIST += sbl_lib_mmcsd_hlos sbl_lib_ospi_hlos sbl_lib_emmc_hlos sbl_lib_ospi_hlos_hs sbl_lib_mmcsd_hlos_hs
   sbl_LIB_LIST += sbl_lib_mmcsd_hs sbl_lib_ospi_hs sbl_lib_uart_hs sbl_lib_cust_hs sbl_boot_perf_lib_cust_hs
   sbl_LIB_LIST += sbl_lib_cust_nondma sbl_lib_cust_nondma_hs
 endif
@@ -224,7 +224,7 @@ endif
 ############################
 ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j742s2))
   sbl_EXAMPLE_LIST = sbl_uart_img sbl_ospi_img sbl_mmcsd_img sbl_emmc_boot0_img
-  sbl_EXAMPLE_LIST += sbl_mmcsd_img_hlos sbl_ospi_img_hlos sbl_emmc_uda_img sbl_boot_perf_cust_img_combined
+  sbl_EXAMPLE_LIST += sbl_mmcsd_img_hlos sbl_ospi_img_hlos sbl_emmc_uda_img_hlos sbl_emmc_uda_img sbl_boot_perf_cust_img_combined
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hs sbl_ospi_img_hs sbl_uart_img_hs sbl_ospi_img_hlos_hs
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_combined sbl_ospi_img_combined sbl_mmcsd_img_combined_hs sbl_ospi_img_combined_hs
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_combined_hs_fs sbl_ospi_img_combined_hs_fs
@@ -233,13 +233,13 @@ ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j742s2))
   sbl_EXAMPLE_LIST += sbl_hsm_boot_uart_img_hs sbl_hsm_boot_uart_img
 else ifeq ($(SOC),$(filter $(SOC), j721e))
   sbl_EXAMPLE_LIST = sbl_uart_img sbl_emmc_uda_img sbl_emmc_boot0_img
-  sbl_EXAMPLE_LIST += sbl_mmcsd_img sbl_mmcsd_img_hlos sbl_ospi_img sbl_ospi_img_hlos sbl_hyperflash_img sbl_hyperflash_img_hlos
+  sbl_EXAMPLE_LIST += sbl_mmcsd_img sbl_mmcsd_img_hlos sbl_ospi_img sbl_ospi_img_hlos sbl_hyperflash_img sbl_hyperflash_img_hlos sbl_emmc_uda_img_hlos
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hs sbl_ospi_img_hs sbl_hyperflash_img_hs sbl_uart_img_hs
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hlos_hs sbl_ospi_img_hlos_hs sbl_hyperflash_img_hlos_hs
 else
   # for j7200
   sbl_EXAMPLE_LIST = sbl_uart_img sbl_emmc_uda_img sbl_emmc_boot0_img sbl_boot_perf_cust_img_combined
-  sbl_EXAMPLE_LIST += sbl_mmcsd_img sbl_mmcsd_img_hlos sbl_ospi_img sbl_ospi_img_hlos
+  sbl_EXAMPLE_LIST += sbl_mmcsd_img sbl_mmcsd_img_hlos sbl_ospi_img sbl_ospi_img_hlos sbl_emmc_uda_img_hlos
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hs sbl_ospi_img_hs sbl_uart_img_hs
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hlos_hs sbl_ospi_img_hlos_hs
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_combined sbl_ospi_img_combined sbl_mmcsd_img_combined_hs sbl_ospi_img_combined_hs
@@ -380,6 +380,32 @@ export sbl_lib_emmc_SOCLIST
 export sbl_lib_emmc_BOARDLIST
 sbl_lib_emmc_$(SOC)_CORELIST = mcu1_0
 export sbl_lib_emmc_$(SOC)_CORELIST
+
+# SBL EMMC HLOS LIB
+sbl_lib_emmc_hlos_COMP_LIST = sbl_lib_emmc_hlos
+sbl_lib_emmc_hlos_RELPATH = ti/boot/sbl
+export sbl_lib_emmc_hlos_OBJPATH = ti/boot/sbl/emmc_hlos
+sbl_lib_emmc_hlos_LIBNAME = sbl_lib_emmc_hlos
+sbl_lib_emmc_hlos_PATH = $(PDK_SBL_COMP_PATH)
+sbl_lib_emmc_hlos_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/emmc_hlos
+sbl_lib_emmc_hlos_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=emmc HLOS_BOOT=yes SBL_USE_DMA=yes
+export sbl_lib_emmc_hlos_MAKEFILE
+export sbl_lib_emmc_hlos_LIBNAME
+export sbl_lib_emmc_hlos_LIBPATH
+sbl_lib_emmc_hlos_BOARD_DEPENDENCY = yes
+sbl_lib_emmc_hlos_SOC_DEPENDENCY = yes
+sbl_lib_emmc_hlos_CORE_DEPENDENCY = no
+export sbl_lib_emmc_hlos_COMP_LIST
+export sbl_lib_emmc_hlos_BOARD_DEPENDENCY
+export sbl_lib_emmc_hlos_CORE_DEPENDENCY
+sbl_lib_emmc_hlos_PKG_LIST = sbl_lib_emmc_hlos
+sbl_lib_emmc_hlos_INCLUDE = $(sbl_lib_emmc_hlos_PATH)
+sbl_lib_emmc_hlos_SOCLIST = $(sbl_SOCLIST)
+sbl_lib_emmc_hlos_BOARDLIST = $(sbl_BOARDLIST)
+export sbl_lib_emmc_hlos_SOCLIST
+export sbl_lib_emmc_hlos_BOARDLIST
+sbl_lib_emmc_hlos_$(SOC)_CORELIST = mcu1_0
+export sbl_lib_emmc_hlos_$(SOC)_CORELIST
 
 # SBL OSPI LIB
 sbl_lib_ospi_COMP_LIST = sbl_lib_ospi
@@ -829,7 +855,7 @@ sbl_emmc_uda_img_COMP_LIST = sbl_emmc_uda_img
 sbl_emmc_uda_img_RELPATH = ti/boot/sbl/board/k3
 sbl_emmc_uda_img_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/emmc_uda/bin
 sbl_emmc_uda_img_PATH = $(PDK_SBL_COMP_PATH)/board/k3
-sbl_emmc_uda_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=emmc SBL_USE_DMA=yes BUILD_HS=no EMMC_BOOT0=no
+sbl_emmc_uda_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=emmc_uda SBL_USE_DMA=yes BUILD_HS=no
 export sbl_emmc_uda_img_MAKEFILE
 export sbl_emmc_uda_img_SBL_CERT_KEY=$(SBL_CERT_KEY)
 sbl_emmc_uda_img_BOARD_DEPENDENCY = yes
@@ -848,12 +874,36 @@ export sbl_emmc_uda_img_$(SOC)_CORELIST
 sbl_emmc_uda_img_SBL_IMAGEGEN = yes
 export sbl_emmc_uda_img_SBL_IMAGEGEN
 
+# SBL EMMC "HLOS Boot" Image - Boot from UDA
+sbl_emmc_uda_img_hlos_COMP_LIST = sbl_emmc_uda_img_hlos
+sbl_emmc_uda_img_hlos_RELPATH = ti/boot/sbl/board/k3
+sbl_emmc_uda_img_hlos_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/emmc_uda/bin
+sbl_emmc_uda_img_hlos_PATH = $(PDK_SBL_COMP_PATH)/board/k3
+sbl_emmc_uda_img_hlos_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=emmc_uda HLOS_BOOT=yes SBL_USE_DMA=yes BUILD_HS=no
+export sbl_emmc_uda_img_hlos_MAKEFILE
+export sbl_emmc_uda_img_hlos_SBL_CERT_KEY=$(SBL_CERT_KEY)
+sbl_emmc_uda_img_hlos_BOARD_DEPENDENCY = yes
+sbl_emmc_uda_img_hlos_SOC_DEPENDENCY = yes
+sbl_emmc_uda_img_hlos_CORE_DEPENDENCY = no
+export sbl_emmc_uda_img_hlos_COMP_LIST
+export sbl_emmc_uda_img_hlos_BOARD_DEPENDENCY
+export sbl_emmc_uda_img_hlos_SOC_DEPENDENCY
+export sbl_emmc_uda_img_hlos_CORE_DEPENDENCY
+sbl_emmc_uda_img_hlos_PKG_LIST = sbl
+sbl_emmc_uda_img_hlos_INCLUDE = $(sbl_emmc_uda_img_hlos_PATH)
+sbl_emmc_uda_img_hlos_BOARDLIST = $(sbl_BOARDLIST)
+export sbl_emmc_uda_img_hlos_BOARDLIST
+sbl_emmc_uda_img_hlos_$(SOC)_CORELIST = mcu1_0
+export sbl_emmc_uda_img_hlos_$(SOC)_CORELIST
+sbl_emmc_uda_img_hlos_SBL_IMAGEGEN = yes
+export sbl_emmc_uda_img_hlos_SBL_IMAGEGEN
+
 # SBL EMMC Image - Boot from BOOT0
 sbl_emmc_boot0_img_COMP_LIST = sbl_emmc_boot0_img
 sbl_emmc_boot0_img_RELPATH = ti/boot/sbl/board/k3
 sbl_emmc_boot0_img_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/emmc_boot0/bin
 sbl_emmc_boot0_img_PATH = $(PDK_SBL_COMP_PATH)/board/k3
-sbl_emmc_boot0_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=emmc SBL_USE_DMA=yes BUILD_HS=no EMMC_BOOT0=yes
+sbl_emmc_boot0_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=emmc_boot0 SBL_USE_DMA=yes BUILD_HS=no
 export sbl_emmc_boot0_img_MAKEFILE
 export sbl_emmc_boot0_img_SBL_CERT_KEY=$(SBL_CERT_KEY)
 sbl_emmc_boot0_img_BOARD_DEPENDENCY = yes
@@ -2234,6 +2284,84 @@ export boot_app_mmcsd_$(SOC)_CORELIST
 sbl_EXAMPLE_LIST += boot_app_mmcsd
 boot_app_mmcsd_SBL_APPIMAGEGEN = yes
 export boot_app_mmcsd_SBL_APPIMAGEGEN
+
+# Boot App EMMC
+boot_app_emmc_uda_COMP_LIST = boot_app_emmc_uda
+boot_app_emmc_uda_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_emmc_uda_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/emmc
+boot_app_emmc_uda_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_emmc_uda_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=emmc_uda BUILD_HS=no HLOSBOOT=none
+export boot_app_emmc_uda_MAKEFILE
+boot_app_emmc_uda_BOARD_DEPENDENCY = yes
+boot_app_emmc_uda_SOC_DEPENDENCY = yes
+boot_app_emmc_uda_CORE_DEPENDENCY = yes
+export boot_app_emmc_uda_COMP_LIST
+export boot_app_emmc_uda_BOARD_DEPENDENCY
+export boot_app_emmc_uda_SOC_DEPENDENCY
+export boot_app_emmc_uda_CORE_DEPENDENCY
+boot_app_emmc_uda_PKG_LIST = boot_app_emmc_uda
+boot_app_emmc_uda_INCLUDE = $(boot_app_emmc_uda_PATH)
+boot_app_emmc_uda_SOCLIST = $(sbl_SOCLIST)
+boot_app_emmc_uda_BOARDLIST = $(sbl_BOARDLIST)
+export boot_app_emmc_uda_SOCLIST
+export boot_app_emmc_uda_BOARDLIST
+boot_app_emmc_uda_$(SOC)_CORELIST = mcu1_0
+export boot_app_emmc_uda_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_emmc_uda
+boot_app_emmc_uda_SBL_APPIMAGEGEN = yes
+export boot_app_emmc_uda_SBL_APPIMAGEGEN
+
+# Boot App EMMC to boot linux
+boot_app_emmc_uda_linux_COMP_LIST = boot_app_emmc_uda_linux
+boot_app_emmc_uda_linux_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_emmc_uda_linux_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/emmc
+boot_app_emmc_uda_linux_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_emmc_uda_linux_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=emmc_uda BUILD_HS=no HLOSBOOT=linux
+export boot_app_emmc_uda_linux_MAKEFILE
+boot_app_emmc_uda_linux_BOARD_DEPENDENCY = yes
+boot_app_emmc_uda_linux_SOC_DEPENDENCY = yes
+boot_app_emmc_uda_linux_CORE_DEPENDENCY = yes
+export boot_app_emmc_uda_linux_COMP_LIST
+export boot_app_emmc_uda_linux_BOARD_DEPENDENCY
+export boot_app_emmc_uda_linux_SOC_DEPENDENCY
+export boot_app_emmc_uda_linux_CORE_DEPENDENCY
+boot_app_emmc_uda_linux_PKG_LIST = boot_app_emmc_uda_linux
+boot_app_emmc_uda_linux_INCLUDE = $(boot_app_emmc_uda_linux_PATH)
+boot_app_emmc_uda_linux_SOCLIST = $(sbl_SOCLIST)
+boot_app_emmc_uda_linux_BOARDLIST = $(sbl_BOARDLIST)
+export boot_app_emmc_uda_linux_SOCLIST
+export boot_app_emmc_uda_linux_BOARDLIST
+boot_app_emmc_uda_linux_$(SOC)_CORELIST = mcu1_0
+export boot_app_emmc_uda_linux_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_emmc_uda_linux
+boot_app_emmc_uda_linux_SBL_APPIMAGEGEN = yes
+export boot_app_emmc_uda_linux_SBL_APPIMAGEGEN
+
+# Boot App EMMC to boot qnx
+boot_app_emmc_uda_qnx_COMP_LIST = boot_app_emmc_uda_qnx
+boot_app_emmc_uda_qnx_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_emmc_uda_qnx_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/emmc
+boot_app_emmc_uda_qnx_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_emmc_uda_qnx_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=emmc_uda BUILD_HS=no HLOSBOOT=qnx
+export boot_app_emmc_uda_qnx_MAKEFILE
+boot_app_emmc_uda_qnx_BOARD_DEPENDENCY = yes
+boot_app_emmc_uda_qnx_SOC_DEPENDENCY = yes
+boot_app_emmc_uda_qnx_CORE_DEPENDENCY = yes
+export boot_app_emmc_uda_qnx_COMP_LIST
+export boot_app_emmc_uda_qnx_BOARD_DEPENDENCY
+export boot_app_emmc_uda_qnx_SOC_DEPENDENCY
+export boot_app_emmc_uda_qnx_CORE_DEPENDENCY
+boot_app_emmc_uda_qnx_PKG_LIST = boot_app_emmc_uda_qnx
+boot_app_emmc_uda_qnx_INCLUDE = $(boot_app_emmc_uda_qnx_PATH)
+boot_app_emmc_uda_qnx_SOCLIST = $(sbl_SOCLIST)
+boot_app_emmc_uda_qnx_BOARDLIST = $(sbl_BOARDLIST)
+export boot_app_emmc_uda_qnx_SOCLIST
+export boot_app_emmc_uda_qnx_BOARDLIST
+boot_app_emmc_uda_qnx_$(SOC)_CORELIST = mcu1_0
+export boot_app_emmc_uda_qnx_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_emmc_uda_qnx
+boot_app_emmc_uda_qnx_SBL_APPIMAGEGEN = yes
+export boot_app_emmc_uda_qnx_SBL_APPIMAGEGEN
 
 # Boot App MMCSD with safety loop enabled
 boot_app_mmcsd_safety_COMP_LIST = boot_app_mmcsd_safety

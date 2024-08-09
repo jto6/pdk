@@ -344,7 +344,7 @@ int main()
     SBL_enableNandBoot();
 #endif
 
-#if defined(EMMC_BOOT0)
+#if defined(BOOT_EMMC_BOOT0)
     SBL_enableEmmcBoot0();
 #endif
 

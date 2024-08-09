@@ -56,7 +56,7 @@
 #endif
 #endif
 
-#if defined(BOOT_MMCSD)
+#if defined(BOOT_MMCSD) || defined(BOOT_EMMC_UDA)
 #include "boot_app_mmcsd.h"
 #elif defined(BOOT_OSPI)
 #include "boot_app_ospi.h"
@@ -960,7 +960,7 @@ static uint32_t BootApp_loadImg(void)
     /* Configure Muxes for Ethernet Firmware, if needed */
     BootApp_ethMuxConfig();
 
-#if defined(BOOT_MMCSD)
+#if defined(BOOT_MMCSD) || defined(BOOT_EMMC_UDA)
     retVal = BootApp_mmcBootImageInit();
     if (retVal != CSL_PASS)
     {
@@ -988,7 +988,7 @@ static uint32_t BootApp_loadImg(void)
         {
             UART_printf("Loading BootImage\r\n");
 
-            #if defined(BOOT_MMCSD)
+            #if defined(BOOT_MMCSD) || defined(BOOT_EMMC_UDA)
                 retVal = BootApp_mmcsdBootStageImage(&gK3xx_evmEntry, mmcsd_main_domain_rtos_image_name[j]);
             #endif
 
@@ -1036,7 +1036,7 @@ static uint32_t BootApp_loadImg(void)
         } /* if (retVal == CSL_PASS) */
     } /* for (j = 0; j < NUM_BOOT_STAGES; j++) */
 
-#if defined(BOOT_MMCSD)
+#if defined(BOOT_MMCSD) || defined(BOOT_EMMC_UDA)
     BootApp_mmcBootImageDeInit();
 #endif
 

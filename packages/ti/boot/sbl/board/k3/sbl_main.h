@@ -57,7 +57,7 @@
 #include <ti/boot/sbl/src/ospi/sbl_ospi.h>
 #endif
 
-#if defined(EMMC_BOOT0)
+#if defined(BOOT_EMMC_BOOT0)
 #include <ti/boot/sbl/src/emmc/sbl_emmc.h>
 #endif
 

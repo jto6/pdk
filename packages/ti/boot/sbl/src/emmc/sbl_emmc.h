@@ -71,7 +71,7 @@ extern const FATFS_Config FATFS_config[_VOLUMES + 1];
 int32_t SBL_eMMCBootImage(sblEntryPoint_t *pEntry);
 
 /*
- *  \brief    SBL_enableEmmcBoot0 updates the global variable gIsEmmcBoot0Enable to true if EMMC_BOOT0 is defined
+ *  \brief    SBL_enableEmmcBoot0 updates the global variable gIsEmmcBoot0Enable to true if BOOT_EMMC_BOOT0 is defined
  *
  *  \param    none
  *

@@ -126,7 +126,7 @@ ifeq ($(BOOTMODE), mmcsd)
 endif # ifeq ($(BOOTMODE), mmcsd)
 
 ifeq ($(BOOTMODE), emmc)
-  SBL_CFLAGS += -DBOOT_EMMC
+  SBL_CFLAGS += -DBOOT_EMMC_UDA -DBOOT_EMMC_BOOT0
 endif # ifeq ($(BOOTMODE), emmc)
 
 ifeq ($(BOOTMODE), ospi)
@@ -149,9 +149,9 @@ ifeq ($(filter $(SBL_CFLAGS), -DBOOT_MMCSD), -DBOOT_MMCSD)
   SRCS_COMMON += sbl_mmcsd.c
 endif # ifeq ($(filter $(SBL_CFLAGS), -DBOOT_MMCSD), -DBOOT_MMCSD)
 
-ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC), -DBOOT_EMMC)
+ifneq ($(filter -DBOOT_EMMC_UDA -DBOOT_EMMC_BOOT0, $(SBL_CFLAGS)),)
   SRCS_COMMON += sbl_emmc.c
-endif # ifeq ($(filter $(SBL_CFLAGS), -DBOOT_EMMC), -DBOOT_EMMC)
+endif # ifneq ($(filter -DBOOT_EMMC_UDA -DBOOT_EMMC_BOOT0, $(SBL_CFLAGS)),)
 
 ifeq ($(filter $(SBL_CFLAGS), -DBOOT_OSPI), -DBOOT_OSPI)
   SRCS_COMMON += sbl_ospi.c

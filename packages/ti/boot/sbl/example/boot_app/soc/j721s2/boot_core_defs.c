@@ -220,7 +220,7 @@ const uint32_t ospi_main_domain_flash_rtos_images[NUM_BOOT_STAGES] = {
 #endif
 };
 #endif
-#if defined(BOOT_MMCSD)
+#if defined(BOOT_MMCSD) || defined(BOOT_EMMC_UDA)
 TCHAR mmcsd_main_domain_rtos_image_name[NUM_BOOT_STAGES][MAX_APPIMAGE_NAME_LEN] = {
     "0:/lateapp1",
     /* Load remaining cores before MPU/HLOS to avoid contention for control of SD card */
