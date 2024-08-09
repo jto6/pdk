@@ -79,7 +79,7 @@ static Board_STATUS Board_CfgSgmii(void)
 
     /* SGMII Config */
     serdesLaneEnableParams.serdesInstance    = (CSL_SerdesInstance)BOARD_SERDES_SGMII_INSTANCE;
-    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_2_WIZ16B8M4CT3_BASE;
+    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_1_WIZ16B8M4CT3_BASE;
     serdesLaneEnableParams.refClock          = CSL_SERDES_REF_CLOCK_100M;
     serdesLaneEnableParams.refClkSrc         = CSL_SERDES_REF_CLOCK_INT0;
     serdesLaneEnableParams.linkRate          = CSL_SERDES_LINK_RATE_1p25G;
@@ -148,7 +148,7 @@ static Board_STATUS Board_CfgQsgmii(void)
 
     /* QSGMII Config */
     serdesLaneEnableParams.serdesInstance    = (CSL_SerdesInstance)BOARD_SERDES_SGMII_INSTANCE;
-    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_2_WIZ16B8M4CT3_BASE;
+    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_1_WIZ16B8M4CT3_BASE;
     serdesLaneEnableParams.refClock          = CSL_SERDES_REF_CLOCK_100M;
     serdesLaneEnableParams.refClkSrc         = CSL_SERDES_REF_CLOCK_INT0;
     serdesLaneEnableParams.linkRate          = CSL_SERDES_LINK_RATE_5G;
@@ -213,7 +213,7 @@ static Board_STATUS Board_CfgQsgmii1(void)
 
     /* QSGMII Config */
     serdesLaneEnableParams.serdesInstance    = (CSL_SerdesInstance)BOARD_SERDES_SGMII_INSTANCE;
-    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_2_WIZ16B8M4CT3_BASE;
+    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_1_WIZ16B8M4CT3_BASE;
     serdesLaneEnableParams.refClock          = CSL_SERDES_REF_CLOCK_100M;
     serdesLaneEnableParams.refClkSrc         = CSL_SERDES_REF_CLOCK_INT0;
     serdesLaneEnableParams.linkRate          = CSL_SERDES_LINK_RATE_5G;
@@ -278,7 +278,7 @@ static Board_STATUS Board_CfgQsgmii2(void)
 
     /* QSGMII Config */
     serdesLaneEnableParams.serdesInstance    = (CSL_SerdesInstance)BOARD_SERDES_SGMII_INSTANCE;
-    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_2_WIZ16B8M4CT3_BASE;
+    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_1_WIZ16B8M4CT3_BASE;
     serdesLaneEnableParams.refClock          = CSL_SERDES_REF_CLOCK_100M;
     serdesLaneEnableParams.refClkSrc         = CSL_SERDES_REF_CLOCK_INT0;
     serdesLaneEnableParams.linkRate          = CSL_SERDES_LINK_RATE_5G;
@@ -343,7 +343,7 @@ static Board_STATUS Board_serdesCfgEthernetUsxgmii(void)
 
     /* Serdes-2: Lane 3 (MAC Port 8) */
     serdesLaneEnableParams.serdesInstance    = (CSL_SerdesInstance)BOARD_SERDES_SGMII_INSTANCE;
-    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_2_WIZ16B8M4CT3_BASE;
+    serdesLaneEnableParams.baseAddr          = CSL_WIZ16B8M4CT3_1_WIZ16B8M4CT3_BASE;
     serdesLaneEnableParams.refClock          = CSL_SERDES_REF_CLOCK_156p25M;
     serdesLaneEnableParams.refClkSrc         = CSL_SERDES_REF_CLOCK_INT0;
     serdesLaneEnableParams.numLanes          = BOARD_SERDES_SGMII_ENET2_LANE_COUNT;
@@ -358,7 +358,7 @@ static Board_STATUS Board_serdesCfgEthernetUsxgmii(void)
 
     serdesLaneEnableParams.pcieGenType       = CSL_SERDES_PCIE_GEN4;
     serdesLaneEnableParams.linkRate          = CSL_SERDES_LINK_RATE_5p15625G;
-    /* End: Serdes-2: Lane 3 (MAC Port 8) */
+    /* End: Serdes-1*/
 
     CSL_serdesPorReset(serdesLaneEnableParams.baseAddr);
 
@@ -503,7 +503,7 @@ int32_t Board_serdesCfgStatus(void)
     CSL_SerdesStatus serdesStatus;
     int32_t ret = FALSE;
 
-    serdesStatus = CSL_serdesConfigStatus(CSL_WIZ16B8M4CT3_2_WIZ16B8M4CT3_BASE);
+    serdesStatus = CSL_serdesConfigStatus(CSL_WIZ16B8M4CT3_1_WIZ16B8M4CT3_BASE);
     if (serdesStatus == CSL_SERDES_STATUS_PLL_LOCKED)
     {
         ret = TRUE;

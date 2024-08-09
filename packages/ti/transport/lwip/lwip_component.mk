@@ -71,12 +71,13 @@ ifeq ($(lwip_component_make_include), )
 # This list will be used to generate RTOS app make rule for each rtos_type.
 drvlwip_RTOS_LIST       = freertos safertos
 
-drvlwip_SOCLIST         = j721e j7200 j721s2 j784s4
-drvlwip_BOARDLIST       = j721e_evm j7200_evm j721s2_evm j784s4_evm
+drvlwip_SOCLIST         = j721e j7200 j721s2 j784s4 j742s2
+drvlwip_BOARDLIST       = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 drvlwip_j721e_CORELIST  = mcu1_0 mcu2_0 mcu2_1
 drvlwip_j7200_CORELIST  = mcu1_0 mcu2_0 mcu2_1
 drvlwip_j721s2_CORELIST = mcu1_0 mcu2_0 mcu2_1
 drvlwip_j784s4_CORELIST = mcu1_0 mcu2_0 mcu2_1
+drvlwip_j742s2_CORELIST = mcu1_0 mcu2_0 mcu2_1
 
 #
 # lwip RTOS boardlist rule

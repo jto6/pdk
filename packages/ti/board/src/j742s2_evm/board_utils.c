@@ -56,7 +56,7 @@ Board_DetectCfg_t  gBoardDetCfg[BOARD_ID_MAX_BOARDS] =
 
 Board_I2cInitCfg_t gBoardI2cInitCfg = {0, BOARD_SOC_DOMAIN_MAIN, 0};
 Board_initParams_t gBoardInitParams = {BOARD_UART_INSTANCE, BOARD_UART_SOC_DOMAIN, BOARD_PSC_DEVICE_MODE_NONEXCLUSIVE,
-                                       BOARD_MAIN_CLOCK_GROUP_ALL, BOARD_MCU_CLOCK_GROUP_ALL};
+                                       BOARD_MAIN_CLOCK_GROUP_ALL, BOARD_MCU_CLOCK_GROUP_ALL, BOARD_ID_ENET};
 
 /**
  *  \brief    Function to configure SD card voltage control gpio configuration.

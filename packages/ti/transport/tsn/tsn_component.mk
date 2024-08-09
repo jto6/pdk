@@ -66,12 +66,13 @@
 #
 ifeq ($(tsn_component_make_include), )
 
-tsn_SOCLIST         = j721e j7200 j721s2 j784s4
-tsn_BOARDLIST       = j721e_evm j7200_evm j721s2_evm j784s4_evm
+tsn_SOCLIST         = j721e j7200 j721s2 j784s4 j742s2
+tsn_BOARDLIST       = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 tsn_j721e_CORELIST  = mcu1_0 mcu2_0 mcu2_1
 tsn_j7200_CORELIST  = mcu1_0 mcu2_0 mcu2_1
 tsn_j721s2_CORELIST = mcu1_0 mcu2_0 mcu2_1
 tsn_j784s4_CORELIST = mcu1_0 mcu2_0 mcu2_1
+tsn_j742s2_CORELIST = mcu1_0 mcu2_0 mcu2_1
 
 ############################
 # tsn lib package

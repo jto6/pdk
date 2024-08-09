@@ -217,6 +217,11 @@ Board_STATUS Board_init(Board_initCfg cfg)
     if (ret != BOARD_SOK)
         return ret;
 
+    if (cfg & BOARD_INIT_ENETCTRL_CPSW9G)
+        ret = Board_ethConfigCpsw9g();
+    if (ret != BOARD_SOK)
+        return ret;
+
     if (cfg & BOARD_INIT_MODULE_CLOCK)
     {
         ret = Board_moduleClockInitMcu();
@@ -294,6 +299,11 @@ Board_STATUS Board_init(Board_initCfg cfg)
 
     if (cfg & BOARD_INIT_CPSW2G_MAIN_ETH_PHY)
         ret = Board_cpsw2gMainEthPhyConfig();
+    if (ret != BOARD_SOK)
+        return ret;
+
+    if (cfg & BOARD_INIT_CPSW9G_ETH_PHY)
+        ret = Board_cpsw9gEthPhyConfig();
     if (ret != BOARD_SOK)
         return ret;
 

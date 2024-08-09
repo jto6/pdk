@@ -228,6 +228,88 @@ static void Board_ethPhyExtendedRegWrite(uint32_t baseAddr,
 }
 
 /**
+ * \brief  Board specific configurations for ENET1 port
+ *
+ * Configures ENET1 port for QSGMII.
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+static Board_STATUS Board_ethConfigCpsw9gEnet1(void)
+{
+    Board_STATUS status = BOARD_SOK;
+    uint8_t portNum;
+
+    /* Configure the CPSW9G ENET1 QSGMII ports */
+    for(portNum = 0U; portNum < BOARD_CPSW9G_PORT_MAX; portNum++)
+    {
+        if ( (1U == portNum) ||
+             (5U == portNum) ||
+             (6U == portNum) ||
+             (7U == portNum) )
+        {
+            /* These ports are ununsed by default ENET1 board configuration */
+            continue;
+        }
+        else if (BOARD_CPSW9G_ENET1_QGMII_PORTNUM == portNum)
+        {
+            status = Board_cpsw9gMacModeConfig(portNum, QSGMII);
+        }
+        else
+        {
+            status = Board_cpsw9gMacModeConfig(portNum, QSGMII_SUB);
+        }
+
+        if(BOARD_SOK != status)
+        {
+            return BOARD_FAIL;
+        }
+    }
+
+    return status;
+}
+
+/**
+ * \brief  Board specific configurations for ENET2 port
+ *
+ * Configures ENET2 port for QSGMII.
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+static Board_STATUS Board_ethConfigCpsw9gEnet2(void)
+{
+    Board_STATUS status = BOARD_SOK;
+    uint8_t portNum;
+
+    /* Configure the CPSW9G ENET2 QSGMII ports */
+    for(portNum = 0U; portNum < BOARD_CPSW9G_PORT_MAX; portNum++)
+    {
+        if ( (0U == portNum) ||
+             (2U == portNum) ||
+             (3U == portNum) ||
+             (4U == portNum) )
+        {
+            /* These ports are ununsed by default ENET2 board configuration */
+            continue;
+        }
+        else if (BOARD_CPSW9G_ENET2_QGMII_PORTNUM == portNum)
+        {
+            status = Board_cpsw9gMacModeConfig(portNum, QSGMII);
+        }
+        else
+        {
+            status = Board_cpsw9gMacModeConfig(portNum, QSGMII_SUB);
+        }
+
+        if(BOARD_SOK != status)
+        {
+            return BOARD_FAIL;
+        }
+    }
+
+    return status;
+}
+
+/**
  * \brief  Board specific configurations for CPSW2G Main Domain Ethernet PHYs
  *
  * This function takes care of configuring the internal delays for CPSW2G Main Domain
@@ -385,6 +467,19 @@ Board_STATUS Board_cpsw2gEthPhyConfig(void)
 }
 
 /**
+ * \brief  Board specific configurations for CPSW9G Ethernet PHYs
+ *
+ * This function takes care of configuring the internal delays for CPSW9G
+ * Ethernet PHYs
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpsw9gEthPhyConfig(void)
+{
+    return BOARD_SOK;
+}
+
+/**
  * \brief  Configures the CPSW2G Main Domain Subsytem for RGMII mode
  *
  * \param  mode    [IN]    Mode selection for the specified port number
@@ -460,6 +555,46 @@ Board_STATUS Board_cpsw2gMacModeConfig(uint8_t mode)
 }
 
 /**
+ * \brief  Configures the CPSW9G Subsytem for RGMII and RMII mode
+ *
+ * \param  portNum [IN]    EMAC port number
+ * \param  mode    [IN]    Mode selection for the specified port number
+ *                         011 - SGMII
+ *                         100 - QSGMII
+ *                         101 - USXGMII/XFI
+ *                         110 - QSGMII_SUB
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpsw9gMacModeConfig(uint32_t portNum, uint8_t mode)
+{
+    Board_STATUS retVal = BOARD_SOK;
+    uint32_t status;
+    uintptr_t modeSel;
+    uint32_t regData;
+
+    Board_ethCfgKickCtrl(BOARD_SOC_DOMAIN_MAIN, 0);
+
+    modeSel = CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_ENET1_CTRL + (portNum * 0x04);
+    regData = CSL_REG32_RD(modeSel);
+    regData = mode;
+    if (RGMII == mode)
+    {
+        regData |= (BOARD_RGMII_ID_DISABLE_MASK);
+    }
+    CSL_REG32_WR(modeSel , regData);
+    status = CSL_REG32_RD(modeSel);
+    if (status != regData)
+    {
+        retVal = BOARD_FAIL;
+    }
+
+    Board_ethCfgKickCtrl(BOARD_SOC_DOMAIN_MAIN, 1);
+
+    return (retVal);
+}
+
+/**
  * \brief  Board specific configurations for CPSW2G Ethernet ports
  *
  * This function used to configures CPSW2G Ethernet controllers with the respective modes
@@ -499,3 +634,142 @@ Board_STATUS Board_ethConfigCpsw2gMain(void)
     return BOARD_SOK;
 }
 
+/**
+ * \brief  Board specific configurations for CPSW9G Ethernet ports
+ *
+ * This function used to configures CPSW9G Ethernet controllers with the respective modes
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_ethConfigCpsw9g(void)
+{
+    Board_STATUS status = BOARD_SOK;
+    uint32_t boardID;
+
+    boardID = gBoardInitParams.enetBoardID;
+
+    /* One of the ENET port can be used for USXGMII in this configuration */
+    if(BOARD_ID_ENET == boardID)
+    {
+        /* Configure ENET1 port for QSGMII and port2 can be used for USXGMII */
+        status = Board_ethConfigCpsw9gEnet1();
+    }
+    else
+    {
+        /* Configure ENET2 port for QSGMII and port1 can be used for USXGMII */
+        status = Board_ethConfigCpsw9gEnet2();
+    }
+
+    return status;
+}
+
+/**
+ * \brief  Power down the ENET PHYs
+ * \brief  Enable/Disable PHY reset for ENET boards PHY
+ *
+ * \param  enableFlag      PHY reset enable (drive low)
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpswEnetExpPhyReset(bool enableFlag)
+{
+    Board_IoExpCfg_t ioExpCfg;
+    Board_STATUS status = BOARD_SOK;
+    uint32_t boardID;
+
+    boardID = gBoardInitParams.enetBoardID;
+
+    ioExpCfg.i2cInst     = BOARD_I2C_IOEXP_DEVICE2_INSTANCE;
+    ioExpCfg.socDomain   = BOARD_SOC_DOMAIN_MAIN;
+    ioExpCfg.slaveAddr   = BOARD_I2C_IOEXP_DEVICE2_ADDR;
+    ioExpCfg.enableIntr  = BFALSE;
+    ioExpCfg.ioExpType   = THREE_PORT_IOEXP;
+
+    if (BOARD_ID_ENET == boardID)
+    {
+        ioExpCfg.portNum = PORTNUM_2;
+        ioExpCfg.pinNum  = PIN_NUM_1;
+    }
+    else if (BOARD_ID_ENET2 == boardID)
+    {
+        ioExpCfg.portNum = PORTNUM_2;
+        ioExpCfg.pinNum  = PIN_NUM_4;
+    }
+    else
+    {
+        status = BOARD_FAIL;
+    }
+
+    if (BOARD_SOK == status)
+    {
+        if (BTRUE == enableFlag)
+        {
+            /* EXP_ENET_RSTz - set to 0 for PHY reset */
+            ioExpCfg.signalLevel = GPIO_SIGNAL_LEVEL_LOW;
+        }
+        else
+        {
+            /* EXP_ENET_RSTz - set to 1 to take PHY out of reset (normal operation)*/
+            ioExpCfg.signalLevel = GPIO_SIGNAL_LEVEL_HIGH;
+        }
+
+        status = Board_control(BOARD_CTRL_CMD_SET_IO_EXP_PIN_OUT, &ioExpCfg);
+    }
+
+    return status;
+}
+
+/**
+ * \brief  Enable/Disable COMA_MODE for ENET boards PHY
+ *
+ * \param  enableFlag      Power down enable (drive high)
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpswEnetExpComaModeCfg(bool enableFlag)
+{
+    Board_IoExpCfg_t ioExpCfg;
+    Board_STATUS status = BOARD_SOK;
+    uint32_t boardID;
+
+    boardID = gBoardInitParams.enetBoardID;
+
+    ioExpCfg.i2cInst     = BOARD_I2C_IOEXP_DEVICE2_INSTANCE;
+    ioExpCfg.socDomain   = BOARD_SOC_DOMAIN_MAIN;
+    ioExpCfg.slaveAddr   = BOARD_I2C_IOEXP_DEVICE2_ADDR;
+    ioExpCfg.enableIntr  = BFALSE;
+    ioExpCfg.ioExpType   = THREE_PORT_IOEXP;
+
+    if (BOARD_ID_ENET == boardID)
+    {
+        ioExpCfg.portNum = PORTNUM_2;
+        ioExpCfg.pinNum  = PIN_NUM_0;
+    }
+    else if (BOARD_ID_ENET2 == boardID)
+    {
+        ioExpCfg.portNum = PORTNUM_1;
+        ioExpCfg.pinNum  = PIN_NUM_1;
+    }
+    else
+    {
+        status = BOARD_FAIL;
+    }
+
+    if (BOARD_SOK == status)
+    {
+        if (BTRUE == enableFlag)
+        {
+            /* ENET_EXP_PWRDN - set to 1 for device power down */
+            ioExpCfg.signalLevel = GPIO_SIGNAL_LEVEL_HIGH;
+        }
+        else
+        {
+            /* ENET_EXP_PWRDN - set to 0 for normal operation */
+            ioExpCfg.signalLevel = GPIO_SIGNAL_LEVEL_LOW;
+        }
+
+        status = Board_control(BOARD_CTRL_CMD_SET_IO_EXP_PIN_OUT, &ioExpCfg);
+    }
+
+    return status;
+}

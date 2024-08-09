@@ -50,6 +50,8 @@ extern "C" {
 #endif
 
 #define BOARD_RGMII_ID_DISABLE_MASK           (0x10U)
+#define BOARD_CPSW9G_ENET1_QGMII_PORTNUM      (0U)
+#define BOARD_CPSW9G_ENET2_QGMII_PORTNUM      (1U)
 #define BOARD_RGMII_ID_DISABLE_MASK           (0x10U)
 
 typedef struct Board_mdioInfo_t
@@ -135,6 +137,59 @@ Board_STATUS Board_cpsw2gMacModeConfig(uint8_t mode);
  * \return  BOARD_SOK in case of success or appropriate error code
  */
 Board_STATUS Board_cpsw2gMainMacModeConfig(uint8_t mode);
+
+/**
+ * \brief  Configures the CPSW9G Subsytem for RGMII and RMII mode
+ *
+ * \param  portNum [IN]    EMAC port number
+ * \param  mode    [IN]    Mode selection for the specified port number
+ *                         000 - GMII
+ *                         001 - RMII
+ *                         010 - RGMII
+ *                         011 - SGMII
+ *                         100 - QSGMII
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpsw9gMacModeConfig(uint32_t portNum, uint8_t mode);
+
+/**
+ * \brief  Board specific configurations for CPSW9G Ethernet PHYs
+ *
+ * This function takes care of configuring the internal delays for CPSW9G
+ * Ethernet PHYs
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpsw9gEthPhyConfig(void);
+
+/**
+ * \brief  Board specific configurations for CPSW9G Ethernet ports
+ *
+ * This function used to configures CPSW9G Ethernet controllers with the respective modes
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_ethConfigCpsw9g();
+
+/**
+ * \brief  Power down the ENET PHYs
+ * \brief  Enable/Disable PHY reset for ENET boards PHY
+ *
+ * \param  enableFlag      PHY reset enable (drive low)
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpswEnetExpPhyReset(bool enableFlag);
+
+/**
+ * \brief  Enable/Disable COMA_MODE for ENET boards PHY
+ *
+ * \param  enableFlag      Power down enable (drive high)
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ */
+Board_STATUS Board_cpswEnetExpComaModeCfg(bool enableFlag);
 
 #ifdef __cplusplus
 }
