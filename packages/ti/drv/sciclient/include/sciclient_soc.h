@@ -73,10 +73,16 @@
 #include <ti/drv/sciclient/soc/V4/sciclient_firmware_V4.h>
 #endif
 
-#if defined (SOC_J784S4) || defined (SOC_J742S2)
+#if defined (SOC_J784S4)
 #include <ti/drv/sciclient/soc/sysfw/include/j784s4/tisci_resasg_types.h>
 #include <ti/drv/sciclient/soc/V6/sciclient_fmwMsgParams.h>
 #include <ti/drv/sciclient/soc/V6/sciclient_firmware_V6.h>
+#endif
+
+#if defined (SOC_J742S2)
+#include <ti/drv/sciclient/soc/sysfw/include/j784s4/tisci_resasg_types.h>
+#include <ti/drv/sciclient/soc/V6/sciclient_fmwMsgParams.h>
+#include <ti/drv/sciclient/soc/V6/sciclient_firmware_V6_hs_fs_enc.h>
 #endif
 
 #ifdef __cplusplus

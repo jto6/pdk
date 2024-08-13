@@ -32,7 +32,7 @@
 */
 
 /**
-*  \file sciclient_firmware_V4-hs-fs-enc.h
+*  \file sciclient_firmware_V4_hs_fs_enc.h
 *
 *  \brief File containing the Binary in a C array.
 *
@@ -48,8 +48,8 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#ifndef SCICLIENT_FIRMWARE_V4-HS-FS-ENC_H_
-#define SCICLIENT_FIRMWARE_V4-HS-FS-ENC_H_
+#ifndef SCICLIENT_FIRMWARE_V4_HS_FS_ENC_H_
+#define SCICLIENT_FIRMWARE_V4_HS_FS_ENC_H_
 
 
 #define SCICLIENT_FIRMWARE_SIZE_IN_BYTES (161428U)

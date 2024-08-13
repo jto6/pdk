@@ -292,7 +292,9 @@ else
     fi
 fi
 $ECHO "Generating the Header file for the soc in the folder"
-$BIN2C_GEN $SYSFW_SE_SIGNED $SCI_CLIENT_OUT_SOC_DIR/$SCICLIENT_FIRMWARE_HEADER SCICLIENT_FIRMWARE 
+#Replacing '-' with '_' in the header file names and macros defined within
+SCICLIENT_FIRMWARE_HEADER_FILE="${SCICLIENT_FIRMWARE_HEADER//-/_}"
+$BIN2C_GEN $SYSFW_SE_SIGNED $SCI_CLIENT_OUT_SOC_DIR/$SCICLIENT_FIRMWARE_HEADER_FILE SCICLIENT_FIRMWARE 
 
 $ECHO "Done."
 
