@@ -190,6 +190,16 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
 #endif
          };
 
+#if defined(BUILD_MCU)
+         for (i=0; i<TASK_SPECIFIC_MPU_REGIONS; i++)
+         {
+            xTaskPParams.xMPUParameters.axRegions[i].pvBaseAddress = params->mpuCfg[i].regionBase;
+            xTaskPParams.xMPUParameters.axRegions[i].ulLengthInBytes = (portUInt32Type)params->mpuCfg[i].regionLengthInBytes;
+            xTaskPParams.xMPUParameters.axRegions[i].ulAccessPermissions = (portUInt32Type)params->mpuCfg[i].regionAccessPerms;
+            xTaskPParams.xMPUParameters.axRegions[i].ulSubRegionControl = (portUInt32Type)params->mpuCfg[i].subregionControl;
+         }
+#endif
+
          /* Create the check task. */
         xCreateResult = xTaskCreate(&xTaskPParams,      /* The structure containing the task parameters created at the start of this function. */
                                     &handle->taskHndl); /* This parameter can be used to receive a handle to the created task, but is not used in this case. */
@@ -281,6 +291,10 @@ TaskP_Status TaskP_delete(TaskP_Handle *hTaskPtr)
  */
 void TaskP_Params_init( TaskP_Params *params )
 {
+#if defined (BUILD_MCU)
+    uint32_t looper;
+#endif
+
     params->name = ( const char * )"SafeRTOS_TASK";
     params->stacksize = 0U;
     params->stack = NULL;
@@ -291,6 +305,10 @@ void TaskP_Params_init( TaskP_Params *params )
     /* By default task will be privileged task, until set by the user */
 #if defined (BUILD_MCU)
     params->taskPrivilege = mpuPRIVILEGED_TASK;
+    for (looper=0; looper<TASK_SPECIFIC_MPU_REGIONS; looper++)
+    {
+        memset(&(params->mpuCfg[looper]), 0U, sizeof(TaskP_MPURegCfg));
+    }
 #endif
 #if defined (BUILD_C66X)
     params->taskPrivilege = safertosapiPRIVILEGED_TASK;      /* Check task is privileged. */

@@ -72,6 +72,12 @@ typedef enum TaskP_Status_e
  */
 #define OS_TICKS_IN_MILLI_SEC   1 /* 1000us tick */
 
+#if defined(SAFERTOS)
+#define TASK_SPECIFIC_MPU_REGIONS  (2U)
+#else
+#define TASK_SPECIFIC_MPU_REGIONS  (1U)
+#endif
+
 /*!
  *  @brief    Opaque client reference to an instance of a TaskP
  *
@@ -94,6 +100,14 @@ typedef unsigned long TaskP_Privilege_Mode;
  */
 typedef void ( * TaskP_Fxn )( void *arg0, void *arg1 );
 
+typedef struct TaskP_MPURegCfg_s
+{
+    void     *regionBase;
+    uint64_t regionLengthInBytes;
+    uint32_t regionAccessPerms;
+    uint32_t subregionControl;
+} TaskP_MPURegCfg;
+
 /*!
  *  @brief    Basic TaskP Parameters
  *
@@ -102,15 +116,16 @@ typedef void ( * TaskP_Fxn )( void *arg0, void *arg1 );
  */
 typedef struct TaskP_Params_s
 {
-    const char *name;    /*!< Name of the task instance.                  */
-    void *pErrBlk;       /*!< Pointer to the error block for task Create */
-    int8_t priority;     /*!< The priority of the task                    */
-    uint32_t stacksize;  /*!< The stack size of the task                  */
-    void *arg0;          /*!< argument 0                                        */
-    void *arg1;          /*!< argument 1                                        */
-    void *stack;         /*!< pointer to stack memory, shall be non-null value */
-    void *userData;      /*!< [SafeRTOS, FreeRTOS only] Pointer to user-defined data */
-    TaskP_Privilege_Mode taskPrivilege; /*!< [SafeRTOS only] Privilege mode of the task */
+    const char *name;                                  /*!< Name of the task instance.                  */
+    void *pErrBlk;                                     /*!< Pointer to the error block for task Create */
+    int8_t priority;                                   /*!< The priority of the task                    */
+    uint32_t stacksize;                                /*!< The stack size of the task                  */
+    void *arg0;                                        /*!< argument 0                                        */
+    void *arg1;                                        /*!< argument 1                                        */
+    void *stack;                                       /*!< pointer to stack memory, shall be non-null value */
+    void *userData;                                    /*!< [SafeRTOS, FreeRTOS only] Pointer to user-defined data */
+    TaskP_MPURegCfg mpuCfg[TASK_SPECIFIC_MPU_REGIONS];    /*!< [SafeRTOS only] Task specific MPU Region configurations*/
+    TaskP_Privilege_Mode taskPrivilege;                /*!< [SafeRTOS only] Privilege mode of the task */
 } TaskP_Params;
 
 /*!
