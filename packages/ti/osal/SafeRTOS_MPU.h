@@ -57,6 +57,8 @@
 
 #define CSL_ARM_R5F_MPU_REGIONS_MAX                         ((uint32_t) 16U)
 #define CSL_ARM_R5_MPU_REGION_SIZE_32BYTE                   ((uint32_t) 32U)
+/** \brief No access to any modes */
+#define CSL_ARM_R5_ACC_PERM_NO_ACCESS                       ((uint32_t) 0x0U)
 /** \brief Full access to privileged and user modes */
 #define CSL_ARM_R5_ACC_PERM_PRIV_USR_RD_WR                  ((uint32_t) 0x3U)
 /** \brief  Cache Policy: Non-cacheable */

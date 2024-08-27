@@ -73,6 +73,10 @@
 
 #if defined (SAFERTOS)
 #include "SafeRTOS.h"
+#if defined (BUILD_MCU)
+#include <ti/osal/SafeRTOS_MPU.h>
+#include "mpuARM.h"
+#endif
 #endif
 
 #include <stdio.h>
@@ -299,6 +303,131 @@ TimerP_Handle handle;
 /* For SafeRTOS on R5F with FFI Support, task stack should be aligned to the stack size */
 #if defined(SAFERTOS) && defined (BUILD_MCU)
 static uint8_t  gAppTskStackMain[APP_TSK_STACK_MAIN] __attribute__(( aligned( APP_TSK_STACK_MAIN ))) = { 0 };
+__attribute__((section(".startupData"))) \
+xMPU_CONFIG_PARAMETERS  gMPUConfigParms[CSL_ARM_R5F_MPU_REGIONS_MAX] =
+{
+    {
+        /* Region 1 configuration: Lower 32 bit address half */
+        /* ulRegionNumber */
+        .ulRegionNumber         = 1U,
+        /* Starting address */
+        .ulRegionBeginAddress   = 0x0U,
+        /* Access permission */
+        {
+            .ulexeNeverControl  = 1U,
+            .ulaccessPermission = CSL_ARM_R5_ACC_PERM_PRIV_USR_RD_WR,
+            .ulshareable        = 0U,
+            .ulcacheable        = 0U,
+            .ulcachePolicy      = 0U,
+            .ulmemAttr          = 0U,
+        },
+        .ulRegionSize           = portmpuLARGEST_REGION_SIZE_ACTUAL,
+        /* ulSubRegionDisable */
+        .ulSubRegionDisable     = mpuREGION_ALL_SUB_REGIONS_ENABLED,
+    },
+    {
+        /* Region 2 configuration: MCMS3 RAM */
+        /* Make MSMC inaccessible to the application.
+         * This is useful for testing task specific MPU regions.
+         * Refer the test: OSAL_taskSpecificMPURegions_test.
+         */
+
+        /* ulRegionNumber */
+        .ulRegionNumber         = 2U,
+        /* Starting address */
+        .ulRegionBeginAddress   = 0x70000000U,
+        /* Access permission */
+        {
+            .ulexeNeverControl  = 0U,
+            .ulaccessPermission = CSL_ARM_R5_ACC_PERM_NO_ACCESS,
+            .ulshareable        = 0U,
+            .ulcacheable        = 1U,
+            .ulcachePolicy      = CSL_ARM_R5_CACHE_POLICY_WB_WA,
+            .ulmemAttr          = 0U,
+        },
+        /* Size is 1MB */
+        .ulRegionSize           = (1U * 1024U * 1024U),
+
+        /* ulSubRegionDisable */
+        .ulSubRegionDisable     = mpuREGION_ALL_SUB_REGIONS_ENABLED,
+    },
+    {
+        /* Region 4 configuration: 2 GB DDR RAM */
+        /* ulRegionNumber */
+        .ulRegionNumber         = 3U,
+        /* Starting address */
+        .ulRegionBeginAddress   = 0x80000000U,
+        /* Access permission */
+        {
+            .ulexeNeverControl  = 0U,
+            .ulaccessPermission = CSL_ARM_R5_ACC_PERM_PRIV_USR_RD_WR,
+            .ulshareable        = 0U,
+            .ulcacheable        = 1U,
+            .ulcachePolicy      = CSL_ARM_R5_CACHE_POLICY_WB_WA,
+            .ulmemAttr          = 0U,
+        },
+        /* size is 2GB */
+        .ulRegionSize           = portmpuLARGEST_REGION_SIZE_ACTUAL,
+        /* ulSubRegionDisable */
+        .ulSubRegionDisable     = mpuREGION_ALL_SUB_REGIONS_ENABLED,
+    },
+    {
+        /* Region 6 configuration: 32 KB ATCM */
+        /* ulRegionNumber */
+        .ulRegionNumber         = 4U,
+        /* Starting address */
+        .ulRegionBeginAddress   = 0x0U,
+        /* Access permission */
+        {
+            .ulexeNeverControl  = 0U,
+            .ulaccessPermission = CSL_ARM_R5_ACC_PERM_PRIV_USR_RD_WR,
+            .ulshareable        = 0U,
+            .ulcacheable        = 1U,
+            .ulcachePolicy      = CSL_ARM_R5_CACHE_POLICY_NON_CACHEABLE,
+            .ulmemAttr          = 0U,
+        },
+        /* size is 32KB */
+        .ulRegionSize           = (32U * 1024U),
+        /* ulSubRegionDisable */
+        .ulSubRegionDisable     = mpuREGION_ALL_SUB_REGIONS_ENABLED,
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    },
+    {
+      0U
+    }
+};
 #else
 static uint8_t  gAppTskStackMain[APP_TSK_STACK_MAIN] __attribute__(( aligned( 0x2000 )));
 #endif
@@ -2324,6 +2453,45 @@ bool OSAL_TimerP_ANY_test( void )
     return result;
 }
 
+void OSAL_taskSpecificMPUTestTask(void *arg0, void *arg1)
+{
+    /* Try to access MSMC memory. MSMC starts at 0x70000000.
+     * If able to access, the task specific MPU region must have been correctly applied.
+     * Use a volatile variable to force a memory access.
+     */
+    volatile uint32_t *badAddr = (uint32_t *)(0x70000008);
+    (*badAddr) = 0x0BADBEAFU;
+}
+
+bool OSAL_taskSpecificMPURegions_test(void)
+{
+    TaskP_Params taskParams;
+    TaskP_Handle taskHandle;
+
+    /* Use a tasks tack from current stack. The task is short lived, and would not live beyond this test. */
+    uint8_t shortLivedTaskStack[512U] __attribute__((aligned(512U)));
+
+    TaskP_Params_init(&taskParams);
+    taskParams.priority                      = 5;
+    taskParams.stack                         = shortLivedTaskStack;
+    taskParams.stacksize                     = sizeof (shortLivedTaskStack)/sizeof(shortLivedTaskStack[0]);
+    taskParams.mpuCfg[0].regionBase          = (void *)0x70000000;
+    taskParams.mpuCfg[0].regionLengthInBytes = 128LLU;
+    /* Set the memory to be executable, cacheable, fully accessible to USER and Privilege modes. */
+    taskParams.mpuCfg[0].regionAccessPerms   = 0x329;
+    /* Have all the sub-regions as enabled. */
+    taskParams.mpuCfg[0].subregionControl    = 0x00;
+    taskHandle = TaskP_create(&OSAL_taskSpecificMPUTestTask, &taskParams);
+    /* Once the task is terminated, we can be guaranteed that the MSMC access has gone through. */
+    while(TaskP_isTerminated(taskHandle) == UFALSE)
+    {
+
+    }
+    
+    TaskP_delete(&taskHandle);
+    return BTRUE;
+}
+
 /*
  *  ======== main test function ========
  */
@@ -2370,6 +2538,20 @@ void osal_test(void *arg0, void *arg1)
         OSAL_log("\n TimerP_ANY test has failed. \n");
         testFail = BTRUE;
     }
+
+#if defined(SAFERTOS)    
+    OSAL_log(" \n OSAL Load Test Starting...\n Takes about 10 seconds ...\n\n"); 
+    if(BTRUE == OSAL_taskSpecificMPURegions_test())
+    {
+        OSAL_log("\n Task specific MPU region test has passed. \n");
+    }
+    else
+    {
+        OSAL_log("\n Task specific MPU region test has failed. \n");
+        testFail = BTRUE;
+    }
+#endif /* #if defined(SAFERTOS) */
+
 #if defined(BARE_METAL)
     /* No TASKP test for BAREmetal */
 #else
@@ -2564,6 +2746,7 @@ void osal_test(void *arg0, void *arg1)
         testFail = BTRUE;
     }
 #endif /* #if defined(FREERTOS) */
+
 
 #if ENABLE_DEBUG_LOG_TEST
     if(BTRUE == OSAL_log_test())
