@@ -59,7 +59,7 @@
 #define I2C_DELAY_USEC                               ((uint32_t) 250U)
 
 #define I2C_APP_CALLBACK_TRANSFER_COUNT              5
-#if defined (SOC_J784S4)
+#if defined (SOC_J784S4) || defined (SOC_J742S2)
 #define I2C_APP_MAX_FREQ_COUNT                       5
 #else
 #define I2C_APP_MAX_FREQ_COUNT                       2
@@ -127,6 +127,8 @@ static bool I2CApp_wakeupEnableDiasbleTest(void *arg);
 volatile uint32_t gI2CAppCompleteCallbackFlag = UTRUE;
 #if defined (SOC_J784S4)
 uint8_t gI2CApp_EepromData[I2C_APP_EEPROM_TEST_LENGTH] = {85, 51, 238, 1, 11, 1, 16, 46, 0, 74};
+#elif defined (SOC_J742S2)
+uint8_t gI2CApp_EepromData[I2C_APP_EEPROM_TEST_LENGTH] = {85, 51, 238, 1, 1, 1, 16, 46, 0, 74};
 #elif defined (SOC_J721S2)
 uint8_t gI2CApp_EepromData[I2C_APP_EEPROM_TEST_LENGTH] = {85, 51, 238, 1, 60, 0, 16, 46, 0, 74};
 #else
@@ -910,7 +912,7 @@ static bool I2CApp_probeBusFreqTest(void *arg)
     if(BTRUE == testStatus)
     {
         /* Test runtime configuration default value */
-        #if defined (SOC_J784S4)
+        #if defined (SOC_J784S4) || defined (SOC_J742S2)
         busFrequency = I2C_1P0Mhz;
         #else
         busFrequency = I2C_100kHz;
@@ -1303,7 +1305,7 @@ static bool I2CApp_negativeTest(void *arg)
     I2C_Params_init(&i2cParams);
 
     /* Set bitRate */
-    #if defined (SOC_J784S4)
+    #if defined (SOC_J784S4) || defined (SOC_J742S2)
     i2cParams.bitRate = I2C_3P4Mhz;
     #else
     i2cParams.bitRate = I2C_100kHz;
@@ -1338,7 +1340,7 @@ static bool I2CApp_negativeTest(void *arg)
     I2C_Params_init(&i2cParams);
 
     /* Set bitRate */
-    #if defined (SOC_J784S4)
+    #if defined (SOC_J784S4) || defined (SOC_J742S2)
     i2cParams.bitRate = I2C_1P0Mhz;
     #else
     i2cParams.bitRate = I2C_100kHz;
