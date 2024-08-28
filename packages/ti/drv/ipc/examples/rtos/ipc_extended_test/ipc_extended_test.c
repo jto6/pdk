@@ -190,7 +190,9 @@ static void IpcApp_multiprocessorTests(void)
     Ipc_mpGetId((char*)(NULL));
     Ipc_mpGetId((char*)(gIpcApp_SelfProcId));
     Ipc_mpGetId(0U);
+#if defined (BUILD_MCU1_0)
     Ipc_mpGetId((char*)(IPC_APP_MP_INVALID_ID));
+#endif    
 
     /* Test multiprocessor get name API for different params */
     Ipc_mpGetName((uint32_t)(NULL));

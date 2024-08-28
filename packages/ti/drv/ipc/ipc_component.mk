@@ -220,6 +220,32 @@ endef
 IPC_RTOS_SANITY_TEST_MACRO_LIST := $(foreach curos, $(drvipc_RTOS_LIST) safertos, $(call IPC_RTOS_SANITY_TEST_RULE,$(curos)))
 $(eval ${IPC_RTOS_SANITY_TEST_MACRO_LIST})
 
+# Test Configuration: mcu1_0 and c7x_1 cores running FreeRTOS
+define IPC_C7X_SANITY_TEST_RULE
+
+export ipc_c7x_sanity_test_$(1)_COMP_LIST = ipc_c7x_sanity_test_$(1)
+ipc_c7x_sanity_test_$(1)_RELPATH = ti/drv/ipc/examples/rtos/ipc_c7x_sanity_test
+ipc_c7x_sanity_test_$(1)_PATH = $(PDK_IPC_COMP_PATH)/examples/rtos/ipc_c7x_sanity_test
+export ipc_c7x_sanity_test_$(1)_BOARD_DEPENDENCY = yes
+export ipc_c7x_sanity_test_$(1)_CORE_DEPENDENCY = yes
+export ipc_c7x_sanity_test_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)), yes, no)
+export ipc_c7x_sanity_test_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
+ipc_c7x_sanity_test_$(1)_PKG_LIST = ipc_c7x_sanity_test_$(1)
+ipc_c7x_sanity_test_$(1)_INCLUDE = $(ipc_c7x_sanity_test_$(1)_PATH)
+export ipc_c7x_sanity_test_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvipc_BOARDLIST))
+export ipc_c7x_sanity_test_$(1)_$(SOC)_CORELIST = mcu1_0 c7x_1
+export ipc_c7x_sanity_test_$(1)_SBL_APPIMAGEGEN = yes
+ifneq ($(1),$(filter $(1), safertos))
+ipc_EXAMPLE_LIST += ipc_c7x_sanity_test_$(1)
+else
+ifneq ($(wildcard $(SAFERTOS_KERNEL_INSTALL_PATH)),)
+ipc_EXAMPLE_LIST += ipc_c7x_sanity_test_$(1)
+endif
+endif
+endef
+IPC_C7X_SANITY_TEST_MACRO_LIST := $(foreach curos, $(drvipc_RTOS_LIST) safertos, $(call IPC_C7X_SANITY_TEST_RULE,$(curos)))
+$(eval ${IPC_C7X_SANITY_TEST_MACRO_LIST})
+
 # Test Configuration: FreeRTOS on mcu1_0 and baremetal on mcu2_0
 ipc_baremetal_sanity_test_COMP_LIST = ipc_baremetal_sanity_test
 ipc_baremetal_sanity_test_RELPATH = ti/drv/ipc/examples/baremetal/ipc_baremetal_sanity_test
@@ -394,7 +420,13 @@ export ipc_extended_test_$(1)_MAKEFILE =  -fmakefile BUILD_OS_TYPE=$(1)
 ipc_extended_test_$(1)_PKG_LIST = ipc_extended_test_$(1)
 ipc_extended_test_$(1)_INCLUDE = $(ipc_extended_test_$(1)_PATH)
 export ipc_extended_test_$(1)_BOARDLIST = j784s4_evm j721s2_evm j721e_evm j7200_evm
+ifeq ($(SOC),$(filter $(SOC), j721e j721s2 j784s4))
+export ipc_extended_test_$(1)_$(SOC)_CORELIST = mcu1_0 c7x_1
+else
+ifeq ($(SOC),$(filter $(SOC), j7200))
 export ipc_extended_test_$(1)_$(SOC)_CORELIST = mcu1_0
+endif
+endif
 export ipc_extended_test_$(1)_SBL_APPIMAGEGEN = yes
 ifneq ($(1),$(filter $(1), safertos))
 ipc_EXAMPLE_LIST += ipc_extended_test_$(1)
@@ -496,6 +528,34 @@ endif
 endef
 ipc_rtos_dualcore_echo_test_MACRO_LIST := $(foreach curos, $(drvipc_RTOS_LIST), $(call IPC_RTOS_DUALCORE_ECHO_TEST_RULE,$(curos)))
 $(eval ${ipc_rtos_dualcore_echo_test_MACRO_LIST})
+
+# Test Configuration: Dual core echo test for RTOS, uses ipc_c7x_sanity_test
+define IPC_C7X_DUALCORE_ECHO_TEST_RULE
+
+export ipc_c7x_dualcore_echo_test_$(1)_COMP_LIST = ipc_c7x_dualcore_echo_test_$(1)
+ipc_c7x_dualcore_echo_test_$(1)_RELPATH = ti/drv/ipc/examples/rtos/ipc_c7x_sanity_test
+ipc_c7x_dualcore_echo_test_$(1)_BINPATH = $(PDK_INSTALL_PATH)/ti/binary/ipc_rtos_echo_test_$(1)/bin
+ipc_c7x_dualcore_echo_test_$(1)_PATH = $(PDK_IPC_COMP_PATH)/examples/rtos/ipc_c7x_sanity_test
+export ipc_c7x_dualcore_echo_test_$(1)_BOARD_DEPENDENCY = yes
+export ipc_c7x_dualcore_echo_test_$(1)_CORE_DEPENDENCY = yes
+export ipc_c7x_dualcore_echo_test_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)), yes, no)
+export ipc_c7x_dualcore_echo_test_$(1)_MAKEFILE =  -f$(PDK_IPC_COMP_PATH)/examples/rtos/ipc_c7x_sanity_test/ipc_c7x_dualcore_echo_test.mk BUILD_OS_TYPE=$(1)
+export ipc_c7x_dualcore_echo_test_$(1)_DEPENDS_ON=ipc_c7x_sanity_test_$(1)
+ipc_c7x_dualcore_echo_test_$(1)_PKG_LIST = ipc_c7x_dualcore_echo_test_$(1)
+ipc_c7x_dualcore_echo_test_$(1)_INCLUDE = $(ipc_c7x_dualcore_echo_test_$(1)_PATH)
+export ipc_c7x_dualcore_echo_test_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvipc_BOARDLIST))
+export ipc_c7x_dualcore_echo_test_$(1)_$(SOC)_CORELIST := c7x_1
+export ipc_c7x_dualcore_echo_test_SBL_APPIMAGEGEN = no
+ifneq ($(1),$(filter $(1), safertos))
+ipc_DUP_EXAMPLE_LIST += ipc_c7x_dualcore_echo_test_$(1)
+else
+ifneq ($(wildcard $(SAFERTOS_KERNEL_INSTALL_PATH)),)
+ipc_DUP_EXAMPLE_LIST += ipc_c7x_dualcore_echo_test_$(1)
+endif
+endif
+endef
+ipc_c7x_dualcore_echo_test_MACRO_LIST := $(foreach curos, $(drvipc_RTOS_LIST), $(call IPC_C7X_DUALCORE_ECHO_TEST_RULE,$(curos)))
+$(eval ${ipc_c7x_dualcore_echo_test_MACRO_LIST})
 
 # Test Configuration: Dual core echo test for baremetal, uses ipc_baremetal_sanity_test
 export ipc_baremetal_dualcore_echo_test_COMP_LIST = ipc_baremetal_dualcore_echo_test
