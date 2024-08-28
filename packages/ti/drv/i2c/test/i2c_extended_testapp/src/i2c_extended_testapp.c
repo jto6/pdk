@@ -61,9 +61,12 @@
 #define I2C_APP_CALLBACK_TRANSFER_COUNT              5
 #if defined (SOC_J784S4) || defined (SOC_J742S2)
 #define I2C_APP_MAX_FREQ_COUNT                       5
+#elif defined (SOC_J721S2)
+#define I2C_APP_MAX_FREQ_COUNT                       3
 #else
 #define I2C_APP_MAX_FREQ_COUNT                       2
 #endif
+#define I2C_APP_BITRATE_INVALID_ID                   5
 #define I2C_APP_BUFSTAT_INVALID_COMMAND              4
 
 #define I2C_APP_ID_BIT_RATE_INTERRUPT_MODE           0   /* I2C bit rate test in interrupt mode */
@@ -912,11 +915,7 @@ static bool I2CApp_probeBusFreqTest(void *arg)
     if(BTRUE == testStatus)
     {
         /* Test runtime configuration default value */
-        #if defined (SOC_J784S4) || defined (SOC_J742S2)
         busFrequency = I2C_1P0Mhz;
-        #else
-        busFrequency = I2C_100kHz;
-        #endif
         I2C_control(handle, I2C_CMD_SET_BUS_FREQUENCY, &busFrequency);
 
         memset(rxBuf, 0, I2C_APP_EEPROM_TEST_LENGTH);
@@ -1232,6 +1231,10 @@ static bool I2CApp_negativeTest(void *arg)
     bool                testStatus = BTRUE;
     I2CApp_TestCfg      *test = (I2CApp_TestCfg *)arg;
     I2C_HwAttrs const   *i2cCfg = NULL;
+    I2C_HwAttrs         i2cDefaultCfg;
+#if defined (SOC_J721S2) || defined (SOC_J721E) || defined (SOC_J7200)
+    uint32_t            bitRateId;
+#endif
 
     /* Set the I2C EEPROM write/read address */
     txBuf[0] = (I2C_APP_EEPROM_TEST_ADDR >> 8) & 0xFF; /* EEPROM memory high address byte */
@@ -1465,7 +1468,40 @@ static bool I2CApp_negativeTest(void *arg)
     /* Test8: Called I2CMasterInitExpClk with internalClk=0U & outputClk=0U */
     I2CMasterInitExpClk(i2cCfg->baseAddr, i2cCfg->funcClk, 0U, 0U);
 
-    /*clear the FIFO*/
+    /* Test9: Set and get default I2C init configurations for instance = I2C_HWIP_MAX_CNT */
+
+    status = I2C_socGetInitCfg(I2C_HWIP_MAX_CNT, &i2cDefaultCfg);
+
+    if(I2C_STS_SUCCESS != status)
+    {
+        testStatus = BTRUE;
+    }
+
+    status = I2C_socSetInitCfg(I2C_HWIP_MAX_CNT, &i2cDefaultCfg);
+
+    if(I2C_STS_SUCCESS != status)
+    {
+        testStatus = BTRUE;
+    }
+
+#if defined (SOC_J721S2) || defined (SOC_J721E) || defined (SOC_J7200)
+    /* Test10: HS Mode Tests for J721E/J7200/J721S2 */
+    if(handle)
+    {
+        I2C_close(handle);
+    }
+
+    for(bitRateId = I2C_APP_MAX_FREQ_COUNT; bitRateId < I2C_APP_BITRATE_INVALID_ID; bitRateId++)
+    {
+        status = I2CApp_bitrateTestFrequency((I2C_BitRate)bitRateId, (I2CApp_TestCfg *)arg);
+        if(I2C_STS_SUCCESS != status)
+        {
+            testStatus = BTRUE;
+        }
+    }
+#endif
+
+    /* Clear the FIFO*/
     I2CFlushFifo(i2cCfg->baseAddr);
 
     if(handle)
