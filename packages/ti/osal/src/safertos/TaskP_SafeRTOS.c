@@ -165,6 +165,7 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
         handle->taskfxn = ( TaskP_mainFunction_t )( taskfxn );
         handle->arg0 = params->arg0;
         handle->arg1 = params->arg1;
+        handle->terminated = BFALSE;
 
         /* The structure passed to xTaskCreate(  ) to create the check task. */
          xTaskParameters xTaskPParams =
@@ -208,7 +209,6 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
         }
         else
         {
-            handle->terminated = BFALSE;
             ret_handle = ( ( TaskP_Handle )handle );
         }
     }
