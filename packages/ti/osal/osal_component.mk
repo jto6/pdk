@@ -240,7 +240,7 @@ export osal_cache_test_multicore_RELPATH = ti/osal/test/osal_cache_test
 export osal_cache_test_multicore_PATH = $(PDK_OSAL_COMP_PATH)/test/osal_cache_test
 export osal_cache_test_multicore_BOARD_DEPENDENCY = yes
 export osal_cache_test_multicore_CORE_DEPENDENCY = yes
-export osal_cache_test_multicore_MAKEFILE = -f multicore_makefile.mk
+export osal_cache_test_multicore_MAKEFILE = -f multicore_makefile.mk BUILD_PROFILE=$(BUILD_PROFILE)
 export osal_cache_test_multicore_BOARDLIST = $(libosal_BOARDLIST)
 export osal_cache_test_multicore_SBL_APPIMAGEGEN = no
 osal_EXAMPLE_LIST += osal_cache_test_multicore

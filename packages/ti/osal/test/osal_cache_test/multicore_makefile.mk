@@ -40,7 +40,7 @@ force_multi_core_img_gen.c:
 	$(ECHO) "# BINDIR is $(BINDIR) CORELIST is $(osal_baremetal_cache_test_$(SOC)_CORELIST)"
 	mkdir -p $(BINDIR)
 	$(ECHO) "# MULTICORE_IMG_PARAMS are $(MULTICORE_IMG_PARAMS)"
-	$(SBL_IMAGE_GEN) LE $(SBL_DEV_ID) $(BINDIR)/$(APP_NAME).appimage $(MULTICORE_IMG_PARAMS)
+	$(SBL_IMAGE_GEN) LE $(SBL_DEV_ID) $(BINDIR)/$(APP_NAME)_$(BUILD_PROFILE).appimage $(MULTICORE_IMG_PARAMS)
 	$(ECHO) "#"
 	$(ECHO) "# Multicore IPC App image $(BINDIR)/$(APP_NAME).appimage created."
 	$(ECHO) "#"
@@ -48,8 +48,8 @@ force_multi_core_img_gen.c:
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(SBL_CERT_GEN)
 endif
-	$(SBL_CERT_GEN) -b $(BINDIR)/$(APP_NAME).appimage -o $(BINDIR)/$(APP_NAME).appimage.signed -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY_HS)
-	$(SBL_CERT_GEN) -b $(BINDIR)/$(APP_NAME).appimage -o $(BINDIR)/$(APP_NAME).appimage.hs_fs -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY)
+	$(SBL_CERT_GEN) -b $(BINDIR)/$(APP_NAME)_$(BUILD_PROFILE).appimage -o $(BINDIR)/$(APP_NAME)_$(BUILD_PROFILE).appimage.signed -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY_HS)
+	$(SBL_CERT_GEN) -b $(BINDIR)/$(APP_NAME)_$(BUILD_PROFILE).appimage -o $(BINDIR)/$(APP_NAME)_$(BUILD_PROFILE).appimage.hs_fs -c R5 -l $(SBL_RUN_ADDRESS) -k $(SBL_CERT_KEY)
 
 # Core/SoC/platform specific source files and CFLAGS
 # Example:
