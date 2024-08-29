@@ -232,7 +232,7 @@ export ipc_c7x_sanity_test_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)),
 export ipc_c7x_sanity_test_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
 ipc_c7x_sanity_test_$(1)_PKG_LIST = ipc_c7x_sanity_test_$(1)
 ipc_c7x_sanity_test_$(1)_INCLUDE = $(ipc_c7x_sanity_test_$(1)_PATH)
-export ipc_c7x_sanity_test_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvipc_BOARDLIST))
+export ipc_c7x_sanity_test_$(1)_BOARDLIST = j784s4_evm j721s2_evm j721e_evm
 export ipc_c7x_sanity_test_$(1)_$(SOC)_CORELIST = mcu1_0 c7x_1
 export ipc_c7x_sanity_test_$(1)_SBL_APPIMAGEGEN = yes
 ifneq ($(1),$(filter $(1), safertos))
@@ -543,7 +543,7 @@ export ipc_c7x_dualcore_echo_test_$(1)_MAKEFILE =  -f$(PDK_IPC_COMP_PATH)/exampl
 export ipc_c7x_dualcore_echo_test_$(1)_DEPENDS_ON=ipc_c7x_sanity_test_$(1)
 ipc_c7x_dualcore_echo_test_$(1)_PKG_LIST = ipc_c7x_dualcore_echo_test_$(1)
 ipc_c7x_dualcore_echo_test_$(1)_INCLUDE = $(ipc_c7x_dualcore_echo_test_$(1)_PATH)
-export ipc_c7x_dualcore_echo_test_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvipc_BOARDLIST))
+export ipc_c7x_dualcore_echo_test_$(1)_BOARDLIST = j784s4_evm j721s2_evm j721e_evm
 export ipc_c7x_dualcore_echo_test_$(1)_$(SOC)_CORELIST := c7x_1
 export ipc_c7x_dualcore_echo_test_SBL_APPIMAGEGEN = no
 ifneq ($(1),$(filter $(1), safertos))
