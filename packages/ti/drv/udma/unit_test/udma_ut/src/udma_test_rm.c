@@ -1488,6 +1488,8 @@ int32_t UdmaRmTranslateCoreIntrInputTestNeg(UdmaTestTaskObj *taskObj)
  * Test scenario 1: Check when sumInstShare is greater than numUnresvRes
  * Test scenario 2: Check when instId is invalid
  * Test scenario 3: Check when minReq is 0U and numInst is greater than UDMA_RM_SHARED_RES_MAX_INST 
+ * Test scenario 4: Check Udma_rmGetSharedResPrms when resId is Invalid
+ * Test scenario 5: Check Udma_rmGetLocalBoardCfgResp when resId is Invalid
  */
 int32_t UdmaRmSetSharedResRmInitPrmsTestNeg(UdmaTestTaskObj *taskObj)
 {
@@ -1580,6 +1582,42 @@ int32_t UdmaRmSetSharedResRmInitPrmsTestNeg(UdmaTestTaskObj *taskObj)
         }
     }
     *rmSharedResPrms = backUpRmSharedResPrms;
+
+    /* Test scenario 4: Check Udma_rmGetSharedResPrms when resId is Invalid*/
+    if(UDMA_SOK == retVal)
+    {  
+        rmSharedResPrms = Udma_rmGetSharedResPrms(UDMA_RM_RES_ID_INVALID);
+        if(NULL != rmSharedResPrms)
+        {  
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                      " |TEST INFO|:: FAIL:: UDMA:: Udma_rmGetSharedResPrms:: Neg::"
+                      " Check when resId is Invalid!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+
+    #if defined (BUILD_C7X) && (UDMA_LOCAL_C7X_DRU_PRESENT == 1)
+    /* Test scenario 5: Check Udma_rmGetLocalBoardCfgResp when resId is Invalid*/
+    if(UDMA_SOK == retVal)
+    { 
+        const Udma_RmDefBoardCfgResp *resp = Udma_rmGetLocalBoardCfgResp(UDMA_RM_RES_ID_INVALID);
+        if(NULL != resp)
+        {  
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                      " |TEST INFO|:: FAIL:: UDMA:: Udma_rmGetLocalBoardCfgResp:: Neg::"
+                      " Check when resId is Invalid!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+    #endif
 
     return retVal;
 }
