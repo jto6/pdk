@@ -123,8 +123,6 @@ int32_t IpcApp_extTest(void)
 {
     UART_printf("Starting IPC extended tests\n");
 
-    IpcApp_virtioTests();
-
     IpcApp_multiprocessorTests();
 
     IpcApp_mailboxTests();
@@ -132,6 +130,8 @@ int32_t IpcApp_extTest(void)
     IpcApp_utilTests();
 
     IpcApp_initTests();
+    
+    IpcApp_virtioTests();
 
     IpcApp_rpmsgTests();
 

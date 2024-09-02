@@ -344,7 +344,9 @@ int32_t Ipc_mailboxRegister(uint16_t selfId, uint16_t remoteProcId,
     }
     else
     {
+#ifdef DEBUG_PRINT      
         SystemP_printf("Ipc_Mailbox_register : failed Invalid cluster..\n");
+#endif        
         retVal = IPC_EFAIL;
     }
 

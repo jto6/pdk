@@ -70,9 +70,27 @@
 /* ========================================================================== */
 
 /*
- * IPC stack buffers
+ * In the cfg file of R5F, default heap is 48K which is not
+ * enough for 9 task_stack, so creating task_stack on global.
+ * C7x cfg has 256k default heap, so no need to put task_stack on global
  */
+#if !defined(BUILD_C7X)
+
 uint8_t  gIpcApp_TaskStackBuf[(IPC_APP_NUM_CORE_IN_TEST+2)*IPC_TASK_STACKSIZE];
+
+#else
+
+/* IMPORTANT NOTE: For C7x,
+ * - stack size and stack ptr MUST be 8KB aligned
+ * - AND min stack size MUST be 16KB
+ * - AND stack assigned for task context is "size - 8KB"
+*       - 8KB chunk for the stack area is used for interrupt handling in this task context
+*/
+uint8_t gIpcApp_TaskStackBuf[(IPC_APP_NUM_CORE_IN_TEST+2)*IPC_TASK_STACKSIZE]
+__attribute__ ((section(".bss:taskStackSection")))
+__attribute__ ((aligned(8192)));
+#endif
+
 uint8_t  gIpcApp_CntrlBuf[RPMSG_DATA_SIZE] __attribute__ ((section("ipc_data_buffer"), aligned (8)));
 uint8_t  gIpcApp_SysVqBuf[VQ_BUF_SIZE]  __attribute__ ((section ("ipc_data_buffer"), aligned (8)));
 uint8_t  gIpcApp_SendBuf[RPMSG_DATA_SIZE * IPC_APP_NUM_CORE_IN_TEST]  __attribute__ ((section ("ipc_data_buffer"), aligned (8)));
@@ -86,11 +104,21 @@ uint8_t *gIpcApp_RspBufPtr       = gIpcApp_RspBuf;
 uint8_t *gIpcApp_TimeoutBufPtr   = gIpcApp_TimeoutBuf;
 uint8_t *gIpcApp_SysVqBufPtr     = gIpcApp_SysVqBuf;
 
+#ifdef BUILD_MCU1_0
 uint32_t gIpcApp_SelfProcId = IPC_MCU1_0;
 uint32_t gIpcApp_RemoteProc[] =
 {
-    IPC_MPU1_0, IPC_MCU2_0
+    IPC_MCU2_0
 };
+#endif
+
+#ifdef BUILD_C7X_1
+uint32_t gIpcApp_SelfProcId = IPC_C7X_1;
+uint32_t gIpcApp_RemoteProc[] =
+{
+    IPC_MCU2_0
+};
+#endif
 
 uint32_t *gIpcApp_RemoteProcArray = gIpcApp_RemoteProc;
 uint32_t  gIpcApp_NumRemoteProc = sizeof(gIpcApp_RemoteProc)/sizeof(gIpcApp_RemoteProc[0]);
