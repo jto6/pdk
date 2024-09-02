@@ -93,102 +93,96 @@ OsalInterruptRetCode_e Osal_RegisterInterrupt(OsalRegisterIntrParams_t *interrup
 
      /* Program the corepac interrupt */
       if( ( (void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
-          ( CSL_INVALID_EVENT_ID               == interruptRegParams->corepacConfig.corepacEventNum) ) {
+          ( CSL_INVALID_EVENT_ID               == interruptRegParams->corepacConfig.corepacEventNum) ||
+          ( NULL == hwiPHandlePtr)) {
           ret = OSAL_INT_ERR_INVALID_PARAMS;
       }
+      else
+      {
+            HwiP_Params_init(&hwiInputParams);
 
-      HwiP_Params_init(&hwiInputParams);
-
-      hwiInputParams.name = interruptRegParams->corepacConfig.name;
-      hwiInputParams.arg  = interruptRegParams->corepacConfig.arg;
-      hwiInputParams.priority = interruptRegParams->corepacConfig.priority;
-      hwiInputParams.evtId = interruptRegParams->corepacConfig.corepacEventNum;
-      hwiInputParams.enableIntr = interruptRegParams->corepacConfig.enableIntr;
-#if defined (__ARM_ARCH_7A__) || defined (__aarch64__) || ((__ARM_ARCH == 7) && (__ARM_ARCH_PROFILE == 'R') )
-      hwiInputParams.triggerSensitivity = interruptRegParams->corepacConfig.triggerSensitivity;
+            hwiInputParams.name = interruptRegParams->corepacConfig.name;
+            hwiInputParams.arg  = interruptRegParams->corepacConfig.arg;
+            hwiInputParams.priority = interruptRegParams->corepacConfig.priority;
+            hwiInputParams.evtId = interruptRegParams->corepacConfig.corepacEventNum;
+            hwiInputParams.enableIntr = interruptRegParams->corepacConfig.enableIntr;
+#if defined (__aarch64__) || ((__ARM_ARCH == 7) && (__ARM_ARCH_PROFILE == 'R') )
+            hwiInputParams.triggerSensitivity = interruptRegParams->corepacConfig.triggerSensitivity;
 #endif
 
 #ifdef _TMS320C6X
-      /* Maps the core_event_in to the hwi Vector core_intVecNum (4-15) for C6x and core_intNum for ARM */
-/*       For C66x
-            Use Event Combiner ALWAYS for c6x. Event_combiner_event (0-3) =  core_event_in/32.
-            Hook the this Event_combiner_event(0-3) to the core_intVecNum.
-            if core_intVecNum is set to -1 as input, it means Let RM find a free unused vector number;
-            HwiP_Create(Event_combiner_event,core_intVecNum,Event_dispatcher_plug);
-*/
-   if(OSAL_REGINT_INTVEC_EVENT_COMBINER == interruptRegParams->corepacConfig.intVecNum) {
-      OsalArch_oneTimeInit();
-      /* Map to a particular group */
-      if(3U < hwiInputParams.evtId) {
-          /* For C66X the interrupt needs to be grouped to {0,1,2,3} to either of the four 32-bit event registers  */
-        hwiInputParams.evtId = (interruptRegParams->corepacConfig.corepacEventNum)/32U;
-       }
-       /* The dispatch function in the event combiner case is EventCombiner_dispatch */
+            /* Maps the core_event_in to the hwi Vector core_intVecNum (4-15) for C6x and core_intNum for ARM */
+            /*      For C66x
+                    Use Event Combiner ALWAYS for c6x. Event_combiner_event (0-3) =  core_event_in/32.
+                    Hook the this Event_combiner_event(0-3) to the core_intVecNum.
+                    if core_intVecNum is set to -1 as input, it means Let RM find a free unused vector number;
+                    HwiP_Create(Event_combiner_event,core_intVecNum,Event_dispatcher_plug);
+            */
+            if(OSAL_REGINT_INTVEC_EVENT_COMBINER == interruptRegParams->corepacConfig.intVecNum) {
+                OsalArch_oneTimeInit();
+                /* Map to a particular group */
+                if(3U < hwiInputParams.evtId) {
+                    /* For C66X the interrupt needs to be grouped to {0,1,2,3} to either of the four 32-bit event registers  */
+                    hwiInputParams.evtId = (interruptRegParams->corepacConfig.corepacEventNum)/32U;
+                }
+                /* The dispatch function in the event combiner case is EventCombiner_dispatch */
 
-       /* Find out if the event combiner is already registered, if so, dont re-register */
-       hwiPHandle = EventCombinerP_getHwi(hwiInputParams.evtId);
-       if(NULL_PTR == hwiPHandle) {
-           /* The event hasn't been registered yet. Register it as per the defaults provided by OSAL */
-           Osal_HwAttrs hwAttrs;
+                /* Find out if the event combiner is already registered, if so, dont re-register */
+                hwiPHandle = EventCombinerP_getHwi(hwiInputParams.evtId);
+                if(NULL_PTR == hwiPHandle) {
+                    /* The event hasn't been registered yet. Register it as per the defaults provided by OSAL */
+                    Osal_HwAttrs hwAttrs;
 
-               /* Get the default OSAL mapped ones */
-           (void)Osal_getHwAttrs(&hwAttrs);
+                        /* Get the default OSAL mapped ones */
+                    (void)Osal_getHwAttrs(&hwAttrs);
 
-          /* Unconditionally enable interrupt if creating interrupt for event combiner */
-          hwiInputParams.enableIntr = UTRUE;
+                    /* Unconditionally enable interrupt if creating interrupt for event combiner */
+                    hwiInputParams.enableIntr = UTRUE;
 
-           /* No need to register seperately in case of baremetal , the HwiP_Create() takes care of it */
-          HwiP_create(hwAttrs.ECM_intNum[hwiInputParams.evtId],interruptRegParams->corepacConfig.isrRoutine, &hwiInputParams);
-          /* Get the interrupt handler corresponding to the event id. */
-          hwiPHandle = EventCombinerP_getHwi(hwiInputParams.evtId);
-       
-           if(NULL_PTR == hwiPHandle) {
-              ret = OSAL_INT_ERR_EVENTCOMBINER_REG;
-           }
-       }
-       if(OSAL_INT_SUCCESS == ret) {
-          /* The Event combiner handle already exists or created. Now plug the ISR routine in to
-              the CSL_intcEventHandlerRecord_p */
-            (void)EventCombinerP_dispatchPlug((uint32_t)interruptRegParams->corepacConfig.corepacEventNum,
-                                        interruptRegParams->corepacConfig.isrRoutine,
-                                        interruptRegParams->corepacConfig.arg,
-                                        (UFALSE != interruptRegParams->corepacConfig.enableIntr));
-       }
-   } else {
-       /* Do not use the event combiner. Use the supplied ISR routine */
-       hwiPHandle =  HwiP_create(interruptRegParams->corepacConfig.intVecNum,interruptRegParams->corepacConfig.isrRoutine, &hwiInputParams);
-       if(NULL_PTR == hwiPHandle) {
-          ret = OSAL_INT_ERR_HWICREATE;
-       }
-   }
+                    /* No need to register seperately in case of baremetal , the HwiP_Create() takes care of it */
+                    HwiP_create(hwAttrs.ECM_intNum[hwiInputParams.evtId],interruptRegParams->corepacConfig.isrRoutine, &hwiInputParams);
+                    /* Get the interrupt handler corresponding to the event id. */
+                    hwiPHandle = EventCombinerP_getHwi(hwiInputParams.evtId);
+                
+                    if(NULL_PTR == hwiPHandle) {
+                        ret = OSAL_INT_ERR_EVENTCOMBINER_REG;
+                    }
+                }
+                if(OSAL_INT_SUCCESS == ret) {
+                    /* The Event combiner handle already exists or created. Now plug the ISR routine in to
+                        the CSL_intcEventHandlerRecord_p */
+                        (void)EventCombinerP_dispatchPlug((uint32_t)interruptRegParams->corepacConfig.corepacEventNum,
+                                                    interruptRegParams->corepacConfig.isrRoutine,
+                                                    interruptRegParams->corepacConfig.arg,
+                                                    (UFALSE != interruptRegParams->corepacConfig.enableIntr));
+                }
+            } else {
+                /* Do not use the event combiner. Use the supplied ISR routine */
+                hwiPHandle =  HwiP_create(interruptRegParams->corepacConfig.intVecNum,interruptRegParams->corepacConfig.isrRoutine, &hwiInputParams);
+                if(NULL_PTR == hwiPHandle) {
+                    ret = OSAL_INT_ERR_HWICREATE;
+                }
+            }
 #else
-
-#if (defined (__ARM_ARCH_7A__) || defined (__aarch64__)) && !defined (SOC_AM437x) &&  !defined(SOC_AM335x)
-    /* Initialize GIC if not done already */
-    Osal_HwAttrs hwAttrs;
-    (void)Osal_getHwAttrs(&hwAttrs);
-    if(OSAL_HWACCESS_UNRESTRICTED == hwAttrs.hwAccessType)
-    {
-      /* Do GIC init only in the case of unrestricted hw access */
-      OsalArch_gicInit();
-    }
-#if defined(SOC_K2G) || defined (SOC_K2L) || defined (SOC_K2H) || defined (SOC_K2K) || defined (SOC_K2E)
-    /* Keystone parts don't need subtract by 32 for ARM GIC ID */
-#else
-    /* Subtract 32 as the IRQ handler for A15 subtracts 32, Keystone handler does not do it */
-#if !defined(__aarch64__)
-    interruptRegParams->corepacConfig.intVecNum -= 32U;
+#if defined (__aarch64__)
+        /* Initialize GIC if not done already */
+        Osal_HwAttrs hwAttrs;
+        (void)Osal_getHwAttrs(&hwAttrs);
+        if(OSAL_HWACCESS_UNRESTRICTED == hwAttrs.hwAccessType)
+        {
+        /* Do GIC init only in the case of unrestricted hw access */
+        OsalArch_gicInit();
+        }
 #endif
-#endif
+        hwiPHandle =  HwiP_create(interruptRegParams->corepacConfig.intVecNum,interruptRegParams->corepacConfig.isrRoutine, &hwiInputParams);
+        if(NULL_PTR == hwiPHandle) {
+            ret = OSAL_INT_ERR_HWICREATE;
+        }
 #endif
 
-   hwiPHandle =  HwiP_create(interruptRegParams->corepacConfig.intVecNum,interruptRegParams->corepacConfig.isrRoutine, &hwiInputParams);
-   if(NULL_PTR == hwiPHandle) {
-       ret = OSAL_INT_ERR_HWICREATE;
-   }
-#endif
-
-  *hwiPHandlePtr=hwiPHandle;
+        *hwiPHandlePtr=hwiPHandle;
+      }
+      
   return ret ;
 }
 
