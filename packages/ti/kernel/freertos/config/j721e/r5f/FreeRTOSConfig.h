@@ -137,8 +137,12 @@
 #define configGENERATE_RUN_TIME_STATS           (0)
 #endif
 void vPortConfigTimerForRunTimeStats();
+
+/* This defaults to uint32_t(overflows in 2^32 us). Set it to be a uint64_t */
+#define configRUN_TIME_COUNTER_TYPE    uint64_t
+
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() vPortConfigTimerForRunTimeStats()
-uint32_t uiPortGetRunTimeCounterValue();
+configRUN_TIME_COUNTER_TYPE uiPortGetRunTimeCounterValue();
 #define portGET_RUN_TIME_COUNTER_VALUE()        uiPortGetRunTimeCounterValue()
 
 /* co-routine related config */

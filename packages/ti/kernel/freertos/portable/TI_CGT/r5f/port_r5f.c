@@ -68,6 +68,15 @@
 #include <ti/csl/arch/r5/csl_arm_r5_pmu.h>
 #include <ti/csl/arch/csl_arch.h>
 #include <ti/osal/src/nonos/Nonos_config.h>
+#if defined (SOC_J721S2)
+#include <ti/kernel/freertos/config/j721s2/r5f/FreeRTOSConfig.h>
+#elif defined (SOC_J721E)
+#include <ti/kernel/freertos/config/j721e/r5f/FreeRTOSConfig.h>
+#elif defined (SOC_J7200)
+#include <ti/kernel/freertos/config/j7200/r5f/FreeRTOSConfig.h>
+#elif defined (SOC_J784S4)
+#include <ti/kernel/freertos/config/j784s4/r5f/FreeRTOSConfig.h>
+#endif
 
 /* Let the user override the pre-loading of the initial LR with the address of
  * prvTaskExitError() in case is messes up unwinding of the stack in the
@@ -571,9 +580,9 @@ uint64_t getRunTimeCounterValue(void)
 }
 
 /* Return current counter value of high speed counter in usecs as uint32_t, or return 0 in case of an unexpected error. */
-uint32_t uiPortGetRunTimeCounterValue(void)
+configRUN_TIME_COUNTER_TYPE uiPortGetRunTimeCounterValue(void)
 {
-    return (uint32_t)getRunTimeCounterValue();
+    return (configRUN_TIME_COUNTER_TYPE)getRunTimeCounterValue();
 }
 
 /* Return current counter value of high speed counter in usecs as uint64_t, or return 0 in case of an unexpected error. */

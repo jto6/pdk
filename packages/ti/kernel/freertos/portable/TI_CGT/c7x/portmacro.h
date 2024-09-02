@@ -68,6 +68,15 @@
 #include <ti/osal/HwiP.h>
 #include "Hwi.h"
 #include "IntrinsicsSupport.h"
+#if defined (SOC_J721S2)
+#include <ti/kernel/freertos/config/j721s2/c7x/FreeRTOSConfig.h>
+#elif defined (SOC_J721E)
+#include <ti/kernel/freertos/config/j721e/c7x/FreeRTOSConfig.h>
+#elif defined (SOC_J7200)
+#include <ti/kernel/freertos/config/j7200/c7x/FreeRTOSConfig.h>
+#elif defined (SOC_J784S4) || defined (SOC_J742S2)
+#include <ti/kernel/freertos/config/j784s4/c7x/FreeRTOSConfig.h>
+#endif
 
 /*-----------------------------------------------------------
  * Port specific definitions.
@@ -163,7 +172,7 @@
     void vPortConfigTimerForRunTimeStats(void);
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() vPortConfigTimerForRunTimeStats()
 
-    uint32_t uiPortGetRunTimeCounterValue(void);
+    configRUN_TIME_COUNTER_TYPE uiPortGetRunTimeCounterValue(void);
     #define portGET_RUN_TIME_COUNTER_VALUE()        uiPortGetRunTimeCounterValue()
 
 

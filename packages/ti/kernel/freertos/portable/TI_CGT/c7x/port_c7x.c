@@ -70,6 +70,15 @@
 #include <ti/csl/soc.h>
 #include <ti/csl/arch/csl_arch.h>
 #include <ti/osal/src/nonos/Nonos_config.h>
+#if defined (SOC_J721S2)
+#include <ti/kernel/freertos/config/j721s2/c7x/FreeRTOSConfig.h>
+#elif defined (SOC_J721E)
+#include <ti/kernel/freertos/config/j721e/c7x/FreeRTOSConfig.h>
+#elif defined (SOC_J7200)
+#include <ti/kernel/freertos/config/j7200/c7x/FreeRTOSConfig.h>
+#elif defined (SOC_J784S4) || defined (SOC_J742S2)
+#include <ti/kernel/freertos/config/j784s4/c7x/FreeRTOSConfig.h>
+#endif
 
 /* Let the user override the pre-loading of the initial LR with the address of
  * prvTaskExitError() in case is messes up unwinding of the stack in the
@@ -426,7 +435,7 @@ void vPortConfigTimerForRunTimeStats(void)
 }
 
 /* return current counter value of high speed counter in units of 10's of usecs */
-uint32_t uiPortGetRunTimeCounterValue(void)
+configRUN_TIME_COUNTER_TYPE uiPortGetRunTimeCounterValue(void)
 {
     uint64_t ts = __TSC - ullPortSchedularStartTs;
     uint64_t timeInUsecs;
@@ -438,7 +447,7 @@ uint32_t uiPortGetRunTimeCounterValue(void)
      * This will overflow after
      * ((0x100000000/1000000)/(60*60))*10 hours ~ 12 hrs
      */
-    return (uint32_t)timeInUsecs;
+    return (configRUN_TIME_COUNTER_TYPE)timeInUsecs;
 }
 
 /* This is used to make sure we are using the FreeRTOS API from within a valid interrupt priority level

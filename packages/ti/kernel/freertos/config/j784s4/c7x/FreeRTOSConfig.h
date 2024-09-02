@@ -198,5 +198,8 @@
 #define configUSE_IDLE_HOOK         (1)
 #endif
 
+/* This defaults to uint32_t(overflows in 2^32 us). Set it to be a uint64_t */
+#define configRUN_TIME_COUNTER_TYPE    uint64_t
+
 #endif /* TI_FREERTOS_CONFIG_H */
 

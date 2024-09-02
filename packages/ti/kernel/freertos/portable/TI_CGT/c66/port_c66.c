@@ -371,7 +371,7 @@ void vPortConfigTimerForRunTimeStats()
 }
 
 /* return current counter value of high speed counter in units of usecs */
-uint32_t uiPortGetRunTimeCounterValue()
+configRUN_TIME_COUNTER_TYPE uiPortGetRunTimeCounterValue()
 {
     uint64_t ts = CSL_tscRead();
     uint64_t timeInUsecs;
