@@ -271,35 +271,40 @@ SemaphoreP_Status SemaphoreP_pend(SemaphoreP_Handle handle, uint32_t timeout)
     SemaphoreP_Status   ret_val;
     SemaphoreP_freertos *pSemaphore = (SemaphoreP_freertos *)handle;
 
-    DebugP_assert(NULL_PTR != handle);
-
-    if( 1 == xPortInIsrContext() )
+    if(NULL_PTR == handle)
     {
-        BaseType_t xHigherPriorityTaskWoken = 0;
-
-        /* timeout is ignored when in ISR mode */
-        isSemTaken = (uint32_t)xSemaphoreTakeFromISR(pSemaphore->semHndl,&xHigherPriorityTaskWoken);
-        portYIELD_FROM_ISR((uint32_t)xHigherPriorityTaskWoken);
+        ret_val = SemaphoreP_FAILURE;
     }
     else
     {
-        if (timeout == SemaphoreP_WAIT_FOREVER)
+        if( 1 == xPortInIsrContext() )
         {
-            isSemTaken = (uint32_t)xSemaphoreTake(pSemaphore->semHndl, portMAX_DELAY);
+            BaseType_t xHigherPriorityTaskWoken = 0;
+
+            /* timeout is ignored when in ISR mode */
+            isSemTaken = (uint32_t)xSemaphoreTakeFromISR(pSemaphore->semHndl,&xHigherPriorityTaskWoken);
+            portYIELD_FROM_ISR((uint32_t)xHigherPriorityTaskWoken);
         }
         else
         {
-            isSemTaken = (uint32_t)xSemaphoreTake(pSemaphore->semHndl, timeout);
+            if (timeout == SemaphoreP_WAIT_FOREVER)
+            {
+                isSemTaken = (uint32_t)xSemaphoreTake(pSemaphore->semHndl, portMAX_DELAY);
+            }
+            else
+            {
+                isSemTaken = (uint32_t)xSemaphoreTake(pSemaphore->semHndl, timeout);
+            }
         }
-    }
 
-    if(0U != isSemTaken)
-    {
-        ret_val = SemaphoreP_OK;
-    }
-    else
-    {
-        ret_val = SemaphoreP_TIMEOUT;
+        if(0U != isSemTaken)
+        {
+            ret_val = SemaphoreP_OK;
+        }
+        else
+        {
+            ret_val = SemaphoreP_TIMEOUT;
+        }
     }
 
     return ret_val;

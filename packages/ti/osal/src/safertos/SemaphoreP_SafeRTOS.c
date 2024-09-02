@@ -268,36 +268,40 @@ void SemaphoreP_Params_init( SemaphoreP_Params *params )
 SemaphoreP_Status SemaphoreP_pend( SemaphoreP_Handle handle, uint32_t timeout )
 {
     portBaseType        isSemTaken;
-    SemaphoreP_Status   ret_val;
+    SemaphoreP_Status   ret_val = SemaphoreP_OK;
     SemaphoreP_safertos *pSemaphore = ( SemaphoreP_safertos * )handle;
 
-    DebugP_assert( NULL_PTR != handle );
-    if( 1 == Osal_isInISRContext() )
+    if ( NULL_PTR == handle )
     {
-        /* timeout is ignored when in ISR mode */
-        isSemTaken = (portBaseType)xSemaphoreTakeFromISR( pSemaphore->semHndl);
-        safertosapiYIELD_FROM_ISR();
+        ret_val = SemaphoreP_FAILURE;
     }
     else
     {
-        if ( SemaphoreP_WAIT_FOREVER == timeout )
+        if( 1 == Osal_isInISRContext() )
         {
-            isSemTaken = (portBaseType)xSemaphoreTake( pSemaphore->semHndl, safertosapiMAX_DELAY );
-            DebugP_assert(pdPASS == isSemTaken);
+            /* timeout is ignored when in ISR mode */
+            isSemTaken = (portBaseType)xSemaphoreTakeFromISR( pSemaphore->semHndl);
+            safertosapiYIELD_FROM_ISR();
         }
         else
         {
-            isSemTaken = (portBaseType)xSemaphoreTake( pSemaphore->semHndl, timeout );
+            if ( SemaphoreP_WAIT_FOREVER == timeout )
+            {
+                isSemTaken = (portBaseType)xSemaphoreTake( pSemaphore->semHndl, safertosapiMAX_DELAY );
+                if (pdPASS != isSemTaken)
+                {
+                    ret_val = SemaphoreP_TIMEOUT;
+                }
+            }
+            else
+            {
+                isSemTaken = (portBaseType)xSemaphoreTake( pSemaphore->semHndl, timeout );
+                if (pdPASS != isSemTaken)
+                {
+                    ret_val = SemaphoreP_TIMEOUT;
+                }
+            }
         }
-    }
-
-    if( pdPASS == isSemTaken )
-    {
-        ret_val = SemaphoreP_OK;
-    }
-    else
-    {
-        ret_val = SemaphoreP_TIMEOUT;
     }
 
     return ret_val;
