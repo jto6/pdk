@@ -259,10 +259,16 @@ static void Udma_osalMutexDelete(void *mutexHandle)
 
 static void Udma_osalMutexLock(void *mutexHandle)
 {
-    (void) SemaphoreP_pend((SemaphoreP_Handle) mutexHandle, SemaphoreP_WAIT_FOREVER);
+    if(mutexHandle != NULL_PTR)
+    {
+        (void) SemaphoreP_pend((SemaphoreP_Handle) mutexHandle, SemaphoreP_WAIT_FOREVER);
+    }
 }
 
 static void Udma_osalMutexUnlock(void *mutexHandle)
 {
-    (void) SemaphoreP_post((SemaphoreP_Handle) mutexHandle);
+    if(mutexHandle != NULL_PTR)
+    {
+        (void) SemaphoreP_post((SemaphoreP_Handle) mutexHandle);
+    }
 }
