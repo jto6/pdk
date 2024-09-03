@@ -63,7 +63,7 @@
 /** \brief  Defines the various Sciclient extended unit test cases. */
 SciApp_TestParams_t gSciApp_TestcaseParams[] =
 {
-  {
+   {
       /** enableTest **/
       SCI_APP_TEST_ENABLE,
 
@@ -261,7 +261,6 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
-#if defined (BUILD_MCU1_0)
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -295,6 +294,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_NEGATIVE)
     },
+#if defined (BUILD_MCU1_0)
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -361,6 +361,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
+#endif
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -394,47 +395,13 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
-#if defined(SOC_J784S4)
+#if defined(BUILD_MCU1_0)
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
 
         /** testCaseId **/
         11U,
-
-        /** *reqId **/
-        "PDK-14058",
-
-        /** *testCaseName **/
-        "Sciclient Rom Testcase",
-
-        /** *userInfo **/
-        "None",
-
-        /** *disableReason **/
-        "None",
-
-        /** *passFailCriteria **/
-        "sciclient Rom functions should Pass when called \
-         with valid parameters and fail when called with invalid \
-         parameters",
-
-        /** cpuID **/
-        SCI_APP_CORE_TYPE_R5F,
-
-        /** printEnable **/
-        SCI_APP_PRINT_ENABLE,
-
-        /** testType **/
-        (SCI_APP_TEST_TYPE_SANITY)
-    },
-#endif
-    {
-        /** enableTest **/
-        SCI_APP_TEST_ENABLE,
-
-        /** testCaseId **/
-        12U,
 
         /** *reqId **/
         "PDK-14060",
@@ -461,8 +428,41 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
 
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
-    }
+    },
 #endif
+    {
+        /** enableTest **/
+        SCI_APP_TEST_ENABLE,
+
+        /** testCaseId **/
+        12U,
+
+        /** *reqId **/
+        "PDK-14058",
+
+        /** *testCaseName **/
+        "Sciclient Rom Testcase",
+
+        /** *userInfo **/
+        "None",
+
+        /** *disableReason **/
+        "None",
+
+        /** *passFailCriteria **/
+        "sciclient Rom functions should Pass when called \
+         with valid parameters and fail when called with invalid \
+         parameters",
+
+        /** cpuID **/
+        SCI_APP_CORE_TYPE_R5F,
+
+        /** printEnable **/
+        SCI_APP_PRINT_ENABLE,
+
+        /** testType **/
+        (SCI_APP_TEST_TYPE_SANITY)
+    }
 };
 
 /* ========================================================================== */
