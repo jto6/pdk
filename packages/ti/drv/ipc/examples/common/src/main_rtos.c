@@ -302,7 +302,16 @@ static void taskFxn(void* a0, void* a1)
 #elif defined IPC_EXTENDED_TEST
     IpcApp_extTest();
 #else
-    Ipc_echo_test();  
+    Ipc_echo_test(); 
+    
+#if(defined(BUILD_C7X_1) && (IPC_SANITY_C7X))
+#if defined LDRA_DYN_COVERAGE_EXIT
+    UART_printf("\n LDRA ENTRY... \n");
+    upload_execution_history();
+    UART_printf("\n LDRA EXIT... \n");
+#endif 
+#endif
+
 #endif
 
 }
