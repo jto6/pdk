@@ -28,6 +28,31 @@ BOARDCFG_PM = 0xE
 BOARDCFG_RM = 0xC
 BOARDCFG_NUM_ELEMS = 4
 
+# Structure of the blob will be like
+# 
+#  -----------------------
+# |       NUM ELEMS       |
+#  -----------------------
+# |         SWREV         |
+#  -----------------------           -----------------------
+# |     BOARDCFG_DESC_1   |-------->|      BOARDCFG_TYPE    |
+#  -----------------------           -----------------------
+# |     BOARDCFG_DESC_2   |         |     BOARDCFG_OFFSET   |
+#  -----------------------           -----------------------
+# |     BOARDCFG_DESC_3   |         |          SIZE         |
+#  -----------------------           -----------------------
+# |     BOARDCFG_DESC_4   |         |         DEVGRP        |
+#  -----------------------           -----------------------
+# |       BOARDCFG_1      |         |          RSVD?        |
+#  -----------------------           -----------------------
+# |       BOARDCFG_2      |
+#  -----------------------
+# |       BOARDCFG_3      |
+#  -----------------------
+# |       BOARDCFG_4      |
+#  -----------------------
+# 
+
 class BoardCfgDesc():
     """Get board config descriptor for a given file """
 

@@ -363,6 +363,7 @@ void SBL_getSysfwVersion()
     {
         if (respPrm.flags == (uint32_t)TISCI_MSG_FLAG_ACK)
         {
+            /* These profile points are added to remove tifs revision print time */
             SBL_ADD_PROFILE_POINT;
             SBL_log(SBL_LOG_MIN,"TIFS  ver: %s\n", (char *) response.str);
             SBL_ADD_PROFILE_POINT;
@@ -391,8 +392,6 @@ void SBL_SciClientInit(uint32_t devGroup)
     config.c66xRatRegion            =   0;
     config.skipLocalBoardCfgProcess =   1;
 #endif
-    /* Profile point before reading sysfw */
-    SBL_ADD_PROFILE_POINT;
 
     void *sysfw_ptr = gSciclient_firmware;
     status = SBL_ReadSysfwImage(&sysfw_ptr, SBL_SYSFW_MAX_SIZE);
@@ -463,12 +462,11 @@ void SBL_SciClientInit(uint32_t devGroup)
 #ifndef SBL_SKIP_BRD_CFG_RM
     SBL_SciclientBoardCfgRm(devGroup, &boardCfgInfo);
 #endif
+    /* Profile point after RM Board Cfg and before Board init pinmux */
+    SBL_ADD_PROFILE_POINT;
 
 /* Get SYSFW/TIFS version */
-    if (SBL_LOG_LEVEL > SBL_LOG_ERR)
-    {
-        SBL_getSysfwVersion();
-    }
+    SBL_getSysfwVersion();
 
 
 #if (!defined(SBL_SKIP_BRD_CFG_PM)) || (!defined(SBL_SKIP_BRD_CFG_RM))
@@ -506,21 +504,10 @@ void SBL_SciClientCombinedBootInit(uint32_t devGroup)
     config.pBoardCfgPrms            =   NULL;
     config.isSecureMode             =   0; /* default board cfg is for non-secure mode */
     config.c66xRatRegion            =   0;
-    config.skipLocalBoardCfgProcess =   1;
+    config.skipLocalBoardCfgProcess =   0;
 #endif
 
 #ifndef SBL_SKIP_SYSFW_INIT
-    /* Profile point before boot notification */
-    SBL_ADD_PROFILE_POINT;
-    status = Sciclient_bootNotification();
-    if (status != CSL_PASS)
-    {
-        SBL_log(SBL_LOG_ERR,"Sciclient_bootNotification ...FAILED \n");
-        SblErrLoop(__FILE__, __LINE__);
-    }
-    /* Profile point after boot notification and before sciclient init */
-    SBL_ADD_PROFILE_POINT;
-
     status = Sciclient_getDefaultBoardCfgInfo(&boardCfgInfo);
 
     if (status != CSL_PASS)
@@ -528,46 +515,36 @@ void SBL_SciClientCombinedBootInit(uint32_t devGroup)
         SBL_log(SBL_LOG_ERR,"Sciclient get default board config...FAILED \n");
         SblErrLoop(__FILE__, __LINE__);
     }
+    
+    CSL_armR5PmuSetCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM, CNTR_RELOAD_VALUE);
+    SBL_ADD_PROFILE_POINT;
 
     status = Sciclient_init(&config);
+    /* Profile point after sciclient init and before board init pinmux */
+    SBL_ADD_PROFILE_POINT;
+
+    if (SBL_LOG_LEVEL > SBL_LOG_NONE)
+    {
+        /* De-init and Re-init UART for logging */
+        UART_stdioDeInit();
+        UART_HwAttrs uart_cfg;
+
+        UART_socGetInitCfg(BOARD_UART_INSTANCE, &uart_cfg);
+        uart_cfg.frequency = SBL_SYSFW_UART_MODULE_INPUT_CLK;
+        UART_socSetInitCfg(BOARD_UART_INSTANCE, &uart_cfg);
+        UART_stdioInit(BOARD_UART_INSTANCE);
+    }
+
     if (status != CSL_PASS)
     {
         SBL_log(SBL_LOG_ERR,"Sciclient init ...FAILED \n");
         SblErrLoop(__FILE__, __LINE__);
     }
-    /* Profile point after sciclient init and before Board Cfg */
-    SBL_ADD_PROFILE_POINT;
-
-#ifndef SBL_SKIP_BRD_CFG_BOARD
-    SBL_SciclientBoardCfg(devGroup, &boardCfgInfo);
-#endif
-    /* Profile point after Board Cfg and before PM Board Cfg */
-    SBL_ADD_PROFILE_POINT;
-
-#ifndef SBL_SKIP_BRD_CFG_PM
-    SBL_SciclientBoardCfgPm(devGroup, &boardCfgInfo);
-#endif
-    /* Profile point after PM Board Cfg and before Security Board Cfg */
-    SBL_ADD_PROFILE_POINT;
-
-#ifndef SBL_SKIP_BRD_CFG_SEC
-    SBL_SciclientCfgSec(devGroup, &boardCfgInfo);
-#endif
 
     SBL_OpenFirewalls();
-    /* Profile point after Security Board Cfg and before RM Board Cfg */
-    SBL_ADD_PROFILE_POINT;
-
-#ifndef SBL_SKIP_BRD_CFG_RM
-    SBL_SciclientBoardCfgRm(devGroup, &boardCfgInfo);
-#endif
 
 /* Get SYSFW/TIFS version */
-    if (SBL_LOG_LEVEL > SBL_LOG_ERR)
-    {
-        SBL_getSysfwVersion();
-    }
-
+    SBL_getSysfwVersion();
 
 #if (!defined(SBL_SKIP_BRD_CFG_PM)) || (!defined(SBL_SKIP_BRD_CFG_RM))
     status = Sciclient_setBoardConfigHeader();
@@ -612,22 +589,40 @@ static int32_t Sciclient_setBoardConfigHeader ()
         .boardConfigSize = (uint16_t)SCICLIENT_BOARDCFG_RM_SIZE_IN_BYTES - gCertLength,
         .devGrp = DEVGRP_ALL
     };
-    status = Sciclient_boardCfgPrepHeader (
+
+    if (1U != combinedBootmode)
+    {
+        status = Sciclient_boardCfgPrepHeader (
         (uint8_t *) SCISERVER_COMMON_X509_HEADER_ADDR,
         (uint8_t *) SCISERVER_BOARDCONFIG_HEADER_ADDR,
         &boardCfgPrms_pm, &boardCfgPrms_rm);
-    if (CSL_PASS == status)
-    {
-        SBL_log(SBL_LOG_MAX,"SCISERVER Board Configuration header population... ");
-        SBL_log(SBL_LOG_MAX,"PASSED\n");
+        if (CSL_PASS == status)
+        {
+            SBL_log(SBL_LOG_MAX,"SCISERVER Board Configuration header population... ");
+            SBL_log(SBL_LOG_MAX,"PASSED\n");
+        }
+        else
+        {
+            SBL_log(SBL_LOG_MIN,"SCISERVER Board Configuration header population... ");
+            SBL_log(SBL_LOG_MIN,"FAILED\n");
+        }
+        memcpy((void *)boardCfgPrms_pm.boardConfigLow, (void *) sblBoardCfgPmPrms.boardConfigLow, SCICLIENT_BOARDCFG_PM_SIZE_IN_BYTES);
+        memcpy((void *)boardCfgPrms_rm.boardConfigLow, (void *) sblBoardCfgRmPrms.boardConfigLow, SCICLIENT_BOARDCFG_RM_SIZE_IN_BYTES - gCertLength);
     }
     else
     {
-        SBL_log(SBL_LOG_MIN,"SCISERVER Board Configuration header population... ");
-        SBL_log(SBL_LOG_MIN,"FAILED\n");
+        status = Sciclient_boardCfgParseHeader(
+            (uint8_t *) SCISERVER_COMMON_X509_HEADER_ADDR,
+            &boardCfgPrms_pm, &boardCfgPrms_rm);
+        if (CSL_PASS == status)
+        {
+            SBL_log(SBL_LOG_MAX,"SCISERVER Board Cfg Parsing.... Passed \n");
+        }
+        else
+        {
+            SBL_log(SBL_LOG_MIN,"SCISERVER Board Cfg Parsing.... Failed \n");
+        }
     }
-    memcpy((void *)boardCfgPrms_pm.boardConfigLow, (void *) sblBoardCfgPmPrms.boardConfigLow, SCICLIENT_BOARDCFG_PM_SIZE_IN_BYTES);
-    memcpy((void *)boardCfgPrms_rm.boardConfigLow, (void *) sblBoardCfgRmPrms.boardConfigLow, SCICLIENT_BOARDCFG_RM_SIZE_IN_BYTES - gCertLength);
 #endif
     return status;
 }

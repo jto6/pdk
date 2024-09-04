@@ -45,20 +45,26 @@ struct tisci_boardcfg sblPerfTestBoardCfg __attribute((section(".sysfw_data_cfg_
 struct sblTest_local_rm_boardcfg sblPerfTestBoardCfg_rm __attribute((section(".sysfw_data_cfg_board_rm")));
 struct tisci_boardcfg_sec sblPerfTestBoardCfg_sec __attribute((section(".sysfw_data_cfg_board_sec")));
 
+#define SBL_COMBINED_BOOT_PERF_SBL_PRINT_INDX   3U
+#define SBL_COMBINED_BOOT_PERF_TIFS_PRINT_INDX  7U
+#define SBL_COMBINED_BOOT_PERF_SKIP_INDX        5U
+
 /* For j721e SBL doesn't able to profile RBL boot time since it doesn't have mcu timer9 
         So SBL profile info for j721e is one index ahead of others */
 #if !defined(SOC_J721E)
-    #define SBL_BOOT_PERF_ARRAY_LENGTH 27
-    #define SBL_BOOT_PERF_ARRAY_SKIP_INDX 9
-    #define SBL_BOOT_PERF_TIFS_PRINT_INDX 12
+    #define SBL_BOOT_PERF_ARRAY_LENGTH              26U
+    #define SBL_BOOT_PERF_ARRAY_SKIP_INDX           8U
+    #define SBL_BOOT_PERF_SBL_PRINT_INDX            2U
+    #define SBL_BOOT_PERF_TIFS_PRINT_INDX           12U
     /* This time includes RBL execution time */
     float expCanRespTime = 48;
     /*This is the expected SBL execution time on HS Devices which includes image authentication */
     float expHsCanRespTime = 98;
 #else
-    #define SBL_BOOT_PERF_ARRAY_LENGTH 26
-    #define SBL_BOOT_PERF_ARRAY_SKIP_INDX 8
-    #define SBL_BOOT_PERF_TIFS_PRINT_INDX 11
+    #define SBL_BOOT_PERF_ARRAY_LENGTH              25U
+    #define SBL_BOOT_PERF_ARRAY_SKIP_INDX           7U
+    #define SBL_BOOT_PERF_SBL_PRINT_INDX            1U
+    #define SBL_BOOT_PERF_TIFS_PRINT_INDX           11U
     /* This time does not include RBL execution time */
     float expCanRespTime = 39.5;
     /*This is the expected SBL execution time on HS Devices which includes image authentication */
@@ -171,9 +177,9 @@ static void sblBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
     /* For j721e SBL doesn't able to profile RBL boot time since it doesn't have mcu timer9 
         So SBL profile info for j721e is one index ahead of others */
     #if !defined(SOC_J721E)
-        uint32_t indx = 5;
+        uint32_t indx = 2;
     #else
-        uint32_t indx = 4;
+        uint32_t indx = 1;
     #endif
 
     float convertMicroToMilli = 1000;
@@ -203,28 +209,19 @@ static void sblBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
         uint32_t currentCycleCount;
         uint32_t previousCycleCount;
         float timeTaken, beforePrintTime, afterPrintTime;
-        
+
         currentCycleCount = sblBootPerfLog[indx].cycle_cnt/cycles_per_usec;
         previousCycleCount = sblBootPerfLog[indx-1].cycle_cnt/cycles_per_usec;
         timeTaken = (currentCycleCount-previousCycleCount)/convertMicroToMilli;
-        if (indx == SBL_BOOT_PERF_TIFS_PRINT_INDX)
+
+        if (SBL_BOOT_PERF_SBL_PRINT_INDX == indx || SBL_BOOT_PERF_TIFS_PRINT_INDX == indx)
         {
             beforePrintTime = timeTaken;
             afterPrintTime = (sblBootPerfLog[indx+2].cycle_cnt/cycles_per_usec - sblBootPerfLog[indx+1].cycle_cnt/cycles_per_usec)/convertMicroToMilli;
             indx+=2;
             timeTaken = beforePrintTime + afterPrintTime;
         }
-        
-        /* For Misc - add the time after copying appimage to MCU SRAM till core 
-        boots and from start of SBL main to before reading sysfw */
-        if(indx == (SBL_BOOT_PERF_ARRAY_LENGTH-1))
-        {
-            #if !defined(SOC_J721E)
-                timeTaken += (sblBootPerfLog[2].cycle_cnt/cycles_per_usec - sblBootPerfLog[1].cycle_cnt/cycles_per_usec)/convertMicroToMilli + (sblBootPerfLog[4].cycle_cnt/cycles_per_usec - sblBootPerfLog[3].cycle_cnt/cycles_per_usec)/convertMicroToMilli;
-            #else
-                timeTaken += (sblBootPerfLog[1].cycle_cnt/cycles_per_usec - sblBootPerfLog[0].cycle_cnt/cycles_per_usec)/convertMicroToMilli + (sblBootPerfLog[3].cycle_cnt/cycles_per_usec - sblBootPerfLog[2].cycle_cnt/cycles_per_usec)/convertMicroToMilli;
-            #endif
-        }
+
         totalTime += timeTaken;
         sprintf(sbl_test_str,"%s %.3fms\r\n", majorApis[majorApisIndx], timeTaken);
         sbl_puts(sbl_test_str);
@@ -277,12 +274,8 @@ static void sblBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
 
 static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
 {
-    char majorApis[18][100] = {"Sciclient Boot Notification                                                          :", \
+    char majorApis[14][100] = {"Sciclient Boot Notification                                                          :", \
                                 "Sciclient_init                                                                       :", \
-                                "Board Config                                                                         :", \
-                                "PM Config                                                                            :", \
-                                "Security Config                                                                      :", \
-                                "RM Config                                                                            :", \
                                 "SBL: Board_init (pinmux)                                                             :", \
                                 "SBL: Board_init (PLL)                                                                :", \
                                 "SBL: Board_init (CLOCKS)                                                             :", \
@@ -297,9 +290,8 @@ static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
                                 "Misc                                                                                 :"};
     uint64_t mcuClkFreq = SBL_MCU1_CPU0_FREQ_HZ;
     uint32_t majorApisIndx = 0, cyclesPerUsec;
-    uint32_t indx = 5;
-    uint32_t arrayLen = 26;
-    uint32_t skipIndex = 8;
+    uint32_t indx = 2;
+    uint32_t arrayLen = 20;
 
     float convertMicroToMilli = 1000;
     float totalTime = 0;
@@ -318,11 +310,11 @@ static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
 
     while(indx < arrayLen)
     {
-        /* Skipping this index as timer is being reset at this particular index */ 
-        if(indx == skipIndex){
+        if(indx == SBL_COMBINED_BOOT_PERF_SKIP_INDX){
             indx++;
             continue;
         }
+
         uint32_t currentCycleCount;
         uint32_t previousCycleCount;
         float timeTaken, beforePrintTime, afterPrintTime;
@@ -332,7 +324,12 @@ static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
         timeTaken = (currentCycleCount-previousCycleCount)/convertMicroToMilli;
         totalTime += timeTaken;
 
-        if (indx == 11)
+        if (indx == SBL_COMBINED_BOOT_PERF_SBL_PRINT_INDX)
+        {
+            indx+=2;
+            continue;
+        }
+        else if (indx == SBL_COMBINED_BOOT_PERF_TIFS_PRINT_INDX)
         {
             beforePrintTime = timeTaken;
             afterPrintTime = (sblBootPerfLog[indx+2].cycle_cnt/cyclesPerUsec - sblBootPerfLog[indx+1].cycle_cnt/cyclesPerUsec)/convertMicroToMilli;
@@ -340,12 +337,6 @@ static void sblCombinedBootPerfPrint(sblProfileInfo_t *sblBootPerfLog)
             timeTaken = beforePrintTime + afterPrintTime;
         }
 
-        /* For Misc - add the time after copying appimage to MCU SRAM till core 
-        boots and from start of SBL main to before reading sysfw */
-        if(indx == (arrayLen-1))
-        {
-            timeTaken += (sblBootPerfLog[2].cycle_cnt/cyclesPerUsec - sblBootPerfLog[1].cycle_cnt/cyclesPerUsec)/convertMicroToMilli;
-        }
         sprintf(sbl_test_str,"%s %.3fms\r\n", majorApis[majorApisIndx], timeTaken);
         sbl_puts(sbl_test_str);
         indx++;

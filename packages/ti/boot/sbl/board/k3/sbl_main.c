@@ -294,6 +294,20 @@ int main()
         /* Init UART for logging. */
         UART_stdioInit(BOARD_UART_INSTANCE);
     }
+
+#if defined(SBL_COMBINED_BOOT)
+    /* Incase of combined boot, wait for boot notification */
+    retVal = Sciclient_bootNotification();
+    if (CSL_PASS != retVal)
+    {
+        SBL_log(SBL_LOG_ERR,"Sciclient_bootNotification ...FAILED \n");
+        SblErrLoop(__FILE__, __LINE__);
+    }
+    /* Profile point after sciclient boot notification and before sciclient init */
+    SBL_ADD_PROFILE_POINT;
+#endif
+    
+    /* Following profile points were added to remove SBL Revision print time */
     SBL_ADD_PROFILE_POINT;
     SBL_log(SBL_LOG_MIN, "%s (%s - %s)\n", SBL_VERSION_STR, __DATE__, __TIME__);
     SBL_ADD_PROFILE_POINT;
@@ -344,8 +358,6 @@ int main()
 
 #if !defined(SBL_SKIP_PINMUX_ENABLE)
     /* Board pinmux. */
-    /* Profile point after RM Board Cfg and before Board init pinmux */
-    SBL_ADD_PROFILE_POINT;
     if (CSL_PASS != Board_init(BOARD_INIT_PINMUX_CONFIG))
     {
         retVal = CSL_EFAIL;
