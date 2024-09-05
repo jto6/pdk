@@ -122,7 +122,11 @@ HELPTXT="
 		5 bit value
 		Defaults to 0
 		Symmetric Key options
-
+	--jtag-disable
+		if parameter given will add disable jtag field in certificate
+	--jtag-disable-wp
+	--jtag-disable-rp
+	--jtag-disable-ovrd
 
 	Example Usage:
 	
@@ -132,7 +136,7 @@ HELPTXT="
 	# To generate certificate
 	./gen_keywr_cert.sh -s keys/smpk.pem --smek keys/smek.key -b keys/bmpk.pem --bmek keys/bmek.key -t ti_fek_public.pem -a keys/aes256.key
 	
-	./gen_keywr_cert.sh -s keys/smpk.pem --smek keys/smek.key -t ti_fek_public.pem -a keys/aes256.key --msv 0xC0FFE --keycnt 1 --keyrev 1 --sr-bcfg 16 --sr-sbl 16 --sr-sysfw 16 --ext-otp ext_otp_data.bin --ext-otp-indx 1 --ext-otp-size 3
+	./gen_keywr_cert.sh -s keys/smpk.pem --smek keys/smek.key -t ti_fek_public.pem -a keys/aes256.key --msv 0xC0FFE --keycnt 1 --keyrev 1 --sr-bcfg 16 --sr-sbl 16 --sr-sysfw 16 --ext-otp ext_otp_data.bin --ext-otp-indx 1 --ext-otp-size 3 --jtag-disable
 "
 
 ## HELP ------------------------------------------------------------
@@ -161,6 +165,8 @@ declare -A mek_opt_info
 
 declare -A tifek_info
 declare -A aes256key_info
+
+declare -A jtag_disable_info
 
 declare -A primary_cert_info
 declare -A secondary_cert_info
@@ -195,6 +201,9 @@ mek_opt_info[val]="00"
 
 tifek_info[flag]="no"
 aes256key_info[flag]="no"
+
+jtag_disable_info[val]="00000000"
+jtag_disable_info[flag]="no"
 
 secondary_cert_info[flag]="no"
 
@@ -346,6 +355,22 @@ case $key in
 	parse_validate_swrev_sysfw "$2"
 	shift # past argument
     shift # past value
+	;;
+	--jtag-disable-wp)
+		jtag_disable_info[wp]="yes"
+	shift
+	;;
+	--jtag-disable-rp)
+		jtag_disable_info[rp]="yes"
+	shift
+	;;
+	--jtag-disable-ovrd)
+		jtag_disable_info[ovrd]="yes"
+	shift
+	;;		
+	--jtag-disable)
+	parse_validate_jtag_disable
+	shift # past argument
 	;;
 	--sr-sysfw-wp)
 		swrev_sysfw_info[wp]="yes"

@@ -85,6 +85,19 @@ parse_validate_msv(){
 	echo "# Using MSV[19:0]: 0x${msv_info[val]}" 
 }
 
+# parse_validate_jtag_disable <raw_key_rev_string>
+parse_validate_jtag_disable(){
+	jtag_disable_info[flag]="yes"
+	jtag_disable_info[val]="F"
+	
+	# prepend zeros
+	while [ "${#jtag_disable_info[val]}" -ne 8 ];do 
+		jtag_disable_info[val]="0"${jtag_disable_info[val]}
+	done
+
+	echo "# Using Jtag disable: 0x${jtag_disable_info[val]}" 
+}
+
 # parse_validate_key_cnt <raw_key_cnt_string>
 parse_validate_key_cnt(){
 	key_cnt_info[flag]="yes"
@@ -324,6 +337,15 @@ populate_config_primary(){
 
 	# <wp> <rp> <override> <active/inavtive>
 	sed -i "s/PUT_ACTFLAG_AESENC_SMPKH/$((16#${wp_flag}${rp_flag}${ovrd_flag}${active_flag}))/" "${primary_cert_info[config]}"
+
+	[[ ${jtag_disable_info[flag]} == "yes" ]] && active_flag=${ENABLE_VAL} || active_flag=${DISABLE_VAL} 
+	[[ ${jtag_disable_info[wp]} == "yes" ]] && wp_flag=${ENABLE_VAL} || wp_flag=${DISABLE_VAL} 
+	[[ ${jtag_disable_info[rp]} == "yes" ]] && rp_flag=${ENABLE_VAL} || rp_flag=${DISABLE_VAL} 
+	[[ ${jtag_disable_info[ovrd]} == "yes" ]] && ovrd_flag=${ENABLE_VAL} || ovrd_flag=${DISABLE_VAL} 
+	
+	# <wp> <rp> <override> <active/inavtive>
+	sed -i "s/PUT_ACTFLAG_JTAG_DISABLE/$((16#${wp_flag}${rp_flag}${ovrd_flag}${active_flag}))/" "${primary_cert_info[config]}"
+	sed -i "s/PUT_PLAIN_JTAG_DISABLE/${jtag_disable_info[val]}/" "${primary_cert_info[config]}"
 
 	[[ ${mpk_opt_info[flag]} == "yes" ]] && active_flag=${ENABLE_VAL} || active_flag=${DISABLE_VAL} 
 	# <wp> <rp> <override> <active/inavtive>
