@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2021-2022 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2021-2024 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -322,7 +322,7 @@ extern "C" {
 #define BOARD_DISPLAY_EEPROM_SLAVE_ADDR               (0x00U) //J7ES_TBD: Need to update salve addr when board design is complete
 
 #define BOARD_COMMON_EEPROM_I2C_INST                  (0)
-#define BOARD_CSI2_EEPROM_I2C_INST                    (6)
+#define BOARD_CSI2_EEPROM_I2C_INST                    (5U)
 
 #define BOARD_MMC_VOLTAGESWITCH_FN      Board_mmc_voltageSwitchFxn
 
