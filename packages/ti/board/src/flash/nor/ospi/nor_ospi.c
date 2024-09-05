@@ -284,7 +284,8 @@ static NOR_STATUS Nor_ospiSetDummyCycle(OSPI_Handle handle, uint32_t dummyCycle)
 static void Nor_ospiSetOpcode(OSPI_Handle handle)
 {
     uint32_t               data[3];
-    uint32_t               dummyCycles;
+    uint32_t               rdDummyCycles;
+    uint32_t               pollDummyCycles;
     uint32_t               rx_lines;
     OSPI_v0_HwAttrs const *hwAttrs= (OSPI_v0_HwAttrs const *)handle->hwAttrs;
 
@@ -293,11 +294,11 @@ static void Nor_ospiSetOpcode(OSPI_Handle handle)
     {
         if (hwAttrs->dacEnable)
         {
-            dummyCycles = NOR_OCTAL_READ_DUMMY_CYCLE;
+            rdDummyCycles = NOR_OCTAL_READ_DUMMY_CYCLE;
         }
         else
         {
-            dummyCycles = 16U;
+            rdDummyCycles = 16U;
         }
 
         if (BTRUE == gDtrEnable)
@@ -310,23 +311,26 @@ static void Nor_ospiSetOpcode(OSPI_Handle handle)
             data[0]     = NOR_CMD_OCTAL_IO_FAST_RD;
             data[1]     = NOR_CMD_EXT_OCTAL_FAST_PROG;
         }
+        pollDummyCycles = NOR_OCTAL_POLL_DUMMY_CYCLE;
     }
     else
     {
         /* Set to legacy SPI mode 1-1-1 if not Octal mode */
-        dummyCycles = 0;
+        rdDummyCycles = 0;
         data[0]     = NOR_CMD_READ;
         data[1]     = NOR_CMD_PAGE_PROG;
+        pollDummyCycles = NOR_SINGLE_POLL_DUMMY_CYCLE;
     }
     data[2]     = NOR_CMD_RDSR;
 
     /* Update the read opCode, rx lines and read dummy cycles */
-    OSPI_control(handle, OSPI_V0_CMD_RD_DUMMY_CLKS, (void *)&dummyCycles);
+    OSPI_control(handle, OSPI_V0_CMD_RD_DUMMY_CLKS, (void *)&rdDummyCycles);
     OSPI_control(handle, OSPI_V0_CMD_SET_XFER_LINES, (void *)&rx_lines);
+    OSPI_control(handle, OSPI_V0_CMD_CFG_POLL_DUMMY_CYCLE, (void *)&pollDummyCycles);
     OSPI_control(handle, OSPI_V0_CMD_XFER_OPCODE, (void *)data);
 
     /* Set read dummy cycles to the flash device */
-    Nor_ospiSetDummyCycle(handle, dummyCycles);
+    Nor_ospiSetDummyCycle(handle, rdDummyCycles);
 
     return;
 }

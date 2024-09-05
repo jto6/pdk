@@ -88,85 +88,91 @@ extern "C" {
  *  combination with memory mapped mode where a read or write direction is
  *  required with SPI flash memory.
  */
-#define OSPI_V0_CMD_XFER_MODE_RW        (OSPI_CMD_RESERVED + 2U)
+#define OSPI_V0_CMD_XFER_MODE_RW         (OSPI_CMD_RESERVED + 2U)
 
 /**
  *  \brief  Set flash specific command when in indirect transfer mode.
  *
  */
-#define OSPI_V0_CMD_XFER_OPCODE         (OSPI_CMD_RESERVED + 3U)
+#define OSPI_V0_CMD_XFER_OPCODE          (OSPI_CMD_RESERVED + 3U)
 
 /**
  *  \brief  Set number of lines configured for RX/TX operation.
  *
  */
-#define OSPI_V0_CMD_SET_XFER_LINES      (OSPI_CMD_RESERVED + 4U)
+#define OSPI_V0_CMD_SET_XFER_LINES       (OSPI_CMD_RESERVED + 4U)
 
 /**
  *  \brief  Set number of dummy clock cycles for read operation.
  *
  */
-#define OSPI_V0_CMD_RD_DUMMY_CLKS       (OSPI_CMD_RESERVED + 5U)
+#define OSPI_V0_CMD_RD_DUMMY_CLKS        (OSPI_CMD_RESERVED + 5U)
 
 /**
  *  \brief  Set command to configure phy.
  *
  */
-#define OSPI_V0_CMD_CFG_PHY             (OSPI_CMD_RESERVED + 6U)
+#define OSPI_V0_CMD_CFG_PHY              (OSPI_CMD_RESERVED + 6U)
 
 /**
  *  \brief  Set command to enable DDR mode
  *
  */
-#define OSPI_V0_CMD_ENABLE_DDR          (OSPI_CMD_RESERVED + 7U)
+#define OSPI_V0_CMD_ENABLE_DDR           (OSPI_CMD_RESERVED + 7U)
 
 /**
  *  \brief  Set command to enable XIP mode
  *
  */
-#define OSPI_V0_CMD_CFG_XIP             (OSPI_CMD_RESERVED + 8U)
+#define OSPI_V0_CMD_CFG_XIP              (OSPI_CMD_RESERVED + 8U)
 
 /**
  *  \brief  Set command to disable DDR mode
  *
  */
-#define OSPI_V0_CMD_ENABLE_SDR          (OSPI_CMD_RESERVED + 9U)
+#define OSPI_V0_CMD_ENABLE_SDR           (OSPI_CMD_RESERVED + 9U)
 
 /**
  *
  *  \brief  Set extended opcodes when in indirect transfer mode.
  */
-#define OSPI_V0_CMD_XFER_OPCODE_EXT     (OSPI_CMD_RESERVED + 10U)
+#define OSPI_V0_CMD_XFER_OPCODE_EXT      (OSPI_CMD_RESERVED + 10U)
 
 /**
  *
  *  \brief  Set extended opcode command read dummy cycles.
  */
-#define OSPI_V0_CMD_EXT_RD_DUMMY_CLKS   (OSPI_CMD_RESERVED + 11U)
+#define OSPI_V0_CMD_EXT_RD_DUMMY_CLKS    (OSPI_CMD_RESERVED + 11U)
 
 /**
  *
  *  \brief  Set read capture delay.
  */
-#define OSPI_V0_CMD_CFG_RD_DELAY        (OSPI_CMD_RESERVED + 12U)
+#define OSPI_V0_CMD_CFG_RD_DELAY         (OSPI_CMD_RESERVED + 12U)
 
 /**
  *
  *  \brief  Set dummy cycles in flash device.
  */
-#define OSPI_V0_CMD_CFG_DUMMY_CYCLE     (OSPI_CMD_RESERVED + 13U)
+#define OSPI_V0_CMD_CFG_DUMMY_CYCLE      (OSPI_CMD_RESERVED + 13U)
 
 /**
  *
  *  \brief  Set extended opcode command read dummy cycles.
  */
-#define OSPI_V0_CMD_EXT_RD_CMD_LEN      (OSPI_CMD_RESERVED + 14U)
+#define OSPI_V0_CMD_EXT_RD_CMD_LEN       (OSPI_CMD_RESERVED + 14U)
 
 /**
  *
  *  \brief  Set command to enable XIP Prefetch.
  */
 #define OSPI_V0_CMD_ENABLE_XIP_PREFETCH (OSPI_CMD_RESERVED + 15U)
+
+/**
+ *
+ *  \brief  Set command to program Polling Dummy Cycles
+ */
+#define OSPI_V0_CMD_CFG_POLL_DUMMY_CYCLE (OSPI_CMD_RESERVED + 16U)
 
 /* SPI function table pointer */
 extern const OSPI_FxnTable OSPI_FxnTable_v0;

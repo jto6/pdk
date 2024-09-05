@@ -1796,6 +1796,13 @@ static int32_t OSPI_control_v0(OSPI_Handle handle, uint32_t cmd, const void *arg
                 break;
             }
 
+            case OSPI_V0_CMD_CFG_POLL_DUMMY_CYCLE:
+            {
+                CSL_ospiSetPollingDummyCycles((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
+                                                   *ctrlData);
+                break;
+            }
+
             case OSPI_V0_CMD_SET_XFER_LINES:
             {
                 uint32_t numAddrBytes;
@@ -1805,20 +1812,6 @@ static int32_t OSPI_control_v0(OSPI_Handle handle, uint32_t cmd, const void *arg
                 {
                     numAddrBytes = CSL_OSPI_MEM_MAP_NUM_ADDR_BYTES_4;
                 }
-#if defined(SOC_J721E)
-                if (OSPI_XFER_LINES_OCTAL == object->xferLines)
-                {
-                    /* 8 dummy cycles required for polling status register in octal mode */
-                    CSL_ospiSetPollingDummyCycles((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
-                                                   8U);
-                }
-                else
-                {
-                    /* 0 dummy cycles required for polling status register in single mode */
-                    CSL_ospiSetPollingDummyCycles((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
-                                                   0U);
-                }
-#endif
                 /* Set device size cofigurations */
                 CSL_ospiSetDevSize((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
                                    numAddrBytes,

@@ -114,7 +114,9 @@
 /** Dummy cycles for Read operation */
 /** Dummy cycles for Read operation */
 #define NOR_SINGLE_READ_DUMMY_CYCLE  (0U)
+#define NOR_SINGLE_POLL_DUMMY_CYCLE  (0U)
 #define NOR_OCTAL_READ_DUMMY_CYCLE   (30U)
+#define NOR_OCTAL_POLL_DUMMY_CYCLE   (8U)
 
 
 /** In Micro seconds */
