@@ -2539,7 +2539,7 @@ void osal_test(void *arg0, void *arg1)
         testFail = BTRUE;
     }
 
-#if defined(SAFERTOS)    
+#if defined(SAFERTOS) && defined(BUILD_MCU)
     OSAL_log(" \n OSAL Load Test Starting...\n Takes about 10 seconds ...\n\n"); 
     if(BTRUE == OSAL_taskSpecificMPURegions_test())
     {
