@@ -19,9 +19,14 @@ INCDIR = .
 #  need to be included for this component
 INCLUDE_EXTERNAL_INTERFACES = pdk
 
+SOC_DIR=$(SOC)
+ifeq ($(SOC), j742s2)
+  SOC_DIR=j784s4
+endif
+
 # Common source files and CFLAGS across all platforms and cores
 PACKAGE_SRCS_COMMON = .
-PACKAGE_SRCS_COMMON += $(IPC_COMMON_PATH)/src $(IPC_COMMON_PATH)/$(SOC)
+PACKAGE_SRCS_COMMON += $(IPC_COMMON_PATH)/src $(IPC_COMMON_PATH)/$(SOC_DIR)
 
 ifeq ($(BUILD_OS_TYPE), freertos)
 	COMP_LIST_COMMON =  $(PDK_COMMON_FREERTOS_COMP)
@@ -32,10 +37,10 @@ ifeq ($(BUILD_OS_TYPE), freertos)
 	CFLAGS_LOCAL_COMMON += -DFREERTOS
 	INCLUDE_EXTERNAL_INTERFACES += freertos
 	ifeq ($(ISA), r5f)
-		SRCS_COMMON = r5f_mpu_$(SOC)_default.c
+		SRCS_COMMON = r5f_mpu_$(SOC_DIR)_default.c
 	endif
-	EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_INSTALL_PATH)/ti/drv/ipc/examples/common/$(SOC)/$(BUILD_OS_TYPE)/linker_$(ISA)_$(CORE)_$(BUILD_OS_TYPE).lds
-	APPEND_LNKCMD_FILE += $(PDK_INSTALL_PATH)/ti/drv/ipc/examples/common/$(SOC)/$(BUILD_OS_TYPE)/memory_map_ddr.cmd
+	EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_INSTALL_PATH)/ti/drv/ipc/examples/common/$(SOC_DIR)/$(BUILD_OS_TYPE)/linker_$(ISA)_$(CORE)_$(BUILD_OS_TYPE).lds
+	APPEND_LNKCMD_FILE += $(PDK_INSTALL_PATH)/ti/drv/ipc/examples/common/$(SOC_DIR)/$(BUILD_OS_TYPE)/memory_map_ddr.cmd
 endif
 
 SRCS_COMMON += ipc_graceful_shutdown_test_config.c ipc_graceful_shutdown_main.c ipc_graceful_shutdown_test.c
