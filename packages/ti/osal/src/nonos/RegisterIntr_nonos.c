@@ -92,12 +92,20 @@ OsalInterruptRetCode_e Osal_RegisterInterrupt(OsalRegisterIntrParams_t *interrup
     HwiP_Params                 hwiInputParams;
 
      /* Program the corepac interrupt */
-      if( ( (void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
-          ( CSL_INVALID_EVENT_ID               == interruptRegParams->corepacConfig.corepacEventNum) ||
-          ( NULL == hwiPHandlePtr)) {
+
+#if defined( _TMS320C6X)     
+      if(( (void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
+         ( CSL_INVALID_EVENT_ID               == interruptRegParams->corepacConfig.corepacEventNum))
+      {
+        ret = OSAL_INT_ERR_INVALID_PARAMS;
+      }
+#endif
+      if ( NULL == hwiPHandlePtr)
+      {
           ret = OSAL_INT_ERR_INVALID_PARAMS;
       }
-      else
+      
+      if (OSAL_INT_SUCCESS==ret)
       {
             HwiP_Params_init(&hwiInputParams);
 
