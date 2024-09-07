@@ -72,11 +72,7 @@ typedef enum TaskP_Status_e
  */
 #define OS_TICKS_IN_MILLI_SEC   1 /* 1000us tick */
 
-#if defined(SAFERTOS)
 #define TASK_SPECIFIC_MPU_REGIONS  (2U)
-#else
-#define TASK_SPECIFIC_MPU_REGIONS  (1U)
-#endif
 
 /*!
  *  @brief    Opaque client reference to an instance of a TaskP
