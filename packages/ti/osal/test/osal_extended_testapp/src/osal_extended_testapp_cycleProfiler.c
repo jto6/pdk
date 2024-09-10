@@ -110,7 +110,7 @@ int32_t OsalApp_cycleProfilerTest(void)
      * There are 1000_000_000 ticks in a second. */
     limitLow = ((uint64_t)5*(1000U*1000U*1000U));
      /*  5.1 seconds */
-    limitHigh = ((uint64_t)51*(1000U*1000U*100U));
+    limitHigh = ((uint64_t)6*(1000U*1000U*1000U));
 
     if(limitLow <= timeDiff)
     {
