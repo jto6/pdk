@@ -84,7 +84,7 @@ endif
 
 LNKFLAGS_INTERNAL_COMMON +=
 
-SUPRESS_WARNINGS_FLAG = -Wno-extra -Wno-exceptions -ferror-limit=100 -Wno-unused-command-line-argument -Wno-gnu-variable-sized-type-not-at-end -Wno-unused-function -Wno-extern-initializer -Wno-excess-initializers -Wno-bitfield-constant-conversion -Wno-address-of-packed-member
+SUPRESS_WARNINGS_FLAG = -Wno-extra -Wno-exceptions -ferror-limit=100 -Wno-unused-command-line-argument -Wno-unused-function -Wno-extern-initializer -Wno-excess-initializers -Wno-bitfield-constant-conversion -Wno-address-of-packed-member
 
 ifeq ($(CPLUSPLUS_BUILD), yes)
   SUPRESS_WARNINGS_FLAG += -Wno-c99-designator -Wno-extern-c-compat -Wno-c++11-narrowing -Wno-reorder-init-list -Wno-deprecated-register -Wno-writable-strings -Wno-enum-compare -Wno-reserved-user-defined-literal -Wno-unused-const-variable -Wno-missing-braces
