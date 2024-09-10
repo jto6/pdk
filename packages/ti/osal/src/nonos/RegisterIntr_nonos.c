@@ -92,20 +92,19 @@ OsalInterruptRetCode_e Osal_RegisterInterrupt(OsalRegisterIntrParams_t *interrup
     HwiP_Params                 hwiInputParams;
 
      /* Program the corepac interrupt */
-
-#if defined( _TMS320C6X)     
-      if(( (void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
-         ( CSL_INVALID_EVENT_ID               == interruptRegParams->corepacConfig.corepacEventNum))
-      {
-        ret = OSAL_INT_ERR_INVALID_PARAMS;
-      }
+      if (((void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
+          (NULL==interruptRegParams) ||
+          (NULL == hwiPHandlePtr) ||
+#if defined (_TMS320C6X)
+          (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.corepacEventNum) ||
 #endif
-      if ( NULL == hwiPHandlePtr)
+          (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.intVecNum)
+          )
       {
           ret = OSAL_INT_ERR_INVALID_PARAMS;
       }
       
-      if (OSAL_INT_SUCCESS==ret)
+      else
       {
             HwiP_Params_init(&hwiInputParams);
 
@@ -209,50 +208,51 @@ OsalInterruptRetCode_e Osal_RegisterInterruptDirect(OsalRegisterIntrParams_t *in
     HwiP_Params                 hwiInputParams;
 
     /* Program the corepac interrupt */
-    if( ((void (*)(void)) NULL_PTR == isrFxn) ||
-        (CSL_INVALID_EVENT_ID      == interruptRegParams->corepacConfig.corepacEventNum) ) {
+    if (( (void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
+        (NULL==interruptRegParams) ||
+        (NULL == hwiPHandlePtr) ||
+#if defined (_TMS320C6X)
+        (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.corepacEventNum) ||
+#endif
+        (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.intVecNum)
+        )
+    {
         ret = OSAL_INT_ERR_INVALID_PARAMS;
     }
+    else
+    {
+        HwiP_Params_init(&hwiInputParams);
 
-    HwiP_Params_init(&hwiInputParams);
-
-    hwiInputParams.name = interruptRegParams->corepacConfig.name;
-    hwiInputParams.arg  = interruptRegParams->corepacConfig.arg;
-    hwiInputParams.priority = interruptRegParams->corepacConfig.priority;
-    hwiInputParams.evtId = interruptRegParams->corepacConfig.corepacEventNum;
-    hwiInputParams.enableIntr = interruptRegParams->corepacConfig.enableIntr;
+        hwiInputParams.name = interruptRegParams->corepacConfig.name;
+        hwiInputParams.arg  = interruptRegParams->corepacConfig.arg;
+        hwiInputParams.priority = interruptRegParams->corepacConfig.priority;
+        hwiInputParams.evtId = interruptRegParams->corepacConfig.corepacEventNum;
+        hwiInputParams.enableIntr = interruptRegParams->corepacConfig.enableIntr;
 #if defined (__ARM_ARCH_7A__) || defined (__aarch64__) || ((__ARM_ARCH == 7) && (__ARM_ARCH_PROFILE == 'R') )
-    hwiInputParams.triggerSensitivity = interruptRegParams->corepacConfig.triggerSensitivity;
+        hwiInputParams.triggerSensitivity = interruptRegParams->corepacConfig.triggerSensitivity;
 #endif
 
 #ifdef _TMS320C6X
-    ret = OSAL_INT_UNSUPPORTED;
+        ret = OSAL_INT_UNSUPPORTED;
 #else
 
-#if (defined (__ARM_ARCH_7A__) || defined (__aarch64__)) && !defined (SOC_AM437x) &&  !defined(SOC_AM335x)
-    /* Initialize GIC if not done already */
-    Osal_HwAttrs hwAttrs;
-    (void)Osal_getHwAttrs(&hwAttrs);
-    if(OSAL_HWACCESS_UNRESTRICTED == hwAttrs.hwAccessType)
-    {
-        /* Do GIC init only in the case of unrestricted hw access */
-        OsalArch_gicInit();
-    }
-#if defined(SOC_K2G) || defined (SOC_K2L) || defined (SOC_K2H) || defined (SOC_K2K) || defined (SOC_K2E)
-    /* Keystone parts don't need subtract by 32 for ARM GIC ID */
-#else
-    /* Subtract 32 as the IRQ handler for A15 subtracts 32, Keystone handler does not do it */
-#if !defined(__aarch64__)
-    interruptRegParams->corepacConfig.intVecNum -= 32U;
-#endif
-#endif
+#if defined (__aarch64__)
+        /* Initialize GIC if not done already */
+        Osal_HwAttrs hwAttrs;
+        (void)Osal_getHwAttrs(&hwAttrs);
+        if(OSAL_HWACCESS_UNRESTRICTED == hwAttrs.hwAccessType)
+        {
+            /* Do GIC init only in the case of unrestricted hw access */
+            OsalArch_gicInit();
+        }
 #endif
 
-    hwiPHandle =  HwiP_createDirect(interruptRegParams->corepacConfig.intVecNum, isrFxn, &hwiInputParams);
-    if(NULL_PTR == hwiPHandle) {
-        ret = OSAL_INT_ERR_HWICREATE;
-    }
+        hwiPHandle =  HwiP_createDirect(interruptRegParams->corepacConfig.intVecNum,isrFxn, &hwiInputParams);
+        if(NULL_PTR == hwiPHandle) {
+            ret = OSAL_INT_ERR_HWICREATE;
+        }
 #endif
+    }
 
     *hwiPHandlePtr=hwiPHandle;
     return ret ;
