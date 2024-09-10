@@ -520,6 +520,18 @@ static int32_t SciserverApp_serverTest(void)
         SciApp_printf ("Sciserver_processtask: Sciserver_UserProcessMsg Test Failed.\n");
     }
 
+    status = Sciserver_getCtrlState();
+    if (status != CSL_EFAIL)
+    {
+        sciserverFuncTestStatus += CSL_PASS;
+        SciApp_printf ("Sciserver_getCtrlState Test Passed.\n");
+    }
+    else
+    {
+        sciserverFuncTestStatus += CSL_EFAIL;
+        SciApp_printf ("Sciserver_getCtrlState Test Failed.\n");
+    }
+
     return sciserverFuncTestStatus;
 }
 
