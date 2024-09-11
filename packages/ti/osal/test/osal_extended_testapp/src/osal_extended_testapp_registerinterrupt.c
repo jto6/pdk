@@ -68,12 +68,12 @@ volatile bool gOsalAppRegISRisExecuted = BFALSE;
  */
 static void OsalApp_regIntrISR(void *arg);
 
-#if defined(BUILD_MCU)
 /*
  * Description : Testing Null check for Register Interrupt APIs
  */
 static int32_t OsalApp_regIntrNullTest(void);
 
+#if defined(BUILD_MCU)
 /*
  * Description : Testing positive cases for Register Interrupt APIs
  */
@@ -94,12 +94,10 @@ static void OsalApp_regIntrISR(void *arg)
     gOsalAppRegISRisExecuted = BTRUE;
 }
 
-#if defined(BUILD_MCU)
-
 static int32_t OsalApp_regIntrNullTest(void)
 {
     OsalRegisterIntrParams_t    *intrPrms = NULL_PTR;
-    HwiP_Handle                 hwiPHandlePtr;
+    HwiP_Handle                 hwiPHandlePtr = NULL;
     int32_t                     result = osal_OK;
 
     Osal_RegisterInterrupt_initParams(intrPrms);
@@ -127,15 +125,16 @@ static int32_t OsalApp_regIntrNullTest(void)
     return result;
 }
 
+#if defined(BUILD_MCU)
 static int32_t OsalApp_regIntrPositiveTest(void)
 {
     OsalRegisterIntrParams_t    intrPrms;
-    HwiP_Handle                 hwiPHandlePtr, hwiPDirectHandlePtr;
+    HwiP_Handle                 hwiPHandlePtr = NULL, hwiPDirectHandlePtr = NULL;
     int32_t                     result = osal_OK;
 
     Osal_RegisterInterrupt_initParams(&intrPrms);
 
-    intrPrms.corepacConfig.isrRoutine      = (Osal_IsrRoutine)OsalApp_regIntrISR;
+    intrPrms.corepacConfig.isrRoutine = (Osal_IsrRoutine)OsalApp_regIntrISR;
     intrPrms.corepacConfig.intVecNum = OSAL_INT_NUM_1;
 
     if(OSAL_INT_SUCCESS != Osal_RegisterInterrupt(&intrPrms, &hwiPHandlePtr))
@@ -170,41 +169,36 @@ static int32_t OsalApp_regIntrPositiveTest(void)
 }
 
 #elif defined(BUILD_C7X)
-
 static int32_t OsalApp_regIntrNegativeTest(void)
 {
     OsalRegisterIntrParams_t    *intrPrms = NULL_PTR;
-    HwiP_Handle                 hwiPHandlePtr, hwiPDirectHandlePtr;
+    HwiP_Handle                 hwiPHandlePtr = NULL, hwiPDirectHandlePtr = NULL;
     int32_t                     result = osal_OK;
 
     Osal_RegisterInterrupt_initParams(intrPrms);
 
     intrPrms->corepacConfig.isrRoutine      = NULL_PTR;
-    intrPrms->corepacConfig.corepacEventNum = 1U;
-    intrPrms->corepacConfig.intVecNum       = 64U;
+    intrPrms->corepacConfig.intVecNum       = OSAL_INT_NUM_2;
     intrPrms->corepacConfig.priority        = 0U;
     intrPrms->corepacConfig.enableIntr      = 0U;
 
-    if(OSAL_INT_SUCCESS == Osal_RegisterInterrupt(intrPrms, &hwiPHandlePtr))
+    if(OSAL_INT_ERR_INVALID_PARAMS != Osal_RegisterInterrupt(intrPrms, &hwiPHandlePtr))
     {
         result = osal_FAILURE;
     }
-    if(OSAL_INT_SUCCESS == Osal_RegisterInterruptDirect(intrPrms, (HwiP_DirectFxn)OsalApp_regIntrISR, &hwiPDirectHandlePtr))
+    if(OSAL_INT_ERR_INVALID_PARAMS != Osal_RegisterInterruptDirect(intrPrms, (HwiP_DirectFxn)OsalApp_regIntrISR, &hwiPDirectHandlePtr))
     {
         result = osal_FAILURE;
     }
-    if(osal_OK == result)
+    if((osal_OK != result) || (NULL_PTR != hwiPHandlePtr))
     {
-        if(NULL_PTR != hwiPHandlePtr)
+        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr,intrPrms->corepacConfig.intVecNum))
         {
-            if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr,intrPrms->corepacConfig.corepacEventNum))
-            {
-                result = osal_FAILURE;
-            }
+            result = osal_FAILURE;
         }
         if(NULL_PTR != hwiPDirectHandlePtr)
         {
-            if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr,intrPrms->corepacConfig.corepacEventNum))
+            if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr,intrPrms->corepacConfig.intVecNum))
             {
                 result = osal_FAILURE;
             }
@@ -228,8 +222,8 @@ static int32_t OsalApp_regIntrNegativeTest(void)
 int32_t OsalApp_registerIntrTests(void)
 {
     int32_t result = osal_OK;
-#if defined(BUILD_MCU)
     result += OsalApp_regIntrNullTest();
+#if defined(BUILD_MCU)
     result += OsalApp_regIntrPositiveTest();
 #elif defined(BUILD_C7X)
     result += OsalApp_regIntrNegativeTest();
