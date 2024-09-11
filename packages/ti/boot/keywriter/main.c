@@ -7,7 +7,7 @@
  */
 
 /*
- * Copyright (C) 2020-2022 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2020-2024 Texas Instruments Incorporated - http://www.ti.com/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -53,6 +53,125 @@ Sciclient_BoardCfgPrms_t sblBoardCfgPrms = {0};
 Sciclient_BoardCfgPrms_t sblBoardCfgPmPrms = {0};
 Sciclient_BoardCfgPrms_t sblBoardCfgSecPrms = {0};
 
+#if defined(SBL_COMBINED_BOOT)
+static void OTP_sciClientCombinedBootInit(void)
+{
+    int32_t status = CSL_EFAIL;
+    UART_HwAttrs uart_cfg;
+
+    /* SYSFW board configurations */
+    Sciclient_DefaultBoardCfgInfo_t boardCfgInfo;
+    Sciclient_ConfigPrms_t config;
+    Sciclient_configPrmsInit(&config);
+    config.opModeFlag               =   SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
+    config.pBoardCfgPrms            =   NULL;
+    config.isSecureMode             =   0;
+    config.c66xRatRegion            =   0;
+    config.skipLocalBoardCfgProcess =   1;
+    
+    status = Sciclient_bootNotification();
+    if (status != CSL_PASS)
+    {
+        UART_printf("Sciclient_bootNotification ...FAILED \n");
+        KeywrErrLoop(__FILE__, __LINE__);
+    }
+    
+    /* Use snapshot of sciclient boardconfigs */
+    boardCfgInfo.boardCfgLow        = &gKeywr_boardCfgLow[0U];
+    boardCfgInfo.boardCfgLowRm      = &gKeywr_boardCfgLow_rm[0U];
+    boardCfgInfo.boardCfgLowSec     = &gKeywr_boardCfgLow_sec[0U];
+    boardCfgInfo.boardCfgLowPm      = &gKeywr_boardCfgLow_pm[0U];
+    boardCfgInfo.boardCfgLowSize    = KEYWR_BOARDCFG_SIZE_IN_BYTES;
+    boardCfgInfo.boardCfgLowRmSize  = KEYWR_BOARDCFG_RM_SIZE_IN_BYTES;
+    boardCfgInfo.boardCfgLowSecSize = KEYWR_BOARDCFG_SECURITY_SIZE_IN_BYTES;
+    boardCfgInfo.boardCfgLowPmSize  = KEYWR_BOARDCFG_PM_SIZE_IN_BYTES;
+
+    status = Sciclient_init(&config);
+    if (status != CSL_PASS)
+    {
+        UART_printf("Sciclient init ...FAILED \n");
+        KeywrErrLoop(__FILE__, __LINE__);
+    }
+    
+    sblBoardCfgPrms.boardConfigLow  = (uint32_t)boardCfgInfo.boardCfgLow;
+    sblBoardCfgPrms.boardConfigHigh = 0U;
+    sblBoardCfgPrms.boardConfigSize = boardCfgInfo.boardCfgLowSize;
+    sblBoardCfgPrms.devGrp = DEVGRP_ALL;
+    status = Sciclient_boardCfg(&sblBoardCfgPrms);
+
+    if (CSL_PASS != status)
+    {
+        UART_printf("Sciclient board config ...FAILED \n");
+        KeywrErrLoop(__FILE__, __LINE__);
+    }
+
+    UART_stdioDeInit();
+
+    sblBoardCfgPmPrms.boardConfigLow  = (uint32_t)boardCfgInfo.boardCfgLowPm;
+    sblBoardCfgPmPrms.boardConfigHigh = 0U;
+    sblBoardCfgPmPrms.boardConfigSize = boardCfgInfo.boardCfgLowPmSize;
+    sblBoardCfgPmPrms.devGrp = DEVGRP_ALL;
+    status = Sciclient_boardCfgPm(&sblBoardCfgPmPrms);
+
+    if (CSL_PASS != status)
+    {
+        /* Sciclient board config pm..FAILS */
+        KeywrErrLoop(__FILE__, __LINE__);
+    }
+
+    /* Re-init UART for logging */
+    UART_socGetInitCfg(KEYWRITER_BOARD_UART_INSTANCE, &uart_cfg);
+    uart_cfg.frequency = SBL_SYSFW_UART_MODULE_INPUT_CLK;
+    UART_socSetInitCfg(KEYWRITER_BOARD_UART_INSTANCE, &uart_cfg);
+    UART_stdioInit(KEYWRITER_BOARD_UART_INSTANCE);
+
+    sblBoardCfgSecPrms.boardConfigLow  = (uint32_t)boardCfgInfo.boardCfgLowSec;
+    sblBoardCfgSecPrms.boardConfigHigh = 0U;
+    sblBoardCfgSecPrms.boardConfigSize = boardCfgInfo.boardCfgLowSecSize;
+    sblBoardCfgSecPrms.devGrp = DEVGRP_ALL;
+    status = Sciclient_boardCfgSec(&sblBoardCfgSecPrms);
+
+    if (CSL_PASS != status)
+    {
+        UART_printf("Sciclient board config sec...FAILED \n");
+        KeywrErrLoop(__FILE__, __LINE__);
+    }
+
+    /* Skipping board cfg RM, since it is not included in keywriter firmware */
+    /* Print System Firmware Version Information */
+    struct tisci_msg_version_req req     = {0};
+    const Sciclient_ReqPrm_t      reqPrm = {
+        TISCI_MSG_VERSION,
+        TISCI_MSG_FLAG_AOP,
+        (const uint8_t *)&req,
+        sizeof(req),
+        SCICLIENT_SERVICE_WAIT_FOREVER
+    };
+
+    struct tisci_msg_version_resp response;
+    Sciclient_RespPrm_t           respPrm = {
+        0,
+        (uint8_t *)&response,
+        (uint32_t)sizeof(response)
+    };
+
+    status = Sciclient_service(&reqPrm, &respPrm);
+
+    if (CSL_PASS == status)
+    {
+        if ((uint32_t)TISCI_MSG_FLAG_ACK == respPrm.flags)
+        {
+            UART_printf("\n OTP Keywriter ver: %s\n", (char *)response.str);
+        }
+        else
+        {
+            UART_printf(" OTP Keywriter Get Version failed \n");
+            KeywrErrLoop(__FILE__, __LINE__);
+        }
+    }
+
+}
+#else
 static void OTP_SciClientInit(void)
 {
     int32_t status  = CSL_EFAIL;
@@ -173,6 +292,7 @@ static void OTP_SciClientInit(void)
         }
     }
 }
+#endif
 
 static void mmr_unlock(uint32_t base, uint32_t partition)
 {
@@ -204,7 +324,14 @@ int main()
     UART_stdioInit(KEYWRITER_BOARD_UART_INSTANCE);
 
     UART_printf("%s (%s - %s)\n", OTP_VERSION_STR, __DATE__, __TIME__);
+
+#if defined(SBL_COMBINED_BOOT)
+    OTP_sciClientCombinedBootInit();
+    UART_printf("Combined Boot Mode\n");
+#else
     OTP_SciClientInit();
+    UART_printf("Legacy Boot Mode\n");
+#endif
 
     OTP_VppEn();
 
