@@ -200,7 +200,7 @@ __attribute__((section(".startupCode")))  void _system_post_cinit( void )
     CSL_armR5GetCpuID(&info);
 
 #if defined(CSL_MAIN_DOMAIN_VIM_BASE_ADDR0) && defined(CSL_MAIN_DOMAIN_VIM_BASE_ADDR1)
-    if (CSL_ARM_R5_CLUSTER_GROUP_ID_0 == info.grpId)
+    if(CSL_ARM_R5_CLUSTER_GROUP_ID_0 == info.grpId)
     {
         /* MCU SS Pulsar R5 SS */
         regAddr = (CSL_ARM_R5_CPU_ID_0 == info.cpuID)?
@@ -244,7 +244,7 @@ __attribute__((section(".startupCode")))  void _system_post_cinit( void )
 
     /* Disable/Clear pending Interrupts in VIM before enabling CPU Interrupts */
     /* This is done to prevent serving any bogus interrupt */
-    for (loopCnt = 0U ; loopCnt < maxIntrs; loopCnt++)
+    for(loopCnt = 0U ; loopCnt < maxIntrs; loopCnt++)
     {
         /* Disable interrupt in vim */
         CSL_vimSetIntrEnable((CSL_vimRegs *)(uintptr_t)regAddr,
@@ -314,7 +314,7 @@ portBaseType prvSetupHardware( void )
     CSL_ArmR5CPUInfo info = {0};
     CSL_armR5GetCpuID(&info);
 
-    if (CSL_ARM_R5_CLUSTER_GROUP_ID_0 != info.grpId)
+    if(CSL_ARM_R5_CLUSTER_GROUP_ID_0 != info.grpId)
     {
         Sciclient_ConfigPrms_t config;
 
@@ -337,13 +337,13 @@ portBaseType prvSetupHardware( void )
             }
         }
     }
-    if ( CSL_PASS == sciclientRet )
+    if( CSL_PASS == sciclientRet )
     {
-	    xStatus = pdPASS;
+	     xStatus = pdPASS;
     }
     else
     {
-	    xStatus = pdFAIL;
+	     xStatus = pdFAIL;
     }
 #endif
 

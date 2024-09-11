@@ -60,6 +60,7 @@ extern "C" {
 #endif
 
 #include <ti/csl/tistdtypes.h>
+#include <ti/board/board.h>
 #include <ti/osal/TaskP.h>
 #include <ti/osal/HwiP.h>
 #include <ti/osal/MuxIntcP.h>

@@ -85,7 +85,7 @@ void vUndefAbort_c(void)
     else
     {
         /* Go into an infinite loop.*/
-        volatile uint32_t loop = 1;
+        volatile uint32_t loop = 1U;
         while(1U == loop)
         {
 
@@ -106,7 +106,7 @@ void vPrefetchAbort_c(void)
     else
     {
         /* Go into an infinite loop.*/
-        volatile uint32_t loop = 1;
+        volatile uint32_t loop = 1U;
         while(1U == loop)
         {
 
@@ -125,14 +125,14 @@ void vDataAbort_c(void)
 {
     gCurrentProcessorState = CSL_ARM_R5_ABORT_MODE;
     /* Call registered call back */
-    if ((exptnHandlerPtr)NULL != gExptnHandlers.dabtExptnHandler)
+    if((exptnHandlerPtr)NULL != gExptnHandlers.dabtExptnHandler)
     {
         gExptnHandlers.dabtExptnHandler(gExptnHandlers.dabtExptnHandlerArgs);
     }
     else
     {
         /* Go into an infinite loop.*/
-        volatile uint32_t loop = 1;
+        volatile uint32_t loop = 1U;
         while(1U == loop)
         {
 

@@ -87,7 +87,7 @@ static void TaskP_Function ( void *arg )
     /* Task Fxn completed execution. */
     handle->terminated = BTRUE;
     /* Put vTaskSuspend in a loop just in case some calls vTaskResume, it will go back to suspend. */
-    while ((bool)true)
+    while (BTRUE)
     {
         xTaskSuspend(NULL);
     }
@@ -122,9 +122,9 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
 
     key = HwiP_disable(  );
 
-     for ( i = 0U; i < maxTasks; i++ )
+     for( i = 0U; i < maxTasks; i++ )
      {
-         if ( BFALSE == taskPool[i].used )
+         if( BFALSE == taskPool[i].used )
          {
              taskPool[i].used = BTRUE;
              /* Update statistics */
@@ -138,13 +138,13 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
      }
     HwiP_restore( key );
 
-    if ( i < maxTasks )
+    if( i < maxTasks )
     {
         /* Grab the memory */
         handle = ( TaskP_SafeRTOS * ) &taskPool[i];
     }
 
-    if ( NULL_PTR == handle ) {
+    if( NULL_PTR == handle ) {
         ret_handle = NULL_PTR;
     }
     else
@@ -210,7 +210,7 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
             key = HwiP_disable(  );
             handle->used = BFALSE;
             /* Found the osal task object to delete */
-            if ( 0U < gOsalTaskAllocCnt )
+            if( 0U < gOsalTaskAllocCnt )
             {
                 gOsalTaskAllocCnt--;
             }
@@ -345,14 +345,14 @@ TaskP_Handle TaskP_self( void )
     uint32_t        i, maxTasks;
 
     taskHndl = xTaskGetCurrentTaskHandle();
-    if (NULL_PTR != taskHndl)
+    if(NULL_PTR != taskHndl)
     {
         /* Now get the corresponding TaskP Handle */
         maxTasks        = OSAL_SAFERTOS_CONFIGNUM_TASK;
-        for (i = 0U; i < maxTasks; i++)
+        for(i = 0U; i < maxTasks; i++)
         {
-            if ((BTRUE == gOsalTaskPSafeRTOSPool[i].used) &&
-                (gOsalTaskPSafeRTOSPool[i].taskHndl == taskHndl))
+            if((BTRUE == gOsalTaskPSafeRTOSPool[i].used) &&
+               (gOsalTaskPSafeRTOSPool[i].taskHndl == taskHndl))
             {
                 retHandle = (TaskP_Handle) (&gOsalTaskPSafeRTOSPool[i]);
                 break;
@@ -411,7 +411,7 @@ uint32_t TaskP_getTaskStackHighWatermark(TaskP_Handle handle)
 
     /* SafeRTOS doesn't support this functionality, return 0 */
 
-    return (0);
+    return (0U);
 }
 
 void OS_start(void)

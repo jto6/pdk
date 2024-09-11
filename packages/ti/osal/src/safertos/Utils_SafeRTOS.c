@@ -60,7 +60,7 @@ uint32_t  gOsalSemAllocCnt   = 0U, gOsalSemPeak = 0U;
 uint32_t  gOsalTimerAllocCnt = 0U, gOsalTimerPeak = 0U;
 uint32_t  gOsalHwiAllocCnt   = 0U, gOsalHwiPeak = 0U;
 uint32_t  gOsalMutexAllocCnt = 0U, gOsalMutexPeak = 0U;
-uint32_t  gOsalHeapAllocCnt   = 0U, gOsalHeapPeak = 0U;
+uint32_t  gOsalHeapAllocCnt  = 0U, gOsalHeapPeak = 0U;
 #ifndef OSAL_CPU_FREQ_KHZ_DEFAULT
 #define OSAL_CPU_FREQ_KHZ_DEFAULT ( 400000U )
 #endif
@@ -119,7 +119,7 @@ void Osal_DebugP_assert( int32_t expression, const char *file, int32_t line )
     ( void )file;
     ( void )line;
 
-    if ( 0 != expression ) {
+    if( 0 != expression ) {
         while ( BTRUE == Osal_DebugP_Assert_Val ) {}
     }
 }
@@ -132,7 +132,7 @@ Osal_ThreadType Osal_getThreadType( void )
         osalThreadType = Osal_ThreadType_Hwi;
     }
 #if defined (BUILD_MCU)
-    else if (BTRUE == Osal_isInAbortContext())
+    else if(BTRUE == Osal_isInAbortContext())
     {
         osalThreadType = Osal_ThreadType_Abort;
     }
@@ -155,7 +155,7 @@ int32_t Osal_delay( uint32_t nTicks )
   int32_t   ret;
 
   type = Osal_getThreadType(  );
-  if ( Osal_ThreadType_Task == type ) {
+  if( Osal_ThreadType_Task == type ) {
     TaskP_sleep( nTicks );
     ret = osal_OK;
   }
@@ -171,36 +171,31 @@ int32_t Osal_delay( uint32_t nTicks )
 int32_t Osal_setHwAttrs( uint32_t ctrlBitMap, const Osal_HwAttrs *hwAttrs )
 {
    int32_t  ret = osal_FAILURE;
-   if ( NULL_PTR != hwAttrs ) {
-     if ( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_EXT_CLK ) ) {
+   if( NULL_PTR != hwAttrs ) {
+     if( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_EXT_CLK ) ) {
        gOsal_HwAttrs.extClkKHz= hwAttrs->extClkKHz;
        ret = osal_OK;
      }
 #ifdef _TMS320C6X
      /* Set the Event Combiner Interrupts */
-     if ( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_ECM_INT ) ) {
+     if( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_ECM_INT ) ) {
        ( void )memcpy( gOsal_HwAttrs.ECM_intNum,hwAttrs->ECM_intNum,4U*sizeof( gOsal_HwAttrs.ECM_intNum[0] ) );
        ret = osal_OK;
      }
 #endif
      /* Set the Hw Access type */
-     if ( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_HWACCESS_TYPE ) ) {
+     if( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_HWACCESS_TYPE ) ) {
        gOsal_HwAttrs.hwAccessType = hwAttrs->hwAccessType;
        ret = osal_OK;
      }
 
      /* Set the Hw Access type */
-     if ( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_OSALDELAY_TIMER_BASE ) ) {
-#if  defined( SOC_AM437x )|| defined ( SOC_AM335x )
-       gOsal_HwAttrs.osalDelayTimerBaseAddr = hwAttrs->osalDelayTimerBaseAddr;
-       ret = osal_OK;
-#else
+     if( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_OSALDELAY_TIMER_BASE ) ) {
        ret = osal_UNSUPPORTED;
-#endif
      }
 
      /* Set the extended memmory block for semaphore operations */
-     if ( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_SEMP_EXT_BASE ) )
+     if( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_SEMP_EXT_BASE ) )
      {
          gOsal_HwAttrs.extSemaphorePBlock = hwAttrs->extSemaphorePBlock;
          /* Zero out the given memory block */
@@ -209,7 +204,7 @@ int32_t Osal_setHwAttrs( uint32_t ctrlBitMap, const Osal_HwAttrs *hwAttrs )
      }
 
      /* Set the extended memmory block for semaphore operations */
-     if ( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_HWIP_EXT_BASE ) )
+     if( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_HWIP_EXT_BASE ) )
      {
          gOsal_HwAttrs.extHwiPBlock = hwAttrs->extHwiPBlock;
          /* Zero out the given memory block */
@@ -217,7 +212,7 @@ int32_t Osal_setHwAttrs( uint32_t ctrlBitMap, const Osal_HwAttrs *hwAttrs )
          ret = osal_OK;
      }
      /* Set the CPU frequency */
-     if ( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_CPU_FREQ ) )
+     if( 0U != ( ctrlBitMap & OSAL_HWATTR_SET_CPU_FREQ ) )
      {
          gOsal_HwAttrs.cpuFreqKHz = hwAttrs->cpuFreqKHz;
          ret = osal_OK;
@@ -232,7 +227,7 @@ int32_t Osal_setHwAttrs( uint32_t ctrlBitMap, const Osal_HwAttrs *hwAttrs )
 int32_t Osal_getHwAttrs(  Osal_HwAttrs *hwAttrs )
 {
    int32_t  ret = osal_FAILURE;
-   if ( NULL_PTR != hwAttrs ) {
+   if( NULL_PTR != hwAttrs ) {
      ( void )memcpy( hwAttrs, &gOsal_HwAttrs, sizeof( Osal_HwAttrs ) );
      ret = osal_OK;
    }
@@ -244,7 +239,7 @@ int32_t Osal_getStaticMemStatus( Osal_StaticMemStatus *pMemStat )
     int32_t   retVal = osal_OK;
     uintptr_t cookie;
 
-    if ( NULL_PTR != pMemStat )
+    if( NULL_PTR != pMemStat )
     {
         cookie = HwiP_disable(  );
 
@@ -291,7 +286,7 @@ int32_t Osal_isInISRContext(void)
     bool spStartBfrISRend  = (end >= sp);
     bool spStartAftISRstrt = (start <= sp);
     
-    if (spStartAftISRstrt && spStartBfrISRend)
+    if(spStartAftISRstrt && spStartBfrISRend)
     {
         retVal = 1;
     }

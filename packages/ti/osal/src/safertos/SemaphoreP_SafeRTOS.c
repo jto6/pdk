@@ -72,7 +72,7 @@ SemaphoreP_Handle SemaphoreP_create( uint32_t count,
     /* Check if user has specified any memory block to be used, which gets
      * the precedence over the internal static memory block
      */
-    if ( (uintptr_t)0U != gOsal_HwAttrs.extSemaphorePBlock.base )
+    if( (uintptr_t)0U != gOsal_HwAttrs.extSemaphorePBlock.base )
     {
         /* pick up the external memory block configured */
         semPool        = ( SemaphoreP_safertos * ) gOsal_HwAttrs.extSemaphorePBlock.base;
@@ -93,14 +93,14 @@ SemaphoreP_Handle SemaphoreP_create( uint32_t count,
 
     key = HwiP_disable(  );
 
-     for ( i = 0U; i < maxSemaphores; i++ )
+     for( i = 0U; i < maxSemaphores; i++ )
      {
-         if ( BFALSE == semPool[i].used )
+         if( BFALSE == semPool[i].used )
          {
              semPool[i].used = BTRUE;
              /* Update statistics */
              gOsalSemAllocCnt++;
-             if ( gOsalSemAllocCnt > gOsalSemPeak )
+             if( gOsalSemAllocCnt > gOsalSemPeak )
              {
                  gOsalSemPeak = gOsalSemAllocCnt;
              }
@@ -109,18 +109,18 @@ SemaphoreP_Handle SemaphoreP_create( uint32_t count,
      }
      HwiP_restore( key );
 
-    if ( i < maxSemaphores )
+    if( i < maxSemaphores )
     {
         /* Grab the memory */
         handle = ( SemaphoreP_safertos * ) &semPool[i];
     }
 
-    if ( NULL_PTR == handle ) {
+    if( NULL_PTR == handle ) {
         ret_handle = NULL_PTR;
     }
     else
     {
-        if ( NULL_PTR == params )
+        if( NULL_PTR == params )
         {
             SemaphoreP_Params semParam;
             SemaphoreP_Params_init( &semParam );
@@ -128,7 +128,7 @@ SemaphoreP_Handle SemaphoreP_create( uint32_t count,
         }
         else
         {
-            if ( SemaphoreP_Mode_BINARY == params->mode )
+            if( SemaphoreP_Mode_BINARY == params->mode )
             {
                 retVal = SemaphoreP_constructBinary( handle, count );
             }
@@ -139,12 +139,12 @@ SemaphoreP_Handle SemaphoreP_create( uint32_t count,
         }
 
         /* If there was an error reset the sem object and return NULL. */
-        if ( SemaphoreP_OK != retVal )
+        if( SemaphoreP_OK != retVal )
         {
             key = HwiP_disable(  );
             handle->used = BFALSE;
             /* Found the osal semaphore object to delete */
-            if ( 0U < gOsalSemAllocCnt )
+            if( 0U < gOsalSemAllocCnt )
             {
                 gOsalSemAllocCnt--;
             }
@@ -163,7 +163,7 @@ static int32_t SemaphoreP_constructBinary( SemaphoreP_safertos *handle, uint32_t
 {
     int32_t status;
 
-    if ((NULL == handle) || (initCount > 1U))
+    if((NULL == handle) || (1U < initCount))
     {
         status = SemaphoreP_FAILURE;
     }
@@ -234,7 +234,7 @@ SemaphoreP_Status SemaphoreP_delete( SemaphoreP_Handle handle )
         key = HwiP_disable(  );
         semaphore->used = BFALSE;
         /* Found the osal semaphore object to delete */
-        if ( 0U < gOsalSemAllocCnt )
+        if( 0U < gOsalSemAllocCnt )
         {
             gOsalSemAllocCnt--;
         }

@@ -42,7 +42,6 @@
 /*                             Includes                                      */
 /*===========================================================================*/
 
-#include <ti/board/board.h>
 #include <ti/osal/DebugP.h>
 #include <ti/osal/TaskP.h>
 #include <ti/osal/osal.h>
@@ -172,7 +171,7 @@ static Board_STATUS OsalApp_boardInit(void)
     return Board_init(BOARD_INIT_PINMUX_CONFIG | BOARD_INIT_UART_STDIO);
 }
 
-static void OsalApp_generateException()
+static void OsalApp_generateException(void)
 {
     volatile uint32_t *myBadAddr;
 #if defined (BUILD_MCU)
@@ -231,6 +230,7 @@ void osal_test(void *arg0, void *arg1)
     if(CSL_PASS == status)
     {
         DebugP_registerExcptnLogFxn(OSAL_log);
+        
 #if defined LDRA_DYN_COVERAGE_EXIT
         OSAL_log("\n LDRA ENTRY... \n");
         upload_execution_history();

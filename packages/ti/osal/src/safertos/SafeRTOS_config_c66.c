@@ -203,9 +203,9 @@ void vApplicationInterruptHandlerHook( portUInt32Type ulInterruptVectorNum )
     CSL_intcCpuIntrTable.currentVectId = ( Uint32 )pxDispatchAddress;
     pxIntDispatchFn = * ( ( vInterruptDispatchFn **  ) pxDispatchAddress );
 
-    for ( uxDispatchIndex = 0;uxDispatchIndex < uxIntDispatchTableSize; uxDispatchIndex++ )
+    for( uxDispatchIndex = 0;uxDispatchIndex < uxIntDispatchTableSize; uxDispatchIndex++ )
     {
-        if ( axIntDispatchTable[ uxDispatchIndex ].pxIntHandlerFn == pxIntDispatchFn )
+        if( axIntDispatchTable[ uxDispatchIndex ].pxIntHandlerFn == pxIntDispatchFn )
         {
             break;
         }
@@ -230,7 +230,7 @@ static portBaseType prvC66xTickInterruptConfig( void )
     rmIrqReq.valid_params           = TISCI_MSG_VALUE_RM_DST_ID_VALID |
                                       TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.src_index              = 0U;
-    if (0U == CSL_chipReadDNUM())
+    if(0U == CSL_chipReadDNUM())
     {
         rmIrqReq.src_id                 = TISCI_DEV_TIMER0;
         rmIrqReq.dst_id                 = TISCI_DEV_C66SS0_CORE0;

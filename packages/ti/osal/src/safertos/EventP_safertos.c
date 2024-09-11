@@ -88,14 +88,14 @@ EventP_Handle EventP_create(EventP_Params *params)
 
     key = HwiP_disable();
 
-     for (i = 0; i < maxEvent; i++)
+     for(i = 0; i < maxEvent; i++)
      {
-         if (BFALSE == eventPool[i].used)
+         if(BFALSE == eventPool[i].used)
          {
              eventPool[i].used = BTRUE;
              /* Update statistics */
              gOsalEventAllocCnt++;
-             if (gOsalEventAllocCnt > gOsalEventPeak)
+             if(gOsalEventAllocCnt > gOsalEventPeak)
              {
                  gOsalEventPeak = gOsalEventAllocCnt;
              }
@@ -104,13 +104,13 @@ EventP_Handle EventP_create(EventP_Params *params)
      }
     HwiP_restore(key);
 
-    if (i < maxEvent)
+    if(i < maxEvent)
     {
         /* Grab the memory */
         handle = (EventP_safertos *) &eventPool[i];
     }
 
-    if (NULL_PTR == handle) {
+    if(NULL_PTR == handle) {
         ret_handle = NULL_PTR;
     }
     else
@@ -126,7 +126,7 @@ EventP_Handle EventP_create(EventP_Params *params)
             key = HwiP_disable();
             handle->used = BFALSE;
             /* Found the osal event object to delete */
-            if (0U < gOsalEventAllocCnt)
+            if(0U < gOsalEventAllocCnt)
             {
                 gOsalEventAllocCnt--;
             }
@@ -157,7 +157,7 @@ EventP_Status EventP_delete(EventP_Handle *handle)
             key = HwiP_disable();
             event->used = BFALSE;
             /* Found the osal event object to delete */
-            if (0U < gOsalEventAllocCnt)
+            if(0U < gOsalEventAllocCnt)
             {
                 gOsalEventAllocCnt--;
             }
@@ -228,7 +228,7 @@ EventP_Status EventP_post(EventP_Handle handle, uint32_t eventMask)
     
     if((NULL_PTR != event) && (BTRUE == event->used))
     {
-        if( 1 == Osal_isInISRContext() )
+        if(1 == Osal_isInISRContext())
         {
             xCreateResult  = xEventGroupSetBitsFromISR(event->eventHndl,
                                                  (eventBitsType)eventMask);
@@ -275,7 +275,7 @@ uint32_t EventP_getPostedEvents(EventP_Handle handle)
     
     if((NULL_PTR != event) && (BTRUE == event->used))
     {
-        if( 1 == Osal_isInISRContext() )
+        if(1 == Osal_isInISRContext())
         {
             xCreateResult = xEventGroupGetBitsFromISR(event->eventHndl, (eventBitsType *)&eventBitsGet);
             if(pdPASS != xCreateResult)

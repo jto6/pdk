@@ -198,7 +198,7 @@ static void prvMmuInit( bool isSecure )
     Mmu_initMapAttrs( &attrs );
     attrs.attrIndx = Mmu_AttrIndx_MAIR0;
 
-    if( BTRUE == isSecure )
+    if(BTRUE == isSecure)
     {
         attrs.ns = BFALSE;
     }

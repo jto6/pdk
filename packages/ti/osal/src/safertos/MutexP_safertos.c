@@ -65,7 +65,7 @@ MutexP_Handle MutexP_create(MutexP_Object *mutexObj)
     uint32_t maxMutex;
     portBaseType xCreateResult;
 
-    if (NULL == mutexObj)
+    if(NULL == mutexObj)
     {
         ret_handle = NULL;
     }
@@ -83,14 +83,14 @@ MutexP_Handle MutexP_create(MutexP_Object *mutexObj)
 
         key = HwiP_disable();
 
-        for (i = 0U; i < maxMutex; i++)
+        for(i = 0U; i < maxMutex; i++)
         {
-            if (BFALSE == mutexPool[i].used)
+            if(BFALSE == mutexPool[i].used)
             {
                 mutexPool[i].used = BTRUE;
                 /* Update statistics */
                 gOsalMutexAllocCnt++;
-                if (gOsalMutexAllocCnt > gOsalMutexPeak)
+                if(gOsalMutexAllocCnt > gOsalMutexPeak)
                 {
                     gOsalMutexPeak = gOsalMutexAllocCnt;
                 }
@@ -99,13 +99,13 @@ MutexP_Handle MutexP_create(MutexP_Object *mutexObj)
         }
         HwiP_restore(key);
 
-        if (i < maxMutex)
+        if(i < maxMutex)
         {
             /* Grab the memory */
             handle = (MutexP_safertos *) &mutexPool[i];
         }
 
-      if (NULL_PTR == handle) {
+      if(NULL_PTR == handle) {
           ret_handle = NULL_PTR;
       }
       else
@@ -113,13 +113,13 @@ MutexP_Handle MutexP_create(MutexP_Object *mutexObj)
           handle->isRecursiveMutex = 1U;
           xCreateResult = xMutexCreate((portInt8Type *)&(handle->mutObj[0]), &handle->mutHndl);
 
-          if (pdPASS != xCreateResult)
+          if(pdPASS != xCreateResult)
           {
               /* If there was an error reset the mutex object and return NULL. */
               key = HwiP_disable();
               handle->used = BFALSE;
               /* Found the osal task object to delete */
-              if (0U < gOsalMutexAllocCnt)
+              if(0U < gOsalMutexAllocCnt)
               {
                   gOsalMutexAllocCnt--;
               }
@@ -148,14 +148,14 @@ MutexP_Status MutexP_delete(MutexP_Handle handle)
      * NOTE : Mutex delete is not supported in safertos.
      * We just memset and return success.
      */
-    if ((NULL != handle) && (NULL_PTR != mutex) && (BTRUE == mutex->used))
+    if((NULL != handle) && (NULL_PTR != mutex) && (BTRUE == mutex->used))
     {
         memset(&mutex->mutObj, 0, sizeof(mutex->mutObj));
         mutex->mutHndl = NULL;
         key = HwiP_disable(  );
         mutex->used = BFALSE;
         /* decrement the count */
-        if (0U < gOsalMutexAllocCnt)
+        if(0U < gOsalMutexAllocCnt)
         {
             gOsalMutexAllocCnt--;
         }
@@ -179,11 +179,11 @@ MutexP_Status MutexP_lock(MutexP_Handle handle,
     portBaseType xCreateResult;
 
     /* TODO check why this mutex->isRecursiveMutex needed, may be removed */
-    if ((NULL != handle) && (NULL_PTR != mutex) && (BTRUE == mutex->used) && (1U == mutex->isRecursiveMutex))
+    if((NULL != handle) && (NULL_PTR != mutex) && (BTRUE == mutex->used) && (1U == mutex->isRecursiveMutex))
     {
-        if ( 0 == Osal_isInISRContext() )
+        if(0 == Osal_isInISRContext())
         {
-            if (MutexP_WAIT_FOREVER == timeout)
+            if(MutexP_WAIT_FOREVER == timeout)
             {
                 /* Should not be called from ISR */
                 xCreateResult = xMutexTake(mutex->mutHndl, safertosapiMAX_DELAY);
@@ -223,9 +223,9 @@ MutexP_Status MutexP_unlock(MutexP_Handle handle)
     portBaseType xCreateResult;
     /* Note: timeout is not use */
 
-    if ((NULL != handle) && (NULL_PTR != mutex) && (BTRUE == mutex->used) && (1U == mutex->isRecursiveMutex))
+    if((NULL != handle) && (NULL_PTR != mutex) && (BTRUE == mutex->used) && (1U == mutex->isRecursiveMutex))
     {
-        if ( 0 == Osal_isInISRContext() )
+        if(0 == Osal_isInISRContext())
         {
             /* Should not be called from ISR */
             xCreateResult = xMutexGive(mutex->mutHndl);

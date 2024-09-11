@@ -178,7 +178,7 @@ void OS_init( void )
 
     xInitSchedResult = prvSetupHardware();
 
-    if (pdPASS == xInitSchedResult)
+    if(pdPASS == xInitSchedResult)
     {
         /* Initialise the kernel by passing in a pointer to the xPORT_INIT_PARAMETERS structure
         * and return the resulting error code. */
@@ -249,7 +249,7 @@ void vApplicationSetupTickInterruptHook( portUInt32Type ulTimerClockHz,
 void prvGetOSTimerParams( Safertos_OSTimerParams *params)
 {
 #if defined (BUILD_C66X)
-    if (0U == CSL_chipReadDNUM())
+    if(0U == CSL_chipReadDNUM())
     {   
         params->timerId = OSAL_SAFERTOS_OS_TIMER_ID_C66X_1;
         params->eventId = OSAL_SAFERTOS_OS_TIMER_EVENT_ID_C66X_1;
@@ -266,20 +266,20 @@ void prvGetOSTimerParams( Safertos_OSTimerParams *params)
     CSL_ArmR5CPUInfo info = {0};
 
     CSL_armR5GetCpuID(&info);
-    if (CSL_ARM_R5_CLUSTER_GROUP_ID_0 == info.grpId)
+    if(CSL_ARM_R5_CLUSTER_GROUP_ID_0 == info.grpId)
     {
         params->timerId = (CSL_ARM_R5_CPU_ID_0 == info.cpuID)?
                                     OSAL_SAFERTOS_OS_TIMER_ID_MCU1_0:
                                         OSAL_SAFERTOS_OS_TIMER_ID_MCU1_1;
     }
-    else if (CSL_ARM_R5_CLUSTER_GROUP_ID_1 == info.grpId)
+    else if(CSL_ARM_R5_CLUSTER_GROUP_ID_1 == info.grpId)
     {     
         params->timerId = (CSL_ARM_R5_CPU_ID_0 == info.cpuID)?
                                     OSAL_SAFERTOS_OS_TIMER_ID_MCU2_0:
                                         OSAL_SAFERTOS_OS_TIMER_ID_MCU2_1;
     }
 #if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4)
-    else if (CSL_ARM_R5_CLUSTER_GROUP_ID_2 == info.grpId)
+    else if(CSL_ARM_R5_CLUSTER_GROUP_ID_2 == info.grpId)
     {    
         params->timerId = (CSL_ARM_R5_CPU_ID_0 == info.cpuID)?
                                     OSAL_SAFERTOS_OS_TIMER_ID_MCU3_0:
@@ -287,7 +287,7 @@ void prvGetOSTimerParams( Safertos_OSTimerParams *params)
     }
 #endif
 #if defined (SOC_J784S4)
-    else if (CSL_ARM_R5_CLUSTER_GROUP_ID_3 == info.grpId)
+    else if(CSL_ARM_R5_CLUSTER_GROUP_ID_3 == info.grpId)
     {    
         params->timerId = (CSL_ARM_R5_CPU_ID_0 == info.cpuID)?
                                     OSAL_SAFERTOS_OS_TIMER_ID_MCU4_0:
@@ -301,14 +301,14 @@ void prvGetOSTimerParams( Safertos_OSTimerParams *params)
 #elif defined (BUILD_C7X)
     uint32_t rtMapCpuId;
     rtMapCpuId = CSL_clecGetC7xRtmapCpuId();
-    if (CSL_CLEC_RTMAP_CPU_4 == rtMapCpuId)
+    if(CSL_CLEC_RTMAP_CPU_4 == rtMapCpuId)
     {
         params->timerId = OSAL_SAFERTOS_OS_TIMER_ID_C7X_1;
         params->intNum  = OSAL_SAFERTOS_OS_TIMER_INT_NUM_C7X_1;
         params->eventId = TimerP_USE_DEFAULT;
     }
 #if defined (SOC_J721S2) || defined (SOC_J784S4)
-    else if (CSL_CLEC_RTMAP_CPU_5 == rtMapCpuId)
+    else if(CSL_CLEC_RTMAP_CPU_5 == rtMapCpuId)
     {
         params->timerId = OSAL_SAFERTOS_OS_TIMER_ID_C7X_2;
         params->intNum  = OSAL_SAFERTOS_OS_TIMER_INT_NUM_C7X_2;
@@ -316,13 +316,13 @@ void prvGetOSTimerParams( Safertos_OSTimerParams *params)
     }
 #endif
 #if defined (SOC_J784S4)
-    else if (CSL_CLEC_RTMAP_CPU_6 == rtMapCpuId)
+    else if(CSL_CLEC_RTMAP_CPU_6 == rtMapCpuId)
     {
         params->timerId = OSAL_SAFERTOS_OS_TIMER_ID_C7X_3;
         params->intNum  = OSAL_SAFERTOS_OS_TIMER_INT_NUM_C7X_3;
         params->eventId = TimerP_USE_DEFAULT;
     }
-    else if (CSL_CLEC_RTMAP_CPU_7 == rtMapCpuId)
+    else if(CSL_CLEC_RTMAP_CPU_7 == rtMapCpuId)
     {
         params->timerId = OSAL_SAFERTOS_OS_TIMER_ID_C7X_4;
         params->intNum  = OSAL_SAFERTOS_OS_TIMER_INT_NUM_C7X_4;

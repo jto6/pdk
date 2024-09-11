@@ -55,7 +55,7 @@ void HwiP_Params_init(HwiP_Params *params)
     {
         Osal_HwAttrs hwAttrs;
         (void)Osal_getHwAttrs(&hwAttrs);
-        if(hwAttrs.hwAccessType == OSAL_HWACCESS_UNRESTRICTED)
+        if(OSAL_HWACCESS_UNRESTRICTED == hwAttrs.hwAccessType)
         {
             /* Do GIC init only in the case of unrestricted hw access */
             OsalArch_gicInit();

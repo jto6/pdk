@@ -89,7 +89,7 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
     /* Check if user has specified any memory block to be used, which gets
      * the precedence over the internal static memory block
      */
-    if ((uintptr_t)(0U) != gOsal_HwAttrs.extHwiPBlock.base)
+    if((uintptr_t)(0U) != gOsal_HwAttrs.extHwiPBlock.base)
     {
         /* pick up the external memory block configured */
         hwiPool        = (HwiP_safeRtos *) gOsal_HwAttrs.extHwiPBlock.base;
@@ -111,14 +111,14 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
     /* Grab the memory */
     key = HwiP_disable();
 
-    for (i = 0U; i < maxHwi; i++)
+    for(i = 0U; i < maxHwi; i++)
     {
-        if (BFALSE == hwiPool[i].used)
+        if(BFALSE == hwiPool[i].used)
         {
             hwiPool[i].used = BTRUE;
             /* Update statistics */
             gOsalHwiAllocCnt++;
-            if (gOsalHwiAllocCnt > gOsalHwiPeak)
+            if(gOsalHwiAllocCnt > gOsalHwiPeak)
             {
                 gOsalHwiPeak = gOsalHwiAllocCnt;
             }
@@ -127,15 +127,15 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
     }
     HwiP_restore(key);
 
-    if (i < maxHwi)
+    if(i < maxHwi)
     {
         /* Grab the memory */
         handle = (HwiP_safeRtos *) &hwiPool[i];
     }
 
-    if (NULL_PTR != handle)
+    if(NULL_PTR != handle)
     {
-        if (NULL_PTR == params)
+        if(NULL_PTR == params)
         {
             Hwi_Params_init(&hwiParams);
             iStat = Hwi_construct(&handle->hwi, interruptNum, (Hwi_FuncPtr)hwiFxn, &hwiParams);
@@ -145,7 +145,7 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
             Hwi_Params_init(&hwiParams);
             hwiParams.arg            = params->arg;
 
-            if (0U == params->priority) 
+            if(0U == params->priority) 
             {
                /* A priority of 0 is invalid for many targets. -1 forces 
                   sysbios to assign a default priority */
@@ -157,7 +157,7 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
             }
 
             hwiParams.eventId        = params->evtId;
-            if (UTRUE == params->enableIntr)
+            if(UTRUE == params->enableIntr)
             {
                 hwiParams.enableInt      = BTRUE;
             }
@@ -169,7 +169,7 @@ HwiP_Handle HwiP_create(uint32_t interruptNum, HwiP_Fxn hwiFxn,
             iStat = Hwi_construct(&handle->hwi, interruptNum, (Hwi_FuncPtr)hwiFxn,
                           &hwiParams);
 
-            if (0 != iStat)
+            if(0 != iStat)
             {
                 /* Free the allocated memory and return null */
                 handle->used = BFALSE;
@@ -210,7 +210,7 @@ HwiP_Status HwiP_delete(HwiP_Handle handle)
       key = HwiP_disable();
       hwi->used = BFALSE;
       /* Found the osal hwi object to delete */
-      if (0U < gOsalHwiAllocCnt)
+      if(0U < gOsalHwiAllocCnt)
       {
         gOsalHwiAllocCnt--;
       }

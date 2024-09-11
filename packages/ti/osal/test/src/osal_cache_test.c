@@ -39,7 +39,6 @@
  */
 
 #include <ti/osal/osal.h>
-#include <ti/board/board.h>
 #include "OSAL_log.h"
 #include <ti/csl/arch/r5/csl_arm_r5_mpu.h>
 
@@ -182,7 +181,7 @@ extern const CSL_ArmR5MpuRegionCfg __attribute__((section(".startupData"))) gCsl
 
 
 #if defined (BUILD_MCU2_0)
-void  OSAL_write_through_cache_test()
+static void OSAL_write_through_cache_test(void)
 {
     /*  Bring the writeThroughAddr memory into cache */
     (*writeThroughAddr) = 0U;
@@ -191,18 +190,18 @@ void  OSAL_write_through_cache_test()
     
     /* Signal MCU2_1 to check for write-through success. */
     (*interCoreWriteThroughSignalBase) = 1U;
-    while((*interCoreWriteThroughAckBase) != 1U)
+    while(1U != (*interCoreWriteThroughAckBase))
     {
         /* Wait for success ACK. */
     }
 }
 
-void OSAL_write_back_cache_test()
+static void OSAL_write_back_cache_test(void)
 {
-    uint32_t looper = 0;
+    uint32_t looper = 0U;
 
     /* Ensure that the required address is cached in by the cache */
-    for(looper=0; looper<100; looper++)
+    for(looper = 0U; looper < 100U; looper++)
     {
         (*writeBackAddr) = OSAL_WRITE_BACK_STALE_TOKEN;
     }
@@ -213,7 +212,7 @@ void OSAL_write_back_cache_test()
      * so separate cache for instructions. 
      */
     (*interCoreWriteBackSignalBase) = 1U;
-    while((*interCoreWriteBackAckBase) != 1U)
+    while(1U != (*interCoreWriteBackAckBase))
     {
         /* Wait for success ACK. */
     }
@@ -225,7 +224,7 @@ void OSAL_write_back_cache_test()
      * so separate cache for instructions. 
      */
     (*interCoreWriteBackPhase2SignalBase) = 1U;
-    while((*interCoreWriteBackPhase2AckBase) != 1U)
+    while(1U != (*interCoreWriteBackPhase2AckBase))
     {
         /* Wait for success ACK. */
     }
@@ -233,10 +232,10 @@ void OSAL_write_back_cache_test()
 #endif
 
 #if defined (BUILD_MCU2_1)
-void OSAL_write_through_checker()
+static void OSAL_write_through_checker(void)
 {
     /* Keep looping till MCU2_0 signals a write-through check. */
-    while((*interCoreWriteThroughSignalBase) != 1U)
+    while(1U != (*interCoreWriteThroughSignalBase))
     {
 
     }
@@ -254,9 +253,9 @@ void OSAL_write_through_checker()
     }
 }
 
-void OSAL_write_back_checker()
+static void OSAL_write_back_checker(void)
 {
-    while((*interCoreWriteBackSignalBase) != 1U)
+    while(1U != (*interCoreWriteBackSignalBase))
     {
 
     }
@@ -269,7 +268,7 @@ void OSAL_write_back_checker()
         OSAL_log("\n\rWrite back Phase 1 test has passed on MCU2_0!!\n\r");
         (*interCoreWriteBackAckBase) = 1U;
     }
-    while((*interCoreWriteBackPhase2SignalBase) != 1U)
+    while(1U != (*interCoreWriteBackPhase2SignalBase))
     {
 
     }
