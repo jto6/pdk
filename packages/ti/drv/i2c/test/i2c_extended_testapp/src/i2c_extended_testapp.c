@@ -55,7 +55,7 @@
 /*                             Macros                                         */
 /* ========================================================================== */
 
-#define I2C_APP_TRANSACTION_TIMEOUT                  (40000U)
+#define I2C_APP_TRANSACTION_TIMEOUT                  (4000U)
 #define I2C_DELAY_USEC                               ((uint32_t) 250U)
 
 #define I2C_APP_CALLBACK_TRANSFER_COUNT              5
@@ -1491,14 +1491,49 @@ static bool I2CApp_negativeTest(void *arg)
         I2C_close(handle);
     }
 
+    /* I2C transfer for Interrupt Mode */
     for(bitRateId = I2C_APP_MAX_FREQ_COUNT; bitRateId < I2C_APP_BITRATE_INVALID_ID; bitRateId++)
     {
-        status = I2CApp_bitrateTestFrequency((I2C_BitRate)bitRateId, (I2CApp_TestCfg *)arg);
+        status = I2CApp_bitrateTestFrequency((I2C_BitRate)bitRateId, (I2CApp_TestCfg *)test);
         if(I2C_STS_SUCCESS != status)
         {
             testStatus = BTRUE;
         }
     }
+
+    /* I2C transfer for Polling Mode */
+    test->intrMode = BFALSE;
+    for(bitRateId = I2C_APP_MAX_FREQ_COUNT; bitRateId < I2C_APP_BITRATE_INVALID_ID; bitRateId++)
+    {
+        status = I2CApp_bitrateTestFrequency((I2C_BitRate)bitRateId, (I2CApp_TestCfg *)test);
+        if(I2C_STS_SUCCESS != status)
+        {
+            testStatus = BTRUE;
+        }
+    }
+
+    /* I2C transfer with writecount = 0 for Polling Mode */
+    test->writecount = 0;
+    for(bitRateId = I2C_APP_MAX_FREQ_COUNT; bitRateId < I2C_APP_BITRATE_INVALID_ID; bitRateId++)
+    {
+        status = I2CApp_bitrateTestFrequency((I2C_BitRate)bitRateId, (I2CApp_TestCfg *)test);
+        if(I2C_STS_SUCCESS != status)
+        {
+            testStatus = BTRUE;
+        }
+    }
+
+    /* I2C transfer with writecount = 0 for Interrupt Mode */
+    test->intrMode = BTRUE;
+    for(bitRateId = I2C_APP_MAX_FREQ_COUNT; bitRateId < I2C_APP_BITRATE_INVALID_ID; bitRateId++)
+    {
+        status = I2CApp_bitrateTestFrequency((I2C_BitRate)bitRateId, (I2CApp_TestCfg *)test);
+        if(I2C_STS_SUCCESS != status)
+        {
+            testStatus = BTRUE;
+        }
+    }
+
 #endif
 
     /* Clear the FIFO*/
