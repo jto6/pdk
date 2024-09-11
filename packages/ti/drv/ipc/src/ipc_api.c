@@ -369,7 +369,7 @@ static int32_t RPMessage_enqueMsg(RPMessage_EndptPool *pool, RPMessage_MsgHeader
 
         if (NULL != obj->recv_buffer)
         {
-            memcpy(obj->recv_buffer, msg->payload, msg->dataLen);
+            memcpy(obj->recv_buffer, (void *)msg->payload, msg->dataLen);
             obj->recv_buffer = NULL;
             obj->payload.len = msg->dataLen;
             obj->payload.src = msg->srcAddr;
@@ -1537,7 +1537,7 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
             if(status != IPC_EFAIL)
             {
                 /* Now, copy payload to client and free our internal msg */
-                memcpy(data, payload->data, payload->len);
+                memcpy(data, (void *)payload->data, payload->len);
                 *len        = (uint16_t)payload->len;
                 *rplyEndPt  = payload->src;
                 *rplyProcId = payload->procId;
@@ -1591,7 +1591,7 @@ int32_t RPMessage_recvNb(RPMessage_Handle handle, void* data, uint16_t *len,
                     pOsalPrms->lockMutex(obj->semHandle, SemaphoreP_NO_WAIT);
                 }
                 /* Now, copy payload to client and free our internal msg */
-                memcpy(data, payload->data, payload->len);
+                memcpy(data, (void *)payload->data, payload->len);
                 *len = (uint16_t)(payload->len);
                 *rplyEndPt = payload->src;
                 *rplyProcId = payload->procId;
@@ -1663,7 +1663,7 @@ static int32_t RPMessage_rawSend(Virtio_Handle vq,
         if (token >= 0)
         {
             /* Copy the payload and set message header: */
-            memcpy(msg->payload, data, len);
+            memcpy((void *)msg->payload, data, len);
             msg->dataLen = len;
             msg->dstAddr = dstEndPt;
             msg->srcAddr = srcEndPt;
