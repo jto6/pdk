@@ -213,24 +213,23 @@ static void IpcApp_mailboxTests(void)
     uint32_t  queueId     = 0U;
     uint32_t remoteProcId = 0U;
     uint32_t timeoutCnt   = 0U;
-#if defined (BUILD_MCU1_0)    
     uint32_t arg          = 0U;
-    Mailbox_hwiCallback func = NULL;
-#endif    
     uint32_t selfId       = Ipc_getCoreId();
+    Mailbox_hwiCallback func = NULL;
     Ipc_Object *ipcObjPtr    = getIpcObjInst(0U);
     Ipc_OsalPrms *pOsalPrms  = &ipcObjPtr->initPrms.osalPrms;
+    Ipc_InitPrms initPrms;
     uint32_t userId;
     uint32_t clusterId;
+
+    Ipc_init(&initPrms);
 
     UART_printf("IPC extended tests: Running Mailbox Tests\n");
 
     /* Test mailbox register API for different params */
-#if defined (BUILD_MCU1_0)
     Ipc_mailboxRegister(gIpcApp_SelfProcId, IPC_APP_INVALID_ID, func, arg, timeoutCnt);
     Ipc_mailboxRegister(gIpcApp_SelfProcId, remoteProcId, func, arg, timeoutCnt);
     Ipc_mailboxRegister(gIpcApp_SelfProcId, remoteProcId, func, arg, 100U);
-#endif    
 
     /* Test mailbox interrupt enable API for different params */
     Ipc_mailboxEnableNewMsgInt(IPC_APP_INVALID_ENDPT, remoteProcId);
