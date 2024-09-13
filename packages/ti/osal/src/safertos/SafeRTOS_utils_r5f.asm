@@ -37,6 +37,8 @@
         .text
         .arm
         .ref vDataAbort_c
+        .ref vPrefetchAbort_c
+        .ref vUndefAbort_c
 		.sect ".KERNEL_FUNCTION"
 
 ;------------------------------------------------------------------------------
@@ -116,6 +118,68 @@ vApplicationDataAbortHook:
 
 
 vApplicationDataAbortHandlerConst: .word vDataAbort_c
+
+;-------------------------------------------------------------------------------
+; void vApplicationPrefetchAbortHook( void )
+;-------------------------------------------------------------------------------
+        .global vApplicationPrefetchAbortHook
+        .arm
+
+vApplicationPrefetchAbortHook:
+	;  Return to the instruction following the interrupted.
+	SUB		lr, lr, #4
+
+	;  Push the return address and SPSR.
+	PUSH	{lr}
+	MRS	lr, SPSR
+	PUSH	{lr}
+
+	;  Push used registers.
+	PUSH	{r0-r4, r12}
+
+	;  Call the exception handler.
+	LDR	r1, vApplicationPrefetchAbortHandlerConst
+	BLX	r1
+
+;  Restore used registers, LR and SPSR before  returning.
+	POP	{r0-r4, r12}
+	POP	{LR}
+	MSR	SPSR_cxsf, LR
+	POP	{LR}
+	MOVS	PC, LR
+
+vApplicationPrefetchAbortHandlerConst: .word vPrefetchAbort_c
+
+;-------------------------------------------------------------------------------
+; void vApplicationUndefAbortHook( void )
+;-------------------------------------------------------------------------------
+        .global vApplicationUndefAbortHook
+        .arm
+
+vApplicationUndefAbortHook:
+;  Return to the instruction following the interrupted.
+	SUB		lr, lr, #4
+
+	;  Push the return address and SPSR.
+	PUSH	{lr}
+	MRS	lr, SPSR
+	PUSH	{lr}
+
+	;  Push used registers.
+	PUSH	{r0-r4, r12}
+
+	;  Call the exception handler.
+	LDR	r1, vApplicationUndefAbortHandlerConst
+	BLX	r1
+
+;  Restore used registers, LR and SPSR before  returning.
+	POP	{r0-r4, r12}
+	POP	{LR}
+	MSR	SPSR_cxsf, LR
+	POP	{LR}
+	MOVS	PC, LR
+
+vApplicationUndefAbortHandlerConst: .word vUndefAbort_c
 
 ;-------------------------------------------------------------------------------
 ; uint32_t Osal_getSP( void )

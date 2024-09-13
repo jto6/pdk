@@ -74,7 +74,7 @@ extern volatile uint32_t gCurrentProcessorState;
 /*                          Function Defintions                               */
 /* ========================================================================== */
 
-void vApplicationUndefAbortHook(void)
+void vUndefAbort_c(void)
 {
     /* Go into an infinite loop.*/
     volatile uint32_t loop = 1;
@@ -87,7 +87,7 @@ void vApplicationUndefAbortHook(void)
 
 /*---------------------------------------------------------------------------*/
 
-void vApplicationPrefetchAbortHook(void)
+void vPrefetchAbort_c(void)
 {
     gCurrentProcessorState = CSL_ARM_R5_ABORT_MODE;
     /* Go into an infinite loop.*/
