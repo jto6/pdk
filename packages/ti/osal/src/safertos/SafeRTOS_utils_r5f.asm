@@ -39,7 +39,7 @@
         .ref vDataAbort_c
         .ref vPrefetchAbort_c
         .ref vUndefAbort_c
-		.sect ".KERNEL_FUNCTION"
+        .sect ".KERNEL_FUNCTION"
 
 ;------------------------------------------------------------------------------
 ; Constant Definitions
@@ -47,16 +47,16 @@
 
 
 ARM_MODE_MASK                           .equ ( 0x1F )
-ISR_MODE                               	.equ ( 0x12 )
+ISR_MODE                                   .equ ( 0x12 )
 
 TRUE                                    .equ ( 1 )
 FALSE                                   .equ ( 0 )
 
 ;------------------------------------------------------------------------------
-	.global ulGetDataFaultStatusRegister
-	.global ulGetDataFaultAddressRegister
-	.global ulGetInstructionFaultStatusRegister
-	.global ulGetInstructionFaultAddressRegister
+    .global ulGetDataFaultStatusRegister
+    .global ulGetDataFaultAddressRegister
+    .global ulGetInstructionFaultStatusRegister
+    .global ulGetInstructionFaultAddressRegister
     .global Osal_getSP
 
 ;-------------------------------------------------------------------------------
@@ -94,27 +94,27 @@ ulGetInstructionFaultAddressRegister:
         .arm
 
 vApplicationDataAbortHook:
-	;  Return to the instruction following the interrupted.
-	SUB		lr, lr, #4
+    ;  Return to the instruction following the interrupted.
+    SUB    lr, lr, #4
 
-	;  Push the return address and SPSR.
-	PUSH	{lr}
-	MRS	lr, SPSR
-	PUSH	{lr}
+    ;  Push the return address and SPSR.
+    PUSH    {lr}
+    MRS    lr, SPSR
+    PUSH    {lr}
 
-	;  Push used registers.
-	PUSH	{r0-r4, r12}
+    ;  Push used registers.
+    PUSH    {r0-r4, r12}
 
-	;  Call the interrupt handler.
-	LDR	r1, vApplicationDataAbortHandlerConst
-	BLX	r1
+    ;  Call the interrupt handler.
+    LDR    r1, vApplicationDataAbortHandlerConst
+    BLX    r1
 
-	;  Restore used registers, LR and SPSR before  returning.
-	POP	{r0-r4, r12}
-	POP	{LR}
-	MSR	SPSR_cxsf, LR
-	POP	{LR}
-	MOVS	PC, LR
+    ;  Restore used registers, LR and SPSR before  returning.
+    POP    {r0-r4, r12}
+    POP    {LR}
+    MSR    SPSR_cxsf, LR
+    POP    {LR}
+    MOVS    PC, LR
 
 
 vApplicationDataAbortHandlerConst: .word vDataAbort_c
@@ -126,27 +126,27 @@ vApplicationDataAbortHandlerConst: .word vDataAbort_c
         .arm
 
 vApplicationPrefetchAbortHook:
-	;  Return to the instruction following the interrupted.
-	SUB		lr, lr, #4
+    ;  Return to the instruction following the interrupted.
+    SUB    lr, lr, #4
 
-	;  Push the return address and SPSR.
-	PUSH	{lr}
-	MRS	lr, SPSR
-	PUSH	{lr}
+    ;  Push the return address and SPSR.
+    PUSH    {lr}
+    MRS    lr, SPSR
+    PUSH    {lr}
 
-	;  Push used registers.
-	PUSH	{r0-r4, r12}
+    ;  Push used registers.
+    PUSH    {r0-r4, r12}
 
-	;  Call the exception handler.
-	LDR	r1, vApplicationPrefetchAbortHandlerConst
-	BLX	r1
+    ;  Call the exception handler.
+    LDR    r1, vApplicationPrefetchAbortHandlerConst
+    BLX    r1
 
 ;  Restore used registers, LR and SPSR before  returning.
-	POP	{r0-r4, r12}
-	POP	{LR}
-	MSR	SPSR_cxsf, LR
-	POP	{LR}
-	MOVS	PC, LR
+    POP    {r0-r4, r12}
+    POP    {LR}
+    MSR    SPSR_cxsf, LR
+    POP    {LR}
+    MOVS    PC, LR
 
 vApplicationPrefetchAbortHandlerConst: .word vPrefetchAbort_c
 
@@ -158,26 +158,26 @@ vApplicationPrefetchAbortHandlerConst: .word vPrefetchAbort_c
 
 vApplicationUndefAbortHook:
 ;  Return to the instruction following the interrupted.
-	SUB		lr, lr, #4
+    SUB    lr, lr, #4
 
-	;  Push the return address and SPSR.
-	PUSH	{lr}
-	MRS	lr, SPSR
-	PUSH	{lr}
+    ;  Push the return address and SPSR.
+    PUSH    {lr}
+    MRS    lr, SPSR
+    PUSH    {lr}
 
-	;  Push used registers.
-	PUSH	{r0-r4, r12}
+    ;  Push used registers.
+    PUSH    {r0-r4, r12}
 
-	;  Call the exception handler.
-	LDR	r1, vApplicationUndefAbortHandlerConst
-	BLX	r1
+    ;  Call the exception handler.
+    LDR    r1, vApplicationUndefAbortHandlerConst
+    BLX    r1
 
 ;  Restore used registers, LR and SPSR before  returning.
-	POP	{r0-r4, r12}
-	POP	{LR}
-	MSR	SPSR_cxsf, LR
-	POP	{LR}
-	MOVS	PC, LR
+    POP    {r0-r4, r12}
+    POP    {LR}
+    MSR    SPSR_cxsf, LR
+    POP    {LR}
+    MOVS    PC, LR
 
 vApplicationUndefAbortHandlerConst: .word vUndefAbort_c
 

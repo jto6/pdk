@@ -253,22 +253,39 @@ void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_han
 
 void __attribute__((section(".text.hwi"))) HwiP_undefined_handler_c(void)
 {
-    /* Go into an infinite loop.*/
-    volatile bool loop = BTRUE;
-    while(loop)
+    /* Call registered call back */
+    gCurrentProcessorState = CSL_ARM_R5_ABORT_MODE;
+    vPortDumpExceptionState();
+    if ((exptnHandlerPtr)NULL != gExptnHandlers.udefExptnHandler)
     {
+        gExptnHandlers.dabtExptnHandler(gExptnHandlers.udefExptnHandlerArgs);
+    }
+    else
+    {
+        /* Go into an infinite loop.*/
+        volatile bool loop = BTRUE;
+        while(loop)
+        {
+        }
     }
 }
 
 void __attribute__((section(".text.hwi"))) HwiP_prefetch_abort_handler_c(void)
 {
-    /* Go into an infinite loop.*/
-    volatile bool loop = BTRUE;
-
+    /* Call registered call back */
     gCurrentProcessorState = CSL_ARM_R5_ABORT_MODE;
     vPortDumpExceptionState();
-    while(loop)
+    if ((exptnHandlerPtr)NULL != gExptnHandlers.pabtExptnHandler)
     {
+        gExptnHandlers.dabtExptnHandler(gExptnHandlers.pabtExptnHandlerArgs);
+    }
+    else
+    {
+        /* Go into an infinite loop.*/
+        volatile bool loop = BTRUE;
+        while(loop)
+        {
+        }
     }
 }
 
