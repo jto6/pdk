@@ -1343,7 +1343,7 @@ static bool I2CApp_negativeTest(void *arg)
     I2C_Params_init(&i2cParams);
 
     /* Set bitRate */
-    #if defined (SOC_J784S4) || defined (SOC_J742S2)
+    #if defined (SOC_J784S4) || defined (SOC_J742S2) || defined (SOC_J721S2)
     i2cParams.bitRate = I2C_1P0Mhz;
     #else
     i2cParams.bitRate = I2C_100kHz;
