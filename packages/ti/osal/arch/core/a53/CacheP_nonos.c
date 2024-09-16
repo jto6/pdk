@@ -53,6 +53,9 @@ static uint32_t CacheP_getCacheSize(void)
     cacheLineSize += 2U;
     /* Now get the actual size by left shift operation */
     cacheLineSize = ((uint32_t)1U << cacheLineSize);
+    /* Convert the cache line size from words to bytes. */
+    cacheLineSize = cacheLineSize/4U;
+
     return (cacheLineSize);
 }
 
