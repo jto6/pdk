@@ -931,7 +931,7 @@ int32_t UdmaTestRingFlushRawLcdmaCslNeg(UdmaTestTaskObj *taskObj);
  * UDMA Osal test functions
  */
 int32_t UdmaTestOsalSetCachePrmsNeg(UdmaTestTaskObj *taskObj);
-int32_t UdmaTestOsalRegisterIntrNeg(UdmaTestTaskObj *taskObj);
+int32_t UdmaTestOsalNeg(UdmaTestTaskObj *taskObj);
 
 /*
  *  UDMA Ring Lcdma test functions

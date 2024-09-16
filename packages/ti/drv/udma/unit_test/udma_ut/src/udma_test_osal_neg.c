@@ -159,14 +159,16 @@ int32_t UdmaTestOsalSetCachePrmsNeg(UdmaTestTaskObj *taskObj)
 }
 
 /*
- * Test Case Description: Verifies the function Udma_osalRegisterIntr
+ * Test Case Description: Verifies the functions when
  * 1)Test scenario 1: Check to get hwiHandle NULL by passing invalid parameters to the
  *                    function Udma_osalRegisterIntr
+ * 2)Test scenario 2: Check lockMutex and unlockMutex when mutexHandle is NULL 
  */
-int32_t UdmaTestOsalRegisterIntrNeg(UdmaTestTaskObj *taskObj)
+int32_t UdmaTestOsalNeg(UdmaTestTaskObj *taskObj)
 {
-    int32_t       retVal = UDMA_SOK;
-    Udma_OsalPrms osalPrms;
+    int32_t        retVal = UDMA_SOK;
+    Udma_OsalPrms  osalPrms;
+    Udma_DrvHandle drvHandle;
 
     GT_1trace(taskObj->traceMask, GT_INFO1,
               " |TEST INFO|:: Task:%d: UDMA Udma_osalRegisterIntr negative Testcase ::\r\n",
@@ -186,6 +188,15 @@ int32_t UdmaTestOsalRegisterIntrNeg(UdmaTestTaskObj *taskObj)
                   " Udma_osalRegisterIntr:: Neg:: Check to get hwiHandle NULL by passing invalid"
                   " parameters to the function Udma_osalRegisterIntr!!\n");
         retVal = UDMA_EFAIL;
+    }
+
+    /* Test scenario 2: Check lockMutex and unlockMutex when mutexHandle is NULL */
+    drvHandle = &taskObj->testObj->drvObj[UDMA_TEST_DEFAULT_UDMA_INST];
+    if(UDMA_SOK == retVal)
+    {
+        drvHandle->initPrms.osalPrms.lockMutex(NULL_PTR);
+
+        drvHandle->initPrms.osalPrms.unlockMutex(NULL_PTR);
     }
 
     return retVal;

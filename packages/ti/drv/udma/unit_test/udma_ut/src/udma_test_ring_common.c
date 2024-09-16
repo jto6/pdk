@@ -1260,8 +1260,11 @@ int32_t UdmaTestRingCheckParamsNeg(UdmaTestTaskObj *taskObj)
 
     /* Test scenario 1: Check to get [Error] Ring orderId out of range (%u)!! */
 
-    drvHandle        = &taskObj->testObj->drvObj[UDMA_TEST_INST_ID_BCDMA_0];
-    ringPrms.mode    = TISCI_MSG_VALUE_RM_RING_MODE_MESSAGE;
+    drvHandle = &taskObj->testObj->drvObj[taskObj->chObj[0]->instId];
+    if(taskObj->chObj[0]->instId != UDMA_TEST_DEFAULT_UDMA_INST)
+    {
+        ringPrms.mode    = TISCI_MSG_VALUE_RM_RING_MODE_MESSAGE;
+    }
     ringPrms.orderId = UDMA_RING_ORDERID_MAX + 1U;
     retVal           = Udma_ringCheckParams(drvHandle, &ringPrms);
     if(UDMA_SOK != retVal)
