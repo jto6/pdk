@@ -858,6 +858,8 @@ int32_t UdmaChDisableTest(UdmaTestTaskObj *taskObj)
             retVal = Udma_chEnable(chHandle);
             if(UDMA_SOK == retVal)
             {
+                Udma_chPause(chHandle);
+                Udma_chResume(chHandle);
                 trigger = CSL_UDMAP_TR_FLAGS_TRIGGER_GLOBAL1;
                 retVal  = Udma_chSetChaining(chHandle, chHandle, trigger);
                 if(UDMA_SOK == retVal)
@@ -912,6 +914,8 @@ int32_t UdmaChDisableTest(UdmaTestTaskObj *taskObj)
             retVal = Udma_chEnable(chHandle);
             if(UDMA_SOK == retVal)
             {
+                Udma_chPause(chHandle);
+                Udma_chResume(chHandle);
                 trigger = CSL_UDMAP_TR_FLAGS_TRIGGER_GLOBAL1;
                 retVal  = Udma_chSetChaining(chHandle, chHandle, trigger);
                 if(UDMA_SOK == retVal)

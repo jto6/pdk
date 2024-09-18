@@ -489,8 +489,10 @@ int32_t UdmaRmAllocBlkCopyChTestNeg(UdmaTestTaskObj *taskObj)
     {
         chType       = UDMA_CH_TYPE_TR_BLK_COPY_UHC;
         drvHandle    = &taskObj->testObj->drvObj[instID];
+        backUpDrvObj = taskObj->testObj->drvObj[instID];
         UdmaChPrms_init(&chPrms, chType);
         backUpChObj  = chObj;
+        drvHandle->initPrms.rmInitPrms.startBlkCopyUhcCh = 1U;
         chPrms.chNum = drvHandle->initPrms.rmInitPrms.startBlkCopyUhcCh - 1U;
         retVal       = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
         if(UDMA_SOK == retVal)
@@ -507,6 +509,7 @@ int32_t UdmaRmAllocBlkCopyChTestNeg(UdmaTestTaskObj *taskObj)
             retVal = UDMA_SOK;
             chObj  = backUpChObj;
         }
+        taskObj->testObj->drvObj[instID] = backUpDrvObj;
     }
 
     /* Test scenario 4: Check when chType is UDMA_CH_TYPE_TR_BLK_COPY_UHC and 
@@ -764,13 +767,17 @@ int32_t UdmaRmAllocTxChTestNeg(UdmaTestTaskObj *taskObj)
     {
         chType           = UDMA_CH_TYPE_TX_HC;
         drvHandle        = &taskObj->testObj->drvObj[instID];
+        backUpDrvObj     = taskObj->testObj->drvObj[instID];
         UdmaChPrms_init(&chPrms, chType);
         chPrms.peerChNum = UDMA_TEST_MAIN_PEER_CH_NUM_TX;
         chPrms.chNum     = drvHandle->initPrms.rmInitPrms.startTxHcCh;
+        drvHandle->initPrms.rmInitPrms.numTxHcCh = 1U;
+        drvHandle->txHcChFlag[0]                 = 1U;
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
         Udma_chClose(chHandle);
         if(UDMA_SOK == retVal)
         {
+            drvHandle->initPrms.rmInitPrms.startTxHcCh = 1U;
             chPrms.chNum = drvHandle->initPrms.rmInitPrms.startTxHcCh - 1U;
             retVal       = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
             if(UDMA_SOK == retVal)
@@ -787,6 +794,7 @@ int32_t UdmaRmAllocTxChTestNeg(UdmaTestTaskObj *taskObj)
                 retVal = UDMA_SOK;
             }
         }
+        taskObj->testObj->drvObj[instID] = backUpDrvObj;
     }
 
     /* Test scenario 4: Check when chType is UDMA_CH_TYPE_TX_HC and 
@@ -822,9 +830,11 @@ int32_t UdmaRmAllocTxChTestNeg(UdmaTestTaskObj *taskObj)
     {
         chType           = UDMA_CH_TYPE_TX_UHC;
         drvHandle        = &taskObj->testObj->drvObj[instID];
+        backUpDrvObj     = taskObj->testObj->drvObj[instID];
         UdmaChPrms_init(&chPrms, chType);
         backUpChObj      = chObj;
         chPrms.peerChNum = UDMA_PSIL_CH_MCU_CPSW0_TX;
+        drvHandle->initPrms.rmInitPrms.startTxUhcCh = 1U;
         chPrms.chNum = drvHandle->initPrms.rmInitPrms.startTxUhcCh - 1U;
         retVal       = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
         if(UDMA_SOK == retVal)
@@ -841,6 +851,7 @@ int32_t UdmaRmAllocTxChTestNeg(UdmaTestTaskObj *taskObj)
             retVal = UDMA_SOK;
             chObj  = backUpChObj;
         }
+        taskObj->testObj->drvObj[instID] = backUpDrvObj;
     }
 
     /* Test scenario 6: Check when chType is UDMA_CH_TYPE_TX_UHC and 
@@ -1098,14 +1109,18 @@ int32_t UdmaRmAllocRxChTestNeg(UdmaTestTaskObj *taskObj)
     {
         chType           = UDMA_CH_TYPE_RX_HC;
         drvHandle        = &taskObj->testObj->drvObj[instID];
+        backUpDrvObj     = taskObj->testObj->drvObj[instID];
         UdmaChPrms_init(&chPrms, chType);
         backUpChObj      = chObj;
         chPrms.peerChNum = UDMA_TEST_MAIN_PEER_CH_NUM_RX;
         chPrms.chNum     = drvHandle->initPrms.rmInitPrms.startRxHcCh;
+        drvHandle->initPrms.rmInitPrms.numRxHcCh = 1U;
+        drvHandle->rxHcChFlag[0] = 1U;
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
         Udma_chClose(chHandle);
         if(UDMA_SOK == retVal)
         {
+            drvHandle->initPrms.rmInitPrms.startRxHcCh = 1U;
             chPrms.chNum = drvHandle->initPrms.rmInitPrms.startRxHcCh - 1U;
             retVal       = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
             if(UDMA_SOK == retVal)
@@ -1123,6 +1138,7 @@ int32_t UdmaRmAllocRxChTestNeg(UdmaTestTaskObj *taskObj)
                 chObj  = backUpChObj;
             }
         }
+        taskObj->testObj->drvObj[instID] = backUpDrvObj;
     }
 
     /* Test scenario 4: Check when chType is UDMA_CH_TYPE_RX_HC and 
@@ -1161,6 +1177,7 @@ int32_t UdmaRmAllocRxChTestNeg(UdmaTestTaskObj *taskObj)
         UdmaChPrms_init(&chPrms, chType);
         backUpChObj      = chObj;
         chPrms.peerChNum = UDMA_PSIL_CH_MCU_CPSW0_RX;
+        drvHandle->initPrms.rmInitPrms.startRxUhcCh = 1U;
         chPrms.chNum     = drvHandle->initPrms.rmInitPrms.startRxUhcCh - 1U;
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
         if(UDMA_SOK == retVal)
@@ -1277,6 +1294,7 @@ int32_t UdmaRmAllocRxChTestNeg(UdmaTestTaskObj *taskObj)
         backUpChObj      = chObj;
         chPrms.peerChNum = UDMA_TEST_MAIN_PEER_CH_NUM_RX;
         chPrms.chNum     = drvHandle->initPrms.rmInitPrms.startRxHcCh;
+        drvHandle->initPrms.rmInitPrms.numRxHcCh = 1U;
         drvHandle->rxHcChFlag[0] = 0U;
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
         if(UDMA_SOK == retVal)
@@ -1628,8 +1646,8 @@ int32_t UdmaRmSetSharedResRmInitPrmsTestNeg(UdmaTestTaskObj *taskObj)
  * Test scenario 2: Check Udma_rmAllocBlkCopyCh when chNum is equal to startBlkCopyCh
  *                  and resource is not available
  * Test scenario 3: Check Udma_rmAllocBlkCopyHcCh when numBlkCopyHcCh is zero
- * Test scenario 4: Check Udma_rmAllocBlkCopyHcCh when numBlkCopyHcCh is greater than zero
- *                  and resource is not available
+ * Test scenario 4: Check Udma_rmAllocBlkCopyHcCh when numBlkCopyHcCh is greater than zero,
+ *                  chNum is equal to startBlkCopyHcCh and resource is not available
  * Test scenario 5: Check Udma_rmAllocBlkCopyUhcCh when chNum is equal to startBlkCopyUhcCh
  *                  and resource is not available
  * Test scenario 6: Check Udma_rmAllocTxCh when chNum is equal to startTxCh and 
@@ -1650,6 +1668,8 @@ int32_t UdmaRmSetSharedResRmInitPrmsTestNeg(UdmaTestTaskObj *taskObj)
  *                   startIrIntr and no resource is available 
  * Test scenario 17: Check Udma_rmAllocRingMon when numRingMon is greater than zero 
  *                   and no resource is availble 
+ * Test scenario 18: Check Udma_rmAllocBlkCopyHcCh when numBlkCopyHcCh is greater than zero
+ *                  and resource is not available
  */
 int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj)
 {
@@ -1769,8 +1789,8 @@ int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj)
         taskObj->testObj->drvObj[instID] = backUpDrvObj;
     }
 
-    /* Test scenario 4: Check Udma_rmAllocBlkCopyHcCh when numBlkCopyHcCh is greater than zero
-     *                  and resource is not available */
+    /* Test scenario 4: Check Udma_rmAllocBlkCopyHcCh when numBlkCopyHcCh is greater than zero,
+     *                  chNum is equal to startBlkCopyHcCh and resource is not available */
     if(UDMA_SOK == retVal)
     {
         chHandle     = &chObj;
@@ -1789,8 +1809,8 @@ int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj)
         if(UDMA_SOK == retVal)
         {
             GT_0trace(taskObj->traceMask, GT_ERR,
-                      " |TEST INFO|:: FAIL:: UDMA:: Udma_rmAllocBlkCopyHcCh:: Neg:: Check when"
-                      " numBlkCopyHcCh is greater than zero and resource is not available!!\n");
+                      " |TEST INFO|:: FAIL:: UDMA:: Udma_rmAllocBlkCopyHcCh:: Neg:: Check when numBlkCopyHcCh"
+                      " is greater than zero, chNum is equal to startBlkCopyHcCh and resource is not available!!\n");
             retVal = UDMA_EFAIL;
             Udma_chClose(chHandle);
         }
@@ -1812,6 +1832,7 @@ int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj)
         backUpDrvObj = taskObj->testObj->drvObj[instID];
         UdmaChPrms_init(&chPrms, chType);
         chPrms.chNum = drvHandle->initPrms.rmInitPrms.startBlkCopyUhcCh;
+        drvHandle->initPrms.rmInitPrms.numBlkCopyUhcCh = 1U;
         for(i=0U; i<drvHandle->initPrms.rmInitPrms.numBlkCopyUhcCh; i++)
         {
             drvHandle->blkCopyUhcChFlag[i]  = 0U; //make resource not available
@@ -2054,6 +2075,7 @@ int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj)
         UdmaChPrms_init(&chPrms, chType);
         chPrms.peerChNum = UDMA_TEST_MAIN_PEER_CH_NUM_RX;
         chPrms.chNum = drvHandle->initPrms.rmInitPrms.startRxUhcCh;
+        drvHandle->initPrms.rmInitPrms.numRxUhcCh = 1U;
         for(i=0U; i<drvHandle->initPrms.rmInitPrms.numRxUhcCh; i++)
         {
             drvHandle->rxUhcChFlag[i]  = 0U; //make resource not available
@@ -2084,6 +2106,7 @@ int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj)
         backUpDrvObj = taskObj->testObj->drvObj[instID];
         UdmaChPrms_init(&chPrms, chType);
         chPrms.peerChNum = UDMA_TEST_MAIN_PEER_CH_NUM_RX;
+        drvHandle->initPrms.rmInitPrms.numRxUhcCh = 1U;
         for(i=0U; i<drvHandle->initPrms.rmInitPrms.numRxUhcCh; i++)
         {
             drvHandle->rxUhcChFlag[i]  = 0U; //make resource not available
@@ -2171,6 +2194,37 @@ int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj)
                       " |TEST INFO|:: FAIL:: UDMA:: Udma_rmAllocRingMon:: Neg:: Check when"
                       " numRingMon is greater than zero and no resource is availble!!\n");
             retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+        taskObj->testObj->drvObj[instID] = backUpDrvObj;
+    }
+
+    /* Test scenario 18: Check Udma_rmAllocBlkCopyHcCh when numBlkCopyHcCh is greater than zero
+     *                  and resource is not available */
+    if(UDMA_SOK == retVal)
+    {
+        chHandle     = &chObj;
+        instID       = UDMA_TEST_INST_ID_MAIN_0;
+        chType       = UDMA_CH_TYPE_TR_BLK_COPY_HC;
+        drvHandle    = &taskObj->testObj->drvObj[instID];
+        backUpDrvObj = taskObj->testObj->drvObj[instID];
+        UdmaChPrms_init(&chPrms, chType);
+        drvHandle->initPrms.rmInitPrms.numBlkCopyHcCh = 1U;
+        for(i=0U; i<drvHandle->initPrms.rmInitPrms.numBlkCopyHcCh; i++)
+        {
+            drvHandle->blkCopyHcChFlag[i]  = 0U; //make resource not available
+        }
+        retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        if(UDMA_SOK == retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                      " |TEST INFO|:: FAIL:: UDMA:: Udma_rmAllocBlkCopyHcCh:: Neg:: Check when"
+                      " numBlkCopyHcCh is greater than zero and resource is not available!!\n");
+            retVal = UDMA_EFAIL;
+            Udma_chClose(chHandle);
         }
         else
         {

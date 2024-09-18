@@ -333,13 +333,11 @@ int32_t UdmaTestChOpenNeg(UdmaTestTaskObj *taskObj)
         }
     }
 
-#if (UDMA_NUM_UTC_INSTANCE > 0)
     /* Test scenario 8: Check when chType is UDMA_CH_FLAG_PDMA and 
     *                   peerChNum is Invalid for Udma_chCheckParams 
     */
     if(UDMA_SOK == retVal)
     {
-        chPrms.utcId     = UDMA_UTC_ID_MSMC_DRU0;
         chType           = UDMA_CH_FLAG_PDMA;            
         chPrms.peerChNum = UDMA_DMA_CH_INVALID;  
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
@@ -361,7 +359,6 @@ int32_t UdmaTestChOpenNeg(UdmaTestTaskObj *taskObj)
     */
     if(UDMA_SOK == retVal)
     {
-        chPrms.utcId     = UDMA_UTC_ID_MSMC_DRU0;
         chType           = UDMA_CH_FLAG_PDMA;   
         chPrms.peerChNum = UDMA_DMA_CH_NA;
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
@@ -383,7 +380,6 @@ int32_t UdmaTestChOpenNeg(UdmaTestTaskObj *taskObj)
     */
     if(UDMA_SOK == retVal)
     {
-        chPrms.utcId     = UDMA_UTC_ID_MSMC_DRU0;
         chType           = UDMA_CH_FLAG_PSIL;   
         chPrms.peerChNum = UDMA_DMA_CH_INVALID;
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
@@ -405,7 +401,6 @@ int32_t UdmaTestChOpenNeg(UdmaTestTaskObj *taskObj)
     */
     if(UDMA_SOK == retVal)
     {
-        chPrms.utcId     = UDMA_UTC_ID_MSMC_DRU0;
         chType           = UDMA_CH_FLAG_PSIL;
         chPrms.peerChNum = UDMA_DMA_CH_NA;
         retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
@@ -422,6 +417,7 @@ int32_t UdmaTestChOpenNeg(UdmaTestTaskObj *taskObj)
         } 
     }
 
+#if (UDMA_NUM_UTC_INSTANCE > 0)
     /* Test scenario 12: Check when chNum is UDMA_DMA_CH_INVALID when chType is UDMA_CH_TYPE_UTC */
     if(UDMA_SOK == retVal)
     {
