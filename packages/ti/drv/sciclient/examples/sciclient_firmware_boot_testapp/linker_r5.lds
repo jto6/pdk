@@ -93,7 +93,7 @@ SECTIONS
     .bss.devgroup.MCU_WAKEUP      : {} align(4)      > OCMRAM_sciclientTest
     .bss.devgroup.DMSC_INTERNAL   : {} align(4)      > OCMRAM_sciclientTest
     .sysmem                       : {}               > MCU0_R5F_TCMB0
-    .stack                        : {} align(4)      > OCMRAM_sciclientTest  (HIGH)
+    .stack                        : {} align(4)      > MCU0_R5F_TCMB0  (HIGH)
     .irqStack                     : {. = . + __IRQ_STACK_SIZE;} align(4)    > OCMRAM_sciclientTest  (HIGH)
                             RUN_START(__IRQ_STACK_START)
                             RUN_END(__IRQ_STACK_END)

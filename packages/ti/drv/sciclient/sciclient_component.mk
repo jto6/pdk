@@ -230,24 +230,33 @@ export rm_pm_hal_$(SOC)_CORELIST = mcu1_0
 ############################
 sciclient_EXAMPLE_LIST =
 
-# SCICLIENT Firmware Boot Application
-export sciclient_firmware_boot_testapp_COMP_LIST = sciclient_firmware_boot_testapp
-export sciclient_firmware_boot_testapp_RELPATH = ti/drv/sciclient/examples/sciclient_firmware_boot_testapp
-export sciclient_firmware_boot_testapp_PATH = $(PDK_SCICLIENT_COMP_PATH)/examples/sciclient_firmware_boot_testapp
-export sciclient_firmware_boot_testapp_SBL_CERT_KEY=$(SBL_CERT_KEY)
-export sciclient_firmware_boot_testapp_BOARD_DEPENDENCY = no
-export sciclient_firmware_boot_testapp_CORE_DEPENDENCY = yes
-export sciclient_firmware_boot_testapp_PKG_LIST = sciclient_firmware_boot_testapp
-export sciclient_firmware_boot_testapp_INCLUDE = $(sciclient_firmware_boot_testapp_PATH)
-export sciclient_firmware_boot_testapp_BOARDLIST = j7200_evm j721e_evm j721s2_evm j784s4_evm j742s2_evm
-export sciclient_firmware_boot_testapp_$(SOC)_CORELIST = mcu1_0
-export sciclient_firmware_boot_testapp_SBL_APPIMAGEGEN = no
+define SCICLIENT_FIRMWARE_BOOT_TESTAPP_RULE
+
+export sciclient_firmware_boot_testapp_$(1)_COMP_LIST = sciclient_firmware_boot_testapp_$(1)
+export sciclient_firmware_boot_testapp_$(1)_RELPATH = ti/drv/sciclient/examples/sciclient_firmware_boot_testapp
+export sciclient_firmware_boot_testapp_$(1)_PATH = $(PDK_SCICLIENT_COMP_PATH)/examples/sciclient_firmware_boot_testapp
+export sciclient_firmware_boot_testapp_$(1)_SBL_CERT_KEY=$(SBL_CERT_KEY)
+export sciclient_firmware_boot_testapp_$(1)_BOARD_DEPENDENCY = no
+export sciclient_firmware_boot_testapp_$(1)_CORE_DEPENDENCY = yes
+export sciclient_firmware_boot_testapp_$(1)_PKG_LIST = sciclient_firmware_boot_testapp_$(1)
+export sciclient_firmware_boot_testapp_$(1)_INCLUDE = $(sciclient_firmware_boot_testapp_$(1)_PATH)
+export sciclient_firmware_boot_testapp_$(1)_BOARDLIST = j7200_evm j721e_evm j721s2_evm j784s4_evm j742s2_evm
+export sciclient_firmware_boot_testapp_$(1)_$(SOC)_CORELIST = mcu1_0
+export sciclient_firmware_boot_testapp_$(1)_MAKEFILE = -f makefile BUILD_PLATFORM_TYPE=$(1)
+export sciclient_firmware_boot_testapp_$(1)_SBL_APPIMAGEGEN = no
 ifeq ($(CORE),mcu1_0)
-export sciclient_firmware_boot_testapp_SBL_IMAGEGEN = yes
+export sciclient_firmware_boot_testapp_$(1)_SBL_IMAGEGEN = yes
 else
-export sciclient_firmware_boot_testapp_SBL_IMAGEGEN = no
+export sciclient_firmware_boot_testapp_$(1)_SBL_IMAGEGEN = no
 endif
-sciclient_EXAMPLE_LIST += sciclient_firmware_boot_testapp
+
+sciclient_EXAMPLE_LIST += sciclient_firmware_boot_testapp_$(1)
+
+endef
+
+SCICLIENT_FIRMWARE_BOOT_TESTAPP_MACRO_LIST := $(foreach curPlatform, gp hs hsfs, $(call SCICLIENT_FIRMWARE_BOOT_TESTAPP_RULE,$(curPlatform)))
+
+$(eval ${SCICLIENT_FIRMWARE_BOOT_TESTAPP_MACRO_LIST})
 
 # SCICLIENT CCS Init Application
 export sciclient_ccs_init_COMP_LIST = sciclient_ccs_init

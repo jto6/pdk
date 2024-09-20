@@ -7,7 +7,8 @@ else
 include $(RULES_MAKE)
 endif
 
-APP_NAME = sciclient_firmware_boot_testapp
+APP_NAME = sciclient_firmware_boot_testapp_$(BUILD_PLATFORM_TYPE)
+
 BUILD_OS_TYPE=baremetal
 
 SRCDIR = . ../common
@@ -29,9 +30,15 @@ ifeq ($(CORE), mcu1_0)
 endif
 
 CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) -DBARE_METAL
+ifeq ($(BUILD_PLATFORM_TYPE),hs)
+CFLAGS_LOCAL_COMMON += -DBUILD_HS
+else ifeq ($(BUILD_PLATFORM_TYPE),hsfs)
+CFLAGS_LOCAL_COMMON += -DBUILD_HSFS
+endif
+
 PACKAGE_SRCS_COMMON = . ../common
 
-CONFIG_BLD_LNK_r5f = $(PDK_INSTALL_PATH)/ti/drv/sciclient/examples/$(APP_NAME)/linker_r5.lds
+CONFIG_BLD_LNK_r5f = $(PDK_INSTALL_PATH)/ti/drv/sciclient/examples/sciclient_firmware_boot_testapp/linker_r5.lds
 
 ifeq ($(CORE),mpu1_0)
     LNKFLAGS_LOCAL_mpu1_0 += --entry Entry

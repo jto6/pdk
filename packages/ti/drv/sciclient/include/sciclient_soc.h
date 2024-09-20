@@ -52,13 +52,25 @@
 #if defined (SOC_J721E)
 #include <ti/drv/sciclient/soc/sysfw/include/j721e/tisci_resasg_types.h>
 #include <ti/drv/sciclient/soc/V1/sciclient_fmwMsgParams.h>
+#if defined(BUILD_HS)
+#include <ti/drv/sciclient/soc/V1/sciclient_firmware_V1_sr1.1_hs_enc.h>
+#elif defined(BUILD_HSFS)
+#include <ti/drv/sciclient/soc/V1/sciclient_firmware_V1_sr2_hs_fs_enc.h>
+#else
 #include <ti/drv/sciclient/soc/V1/sciclient_firmware_V1.h>
+#endif
 #endif
 
 #if defined (SOC_J7200)
 #include <ti/drv/sciclient/soc/sysfw/include/j7200/tisci_resasg_types.h>
 #include <ti/drv/sciclient/soc/V2/sciclient_fmwMsgParams.h>
+#if defined(BUILD_HS)
+#include <ti/drv/sciclient/soc/V2/sciclient_firmware_V2_sr2_hs_enc.h>
+#elif defined(BUILD_HSFS)
+#include <ti/drv/sciclient/soc/V2/sciclient_firmware_V2_sr2_hs_fs_enc.h>
+#else
 #include <ti/drv/sciclient/soc/V2/sciclient_firmware_V2.h>
+#endif
 #endif
 
 #if defined (SOC_AM64X)
@@ -70,19 +82,25 @@
 #if defined (SOC_J721S2)
 #include <ti/drv/sciclient/soc/sysfw/include/j721s2/tisci_resasg_types.h>
 #include <ti/drv/sciclient/soc/V4/sciclient_fmwMsgParams.h>
+#if defined(BUILD_HS)
+#include <ti/drv/sciclient/soc/V4/sciclient_firmware_V4_hs_enc.h>
+#elif defined(BUILD_HSFS)
+#include <ti/drv/sciclient/soc/V4/sciclient_firmware_V4_hs_fs_enc.h>
+#else
 #include <ti/drv/sciclient/soc/V4/sciclient_firmware_V4.h>
 #endif
-
-#if defined (SOC_J784S4)
-#include <ti/drv/sciclient/soc/sysfw/include/j784s4/tisci_resasg_types.h>
-#include <ti/drv/sciclient/soc/V6/sciclient_fmwMsgParams.h>
-#include <ti/drv/sciclient/soc/V6/sciclient_firmware_V6.h>
 #endif
 
-#if defined (SOC_J742S2)
+#if defined (SOC_J784S4) || defined(SOC_J742S2)
 #include <ti/drv/sciclient/soc/sysfw/include/j784s4/tisci_resasg_types.h>
 #include <ti/drv/sciclient/soc/V6/sciclient_fmwMsgParams.h>
+#if defined(BUILD_HS)
+#include <ti/drv/sciclient/soc/V6/sciclient_firmware_V6_hs_enc.h>
+#elif defined(BUILD_HSFS)
 #include <ti/drv/sciclient/soc/V6/sciclient_firmware_V6_hs_fs_enc.h>
+#else
+#include <ti/drv/sciclient/soc/V6/sciclient_firmware_V6.h>
+#endif
 #endif
 
 #ifdef __cplusplus
