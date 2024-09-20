@@ -52,10 +52,11 @@
 /* Offset for uxEventMirror of EventP safertos object structure */
 #if defined(BUILD_C7X)
 #define OSAL_APP_EVTMIRROR_OFFSET (0x0EU*2U)
+#define OSAL_APP_EVTHANDLE_OFFSET (0x1EU)
 #else
 #define OSAL_APP_EVTMIRROR_OFFSET (0x0EU)
-#endif
 #define OSAL_APP_EVTHANDLE_OFFSET (0x0FU)
+#endif
 #if defined (FREERTOS)
 #define OSAL_APP_MAX_EVENT        (OSAL_FREERTOS_CONFIGNUM_EVENT)
 #elif defined (SAFERTOS)

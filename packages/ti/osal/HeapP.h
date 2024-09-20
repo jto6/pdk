@@ -144,7 +144,7 @@ extern HeapP_Status HeapP_delete(HeapP_Handle handle);
  * \return pointer to allcoated memory
  * \return NULL - memory could not be allocated since a free block of required size could not be found
  */
-extern void *HeapP_alloc(HeapP_Handle handle, uint32_t allocSize);
+extern void *HeapP_alloc(HeapP_Handle handle, size_t allocSize);
 
 /*!
  * @brief Free memory from user defined heap

@@ -129,7 +129,7 @@ void * pvHeapMalloc( StaticHeap_t *heap, size_t xWantedSize )
          * set.  The top bit of the block size member of the HeapBlockLink_t structure
          * is used to determine who owns the block - the application or the
          * kernel, so it must be free. */
-        if( 0U == ( xMallocSize & heap->xBlockAllocatedBit ) )
+        if( 0UL ==  ( xMallocSize & heap->xBlockAllocatedBit ) )
         {
             /* The wanted size is increased so it can contain a HeapBlockLink_t
              * structure in addition to the requested amount of bytes. */

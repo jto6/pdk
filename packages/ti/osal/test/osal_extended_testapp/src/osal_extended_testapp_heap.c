@@ -50,7 +50,11 @@
 /* ========================================================================== */
 
 #define OSAL_APP_HEAP_SIZE            (2*1024U)
+#if defined(BUILD_C7X)
+#define OSAL_APP_STATIC_HANDLE_OFFSET (0x2U)
+#else
 #define OSAL_APP_STATIC_HANDLE_OFFSET (0x1U)
+#endif
 #define OSAL_APP_PVHEAP_HANDLE_OFFSET (0x8U)
 
 /* ========================================================================== */
@@ -117,7 +121,7 @@ static int32_t OsalApp_heapFreertosAllocTest(void)
     HeapP_Handle      handle, memAddr;
     HeapP_Status      status;
     HeapP_MemStats    memstats;
-    uint32_t          allocSize = 10U, freeSize = 5U;
+    uint32_t          allocSize = 10U, freeSize = 5U, *offsetAddress;
     int32_t           result = osal_OK;
     
     memset(gOsalAppHeapPbuf, 0x00, sizeof(gOsalAppHeapPbuf));
@@ -148,15 +152,14 @@ static int32_t OsalApp_heapFreertosAllocTest(void)
         {
             result = osal_FAILURE;
         }
-#if defined(BUILD_MCU)
-        if((0U == xHeapGetFreeHeapSize(handle+OSAL_APP_STATIC_HANDLE_OFFSET)) ||
-           (0U == xHeapGetMinimumEverFreeHeapSize(handle+OSAL_APP_STATIC_HANDLE_OFFSET)))
+        offsetAddress = ((uint32_t *)handle+OSAL_APP_STATIC_HANDLE_OFFSET);
+        if((0U == xHeapGetFreeHeapSize((StaticHeap_t*)offsetAddress)) ||
+           (0U == xHeapGetMinimumEverFreeHeapSize((StaticHeap_t*)offsetAddress)))
         {
             result = osal_FAILURE;
         }
-#endif
     }
-    
+
     if(osal_OK == result)
     {
         status = HeapP_getHeapStats(handle, &memstats);
@@ -177,7 +180,7 @@ static int32_t OsalApp_heapFreertosAllocTest(void)
 
     if(osal_OK != result)
     {
-        OSAL_log("\n HeapP negative test failed! \n");
+        OSAL_log("\n HeapP allocation test failed! \n");
     }
 
     return result;
@@ -188,9 +191,10 @@ static int32_t OsalApp_heapFreertosAllocNegativeTest(void)
     HeapP_Params      params;
     HeapP_Handle      handle, memAddr;
     HeapP_Status      status;
-    uint32_t          allocSize = 10U, allocMaxSize = 0x80000000U, freeSize = 5U;
+    uint32_t          allocSize = 10U, freeSize = 5U;
+    size_t            allocMaxSize = 0x80000000U;
     int32_t           result = osal_OK;
-    
+
     memset(gOsalAppHeapPbuf, 0x00, sizeof(gOsalAppHeapPbuf));
 
     HeapP_Params_init(&params);
@@ -217,6 +221,9 @@ static int32_t OsalApp_heapFreertosAllocNegativeTest(void)
     }
     if(osal_OK == result)
     {
+#if defined(BUILD_C7X)
+        allocMaxSize = (allocMaxSize << 0x20U);
+#endif
         memAddr = HeapP_alloc(handle, allocMaxSize);
         if(NULL_PTR != memAddr)
         {
@@ -235,7 +242,7 @@ static int32_t OsalApp_heapFreertosAllocNegativeTest(void)
 
     if(osal_OK != result)
     {
-        OSAL_log("\n HeapP negative test failed! \n");
+        OSAL_log("\n HeapP allocation negative test failed! \n");
     }
 
     return result;
@@ -533,7 +540,6 @@ int32_t OsalApp_heapFreertosTest(void)
     result += OsalApp_heapFreertosIsUsedTest();
     result += OsalApp_heapFreertosMaxTest();
     result += OsalApp_vheapTest();
-
     result += OsalApp_heapFreertosNullTest();
 
     if(osal_OK != result)

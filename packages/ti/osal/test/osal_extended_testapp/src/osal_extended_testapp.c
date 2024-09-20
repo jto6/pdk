@@ -263,7 +263,7 @@ void OSAL_tests(void *arg0, void *arg1)
     Board_initOSAL();
 
 #if defined(SAFERTOS)
-#if defined(BUILD_C7X) || defined(BUILD_C66X)
+#if !defined(BUILD_MCU)
     result += OsalApp_ArchutilsTests();
 #endif
 #endif
@@ -361,12 +361,10 @@ int main(void)
 LoadP_update();
 extern void vPortTimerTickHandler(void);
 vPortTimerTickHandler();
-OS_stop();
 #endif
 
-#if defined (SAFERTOS)
 OS_stop();
-#endif
+Osal_getThreadType();
 
 #if defined(BUILD_C7X)
 OsalCfgClecAccessCtrl(BFALSE);

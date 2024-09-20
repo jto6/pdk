@@ -48,11 +48,15 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+#if defined(BUILD_MCU)
 /* Some interrupt number to be used for the positive tests */
 #define OSAL_INT_NUM_1  70U
 /* Some interrupt number to be used for the positive tests */
 #define OSAL_INT_NUM_2  80U
-
+#else
+#define OSAL_INT_NUM_1  50U
+#define OSAL_INT_NUM_2  60U
+#endif
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -73,13 +77,12 @@ static void OsalApp_regIntrISR(void *arg);
  */
 static int32_t OsalApp_regIntrNullTest(void);
 
-#if defined(BUILD_MCU)
 /*
  * Description : Testing positive cases for Register Interrupt APIs
  */
 static int32_t OsalApp_regIntrPositiveTest(void);
 
-#elif defined(BUILD_C7X)
+#if defined(BUILD_C7X)
 /*
  * Description : Testing Negative cases for Register Interrupt APIs
  */
@@ -125,7 +128,6 @@ static int32_t OsalApp_regIntrNullTest(void)
     return result;
 }
 
-#if defined(BUILD_MCU)
 static int32_t OsalApp_regIntrPositiveTest(void)
 {
     OsalRegisterIntrParams_t    intrPrms;
@@ -141,20 +143,43 @@ static int32_t OsalApp_regIntrPositiveTest(void)
     {
         result = osal_FAILURE;
     }
+#if defined(BUILD_C7X)
 
+    if(OSAL_INT_ERR_HWICREATE != Osal_RegisterInterrupt(&intrPrms, &hwiPHandlePtr))
+    {
+        result = osal_FAILURE;
+    }
+#else
+    if((NULL_PTR != hwiPHandlePtr) && (OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr, OSAL_INT_NUM_1)))
+    {
+        result = osal_FAILURE;
+    }
+    if(NULL_PTR == hwiPHandlePtr)
+    {
+        hwiPHandlePtr = (HwiP_Handle *)(0xFFFFFFFFU);
+    }
+
+    if(OSAL_INT_SUCCESS != Osal_RegisterInterrupt(&intrPrms, &hwiPHandlePtr))
+    {
+        result = osal_FAILURE;
+    }
+#endif
     intrPrms.corepacConfig.intVecNum = OSAL_INT_NUM_2;
-
+    #if defined(BUILD_C7X)
+    if(OSAL_INT_ERR_HWICREATE != Osal_RegisterInterruptDirect(&intrPrms, (HwiP_DirectFxn)OsalApp_regIntrISR, &hwiPDirectHandlePtr))
+#else
     if(OSAL_INT_SUCCESS != Osal_RegisterInterruptDirect(&intrPrms, (HwiP_DirectFxn)OsalApp_regIntrISR, &hwiPDirectHandlePtr))
+#endif
     {
         result = osal_FAILURE;
     }
     if(osal_OK == result)
     {
-        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr, OSAL_INT_NUM_1))
+        if((NULL_PTR != hwiPHandlePtr) && (OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr, OSAL_INT_NUM_1)))
         {
             result = osal_FAILURE;
         }
-        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr, OSAL_INT_NUM_2))
+        if((NULL_PTR != hwiPDirectHandlePtr) && (OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr, OSAL_INT_NUM_2)))
         {
             result = osal_FAILURE;
         }
@@ -168,7 +193,7 @@ static int32_t OsalApp_regIntrPositiveTest(void)
     return result;
 }
 
-#elif defined(BUILD_C7X)
+#if defined(BUILD_C7X)
 static int32_t OsalApp_regIntrNegativeTest(void)
 {
     OsalRegisterIntrParams_t    *intrPrms = NULL_PTR;
@@ -190,18 +215,15 @@ static int32_t OsalApp_regIntrNegativeTest(void)
     {
         result = osal_FAILURE;
     }
-    if((osal_OK != result) || (NULL_PTR != hwiPHandlePtr))
+    if((osal_OK != result))
     {
-        if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr,intrPrms->corepacConfig.intVecNum))
+        if((NULL_PTR != hwiPHandlePtr) && (OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPHandlePtr,intrPrms->corepacConfig.intVecNum)))
         {
             result = osal_FAILURE;
         }
-        if(NULL_PTR != hwiPDirectHandlePtr)
+        if((NULL_PTR != hwiPDirectHandlePtr) && (OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr,intrPrms->corepacConfig.intVecNum)))
         {
-            if(OSAL_INT_SUCCESS != Osal_DeleteInterrupt(hwiPDirectHandlePtr,intrPrms->corepacConfig.intVecNum))
-            {
-                result = osal_FAILURE;
-            }
+            result = osal_FAILURE;
         }
     }
 
@@ -212,7 +234,6 @@ static int32_t OsalApp_regIntrNegativeTest(void)
 
     return result;
 }
-
 #endif
 
 /* ========================================================================== */
@@ -223,11 +244,11 @@ int32_t OsalApp_registerIntrTests(void)
 {
     int32_t result = osal_OK;
     result += OsalApp_regIntrNullTest();
-#if defined(BUILD_MCU)
     result += OsalApp_regIntrPositiveTest();
-#elif defined(BUILD_C7X)
+#if defined(BUILD_C7X)
     result += OsalApp_regIntrNegativeTest();
 #endif
+
     if(osal_OK == result)
     {
         OSAL_log("\n All Register Interrupt tests have passed!!\n");

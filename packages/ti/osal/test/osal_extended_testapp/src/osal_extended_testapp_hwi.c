@@ -188,6 +188,7 @@ static void OsalApp_hwiIRQ(uintptr_t arg)
     CSL_vimAckIntr(NULL, CSL_VIM_INTR_MAP_FIQ);
 #endif
     /* Testing the APIs called from interrupt context */
+    Osal_delay(0);
     gOsalAppHwiKey = HwiP_disable();
     HwiP_restore(gOsalAppHwiKey);
 }

@@ -61,7 +61,7 @@
 #endif
 #define OSAL_APP_MB_TIMEOUT        (1U)
 #define OSAL_APP_MB_SEND_STR       ("Texas Instruments\0")
-#define OSAL_APP_MAX_MB_BUF_LEN    (256U)
+#define OSAL_APP_MAX_MB_BUF_LEN    (512U)
 #define OSAL_APP_IRQ_INT_NUM       (32U)
 #define OSAL_APP_MB_WAIT_TIMEOUT   (~((uint32_t)0U))
 
@@ -96,7 +96,6 @@ static int32_t OsalApp_mailboxCreateMultipleTest(void);
  */
 static int32_t OsalApp_mailboxPendPostTest(uint32_t timeout);
 
-#if defined(BUILD_MCU)
 /* 
  * Description: Test the mailbox ISR call back function..
  */
@@ -109,7 +108,6 @@ static void OsalApp_mbISR(void *arg);
  *      3. MailboxP_getNumPendingMsgs
  */
 static int32_t OsalApp_mailboxISRTest(void);
-#endif
 
 #if defined(SAFERTOS)
 /* 
@@ -147,7 +145,6 @@ static int32_t OsalApp_mailboxPendNegativeTest(void);
 /*                               Internal Function Definitions                        */
 /* ================================================================================== */
 
-#if defined(BUILD_MCU)
 static void OsalApp_mbISR(void *arg)
 {   
     uint32_t iter;
@@ -167,7 +164,6 @@ static void OsalApp_mbISR(void *arg)
     
     gOsalAppmbISRisExecuted = BTRUE;
 }
-#endif
 
 static int32_t OsalApp_mailboxCreateMultipleTest(void)
 {
@@ -328,7 +324,6 @@ static int32_t OsalApp_mailboxPendPostTest(uint32_t timeout)
     return result;
 }
 
-#if defined(BUILD_MCU)
 static int32_t OsalApp_mailboxISRTest(void)
 {
     int32_t result = osal_OK;
@@ -361,12 +356,15 @@ static int32_t OsalApp_mailboxISRTest(void)
     if(osal_OK == result)
     {
         HwiP_enableInterrupt(OSAL_APP_IRQ_INT_NUM);
-  
+#if defined(_TMS320C6X)
+        if(osal_UNSUPPORTED != HwiP_post(OSAL_APP_IRQ_INT_NUM))
+#else
         if(HwiP_OK != HwiP_post(OSAL_APP_IRQ_INT_NUM))
+#endif
         {
             result = osal_FAILURE;
-        }   
-          
+        }
+
         if(osal_OK == result)
         {
              /* Wait for software timeout, ISR should hit
@@ -397,17 +395,17 @@ static int32_t OsalApp_mailboxISRTest(void)
             result = osal_FAILURE;
         }
     }
-
+#if !defined(_TMS320C6X)
     if(0U != memcmp((char *)gOsalApprecvBuf, (char *)gOsalAppStrToSend, params.count))
     {
         result = osal_FAILURE;       
     }
-
+#endif
     if(HwiP_OK != HwiP_delete(hHwi))
     {
         result = osal_FAILURE;
     }
-    
+
     if(osal_OK == result)
     {
         OSAL_log("\n Mailbox ISR test has passed!!\n");
@@ -419,7 +417,6 @@ static int32_t OsalApp_mailboxISRTest(void)
 
     return result;
 }
-#endif
 
 #if defined(SAFERTOS)
 static int32_t osalApp_mailboxCreateNegativeTest(void)
@@ -657,21 +654,19 @@ int32_t OsalApp_mailboxTests(void)
 {
     int32_t result = osal_OK;
 
-    #if defined(SAFERTOS)
+#if defined(SAFERTOS)
     result += osalApp_mailboxCreateNegativeTest();
     result += OsalApp_mailboxPostPendNegativeTest();
-    #endif
-    #if defined(FREERTOS)
+#endif
+#if defined(FREERTOS)
     result += OsalApp_mailboxDeleteNegativeTest();
     result += OsalApp_mailboxUsedTest();
     result += OsalApp_mailboxPendNegativeTest(); 
-    #endif
+#endif
     result += OsalApp_mailboxPendPostTest(OSAL_APP_MB_TIMEOUT);
     result += OsalApp_mailboxPendPostTest(0);
     result += OsalApp_mailboxPendPostTest(OSAL_APP_MB_WAIT_TIMEOUT);
-    #if defined(BUILD_MCU)
     result += OsalApp_mailboxISRTest();
-    #endif
     result += OsalApp_mailboxCreateMultipleTest(); 
   
     if(osal_OK == result)

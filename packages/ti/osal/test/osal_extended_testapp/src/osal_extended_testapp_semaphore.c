@@ -207,12 +207,11 @@ static int32_t OsalApp_semaphoreNullTest(void)
         {
             result = osal_FAILURE;
         }
-#if defined(BARE_METAL)
         if(SemaphoreP_OK == SemaphoreP_pend(nullPtr, SemaphoreP_WAIT_FOREVER))
         {
             result = osal_FAILURE;
         }
-#else
+#if !defined(BARE_METAL)
         /* Only for RTOS */
         if(SemaphoreP_OK == SemaphoreP_postFromClock(nullPtr))
         {

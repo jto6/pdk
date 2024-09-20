@@ -179,7 +179,7 @@ HeapP_Status HeapP_delete(HeapP_Handle handle)
 /*
  *  ======== HeapP_alloc ========
  */
-void *HeapP_alloc(HeapP_Handle handle, uint32_t allocSize)
+void *HeapP_alloc(HeapP_Handle handle, size_t allocSize)
 {
     void *ptr = NULL_PTR;
     HeapP_freertos *heap = (HeapP_freertos *)handle;
