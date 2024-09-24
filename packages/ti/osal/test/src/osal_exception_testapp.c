@@ -42,6 +42,7 @@
 /*                             Includes                                      */
 /*===========================================================================*/
 
+#include <ti/board/board.h>
 #include <ti/osal/DebugP.h>
 #include <ti/osal/TaskP.h>
 #include <ti/osal/osal.h>

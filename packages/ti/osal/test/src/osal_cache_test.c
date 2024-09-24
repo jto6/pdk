@@ -38,6 +38,7 @@
  *
  */
 
+#include <ti/board/board.h>
 #include <ti/osal/osal.h>
 #include "OSAL_log.h"
 #include <ti/csl/arch/r5/csl_arm_r5_mpu.h>

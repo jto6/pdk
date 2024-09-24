@@ -59,6 +59,7 @@ extern "C" {
 #include <ti/osal/soc/osal_soc.h>
 #include <ti/osal/src/nonos/Nonos_config.h>
 #include "OSAL_log.h"
+#include <ti/board/board.h>
 
 #if defined(SAFERTOS)
 #include <SafeRTOS_API.h>
