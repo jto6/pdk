@@ -103,7 +103,11 @@ static int32_t OsalApp_utilsNullcheckTest(void)
             result = osal_FAILURE;
         }
     }
-    
+#if defined(SAFERTOS)
+    /* for safertos privilege level check */
+    Osal_isInPrivilegeMode();
+#endif
+
     if(osal_OK != result)
     {
         OSAL_log("\n Utils Null test failed! \n");
@@ -144,7 +148,7 @@ static int32_t OsalApp_utilsSetHwAttrMultiCtrlTest(void)
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-int32_t OsalApp_utilsNonosTests(void)
+int32_t OsalApp_utilsTests(void)
 {
     int32_t result = osal_OK;
     

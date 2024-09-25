@@ -60,8 +60,13 @@
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
-
+#if defined(BUILD_C7X)
+uint8_t      gOsalAppTskStack[OSAL_APP_MAX_TASK][OSAL_APP_TASK_STACK_SIZE] __attribute__((aligned( 0x2000 )));
+uint32_t     gstackSize = sizeof(gOsalAppTskStack);
+#else
 uint8_t      gOsalAppTskStack[OSAL_APP_MAX_TASK][OSAL_APP_TASK_STACK_SIZE] __attribute__((aligned(OSAL_APP_TASK_STACK_SIZE)));
+uint32_t     gstackSize = OSAL_APP_TASK_STACK_SIZE;
+#endif
 TaskP_Handle gOsalAppTaskPSelfmacroTaskHandle;
 uint32_t     gOsalAppMakeProgress = UFALSE;
 
@@ -69,6 +74,7 @@ uint32_t     gOsalAppMakeProgress = UFALSE;
 /*                            Function Declarations                           */
 /* ========================================================================== */
 
+#if defined(BUILD_MCU)
 /*
  * Description  : Test the following:
  *                  1) Create tasks with priorities lower than lowest supported.
@@ -76,6 +82,7 @@ uint32_t     gOsalAppMakeProgress = UFALSE;
  *                  3) Create tasks more than supported number of tasks.
  */
 static int32_t OsalApp_taskCreateMaxTaskTest(void);
+#endif
 
 /*
  * Description  : Test the following:
@@ -118,6 +125,7 @@ static void OsalApp_taskSelfHandleTestTask(void *arg)
     TaskP_delete(&gOsalAppTaskPSelfmacroTaskHandle);
 }
 
+#if defined(BUILD_MCU)
 /*
 Description  : Creating OSAL_APP_MAX_TASK number of tasks tp test the when tasks count go beyond limit
 */
@@ -129,7 +137,7 @@ static int32_t OsalApp_taskCreateMaxTaskTest(void)
     int32_t result = osal_OK;
 
     TaskP_Params_init(&params);
-    params.stacksize = OSAL_APP_TASK_STACK_SIZE;
+    params.stacksize = gstackSize;
 
     /* Create one task lesser than max supported, as current task is already getting executed  */
     for(taskIter = 0U; taskIter < OSAL_APP_MAX_TASK - 1; taskIter++)
@@ -154,6 +162,10 @@ static int32_t OsalApp_taskCreateMaxTaskTest(void)
         {
             result = osal_FAILURE;
         }
+        if(NULL_PTR == TaskP_self())
+        {
+            result = osal_FAILURE;
+        }
     }
 
     if(osal_OK == result)
@@ -175,6 +187,7 @@ static int32_t OsalApp_taskCreateMaxTaskTest(void)
 
     return result;
 }
+#endif
 
 /*
 Description  : Creating a task having priority more than zero to fulfill condition TaskP_PRIORITY_HIGHEST < taskPriority
@@ -193,7 +206,7 @@ static int32_t OsalApp_taskGeneralTests(void)
     params.priority = 1;
     memset(gOsalAppTskStack, 0, sizeof(gOsalAppTskStack));
     params.stack    = gOsalAppTskStack[0];
-    params.stacksize = OSAL_APP_TASK_STACK_SIZE;
+    params.stacksize = gstackSize;
 
     /* Test tasks sleeping for corect amount of time. */
     start = TimerP_getTimeInUsecs();
@@ -249,7 +262,7 @@ static int32_t OsalApp_taskIsTerminated(void)
     params.priority = 1;
     memset(gOsalAppTskStack, 0, sizeof(gOsalAppTskStack));
     params.stack    = gOsalAppTskStack[0];
-    params.stacksize = OSAL_APP_TASK_STACK_SIZE;
+    params.stacksize = gstackSize;
 
     handle = TaskP_create((TaskP_Fxn)OsalApp_dummytaskFxn, &params);
     if((NULL == handle) || (UTRUE == TaskP_isTerminated(handle)))
@@ -292,7 +305,7 @@ static int32_t OsalApp_taskNegativeTests(void)
     params.priority = OSAL_APP_PRIORITY_HIGHEST;
     memset(gOsalAppTskStack, 0, sizeof(gOsalAppTskStack));
     params.stack    = gOsalAppTskStack[0];
-    params.stacksize = OSAL_APP_TASK_STACK_SIZE;
+    params.stacksize = gstackSize;
 
     handle = TaskP_create((TaskP_Fxn)OsalApp_dummytaskFxn, &params);
     if(NULL_PTR == handle)
@@ -335,18 +348,20 @@ int32_t OsalApp_taskTests(void)
 {
     int32_t result = osal_OK;
 
+#if defined(BUILD_MCU)
     result += OsalApp_taskCreateMaxTaskTest();
+#endif
     result += OsalApp_taskGeneralTests();
     result += OsalApp_taskIsTerminated();
     result += OsalApp_taskNegativeTests();
 
     if(osal_OK == result)
     {
-        OSAL_log(" All TaskP tests have passed!!\n");
+        OSAL_log("\n All TaskP tests have passed!!\n");
     }
     else
     {
-        OSAL_log(" Some or all TaskP tests have failed!!\n");
+        OSAL_log("\n Some or all TaskP tests have failed!!\n");
     }
 
     return result;

@@ -292,15 +292,9 @@ void OSAL_tests(void *arg0, void *arg1)
 
     SwiP_nonos_Test();
 
-    result += OsalApp_utilsNonosTests();
-
 #endif
 
 #if !defined(BARE_METAL)
-
-#if defined(BUILD_MCU)
-    result += OsalApp_taskTests();
-#endif
 
     result += OsalApp_mailboxTests();
 
@@ -312,9 +306,16 @@ void OSAL_tests(void *arg0, void *arg1)
     result += OsalApp_registerIntrTests();
 #endif
 
+    result += OsalApp_taskTests();
+#if defined(BUILD_MCU)
+    result += OsalApp_timerTests();
+#endif
+
     result += OsalApp_c7xArchTests();
 
 #endif
+
+    result += OsalApp_utilsTests();
 
     result += OsalApp_cacheTests();
 

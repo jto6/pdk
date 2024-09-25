@@ -122,7 +122,7 @@ int32_t OsalApp_eventTests(void);
 int32_t OsalApp_semaphoreTests(void);
 
 /* Top level function for utils tests */
-int32_t OsalApp_utilsNonosTests(void);
+int32_t OsalApp_utilsTests(void);
 
 /* Top level function for Cycleprofiler test */
 int32_t OsalApp_cycleProfilerTest(void);
@@ -144,6 +144,9 @@ int32_t OsalApp_c7xArchTests(void);
 
 /* Top level function for freertos portable tests */
 int32_t OsalApp_freertosPortableTests(void);
+
+/* Top level function for timer tests */
+int32_t OsalApp_timerTests(void);
 
 /* ========================================================================== */
 /*                       Static Function Definitions                          */

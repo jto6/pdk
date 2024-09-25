@@ -18,7 +18,8 @@ INCDIR = . ../src ../../src/safertos
 SRCS_COMMON += osal_extended_testapp.c
 SRCS_COMMON += osal_extended_testapp_hwi.c osal_extended_testapp_mutex.c osal_extended_testapp_cache.c
 SRCS_COMMON += osal_extended_testapp_mailbox.c osal_extended_testapp_task.c osal_extended_testapp_semaphore.c
-SRCS_COMMON += osal_extended_testapp_event.c osal_extended_c7x_cslarch.c
+SRCS_COMMON += osal_extended_testapp_event.c osal_extended_c7x_cslarch.c osal_extended_testapp_utils.c
+SRCS_COMMON += osal_extended_testapp_timer.c
 
 ifneq ($(CORE),$(filter $(CORE), c66xdsp_1 c66xdsp_2))
 SRCS_COMMON += osal_extended_testapp_clock.c osal_extended_testapp_registerinterrupt.c

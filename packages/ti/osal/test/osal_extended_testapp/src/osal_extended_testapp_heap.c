@@ -313,7 +313,7 @@ static int32_t OsalApp_heapFreertosIsUsedTest(void)
             result = osal_FAILURE;
         }
     }
-  
+
     if(osal_OK == result)
     {
         status = HeapP_delete(handle);
@@ -324,12 +324,18 @@ static int32_t OsalApp_heapFreertosIsUsedTest(void)
     }
 
     /* Restore the value in the handle and delete the created Heap. */
+    /* Making the xStarthandle of heap to Null and check the status */
     *handleAddr = temp;
+    *(handleAddr + OSAL_APP_STATIC_HANDLE_OFFSET) = 0U;
+    if(HeapP_OK != HeapP_getHeapStats(handle, &memstats))
+    {
+        result = osal_FAILURE;
+    }
     if((osal_OK != result) || (HeapP_OK != HeapP_delete(handle)))
     {
         result = osal_FAILURE;
     }
-    
+
     /* This handle is already deleted, but we are setting the isUsed parameter to 1(forced corruption),
      * to see how the driver reacts. */
     *handleAddr = 1U;
@@ -337,7 +343,7 @@ static int32_t OsalApp_heapFreertosIsUsedTest(void)
     {
         result = osal_FAILURE;
     }
-    
+
     if(osal_OK != result)
     {
         OSAL_log("\n HeapP test for used parameter failed!! \n");
