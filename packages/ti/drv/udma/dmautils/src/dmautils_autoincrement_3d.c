@@ -353,7 +353,7 @@ static void DmaUtilsAutoInc3d_setupTr(CSL_UdmapTR * tr,
   tr -> ddim2 = transferProp -> transferDim.ddim2;
   tr -> ddim3 = transferProp -> transferDim.ddim3;
   if ((transferProp -> dmaDfmt == (uint32_t) DMAUTILSAUTOINC3D_DFMT_COMP) || (transferProp -> dmaDfmt == (uint32_t) DMAUTILSAUTOINC3D_DFMT_DECOMP)) {
-    int32_t success = (int32_t) DmaUtilsAutoInc3d_SetupCmpSecTr(transferProp);
+    (void)DmaUtilsAutoInc3d_SetupCmpSecTr(transferProp);
   }
 }
 
@@ -429,36 +429,39 @@ static void DmaUtilsAutoInc3d_getUtcInfo(uint32_t * pUtcId, uint32_t * pDru_loca
   uint32_t utcId = 0;
   uint32_t dru_local_event_start = DRU_LOCAL_EVENT_START_DEFAULT;
 
-  uint8_t corePacNum = coreId + CSL_C7X_CPU_COREPACK_NUM_C7X1;
-  switch (corePacNum) {
   #if defined(SOC_J784S4) || defined(SOC_J742S2)
-    case CSL_C7X_CPU_COREPACK_NUM_C7X1:
-      utcId = UDMA_UTC_ID_C7X_MSMC_DRU4;
-      dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 0U); // TODO: Pick from CSL if possible
-      break;
-    case CSL_C7X_CPU_COREPACK_NUM_C7X2:
-      utcId = UDMA_UTC_ID_C7X_MSMC_DRU5;
-      dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 1U); // TODO: Pick from CSL if possible
-      break;
-    case CSL_C7X_CPU_COREPACK_NUM_C7X3:
-      utcId = UDMA_UTC_ID_C7X_MSMC_DRU6;
-      dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 2U); // TODO: Pick from CSL if possible
-      break;
-  #if !defined(SOC_J742S2)
-    case CSL_C7X_CPU_COREPACK_NUM_C7X4:
-      utcId = UDMA_UTC_ID_C7X_MSMC_DRU7;
-      dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 3U); // TODO: Pick from CSL if possible
-      break;
-  #endif
-    default:
-      break;
-    #else
-    default: //J7ES and J721S2 will fall in this condition
-      utcId = UDMA_UTC_ID_MSMC_DRU0;
-      dru_local_event_start = DRU_LOCAL_EVENT_START_DEFAULT; // TODO: Pick from CSL if possible
-      break;
-    #endif
+  uint8_t corePacNum = coreId + CSL_C7X_CPU_COREPACK_NUM_C7X1;
+  
+  if(CSL_C7X_CPU_COREPACK_NUM_C7X1 == corePacNum){
+    utcId = UDMA_UTC_ID_C7X_MSMC_DRU4;
+    dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 0U); // TODO: Pick from CSL if possible
   }
+  else if(CSL_C7X_CPU_COREPACK_NUM_C7X2 == corePacNum){
+    utcId = UDMA_UTC_ID_C7X_MSMC_DRU5;
+    dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 1U); // TODO: Pick from CSL if possible
+  }
+  else if(CSL_C7X_CPU_COREPACK_NUM_C7X3 == corePacNum){
+    utcId = UDMA_UTC_ID_C7X_MSMC_DRU6;
+    dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 2U); // TODO: Pick from CSL if possible
+  }
+  #if !defined(SOC_J742S2)
+  else if(CSL_C7X_CPU_COREPACK_NUM_C7X4 == corePacNum){
+    utcId = UDMA_UTC_ID_C7X_MSMC_DRU7;
+    dru_local_event_start = DRU_LOCAL_EVENT_START_J784S4 + (96U * 3U); // TODO: Pick from CSL if possible
+  }
+  #endif
+  else
+  {
+    /* Do Nothing */
+  }
+  #else
+  //J7ES and J721S2 will fall in this condition
+  {
+    utcId = UDMA_UTC_ID_MSMC_DRU0;
+    dru_local_event_start = DRU_LOCAL_EVENT_START_DEFAULT; // TODO: Pick from CSL if possible
+  }
+  #endif
+
   if (pUtcId != NULL) {
     * pUtcId = utcId;
   }

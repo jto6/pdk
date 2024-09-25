@@ -1618,15 +1618,15 @@ uint16_t Udma_rmAllocProxy(Udma_DrvHandle drvHandle)
 
 void Udma_rmFreeProxy(uint16_t proxyNum, Udma_DrvHandle drvHandle)
 {
-    uint16_t           i;
-    uint32_t           offset, bitPos, bitMask;
+    uint16_t            i, offset, bitPos;
+    uint32_t            bitMask;
     Udma_RmInitPrms    *rmInitPrms = &drvHandle->initPrms.rmInitPrms;
 
     Udma_assert(drvHandle, ((Udma_OsalMutexLockFxn) NULL_PTR != drvHandle->initPrms.osalPrms.lockMutex));
     drvHandle->initPrms.osalPrms.lockMutex(drvHandle->rmLock);
 
     i = proxyNum - rmInitPrms->startProxy;
-    offset = (uint32_t)(i >> (uint16_t)5U);
+    offset = (i >> 5U);
     Udma_assert(drvHandle, (offset < UDMA_RM_PROXY_ARR_SIZE));
     bitPos = i - (offset << 5U);
     bitMask = (uint32_t) 1U << bitPos;
@@ -1637,7 +1637,7 @@ void Udma_rmFreeProxy(uint16_t proxyNum, Udma_DrvHandle drvHandle)
     drvHandle->initPrms.osalPrms.unlockMutex(drvHandle->rmLock);
 
     return;
-}
+} 
 
 uint32_t Udma_rmAllocEvent(Udma_DrvHandle drvHandle)
 {
