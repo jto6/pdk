@@ -586,6 +586,10 @@ int32_t RPMessage_announce(uint32_t remoteProcId, uint32_t endPt, const char* na
     return status;
 }
 
+#ifndef IPC_EXCLUDE_CTRL_TASKS
+    void      *semaphoreHandle[255];
+#endif /* IPC_EXCLUDE_CTRL_TASKS */
+
 /**
  *  \brief RPMessage_processAnnounceMsg : Handle an endpoint annoucement
  *         message from another processor
@@ -597,6 +601,7 @@ static int32_t RPMessage_processAnnounceMsg(const RPMessage_Announcement *amsg, 
 #ifndef IPC_EXCLUDE_CTRL_TASKS
     RPMessage_Waiter *w;
     IpcUtils_QElem *elem, *head;
+    uint32_t count=0,loop=0;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
     int32_t rtnVal = IPC_SOK;
     Ipc_OsalPrms *pOsalPrms = &gIpcObject.initPrms.osalPrms;
@@ -659,6 +664,7 @@ static int32_t RPMessage_processAnnounceMsg(const RPMessage_Announcement *amsg, 
                 do
                 {
                     w = (RPMessage_Waiter*)elem;
+                    elem = (IpcUtils_QElem *) IpcUtils_Qnext(elem);
                     if( (NULL != w) &&
                             (strncmp(w->name, amsg->name, SERVICENAMELEN-1U) == 0) &&
                             ((w->procId == procId) || (w->procId == RPMESSAGE_ANY)))
@@ -672,10 +678,19 @@ static int32_t RPMessage_processAnnounceMsg(const RPMessage_Announcement *amsg, 
                                 (uint32_t)w->semHandle);
 #endif
 
-                        pOsalPrms->unlockMutex(w->semHandle);
+                        semaphoreHandle[count] = w->semHandle;
+                        count++;
                     }
-                    elem = (IpcUtils_QElem *) IpcUtils_Qnext(elem);
+
+
                 } while (elem != head);
+
+                while(count!= 0)
+                {
+                    pOsalPrms->unlockMutex(semaphoreHandle[loop]);
+                    count--;
+                    loop++;
+                }
             }
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
             pOsalPrms->unLockHIsrGate(module.gateSwi, key);
