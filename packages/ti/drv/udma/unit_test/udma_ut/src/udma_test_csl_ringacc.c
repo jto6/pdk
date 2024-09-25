@@ -96,7 +96,7 @@ static void memOpsFxn(void *addr, uint32_t size, uint32_t type)
 int32_t udmaTestCslRingAcc(UdmaTestTaskObj *taskObj)
 {
     int32_t             retVal    = UDMA_SOK;
-    Udma_DrvHandle      drvHandle = &taskObj->testObj->drvObj[UDMA_TEST_INST_ID_MAIN_0];
+    Udma_DrvHandle      drvHandle = &taskObj->testObj->drvObj[UDMA_TEST_DEFAULT_UDMA_INST];
     struct Udma_ChObj   chObj;
     Udma_ChHandle       chHandle  = &chObj;
     uint32_t            elemCnt   = 10U;
