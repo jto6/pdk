@@ -226,12 +226,12 @@ parse_validate_extotp_wprp(){
 }
 # raw_encrypt <PUBLIC-KEY.PEM> <DATA> <ENCRYPTED-OUTPUT>
 raw_encrypt(){
-	openssl rsautl -encrypt -raw -inkey "$1" -pubin -in "$2" -out "$3"
+	openssl pkeyutl -encrypt -raw -inkey "$1" -pubin -in "$2" -out "$3"
 }
 
 # encrypt <PUBLIC-KEY.PEM> <DATA> <ENCRYPTED-OUTPUT>
 encrypt(){
-	openssl rsautl -encrypt -inkey "$1" -pubin -in "$2" -out "$3"
+	openssl pkeyutl -encrypt -inkey "$1" -pubin -in "$2" -out "$3"
 }
 
 # sign_the_hash <PRIV-KEY.PEM> <OUTPUT> <INPUT>
