@@ -215,7 +215,10 @@ void vApplicationInterruptHandlerHook( portUInt32Type ulInterruptVectorNum )
     {
        DebugP_assert(BFALSE);
     }
-    axIntDispatchTable[ uxDispatchIndex ].pxIntHandlerCoreFn();
+    else
+    {
+        axIntDispatchTable[ uxDispatchIndex ].pxIntHandlerCoreFn();
+    }
 }
 /*-----------------------------------------------------------------------------
  * End of Override functions for TI PDK library startup code.

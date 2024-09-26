@@ -49,6 +49,10 @@
 extern "C" {
 #endif
 
+#if defined (_TMS320C6X)
+#define CSL_COREPAC_MAX_EVENT_ID (128U)
+#endif
+
 /*
  * Purpose:     Initializes the interrupt registration config structure
  * Description: Initializes the interrupt registration config structure prior to
@@ -96,7 +100,7 @@ OsalInterruptRetCode_e Osal_RegisterInterrupt(OsalRegisterIntrParams_t *interrup
           (NULL==interruptRegParams) ||
           (NULL == hwiPHandlePtr) ||
 #if defined (_TMS320C6X)
-          (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.corepacEventNum) ||
+          (CSL_COREPAC_MAX_EVENT_ID < interruptRegParams->corepacConfig.corepacEventNum) ||
 #endif
           (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.intVecNum)
           )
