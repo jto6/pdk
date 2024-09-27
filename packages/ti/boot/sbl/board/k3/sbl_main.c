@@ -562,6 +562,15 @@ int main()
 
     SBL_ADD_PROFILE_POINT;
 
+#if defined (SBL_ENABLE_HLOS_BOOT)
+    /* Unlock control MMRs */
+    retVal = Board_unlockMMR();
+    if (CSL_PASS != retVal)
+    {
+        SBL_log(SBL_LOG_ERR,"Board_unlockMMR ...FAILED \n");
+    }
+#endif
+
     /* Boot the core running SBL in the end */
     if ((k3xx_evmEntry.CpuEntryPoint[MCU1_CPU1_ID] != SBL_INVALID_ENTRY_ADDR) ||
         (k3xx_evmEntry.CpuEntryPoint[MCU1_CPU0_ID] < SBL_INVALID_ENTRY_ADDR))

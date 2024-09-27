@@ -103,3 +103,10 @@
  *
  */
 void _resetvectors (void);
+
+/**
+ * \brief  Unlocks MMR registers
+ *
+ * \return  Board_STATUS
+ */
+extern Board_STATUS Board_unlockMMR(void);
