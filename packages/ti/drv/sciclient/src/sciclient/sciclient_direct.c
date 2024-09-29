@@ -636,7 +636,7 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
                              */
                             if (coreRefCnt <= 0) {
                                 Osal_delay(1000U); /* time for ATF go in WFI */
-                                ret = Sciclient_pmicShutdown();
+                                Sciclient_pmicShutdown();
                             }
                         }
                         else {

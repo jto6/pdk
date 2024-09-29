@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Texas Instruments Incorporated
+ * Copyright (c) 2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,24 +37,46 @@
  *
  */
 
-#include <stdint.h>
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 
-#if defined(SOC_J784S4)
-#include <ti/board/src/j784s4_evm/include/board_power.h>
-#elif defined(SOC_J742S2)
-#include <ti/board/src/j742s2_evm/include/board_power.h>
-#endif
+#include <stdint.h>
+#include <ti/csl/soc.h>
+#include <ti/csl/csl_gpio.h>
 #include <ti/drv/sciclient/sciclient.h>
 
-int32_t Sciclient_pmicShutdown(void)
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/** \brief Resistor disable */
+#define PIN_PULL_DISABLE                (0x1U << 16U)
+/** \brief Receiver enable */
+#define PIN_INPUT_ENABLE                (0x1U << 18U)
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+void Sciclient_pmicShutdown(void)
 {
-    int32_t ret = CSL_PASS;
-    Board_STATUS status = -1;
+    /* WKUP_GPIO0_55 */
+    uint32_t sys_pwr_gpio_pin     = 55U;
+    uint32_t gpio_pin_reg_offset  = sys_pwr_gpio_pin / 32U;
+    uint32_t gpio_pin_reg_bit_pos = sys_pwr_gpio_pin % 32U;
+    uint32_t regVal;
 
-    status = Board_pmPowerOff(0x48);
-    if (status != 0) {
-        ret = CSL_EFAIL;
-    }
+    /* Sets the pinmux mode to 7 for using the gpio pin(WKUP_GPIO0_55) corresponding to SYS_MCU_PWRDN */
+    CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_PADCONFIG41, (PIN_PULL_DISABLE | PIN_INPUT_ENABLE) | 7);
 
-    return ret;
+    /* Sets the gpio pin to an output pin */
+    regVal = CSL_REG32_RD((uint32_t *)(CSL_WKUP_GPIO0_BASE + CSL_GPIO_DIR(gpio_pin_reg_offset)));
+    regVal = regVal & ~(1U << (gpio_pin_reg_bit_pos));
+    CSL_REG32_WR(CSL_WKUP_GPIO0_BASE + CSL_GPIO_DIR(gpio_pin_reg_offset), regVal);
+
+    /* Toggles the gpio to poweroff the pmic */
+    regVal = CSL_REG32_RD((uint32_t *)(CSL_WKUP_GPIO0_BASE + CSL_GPIO_OUT_DATA(gpio_pin_reg_offset)));
+    regVal = regVal | (1U << (gpio_pin_reg_bit_pos));
+    CSL_REG32_WR(CSL_WKUP_GPIO0_BASE + CSL_GPIO_OUT_DATA(gpio_pin_reg_offset), regVal);
 }

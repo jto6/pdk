@@ -770,7 +770,7 @@ int32_t Sciclient_enterSleep(uint32_t *msg_recv);
  *
  *  \return status    Function return status.
  */
-int32_t Sciclient_pmicShutdown(void);
+void Sciclient_pmicShutdown(void);
 
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
