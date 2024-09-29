@@ -958,6 +958,7 @@ int32_t UdmaChDisableTest(UdmaTestTaskObj *taskObj)
 /* 
  * Test Case Description: Verifies the function Udma_chConfigPdma when
  * Test scenario 1: Check when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_PDMA_TX
+ * Test scenario 1: Check when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_PDMA_RX
  */ 
 int32_t UdmaChConfigPdmaTest(UdmaTestTaskObj *taskObj)
 {
@@ -970,6 +971,7 @@ int32_t UdmaChConfigPdmaTest(UdmaTestTaskObj *taskObj)
     Udma_DrvHandle    drvHandle;
     Udma_ChPrms       chPrms;
     uint32_t          chType;
+    Udma_ChRxPrms     rxPrms;
     
     GT_1trace(taskObj->traceMask, GT_INFO1,
               " |TEST INFO|:: Task:%d: UDMA ChConfigPdma Testcase ::\r\n",
@@ -1003,6 +1005,39 @@ int32_t UdmaChConfigPdmaTest(UdmaTestTaskObj *taskObj)
             retVal = UDMA_SOK;
         }
         Udma_chClose(chHandle);
+    }
+
+    if(UDMA_SOK == retVal)
+    {
+        /* Test scenario 2: Check when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_PDMA_RX */
+        chHandle         = &chObj;
+        chType           = UDMA_CH_TYPE_PDMA_RX;
+        UdmaChPrms_init(&chPrms, chType);
+        instID           = UDMA_TEST_DEFAULT_UDMA_INST;
+        drvHandle        = &taskObj->testObj->drvObj[instID];
+        chPrms.peerChNum = CSL_PDMA_CH_MCU_MCAN0_CH0_RX;
+        retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        if(UDMA_SOK == retVal)
+        {
+            /* Config RX channel */
+            UdmaChRxPrms_init(&rxPrms, UDMA_CH_TYPE_PDMA_RX);
+            retVal = Udma_chConfigRx(chHandle, &rxPrms);
+            /* Config PDMA channel */
+            UdmaChPdmaPrms_init(&pdmaPrms);
+            retVal = Udma_chConfigPdma(chHandle, &pdmaPrms);
+            if(UDMA_SOK != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR,
+                        " |TEST INFO|:: FAIL:: UDMA:: ChConfigPdma:: Neg:: "
+                        " when instType is UDMA_INST_TYPE_NORMAL and chType is UDMA_CH_TYPE_PDMA_RX!!\n");
+                retVal = UDMA_EFAIL;
+            }
+            else
+            {
+                retVal = UDMA_SOK;
+            }
+            Udma_chClose(chHandle);
+        }
     }
 
     return retVal;
@@ -1055,9 +1090,10 @@ int32_t UdmaTestChGetTdCqRingHandle(UdmaTestTaskObj *taskObj)
 
 /* 
  * Test Case Description: Verifies the function Udma_chGetFqRingNum
- * Test scenario 1: Check for Valid args
+ * Test scenario 1: Check Udma_chGetFqRingNum when valid args are passed
+ * Test scenario 2: Check Udma_chOpen when chType is UDMA_CH_TYPE_RX 
  */
-int32_t UdmaTestChGetFqRingNum(UdmaTestTaskObj *taskObj)
+int32_t UdmaTestChFqRing(UdmaTestTaskObj *taskObj)
 {
     int32_t           retVal = UDMA_SOK;
     uint32_t          heapId = UTILS_MEM_HEAP_ID_MSMC;
@@ -1122,18 +1158,59 @@ int32_t UdmaTestChGetFqRingNum(UdmaTestTaskObj *taskObj)
         }
     }
 
+    /* Test scenario 2: Check Udma_chOpen when chType is UDMA_CH_TYPE_RX */
+    ringMem = Utils_memAlloc(heapId, ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+    if(NULL == ringMem)
+    {
+        retVal = UDMA_EALLOC;
+        GT_0trace(taskObj->traceMask, GT_ERR, " Ring memory allocation failure\r\n");
+    }
+
+    if(UDMA_SOK == retVal)
+    {
+        chHandle                      = &chObj;
+        instID                        = UDMA_TEST_DEFAULT_UDMA_INST;
+        chType                        = UDMA_CH_TYPE_RX;
+        UdmaChPrms_init(&chPrms, chType);
+        drvHandle                     = &taskObj->testObj->drvObj[instID];
+        chPrms.peerChNum              = UDMA_PSIL_CH_MCU_CPSW0_RX;
+        chPrms.fqRingPrms.ringMem     = ringMem;
+        chPrms.fqRingPrms.ringMemSize = ringMemSize;
+        chPrms.fqRingPrms.elemCnt     = elemCnt;
+        retVal                        = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        if(UDMA_SOK != retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                        " |TEST INFO|:: FAIL:: UDMA:: Udma_chOpen:: Pos::"
+                        " Check when chType is UDMA_CH_TYPE_RX !!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+            Udma_chClose(chHandle);
+        }
+    }
+
+    if(NULL != ringMem)
+    {
+        retVal += Utils_memFree(heapId, ringMem, ringMemSize);
+        if(UDMA_SOK != retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR, " Ring free failed!!\n");
+        }
+    }
+
     return (retVal);
 }
 
 /*
  * Test Case Description: Verifies the function Udma_chGetSwTriggerRegister and Udma_chGetStats
- * Test scenario 1: Check when instType is UDMA_INST_TYPE_LCDMA_BCDMA 
- *                  and chType is UDMA_CH_TYPE_TX
+ * Test scenario 1: Check when instType is chType is UDMA_CH_TYPE_TX
  */
 int32_t UdmaTestChSetSwTriggerRegister(UdmaTestTaskObj *taskObj)
 {
     int32_t            retVal = UDMA_SOK;
-#if (UDMA_SOC_CFG_BCDMA_PRESENT == 1)
     struct Udma_ChObj  chObj;
     Udma_ChHandle      chHandle;
     struct Udma_DrvObj backUpDrvObj;
@@ -1141,7 +1218,6 @@ int32_t UdmaTestChSetSwTriggerRegister(UdmaTestTaskObj *taskObj)
     Udma_ChPrms        chPrms;
     uint32_t           chType;
     uint32_t           timeout;
-    uint32_t           instID; 
     uint32_t           trigger;
     Udma_ChStats       chStats;
 
@@ -1149,17 +1225,14 @@ int32_t UdmaTestChSetSwTriggerRegister(UdmaTestTaskObj *taskObj)
               " |TEST INFO|:: Task:%d: UDMA ChSetSwTriggerRegister positive Testcase ::\r\n",
               taskObj->taskId);
 
-    /* Test scenario 1: Check when instType is UDMA_INST_TYPE_LCDMA_BCDMA 
-    *                   and chType is UDMA_CH_TYPE_TX 
-    */
+    /* Test scenario 1: Check when instType is chType is UDMA_CH_TYPE_TX */
     chHandle         = &chObj;
     timeout          = 0U;
-    instID           = UDMA_TEST_INST_ID_BCDMA_0;
     chType           = UDMA_CH_TYPE_TX;
-    backUpDrvObj     = taskObj->testObj->drvObj[instID];
-    drvHandle        = &taskObj->testObj->drvObj[instID];
+    backUpDrvObj     = taskObj->testObj->drvObj[taskObj->chObj[0]->instId];
+    drvHandle        = &taskObj->testObj->drvObj[taskObj->chObj[0]->instId];
     UdmaChPrms_init(&chPrms, chType);
-    chPrms.peerChNum = UDMA_PSIL_CH_MAIN_CSI_TX;
+    chPrms.peerChNum = UDMA_TEST_MAIN_PEER_CH_NUM_TX;
     retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
     trigger          = CSL_UDMAP_TR_FLAGS_TRIGGER_GLOBAL1;
     Udma_ChTxPrms txChPrms;
@@ -1201,8 +1274,7 @@ int32_t UdmaTestChSetSwTriggerRegister(UdmaTestTaskObj *taskObj)
         }
         Udma_chClose(chHandle);
     }
-    taskObj->testObj->drvObj[instID] = backUpDrvObj;
-#endif
+    taskObj->testObj->drvObj[taskObj->chObj[0]->instId] = backUpDrvObj;
 
     return retVal;
 }

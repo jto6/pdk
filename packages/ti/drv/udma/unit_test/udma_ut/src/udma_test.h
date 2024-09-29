@@ -714,7 +714,7 @@ int32_t UdmaTestChGetDefaultFlowHandle(UdmaTestTaskObj *taskObj);
 int32_t UdmaChDisableTest(UdmaTestTaskObj *taskObj);
 int32_t UdmaChConfigPdmaTest(UdmaTestTaskObj *taskObj);
 int32_t UdmaTestChGetTdCqRingHandle(UdmaTestTaskObj *taskObj);
-int32_t UdmaTestChGetFqRingNum(UdmaTestTaskObj *taskObj);
+int32_t UdmaTestChFqRing(UdmaTestTaskObj *taskObj);
 int32_t UdmaTestChSetSwTriggerRegister(UdmaTestTaskObj *taskObj);
 int32_t UdmaChGetStatsTest(UdmaTestTaskObj *taskObj);
 int32_t UdmaChGetTriggerEventTest(UdmaTestTaskObj *taskObj);
@@ -799,9 +799,9 @@ int32_t udmaTestUdmaPrinftMutexNegTc(UdmaTestTaskObj *taskObj);
  * UDMA rm test case functions
  */
 int32_t UdmaRmFreeBlkCopyUhcChTest(UdmaTestTaskObj *taskObj);
-int32_t UdmaRmFreeHcChTest(UdmaTestTaskObj *taskObj);
-int32_t UdmaRmFreeTxUhcChTest(UdmaTestTaskObj *taskObj);
-int32_t UdmaRmFreeRxUhcChTest(UdmaTestTaskObj *taskObj);
+int32_t UdmaRmAllocFreeTest(UdmaTestTaskObj *taskObj);
+int32_t UdmaRmFreeAllocTxChUhcHcChTest(UdmaTestTaskObj *taskObj);
+int32_t UdmaRmFreeAllocRxChUhcHcChTest(UdmaTestTaskObj *taskObj);
 int32_t UdmaRmInitPrmsinitTestNeg(UdmaTestTaskObj *taskObj);
 int32_t UdmaRmAllocBlkCopyChTestNeg(UdmaTestTaskObj *taskObj);
 int32_t UdmaRmAllocTxChTestNeg(UdmaTestTaskObj *taskObj);

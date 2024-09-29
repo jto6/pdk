@@ -291,7 +291,9 @@ int32_t UdmaTestEventRegisterNeg(UdmaTestTaskObj *taskObj)
  * 1)Test scenario 1: Check when eventHandle is NULL.
  * 2)Test scenario 2: Check when drvInitDone is UDMA_INIT_DONE.
  * 3)Test scenario 3: Check when eventInitDone is UDMA_DEINIT_DONE
- * 4)Test scenario 4: Check to get print message [Error] Free Event resource failed!!.
+ * 4)Test scenario 4: Check to free-up master event when shared events are still not yet
+ *                    unregistered
+ * 5)Test scenario 5: Check Udma_eventUnRegister when devIdUdma is not valid
  */
 int32_t UdmaTestEventUnRegisterNeg(UdmaTestTaskObj *taskObj)
 {
@@ -301,6 +303,12 @@ int32_t UdmaTestEventUnRegisterNeg(UdmaTestTaskObj *taskObj)
     uint32_t             instId;
     struct Udma_DrvObj   backUpDrvObj;
     struct Udma_ChObj    chObj;
+    Udma_ChHandle        chHandle;
+    Udma_EventPrms       eventPrms;
+    Udma_ChPrms          chPrms;
+    uint32_t             chType;
+    uint32_t             instID;
+    Udma_DrvHandle       drvHandle;
 
     GT_1trace(taskObj->traceMask, GT_INFO1,
               " |TEST INFO|:: Task:%d: UDMA EventUnRegister negative Testcase ::\r\n",
@@ -369,7 +377,8 @@ int32_t UdmaTestEventUnRegisterNeg(UdmaTestTaskObj *taskObj)
 
     if(UDMA_SOK == retVal)
     {
-        /* Test scenario 4: Check to get print message [Error] Free Event resource failed!! */
+        /* Test scenario 4: Check to free-up master event when shared events are still not yet
+         *                  unregistered */
         eventHandle->eventInitDone               = UDMA_INIT_DONE;
         eventHandle->eventPrms.chHandle          = &chObj;
         eventHandle->globalEvent                 = UDMA_EVENT_INVALID;
@@ -386,9 +395,53 @@ int32_t UdmaTestEventUnRegisterNeg(UdmaTestTaskObj *taskObj)
         else
         {
             GT_0trace(taskObj->traceMask, GT_ERR," |TEST INFO|:: FAIL:: UDMA::"
-                      " EventUnRegister:: Neg:: to get print message [Error] "
-                      " Free Event resource failed!!\n");
+                      " EventUnRegister:: Neg:: Check to free-up master event when"
+                      " shared events are still not yet \n");
             retVal = UDMA_EFAIL;
+        }
+    }
+
+    if(UDMA_SOK == retVal)
+    {
+        /* Test scenario 5: Check Udma_eventUnRegister when devIdUdma is not valid */
+        chHandle         = &chObj;
+        chType           = UDMA_CH_TYPE_TX;
+        instID           = UDMA_TEST_DEFAULT_UDMA_INST;
+        drvHandle        = &taskObj->testObj->drvObj[instID];
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.peerChNum = UDMA_PSIL_CH_MCU_CPSW0_TX;
+        retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        Udma_ChTxPrms txChPrms;
+        UdmaChTxPrms_init(&txChPrms, chType);
+        if(UDMA_SOK == retVal)
+        {
+            retVal = Udma_chConfigTx(chHandle, &txChPrms);
+            if(UDMA_SOK == retVal)
+            {
+                eventHandle = &eventObj;
+                UdmaEventPrms_init(&eventPrms);
+                eventPrms.eventType         = UDMA_EVENT_TYPE_ERR_OUT_OF_RANGE_FLOW;
+                eventPrms.eventMode         = UDMA_EVENT_MODE_SHARED;
+                eventPrms.masterEventHandle = NULL_PTR;
+                eventPrms.eventCb           = &udmaTestEventCb;
+                retVal                      = Udma_eventRegister(drvHandle, eventHandle, &eventPrms); 
+                drvHandle->devIdUdma        = TISCI_DEV_NAVSS0_UDMAP_0 + 1U;
+                if(UDMA_SOK == retVal)
+                {
+                    retVal = Udma_eventUnRegister(eventHandle);
+                    if(UDMA_SOK != retVal)
+                    {
+                        retVal = UDMA_SOK;
+                    }
+                    else
+                    {
+                        GT_0trace(taskObj->traceMask, GT_ERR," |TEST INFO|:: FAIL:: UDMA::"
+                                  " EventUnRegister:: Neg:: Check when devIdUdma is not"
+                                  " valid!!\n");
+                        retVal = UDMA_EFAIL;
+                    }
+                }
+            }
         }
     }
 
