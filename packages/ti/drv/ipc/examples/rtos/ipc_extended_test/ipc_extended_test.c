@@ -54,6 +54,8 @@
 #include <ti/drv/ipc/src/ipc_virtioPrivate.h>
 #include <ti/drv/ipc/src/ipc_utils.h>
 #include <ti/drv/ipc/src/ipc_priv.h>
+#include <ti/drv/ipc/src/mailbox/V0/mailbox.h>
+#include <ti/drv/ipc/src/ipc_osal.h>
 
 /* IPC example includes */
 #include <ti/drv/ipc/examples/common/src/ipc_setup.h>
@@ -64,9 +66,10 @@
 /* ========================================================================== */
 
 /* IPC test macros for message and end point */
-#define IPC_APP_MSGSIZE        256U
-#define IPC_APP_ENDPT1         13U
-#define IPC_APP_INVALID_ENDPT  5U
+#define IPC_APP_MSGSIZE             256U
+#define IPC_APP_ENDPT1              13U
+#define IPC_APP_INVALID_ENDPT       5U
+#define IPC_APP_CSL_CLEC_MAX_EVT_IN 2047U
 
 /* Macros for invalid ids */
 #define IPC_APP_INVALID_ID    50U
@@ -136,7 +139,7 @@ int32_t IpcApp_extTest(void)
     IpcApp_rpmsgTests();
 
     IpcApp_otherTests();
-
+        
     UART_printf("IPC extended tests have completed\n");
 
     #if defined LDRA_DYN_COVERAGE_EXIT
@@ -192,8 +195,7 @@ static void IpcApp_multiprocessorTests(void)
     Ipc_mpGetId(0U);
 #if defined (BUILD_MCU1_0)
     Ipc_mpGetId((char*)(IPC_APP_MP_INVALID_ID));
-#endif    
-
+#endif
     /* Test multiprocessor get name API for different params */
     Ipc_mpGetName((uint32_t)(NULL));
     Ipc_mpGetName(gIpcApp_SelfProcId);
@@ -211,6 +213,7 @@ static void IpcApp_mailboxTests(void)
 {
     uintptr_t baseAddr    = 0U;
     uint32_t  queueId     = 0U;
+    uint32_t  msg         = 0U;
     uint32_t remoteProcId = 0U;
     uint32_t timeoutCnt   = 0U;
     uint32_t arg          = 0U;
@@ -245,6 +248,7 @@ static void IpcApp_mailboxTests(void)
     pOsalPrms -> disableAllIntr = NULL ;
     pOsalPrms -> restoreAllIntr = NULL ;
     Ipc_mailboxSend(selfId, remoteProcId, 1U, timeoutCnt);
+    Mailbox_sendMessage(baseAddr, queueId, msg);
 
     /* Test mailbox clear API */
     Ipc_mailboxClear(baseAddr,queueId);
@@ -344,6 +348,7 @@ static void IpcApp_rpmsgTests(void)
     char     str[IPC_APP_MSGSIZE];
     uint32_t remoteEndPt;
     RPMessage_Handle handle = NULL;
+    Ipc_OsalPrms initPrms;
 
     UART_printf("IPC extended tests: Running RPMessage Tests\n");
 
@@ -365,26 +370,31 @@ static void IpcApp_rpmsgTests(void)
     Ipc_OsalPrms *pOsalPrms = &ipcObjPtr->initPrms.osalPrms;
     pOsalPrms -> unlockMutex = NULL ;
     RPMessage_unblock(handle);
+    IpcOsalPrms_init(&initPrms);
     RPMessage_unblock(handle);
 
     /* Test RPMessage get remote end point APIs */
     RPMessage_getRemoteEndPt(selfId, NULL, &remoteProcId, &remoteEndPt, 1000);
-    RPMessage_getRemoteEndPtToken(IPC_MCU1_0, NULL, &remoteProcId, &remoteEndPt, 1000, 0);
+    RPMessage_getRemoteEndPtToken(gIpcApp_SelfProcId, NULL, &remoteProcId, &remoteEndPt, 1000, 0);
 
     UART_printf("IPC extended tests: RPMessage Tests Done\n");
 }
 
 static void IpcApp_otherTests(void)
 {
+    uintptr_t arg         = 0U;
     uint32_t remoteProcId = 0U;
     uint32_t index        = 0U;
     uint32_t size         = 0U;
     uint32_t token        = 0U;
     uint32_t daAddr       = 0U;
     uint32_t remoteEndPt;
+    Ipc_InitPrms *intcfg  = NULL;
+    Ipc_MbConfig *cfg     = NULL;
+    Ipc_OsalIsrFxn func   = NULL;
     RPMessage_Params cntrlParam;
     RPMessage_Params params;
-
+    
     /* Initialize an RPMessage_Params structure */
     RPMessageParams_init(&cntrlParam);
 
@@ -397,10 +407,26 @@ static void IpcApp_otherTests(void)
     cntrlParam.stackSize   = IPC_TASK_STACKSIZE;
 
     /* Test RPMessage_init with NULL parameters */
+    {
+      Ipc_Object *ipcObjPtr = getIpcObjInst(0U);
+      Ipc_OsalPrms *pOsalPrms = &ipcObjPtr->initPrms.osalPrms;
+      pOsalPrms -> registerIntr = NULL_PTR ;
+      RPMessage_init(&cntrlParam);
+    }  
+    
+    {
+      Ipc_Object *ipcObjPtr = getIpcObjInst(0U);
+      Ipc_OsalPrms *pOsalPrms = &ipcObjPtr->initPrms.osalPrms;
+      pOsalPrms -> createHIsrGate = NULL_PTR ;
+      pOsalPrms -> createHIsr = NULL_PTR ;
+      RPMessage_init(&cntrlParam);
+    }    
+    
     RPMessage_init(NULL);
 
     cntrlParam.stackSize   = IPC_TASK_STACKSIZE;
     RPMessage_init(&cntrlParam);
+        
     RPMessage_getMessageBufferSize();
 
     RPMessage_unblockGetRemoteEndPt(token);
@@ -415,8 +441,13 @@ static void IpcApp_otherTests(void)
         RPMessage_unblockGetRemoteEndPt(token);
     }
 
+    cfg->eventId = IPC_APP_CSL_CLEC_MAX_EVT_IN;	
+    Mailbox_plugInterrupt(cfg, func, arg);
+    
     IpcUtils_Qput(NULL,NULL);
-
+    
+    IpcUtils_DeInit(); 
+                                       
     Ipc_Object *ipcObjPtr = getIpcObjInst(0U);
     Ipc_OsalPrms *pOsalPrms = &ipcObjPtr->initPrms.osalPrms;
     pOsalPrms -> createMutex = NULL_PTR ;
@@ -425,12 +456,12 @@ static void IpcApp_otherTests(void)
     pOsalPrms -> lockHIsrGate = NULL_PTR ;
     pOsalPrms -> unLockHIsrGate = NULL_PTR ;
 
-    RPMessage_getRemoteEndPtToken(IPC_MCU1_0, IPC_APP_SERVICE_PING_LONG, &remoteProcId,
+    RPMessage_getRemoteEndPtToken(gIpcApp_SelfProcId, IPC_APP_SERVICE_PING_LONG, &remoteProcId,
                 &remoteEndPt,1000,0);
-
+                
     RPMessage_getRemoteEndPt(Ipc_getCoreId(), NULL, &remoteProcId, &remoteEndPt, 1000);
-
-    RPMessage_getRemoteEndPtToken(IPC_MCU1_0, NULL, &remoteProcId, &remoteEndPt, 1000, 0);
+    
+    RPMessage_getRemoteEndPtToken(gIpcApp_SelfProcId, NULL, &remoteProcId, &remoteEndPt, 1000, 0);
 
     RPMessageParams_init(NULL);
 
@@ -451,6 +482,29 @@ static void IpcApp_otherTests(void)
     Ipc_getResourceTraceBufPtr();
     
     Ipc_resetCoreVirtIO(IPC_MCU1_0);
+        
+    {
+      Ipc_Object *ipcObjPtr = getIpcObjInst(0U);
+      Ipc_OsalPrms *pOsalPrms = &ipcObjPtr->initPrms.osalPrms;
+      pOsalPrms -> disableAllIntr = NULL_PTR ;
+      pOsalPrms -> restoreAllIntr =  NULL_PTR ;
+      Ipc_init(intcfg);          
+    }
+    
+    Ipc_init(intcfg);  
+
+    {
+      Ipc_Object *ipcObjPtr = getIpcObjInst(0U);
+      Ipc_OsalPrms *pOsalPrms = &ipcObjPtr->initPrms.osalPrms;
+      pOsalPrms -> createMutex = NULL_PTR ;
+      pOsalPrms -> deleteMutex =  NULL_PTR ;
+      pOsalPrms -> lockMutex = NULL_PTR ;
+      pOsalPrms -> unlockMutex =  NULL_PTR ;
+      Ipc_init(intcfg);  
+    }
+            
+    ipcObjPtr->printLock = NULL;
+    Ipc_deinit();
     
     Ipc_deinit();
     
