@@ -430,7 +430,7 @@ static void DmaUtilsAutoInc3d_getUtcInfo(uint32_t * pUtcId, uint32_t * pDru_loca
   uint32_t dru_local_event_start = DRU_LOCAL_EVENT_START_DEFAULT;
 
   #if defined(SOC_J784S4) || defined(SOC_J742S2)
-  uint8_t corePacNum = coreId + CSL_C7X_CPU_COREPACK_NUM_C7X1;
+  uint32_t corePacNum = coreId + CSL_C7X_CPU_COREPACK_NUM_C7X1;
   
   if(CSL_C7X_CPU_COREPACK_NUM_C7X1 == corePacNum){
     utcId = UDMA_UTC_ID_C7X_MSMC_DRU4;
