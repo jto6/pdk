@@ -66,6 +66,7 @@
 #
 ifeq ($(keywriter_component_make_include), )
 keywriter_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
+keywriter_combined_BOARDLIST = j7200_evm j721s2_evm j784s4_evm j742s2_evm
 keywriter_SOCLIST = j721e j7200 j721s2 j784s4 j742s2
 keywriter_j721e_CORELIST := mcu1_0
 keywriter_j7200_CORELIST := mcu1_0
@@ -112,7 +113,7 @@ export keywriter_img_combined_SOC_DEPENDENCY   = yes
 export keywriter_img_combined_CORE_DEPENDENCY  = yes
 export keywriter_img_combined_PKG_LIST         = sbl
 export keywriter_img_combined_INCLUDE          = $(keywriter_img_combined_PATH)
-export keywriter_img_combined_BOARDLIST        = $(keywriter_BOARDLIST)
+export keywriter_img_combined_BOARDLIST        = $(keywriter_combined_BOARDLIST)
 export keywriter_img_combined_$(SOC)_CORELIST  = mcu1_0
 export keywriter_img_combined_KEYWR_IMAGEGEN   = yes
 
@@ -141,6 +142,9 @@ keywriter_EXAMPLE_LIST =
 KEYWR_CFLAGS =
 endif
 
+export KEYWR_COMBINED_TIFS_BRDCFG=$(PDK_KEYWR_COMP_PATH)/tifs_bin/$(SOC)/combined-tifs-cfg.bin
+export KEYWR_SYSFW_PATH=$(PDK_KEYWR_COMP_PATH)/tifs_bin/$(SOC)/ti-fs-firmware-hs-fs-enc.bin
+export KEYWR_SYSFW_INNER_CERT=$(PDK_KEYWR_COMP_PATH)/tifs_bin/$(SOC)/ti-fs-firmware-hs-fs-cert.bin
 export keywriter_LIB_LIST
 export keywriter_EXAMPLE_LIST
 export KEYWR_CFLAGS

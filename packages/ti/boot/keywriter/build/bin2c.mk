@@ -1,4 +1,4 @@
-.PHONY : $(BIN2C_EXE)
+.PHONY : $(BIN2C_EXE) $(KEYWRITER_APP_DIR)/main.c
 
 $(KEYWRITER_APP_DIR)/main.c: soc/$(SOC)/tifs_keywriter.h
 
