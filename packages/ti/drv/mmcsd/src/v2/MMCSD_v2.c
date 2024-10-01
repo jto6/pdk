@@ -475,8 +475,6 @@ static MMCSD_Error mmcsd_tuning_procedure(MMCSD_Handle handle);
 static void MMCSD_v2_xferStatusFxn_CMD19(uintptr_t arg);
 static void MMCSD_v2_controllerReset(MMCSD_v2_Object *,MMCSD_v2_HwAttrs const *);
 static MMCSD_Error MMCSD_switch_card_speed(MMCSD_Handle handle,uint32_t cmd16_grp1_fn);
-/* Delay function */
-static void delay(uint32_t delayValue);
 
 /* MMC function table for MMC implementation */
 const MMCSD_FxnTable MMCSD_v2_FxnTable = {
@@ -876,8 +874,8 @@ static MMCSD_Error MMCSD_v2_close(MMCSD_Handle handle)
           }
 
           HSMMCSDSwitchSignalVoltage (hwAttrs->baseAddr, MMC_AC12_V1V8_SIGEN_3V3);
-          /* Wait for 5 ms */
-          Osal_delay(5);
+          /* Wait for 1 ms inorder to take the effect of voltage change */
+          Osal_delay(1);
 
           /* wait if the signal voltage bit is set to 1 */
           if(HSMMCSDGetSignalVoltage (hwAttrs->baseAddr)==!MMC_AC12_V1V8_SIGEN_3V3) {
@@ -948,7 +946,12 @@ static MMCSD_Error MMCSD_v2_enableBootPartition(MMCSD_Handle handle, const uint8
             transaction.flags = 0U;
             ret = MMCSD_v2_transfer(handle, &transaction);
         }
-        Osal_delay(5);
+
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
 
         if(MMCSD_OK == ret)
         {
@@ -959,7 +962,11 @@ static MMCSD_Error MMCSD_v2_enableBootPartition(MMCSD_Handle handle, const uint8
             transaction.flags = 0U;
             ret = MMCSD_v2_transfer(handle, &transaction);
         }
-        Osal_delay(5);
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
     }
     else
     {
@@ -1251,7 +1258,6 @@ static MMCSD_Error MMCSD_v2_initSd(MMCSD_Handle handle)
         /* Set the initialization frequency */
         status = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk,hwAttrs->outputClk, UFALSE);
 
-         Osal_delay(10);
         if(status !=STW_SOK) {
 		  MMCSD_DEBUG_TRAP
 		}
@@ -1419,8 +1425,8 @@ static MMCSD_Error MMCSD_v2_initSd(MMCSD_Handle handle)
 
 					   HSMMCSDSwitchSignalVoltage (hwAttrs->baseAddr, MMC_AC12_V1V8_SIGEN_1V8);
 
-					   /* Wait for 5 ms */
-					   Osal_delay(5);
+					   /* Wait for 1 ms inorder to take the effect of volatage change */
+					   Osal_delay(1);
                        /* Set the bus voltage */
 
 					   /* wait if the signal voltage bit is set to 1 */
@@ -1434,7 +1440,6 @@ static MMCSD_Error MMCSD_v2_initSd(MMCSD_Handle handle)
                         /* Set the initialization frequency */
                         status = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk,hwAttrs->outputClk, UFALSE);
 
-                        Osal_delay(10);
                         if(status !=STW_SOK) {
                         MMCSD_DEBUG_TRAP
                         }
@@ -1442,17 +1447,12 @@ static MMCSD_Error MMCSD_v2_initSd(MMCSD_Handle handle)
                         /* PHY configurae */
                         MMCSD_socPhyDisableDLL((MMCSD_v2_HwAttrs const *)hwAttrs);
 
-                        Osal_delay(50);
-
                         /* Configure the Phy accordignly */
                         ret = MMCSD_socPhyConfigure((MMCSD_v2_HwAttrs const *)hwAttrs, MODE_SDR12, 25000000U, 0);
                         if(ret != MMCSD_OK)
                         {
                             MMCSD_DEBUG_TRAP
                         }
-
-					    /* Wait for 1 ms */
-					    Osal_delay(1);
 
                         /* Check if the dat[0-3] level has gone to 0x1111 */
                         do {
@@ -1476,8 +1476,8 @@ static MMCSD_Error MMCSD_v2_initSd(MMCSD_Handle handle)
 				  }
 				  
 				  HSMMCSDSwitchSignalVoltage (hwAttrs->baseAddr, MMC_AC12_V1V8_SIGEN_3V3);
- 	              /* Wait for 5 ms */
-	              Osal_delay(5);
+ 	              /* Wait for 1 ms inorder to take the effect of change in voltage */
+	              Osal_delay(1);
                   
 	              /* wait if the signal voltage bit is set to 1 */
 	              if(HSMMCSDGetSignalVoltage (hwAttrs->baseAddr)==!MMC_AC12_V1V8_SIGEN_3V3) {
@@ -1915,7 +1915,6 @@ static MMCSD_Error MMCSD_switch_card_speed(MMCSD_Handle handle,uint32_t cmd16_gr
 		  MMCSD_DEBUG_TRAP
 		  return (MMCSD_ERR);
 	   }
-        Osal_delay(50);
         /* Configure the Phy accordignly */
         
         retVal = MMCSD_socPhyConfigure((MMCSD_v2_HwAttrs const *)hwAttrs,phy_mode, phy_freq, phy_driverType);
@@ -2157,7 +2156,11 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
         transaction.flags = MMCSD_CMDRSP_BUSY;
         ret = MMCSD_v2_transfer(handle, &transaction);
      }
-     Osal_delay(50);
+    if (MMCSD_OK == ret)
+    {
+        /* Wait untill device is ready for next transfer */
+        mmcsd_check_transfer_ready(handle);
+    }
      if(MMCSD_OK == ret) {
   		/* Wait for DAT0 to go low */
        MMCSD_v2_waitDat0(hwAttrs);
@@ -2177,7 +2180,11 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
        transaction.flags = MMCSD_CMDRSP_BUSY;
        ret = MMCSD_v2_transfer(handle, &transaction);
 
-       Osal_delay(50);
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
        if(MMCSD_OK == ret) {
   	  	  /* Wait for DAT0 to go low */
           MMCSD_v2_waitDat0(hwAttrs);
@@ -2197,9 +2204,6 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
     if(ret!=STW_SOK) {
 		return MMCSD_ERR;
 	}
-
-    /* NEW: Enable DLL */
-    Osal_delay(50);
      
 
     MMCSD_socPhyConfigure(hwAttrs,phyMode, phy_clk_freq, phyDriverType);
@@ -2240,7 +2244,11 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
          transaction.flags = MMCSD_CMDRSP_BUSY;
          ret = MMCSD_v2_transfer(handle, &transaction);
 
-       Osal_delay(50);
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
 
 
 
@@ -2250,8 +2258,6 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
        if(ret!=STW_SOK) {
 		  return MMCSD_ERR;
 	   }
-
-       Osal_delay(50);
 
        phyMode = MODE_HSSDR50;
        
@@ -2263,7 +2269,11 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
        transaction.flags = MMCSD_CMDRSP_BUSY;
        ret = MMCSD_v2_transfer(handle, &transaction);
 
-       Osal_delay(50);
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
        if(MMCSD_OK == ret) {
   	  	  /* Wait for DAT0 to go low */
           MMCSD_v2_waitDat0(hwAttrs);
@@ -2280,7 +2290,11 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
           transaction.flags = MMCSD_CMDRSP_BUSY;
           ret = MMCSD_v2_transfer(handle, &transaction);
         }
-        Osal_delay(50);
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
         if(MMCSD_OK == ret) {
   		  /* Wait for DAT0 to go low */
           MMCSD_v2_waitDat0(hwAttrs);
@@ -2302,7 +2316,6 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
         ret = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk, 200000000, UFALSE);
 
          /* NEW: Enable DLL */
-        Osal_delay(50);
         phyMode = MODE_HS400;
         
         MMCSD_socPhyConfigure(hwAttrs,phyMode, 200000000, phyDriverType);
@@ -2311,7 +2324,6 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
         if(ret!=STW_SOK) {
 		  return MMCSD_ERR;
 	    }
-        Osal_delay(50);
 	 }
 
      return (ret);
@@ -2515,8 +2527,8 @@ static MMCSD_Error MMCSD_v2_initEmmc(MMCSD_Handle handle)
             ret = MMCSD_v2_transfer(handle, &transaction);
         }
 
-        /* NOTE: Add delay */
-        Osal_delay(50U);
+        /* Wait for 5ms for reset, as mentioned in JEDEC standard */
+        Osal_delay(5U);
 
         if(MMCSD_OK == ret)
         {
@@ -2644,9 +2656,6 @@ static MMCSD_Error MMCSD_v2_initEmmc(MMCSD_Handle handle)
             ret = MMCSD_v2_transfer(handle, &transaction);
         }
 
-        /* NOTE: Add delay */
-         delay(100U);
-
         if(MMCSD_OK == ret)
         {
             object->blockCount = (((uint32_t)(object->ecsd[215])) << 24) +
@@ -2657,9 +2666,6 @@ static MMCSD_Error MMCSD_v2_initEmmc(MMCSD_Handle handle)
             object->busWidth = MMCSD_BUS_WIDTH_8BIT;
             object->sdVer = object->ecsd[192];
         }
-
-        /* NOTE: Add delay */
-        delay(100U);
 
        /* Setting the bus width as per the allowed configuration */
        if(hwAttrs->supportedBusWidth & MMCSD_BUS_WIDTH_8BIT) {
@@ -2682,15 +2688,15 @@ static MMCSD_Error MMCSD_v2_initEmmc(MMCSD_Handle handle)
         }
         object->busWidth = controller_buswidth;
 
-        /* NOTE: Add delay */
-        delay(100U);
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
         if (MMCSD_OK == ret)
         {
           HSMMCSDBusWidthSet(hwAttrs->baseAddr, controller_buswidth);
         }
-
-        /* NOTE: Add delay */
-        delay(100U);
 
         if(MMCSD_OK == ret)
         {
@@ -2700,8 +2706,11 @@ static MMCSD_Error MMCSD_v2_initEmmc(MMCSD_Handle handle)
             ret = MMCSD_v2_transfer(handle, &transaction);
         }
 
-        /* NOTE: Add delay */
-        delay(100U);
+        if (MMCSD_OK == ret)
+        {
+            /* Wait untill device is ready for next transfer */
+            mmcsd_check_transfer_ready(handle);
+        }
     }
 #ifndef MMCSD_SUPPORT_MMC_HS400_DISABLED
     /* Read DEVICE_TYPE in the ECSD[196] to get the supported speeds */
@@ -3770,8 +3779,8 @@ static MMCSD_Error MMCSD_v2_getCidRegister(MMCSD_Handle handle, uint32_t** cidRe
             ret = MMCSD_v2_transfer(handle, &transaction);
         }
 
-        /* NOTE: Add delay */
-        Osal_delay(50U);
+        /* Wait for 5ms for reset, as mentioned in JEDEC standard */
+        Osal_delay(5U);
 
         if(MMCSD_OK == ret)
         {
@@ -3873,9 +3882,6 @@ static MMCSD_Error MMCSD_v2_getExtCsdRegister(MMCSD_Handle handle, uint8_t **ext
 
         ret = MMCSD_v2_transfer(handle, &transaction);
     }
-
-    /* NOTE: Add delay */
-    delay(100U);
 
     *extCidReg = object->ecsd;
 
@@ -4413,14 +4419,7 @@ int32_t MMCSD_socSetInitCfg(uint32_t index, const MMCSD_v2_HwAttrs *cfg)
 
     return ret;
 }
-/*
- *  ======== Delay function ========
- */
-static void delay(uint32_t delayValue)
-{
-    volatile uint32_t delay1 = delayValue*10000U;
-    while (delay1--) {}
-}
+
 /*
  *  ======== MMCSD_v2_controllerReset ========
  */
