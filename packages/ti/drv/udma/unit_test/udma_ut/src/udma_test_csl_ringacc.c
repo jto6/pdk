@@ -246,6 +246,7 @@ int32_t udmaTestCslRingAcc(UdmaTestTaskObj *taskObj)
     {
         CSL_RingAccRingCfg ringCfg;
         ringCfg.elSz = 0U;
+        ringCfg.mode = TISCI_MSG_VALUE_RM_RING_MODE_RING;
         GT_1trace(taskObj->traceMask, GT_INFO1,
         " |TEST INFO|:: Task:%d: CSL_ringaccGetRingHwIdx Testcase ::\r\n", taskObj->taskId);
         /* Test CSL_ringaccPeekData when ring is empty */

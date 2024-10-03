@@ -1317,6 +1317,7 @@ int32_t UdmaEventProgramSteeringTestNeg(UdmaTestTaskObj *taskObj)
  * Test scenario 2: Check Udma_rmAllocExtCh when no resource is available 
  *                  and chNum is less than numUtcCh
  * Test scenario 3: Check Udma_rmAllocExtCh when no resource is available
+ * Test scenario 4: Check Udma_rmAllocExtCh and chNum is equal to numUtcCh
  */
 int32_t UdmaTestRmAllocExtChNeg(UdmaTestTaskObj *taskObj)
 {
@@ -1407,6 +1408,30 @@ int32_t UdmaTestRmAllocExtChNeg(UdmaTestTaskObj *taskObj)
             retVal = UDMA_SOK;
         }
         taskObj->testObj->drvObj[UDMA_TEST_INST_ID_MAIN_0] = backUpDrvObj; 
+    }
+
+    /* Test scenario 4: Check Udma_rmAllocExtCh and chNum is equal to numUtcCh */
+    if(UDMA_SOK == retVal)
+    {
+        chHandle     = &chObj;
+        chType       = UDMA_CH_TYPE_UTC;       
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.utcId = UDMA_UTC_ID_MSMC_DRU0;
+        drvHandle    = &taskObj->testObj->drvObj[UDMA_TEST_INST_ID_MAIN_0];
+        chPrms.chNum = drvHandle->initPrms.rmInitPrms.numUtcCh[chPrms.utcId];
+        retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        if(UDMA_SOK == retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                      " |TEST INFO|:: FAIL:: UDMA:: Udma_rmAllocExtCh::Neg:: Check when" 
+                      " chNum is equal to numUtcCh!!\n");
+            retVal = UDMA_EFAIL;
+            Udma_chClose(chHandle);
+        }
+        else 
+        {
+            retVal = UDMA_SOK;
+        }
     }
 
     return retVal;

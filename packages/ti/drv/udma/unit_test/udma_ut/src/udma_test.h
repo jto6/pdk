@@ -810,6 +810,7 @@ int32_t UdmaRmAllocTestNeg(UdmaTestTaskObj *taskObj);
 int32_t UdmaRmTranslateCoreIntrInputTestNeg(UdmaTestTaskObj *taskObj);
 int32_t UdmaRmSetSharedResRmInitPrmsTestNeg(UdmaTestTaskObj *taskObj);
 int32_t UdmaRmTestNeg(UdmaTestTaskObj *taskObj);
+int32_t UdmaRmAllocTest(UdmaTestTaskObj *taskObj);
 
 /*
  * UDMA SOC specific functions
