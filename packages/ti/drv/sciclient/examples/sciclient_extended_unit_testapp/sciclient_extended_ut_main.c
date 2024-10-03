@@ -3237,7 +3237,6 @@ static int32_t SciclientApp_rmIrqFindRouteTest(void)
     return rmIrqFindRouteTestStatus;
 }
 
-#if defined(SOC_J721S2) && defined(SOC_J784S4)
 static int32_t SciclientApp_rmIrqVintRouteTest(void)
 {
     /* Use different global_event, vint for different SoC's and cores */
@@ -3260,6 +3259,7 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     #if defined(SOC_J784S4)
     struct tisci_msg_rm_irq_set_resp rmIrqSetRespIrInpRomMappedFail;
     #endif
+    #if !defined(SOC_J7200)
     struct tisci_msg_rm_irq_set_resp rmIrqSetRespIrInpIsFreeFail;
     struct tisci_msg_rm_irq_set_req rmIrqSetReqIrInpIsFreeFail =
     {
@@ -3271,36 +3271,46 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
         .ia_id          = TISCI_DEV_CSI_RX_IF0,
         .secondary_host = TISCI_HOST_ID_MAIN_0_R5_0
     };
+    #endif
     struct tisci_msg_rm_get_resource_range_req rmGetResourceRangeReqGlobal = {0};
     struct tisci_msg_rm_get_resource_range_resp rmGetResourceRangeRespGlobal;
     struct tisci_msg_rm_get_resource_range_req rmGetResourceRangeReqVint = {0};
     struct tisci_msg_rm_get_resource_range_resp rmGetResourceRangeRespVint;
+    struct tisci_msg_rm_get_resource_range_req rmGetResourceRangeReqSrcIdx = {0};
+    struct tisci_msg_rm_get_resource_range_resp rmGetResourceRangeRespSrcIdx;
    
-    rmGetResourceRangeReqIrq.type           = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    rmGetResourceRangeReqIrq.subtype        = TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT;
-    rmGetResourceRangeReqIrq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
+    rmGetResourceRangeReqGlobal.type           = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
+    rmGetResourceRangeReqGlobal.subtype        = TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT;
+    rmGetResourceRangeReqGlobal.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
     status  = Sciclient_rmGetResourceRange(&rmGetResourceRangeReqGlobal,
                                            &rmGetResourceRangeRespGlobal,
                                            SCICLIENT_SERVICE_WAIT_FOREVER);  
 
-    rmGetResourceRangeReqIrq.type           = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    rmGetResourceRangeReqIrq.subtype        = TISCI_RESASG_SUBTYPE_IA_VINT;
-    rmGetResourceRangeReqIrq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
+    rmGetResourceRangeReqVint.type           = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
+    rmGetResourceRangeReqVint.subtype        = TISCI_RESASG_SUBTYPE_IA_VINT;
+    rmGetResourceRangeReqVint.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
     status  = Sciclient_rmGetResourceRange(&rmGetResourceRangeReqVint,
                                            &rmGetResourceRangeRespVint,
                                            SCICLIENT_SERVICE_WAIT_FOREVER);  
 
+    rmGetResourceRangeReqSrcIdx.type            = TISCI_DEV_NAVSS0_RINGACC_0;
+    rmGetResourceRangeReqSrcIdx.subtype         = TISCI_RESASG_SUBTYPE_RA_UDMAP_TX;
+    rmGetResourceRangeReqSrcIdx.secondary_host  = TISCI_HOST_ID_MAIN_0_R5_0;
+    status  = Sciclient_rmGetResourceRange(&rmGetResourceRangeReqSrcIdx,
+                                           &rmGetResourceRangeRespSrcIdx,
+                                           SCICLIENT_SERVICE_WAIT_FOREVER);
+
     /* Programs the interrupt Route for VintMappingOnly */
     VintMappingOnlyProgramRouteReq.valid_params = TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                     TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    VintMappingOnlyProgramRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    VintMappingOnlyProgramRouteReq.src_index = 1536;
-    VintMappingOnlyProgramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    VintMappingOnlyProgramRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    VintMappingOnlyProgramRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
+    VintMappingOnlyProgramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     VintMappingOnlyProgramRouteReq.vint = rmGetResourceRangeRespVint.range_start;
     VintMappingOnlyProgramRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     VintMappingOnlyProgramRouteReq.vint_status_bit_index = 0;
     VintMappingOnlyProgramRouteReq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
-    status = Sciclient_rmProgramInterruptRoute(&VintMappingOnlyProgramRouteReq, &VintMappingOnlyProgramRouteResp, SCICLIENT_SERVICE_WAIT_FOREVER);
+    status = Sciclient_rmIrqSet(&VintMappingOnlyProgramRouteReq, &VintMappingOnlyProgramRouteResp, SCICLIENT_SERVICE_WAIT_FOREVER);
     if(status == CSL_PASS)
     {
         rmIrqTeststatus += CSL_PASS;
@@ -3315,9 +3325,9 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     /* Clears the interrupt Route set for VintMappingOnly */
     VintMappingOnlyDeleteRouteReq.valid_params = TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                     TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    VintMappingOnlyDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    VintMappingOnlyDeleteRouteReq.src_index = 1536;
-    VintMappingOnlyDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    VintMappingOnlyDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    VintMappingOnlyDeleteRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
+    VintMappingOnlyDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     VintMappingOnlyDeleteRouteReq.vint = rmGetResourceRangeRespVint.range_start;
     VintMappingOnlyDeleteRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     VintMappingOnlyDeleteRouteReq.vint_status_bit_index = 0;
@@ -3337,11 +3347,11 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     /* Programs the interrupt Route for DirectEvent */
     DirectEventprogramRouteReq.valid_params = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID | TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                 TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    DirectEventprogramRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    DirectEventprogramRouteReq.src_index = 1536;
+    DirectEventprogramRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    DirectEventprogramRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
     DirectEventprogramRouteReq.dst_id = TISCI_DEV_R5FSS0_CORE0;
     DirectEventprogramRouteReq.dst_host_irq = 228;
-    DirectEventprogramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    DirectEventprogramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     DirectEventprogramRouteReq.vint = rmGetResourceRangeRespVint.range_start;
     DirectEventprogramRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     DirectEventprogramRouteReq.vint_status_bit_index = 0;
@@ -3361,11 +3371,11 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     /* Clears the interrupt Route for DirectEvent */
     DirectEventDeleteRouteReq.valid_params = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID | TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                 TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    DirectEventDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    DirectEventDeleteRouteReq.src_index = 1536;
+    DirectEventDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    DirectEventDeleteRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
     DirectEventDeleteRouteReq.dst_id = TISCI_DEV_R5FSS0_CORE0;
     DirectEventDeleteRouteReq.dst_host_irq = 228;
-    DirectEventDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    DirectEventDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     DirectEventDeleteRouteReq.vint = rmGetResourceRangeRespVint.range_start;
     DirectEventDeleteRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     DirectEventDeleteRouteReq.vint_status_bit_index = 0;
@@ -3385,9 +3395,9 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     /* Negative test for Sciclient_rmIrqVintDelete() and del_mapping=True */
     VintMappingOnlyDeleteRouteNegReq.valid_params = TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                     TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    VintMappingOnlyDeleteRouteNegReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    VintMappingOnlyDeleteRouteNegReq.src_index = 1536;
-    VintMappingOnlyDeleteRouteNegReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    VintMappingOnlyDeleteRouteNegReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    VintMappingOnlyDeleteRouteNegReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
+    VintMappingOnlyDeleteRouteNegReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     VintMappingOnlyDeleteRouteNegReq.vint = rmGetResourceRangeRespVint.range_start;
     VintMappingOnlyDeleteRouteNegReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     VintMappingOnlyDeleteRouteNegReq.vint_status_bit_index = 0;
@@ -3407,11 +3417,11 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     /* Negative test for Sciclient_rmIrqVintDelete() and del_whole_route=True */
     DirectEventDeleteRouteNegReq.valid_params = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID | TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                 TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    DirectEventDeleteRouteNegReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    DirectEventDeleteRouteNegReq.src_index = 1536;
+    DirectEventDeleteRouteNegReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    DirectEventDeleteRouteNegReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
     DirectEventDeleteRouteNegReq.dst_id = TISCI_DEV_R5FSS0_CORE0;
     DirectEventDeleteRouteNegReq.dst_host_irq = 228;
-    DirectEventDeleteRouteNegReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    DirectEventDeleteRouteNegReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     DirectEventDeleteRouteNegReq.vint = rmGetResourceRangeRespVint.range_start;
     DirectEventDeleteRouteNegReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     DirectEventDeleteRouteNegReq.vint_status_bit_index = 0;
@@ -3431,7 +3441,7 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     /* Test to fail sciclientRmIr() function in Sciclient_rmProgramInterruptRoute() */
     sciclientRmIrRouteReq.valid_params = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | 
                                             TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    sciclientRmIrRouteReq.ia_id = TISCI_DEV_NAVSS0_INTR_0;
+    sciclientRmIrRouteReq.ia_id = TISCI_DEV_NAVSS0_INTR;
     sciclientRmIrRouteReq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
     status = Sciclient_rmProgramInterruptRoute(&sciclientRmIrRouteReq, &sciclientRmIrRouteResp, SCICLIENT_SERVICE_WAIT_FOREVER);
     if(status != CSL_PASS)
@@ -3470,6 +3480,7 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
     }
     #endif
 
+    #if !defined(SOC_J7200)
     /* Passing the required paramets to cover Sciclient_rmIrInpIsFree */
     status = Sciclient_rmProgramInterruptRoute(&rmIrqSetReqIrInpIsFreeFail, &rmIrqSetRespIrInpIsFreeFail, SCICLIENT_SERVICE_WAIT_FOREVER);
     if (status == CSL_EFAIL)
@@ -3482,6 +3493,7 @@ static int32_t SciclientApp_rmIrqVintRouteTest(void)
         rmIrqTeststatus += CSL_EFAIL;
         SciApp_printf("Sciclient_rmProgramInterruptRoute: Sciclient_rmIrInpIsFree Arg Test Failed.\n");
     }
+    #endif
 
     return rmIrqTeststatus;
 }
@@ -3504,27 +3516,36 @@ static int32_t SciclientApp_rmIrqClearRouteNegTest(void)
     struct tisci_msg_rm_get_resource_range_resp rmGetResourceRangeRespGlobal;
     struct tisci_msg_rm_get_resource_range_req rmGetResourceRangeReqVint = {0};
     struct tisci_msg_rm_get_resource_range_resp rmGetResourceRangeRespVint;
+    struct tisci_msg_rm_get_resource_range_req rmGetResourceRangeReqSrcIdx = {0};
+    struct tisci_msg_rm_get_resource_range_resp rmGetResourceRangeRespSrcIdx;
    
-    rmGetResourceRangeReqIrq.type           = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    rmGetResourceRangeReqIrq.subtype        = TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT;
-    rmGetResourceRangeReqIrq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
+    rmGetResourceRangeReqGlobal.type           = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
+    rmGetResourceRangeReqGlobal.subtype        = TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT;
+    rmGetResourceRangeReqGlobal.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
     status  = Sciclient_rmGetResourceRange(&rmGetResourceRangeReqGlobal,
                                            &rmGetResourceRangeRespGlobal,
                                            SCICLIENT_SERVICE_WAIT_FOREVER);  
 
-    rmGetResourceRangeReqIrq.type           = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    rmGetResourceRangeReqIrq.subtype        = TISCI_RESASG_SUBTYPE_IA_VINT;
-    rmGetResourceRangeReqIrq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
+    rmGetResourceRangeReqVint.type           = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
+    rmGetResourceRangeReqVint.subtype        = TISCI_RESASG_SUBTYPE_IA_VINT;
+    rmGetResourceRangeReqVint.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
     status  = Sciclient_rmGetResourceRange(&rmGetResourceRangeReqVint,
                                            &rmGetResourceRangeRespVint,
                                            SCICLIENT_SERVICE_WAIT_FOREVER);  
 
+    rmGetResourceRangeReqSrcIdx.type            = TISCI_DEV_NAVSS0_RINGACC_0;
+    rmGetResourceRangeReqSrcIdx.subtype         = TISCI_RESASG_SUBTYPE_RA_UDMAP_TX;
+    rmGetResourceRangeReqSrcIdx.secondary_host  = TISCI_HOST_ID_MAIN_0_R5_0;
+    status  = Sciclient_rmGetResourceRange(&rmGetResourceRangeReqSrcIdx,
+                                           &rmGetResourceRangeRespSrcIdx,
+                                           SCICLIENT_SERVICE_WAIT_FOREVER);
+
     /* Programs the interrupt Route for VintMappingOnly */
     VintMappingOnlyProgramRouteReq.valid_params = TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                   TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    VintMappingOnlyProgramRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    VintMappingOnlyProgramRouteReq.src_index = 1536;
-    VintMappingOnlyProgramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    VintMappingOnlyProgramRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    VintMappingOnlyProgramRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
+    VintMappingOnlyProgramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     VintMappingOnlyProgramRouteReq.vint = rmGetResourceRangeRespVint.range_start;
     VintMappingOnlyProgramRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     VintMappingOnlyProgramRouteReq.vint_status_bit_index = 0;
@@ -3547,10 +3568,10 @@ static int32_t SciclientApp_rmIrqClearRouteNegTest(void)
         {
             .valid_params          = TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                      TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID,
-            .src_id                = TISCI_DEV_NAVSS0_UDMASS_INTA_0,
-            .src_index             = 1536U,
+            .src_id                = TISCI_DEV_NAVSS0_RINGACC_0,
+            .src_index             = rmGetResourceRangeRespSrcIdx.range_start,
             .global_event          = (uint16_t)1000000,
-            .ia_id                 = TISCI_DEV_NAVSS0_UDMASS_INTA_0,
+            .ia_id                 = TISCI_DEV_NAVSS0_UDMASS_INTAGG,
             .vint                  = rmGetResourceRangeRespVint.range_start,
             .vint_status_bit_index = 0U,
             .secondary_host        = TISCI_HOST_ID_MAIN_0_R5_0
@@ -3575,7 +3596,7 @@ static int32_t SciclientApp_rmIrqClearRouteNegTest(void)
             .dst_id                = TISCI_DEV_NAVSS0_INTR,
             .src_index             = 1536U,
             .global_event          = (uint16_t)1000000,
-            .ia_id                 = TISCI_DEV_NAVSS0_UDMASS_INTA_0,
+            .ia_id                 = TISCI_DEV_NAVSS0_UDMASS_INTAGG,
             .vint                  = rmGetResourceRangeRespVint.range_start,
             .vint_status_bit_index = 0U,
             .secondary_host        = TISCI_HOST_ID_MAIN_0_R5_0
@@ -3595,9 +3616,9 @@ static int32_t SciclientApp_rmIrqClearRouteNegTest(void)
         /* Clears the interrupt Route set for VintMappingOnly */
         VintMappingOnlyDeleteRouteReq.valid_params = TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                                         TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-        VintMappingOnlyDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-        VintMappingOnlyDeleteRouteReq.src_index = 1536;
-        VintMappingOnlyDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+        VintMappingOnlyDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+        VintMappingOnlyDeleteRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
+        VintMappingOnlyDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
         VintMappingOnlyDeleteRouteReq.vint = rmGetResourceRangeRespVint.range_start;
         VintMappingOnlyDeleteRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
         VintMappingOnlyDeleteRouteReq.vint_status_bit_index = 0;
@@ -3618,15 +3639,15 @@ static int32_t SciclientApp_rmIrqClearRouteNegTest(void)
     /* Programs the interrupt Route for DirectEvent */
     DirectEventprogramRouteReq.valid_params = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID | TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                               TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    DirectEventprogramRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    DirectEventprogramRouteReq.src_index = 1536;
+    DirectEventprogramRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    DirectEventprogramRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
     DirectEventprogramRouteReq.dst_id = TISCI_DEV_R5FSS0_CORE0;
     DirectEventprogramRouteReq.dst_host_irq = 228;
-    DirectEventprogramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    DirectEventprogramRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     DirectEventprogramRouteReq.vint = rmGetResourceRangeRespVint.range_start;
     DirectEventprogramRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     DirectEventprogramRouteReq.vint_status_bit_index = 0;
-    DirectEventProgramRouteReq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
+    DirectEventprogramRouteReq.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
     status = Sciclient_rmProgramInterruptRoute(&DirectEventprogramRouteReq, &DirectEventProgramRouteResp, SCICLIENT_SERVICE_WAIT_FOREVER);
     if(status == CSL_PASS)
     {
@@ -3642,11 +3663,11 @@ static int32_t SciclientApp_rmIrqClearRouteNegTest(void)
     /* Negative test for clearing the interrupt Route for DirectEvent */
     DirectEventDeleteRouteReq.valid_params = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID | TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID | 
                                              TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
-    DirectEventDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
-    DirectEventDeleteRouteReq.src_index = 1536;
+    DirectEventDeleteRouteReq.src_id = TISCI_DEV_NAVSS0_RINGACC_0;
+    DirectEventDeleteRouteReq.src_index = rmGetResourceRangeRespSrcIdx.range_start;
     DirectEventDeleteRouteReq.dst_id = TISCI_DEV_R5FSS0_CORE0;
     DirectEventDeleteRouteReq.dst_host_irq = 228;
-    DirectEventDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+    DirectEventDeleteRouteReq.ia_id = TISCI_DEV_NAVSS0_UDMASS_INTAGG;
     DirectEventDeleteRouteReq.vint = rmGetResourceRangeRespVint.range_start;
     DirectEventDeleteRouteReq.global_event = rmGetResourceRangeRespGlobal.range_start;
     DirectEventDeleteRouteReq.vint_status_bit_index = 73U;
@@ -3665,7 +3686,6 @@ static int32_t SciclientApp_rmIrqClearRouteNegTest(void)
 
     return rmIrqTeststatus;
 }
-#endif
 
 static int32_t SciclientApp_rmIrGetOutpTest(void)
 {
@@ -3923,10 +3943,8 @@ static int32_t SciclientApp_rmIrqTest(void)
         sciclientRmIrqTestStatus += SciclientApp_rmIrqGetRouteTest();
         sciclientRmIrqTestStatus += SciclientApp_rmIrqFindRouteTest();
         sciclientRmIrqTestStatus += SciclientApp_rmIrGetOutpTest();
-    #if defined(SOC_J784S4) && defined(SOC_J721S2)
         sciclientRmIrqTestStatus += SciclientApp_rmIrqVintRouteTest();
         sciclientRmIrqTestStatus += SciclientApp_rmIrqClearRouteNegTest();
-    #endif
     }
     else
     {
