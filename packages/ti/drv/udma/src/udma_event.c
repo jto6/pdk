@@ -274,12 +274,15 @@ int32_t Udma_eventUnRegister(Udma_EventHandle eventHandle)
                 {
                     Udma_printf(drvHandle, "[Error] Free Event resource failed!!!\n");
                 }
-                Udma_eventFreeResource(drvHandle, eventHandle);
+                else
+                {
+                    Udma_eventFreeResource(drvHandle, eventHandle);
 
-                eventHandle->eventInitDone  = UDMA_DEINIT_DONE;
-                eventHandle->pIaGeviRegs    = (volatile CSL_intaggr_imapRegs_gevi *) NULL_PTR;
-                eventHandle->pIaVintrRegs   = (volatile CSL_intaggr_intrRegs_vint *) NULL_PTR;
-                eventHandle->drvHandle      = (Udma_DrvHandle) NULL_PTR;
+                    eventHandle->eventInitDone  = UDMA_DEINIT_DONE;
+                    eventHandle->pIaGeviRegs    = (volatile CSL_intaggr_imapRegs_gevi *) NULL_PTR;
+                    eventHandle->pIaVintrRegs   = (volatile CSL_intaggr_intrRegs_vint *) NULL_PTR;
+                    eventHandle->drvHandle      = (Udma_DrvHandle) NULL_PTR;
+                }
             }
         }
     }

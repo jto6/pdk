@@ -10179,7 +10179,7 @@ static UdmaTestParams gUdmaTestCases[] =
         .heapIdDest = {DEF_HEAP_ID},
         .srcBufSize = {UDMA_TEST_DEF_ICNT0},
         .destBufSize= {UDMA_TEST_DEF_DICNT0},
-        .runFlag    = (UDMA_TEST_RF_SOC_ALL | UDMA_TEST_RF_CORE_ALL | UDMA_TEST_RF_CFG_DEF | UDMA_TEST_RF_CFG_DYN),
+        .runFlag    = (UDMA_TEST_RF_SOC_ALL | UDMA_TEST_RF_CORE_C7X_ALL | UDMA_TEST_RF_CFG_DEF | UDMA_TEST_RF_CFG_DYN),
         .ringPrmId  = UDMA_TEST_RING_PRMID_EVENT_NONE,
     },
 };
