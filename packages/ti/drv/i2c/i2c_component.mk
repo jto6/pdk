@@ -257,6 +257,46 @@ endif
 export drv_i2c_utility_$(SOC)_CORELIST
 i2c_EXAMPLE_LIST += drv_i2c_utility
 
+# I2C Slave Mode testapp
+i2c_slave_mode_app_freertos_COMP_LIST = i2c_slave_mode_app_freertos
+i2c_slave_mode_app_freertos_RELPATH = ti/drv/i2c/test/i2c_master_slave/i2c_slave_mode_app
+i2c_slave_mode_app_freertos_PATH = $(PDK_I2C_COMP_PATH)/test/i2c_master_slave/i2c_slave_mode_app
+i2c_slave_mode_app_freertos_BOARD_DEPENDENCY = yes
+i2c_slave_mode_app_freertos_CORE_DEPENDENCY = no
+i2c_slave_mode_app_freertos_MAKEFILE = -f makefile BUILD_OS_TYPE=freertos
+export i2c_slave_mode_app_freertos_COMP_LIST
+export i2c_slave_mode_app_freertos_BOARD_DEPENDENCY
+export i2c_slave_mode_app_freertos_CORE_DEPENDENCY
+export i2c_slave_mode_app_freertos_MAKEFILE
+i2c_slave_mode_app_freertos_PKG_LIST = i2c_slave_mode_app_freertos
+i2c_slave_mode_app_freertos_INCLUDE = $(i2c_slave_mode_app_freertos_PATH)
+i2c_slave_mode_app_freertos_BOARDLIST = j721s2_evm
+export i2c_slave_mode_app_freertos_BOARDLIST
+i2c_slave_mode_app_freertos_$(SOC)_CORELIST = mcu1_0
+export i2c_slave_mode_app_freertos_$(SOC)_CORELIST
+i2c_EXAMPLE_LIST += i2c_slave_mode_app_freertos
+export i2c_slave_mode_app_freertos_SBL_APPIMAGEGEN = yes
+
+# I2C Master Mode testapp
+i2c_master_mode_app_freertos_COMP_LIST = i2c_master_mode_app_freertos
+i2c_master_mode_app_freertos_RELPATH = ti/drv/i2c/test/i2c_master_slave/i2c_master_mode_app
+i2c_master_mode_app_freertos_PATH = $(PDK_I2C_COMP_PATH)/test/i2c_master_slave/i2c_master_mode_app
+i2c_master_mode_app_freertos_BOARD_DEPENDENCY = yes
+i2c_master_mode_app_freertos_CORE_DEPENDENCY = no
+i2c_master_mode_app_freertos_MAKEFILE = -f makefile BUILD_OS_TYPE=freertos
+export i2c_master_mode_app_freertos_COMP_LIST
+export i2c_master_mode_app_freertos_BOARD_DEPENDENCY
+export i2c_master_mode_app_freertos_CORE_DEPENDENCY
+export i2c_master_mode_app_freertos_MAKEFILE
+i2c_master_mode_app_freertos_PKG_LIST = i2c_master_mode_app_freertos
+i2c_master_mode_app_freertos_INCLUDE = $(i2c_master_mode_app_freertos_PATH)
+i2c_master_mode_app_freertos_BOARDLIST = j721s2_evm
+export i2c_master_mode_app_freertos_BOARDLIST
+i2c_master_mode_app_freertos_$(SOC)_CORELIST = mcu1_0
+export i2c_master_mode_app_freertos_$(SOC)_CORELIST
+i2c_EXAMPLE_LIST += i2c_master_mode_app_freertos
+export i2c_master_mode_app_freertos_SBL_APPIMAGEGEN = yes
+
 # Export all supported examples
 drvi2c_EXAMPLE_LIST = $(i2c_EXAMPLE_LIST)
 

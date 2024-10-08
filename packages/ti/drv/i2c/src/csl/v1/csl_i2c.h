@@ -420,7 +420,7 @@ extern "C" {
  */
 
 /* Macro to enable/disable the slave mode */
-#define CSL_I2C_ENABLE_SLAVE_MODE    0U
+#define CSL_I2C_ENABLE_SLAVE_MODE    1U
 
 /* Macro to enable/disable the Mode mode */
 #define CSL_I2C_ENABLE_DMA_MODE      0U
