@@ -404,6 +404,46 @@ int32_t udmaTestCslClec(UdmaTestTaskObj *taskObj)
         }
     }
     /** 
+     * Test CSL_clecGetSecureClaimStatus when
+     * evtNum              : CSL_CLEC_MAX_EVT_IN
+    */
+    if(UDMA_SOK == retVal)
+    {
+        GT_1trace(taskObj->traceMask, GT_INFO1,
+                " |TEST INFO|:: Task:%d: CSL_clecGetSecureClaimStatus Testcase ::\r\n", taskObj->taskId);
+        uint32_t secureClaim;
+        retVal = CSL_clecGetSecureClaimStatus(drvHandle->clecRegs, CSL_CLEC_MAX_EVT_IN, &secureClaim);
+        if(UDMA_SOK == retVal)
+        {
+            GT_1trace(taskObj->traceMask, GT_INFO1,
+                    " |TEST INFO|:: Task:%d: FAIL: CSL_clecGetSecureClaimStatus Testcase ::\r\n", taskObj->taskId);
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+    /** 
+     * Test CSL_clecGetSecureClaimStatus when
+     *  evtNum              : 0U
+    */
+    if(UDMA_SOK == retVal)
+    {
+        GT_1trace(taskObj->traceMask, GT_INFO1,
+                " |TEST INFO|:: Task:%d: CSL_clecGetSecureClaimStatus Testcase ::\r\n", taskObj->taskId);
+        uint32_t secureClaim;
+        retVal = CSL_clecGetSecureClaimStatus(drvHandle->clecRegs, 0U, &secureClaim);
+        if(UDMA_SOK != retVal)
+        {
+            GT_1trace(taskObj->traceMask, GT_INFO1,
+                    " |TEST INFO|:: Task:%d: FAIL: CSL_clecGetSecureClaimStatus Testcase ::\r\n", taskObj->taskId);
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+    /** 
      * Test CSL_clecSendEvent when
      * CSL_CLEC_EVTRegs    : NULL
     */

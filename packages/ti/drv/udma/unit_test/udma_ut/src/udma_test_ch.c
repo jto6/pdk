@@ -1430,3 +1430,57 @@ int32_t UdmaChGetTriggerEventTest(UdmaTestTaskObj *taskObj)
     
     return retVal;
 }
+
+/* 
+ * Test Case Description: Verifies the function Udma_chConfigRx
+ * Test scenario 1: Check Udma_chConfigRx when ring is allocated 
+ */
+int32_t UdmaChConfigRx(UdmaTestTaskObj *taskObj)
+{
+    int32_t                retVal = UDMA_SOK;
+    uint32_t               instID;
+    Udma_DrvHandle         drvHandle;
+    struct Udma_ChObj      chObj;
+    Udma_ChHandle          chHandle;
+    Udma_ChPrms            chPrms;
+    uint32_t               chType;
+    uint32_t               heapIdSrc = UTILS_MEM_HEAP_ID_MSMC;
+    uint32_t               elemCnt = 50U;
+
+    /* Test scenario 1: Check Udma_chConfigRx when ring is allocated */
+    chHandle                      = &chObj;
+    chType                        = UDMA_CH_TYPE_RX;
+    instID                        = UDMA_TEST_DEFAULT_UDMA_INST;
+    drvHandle                     = &taskObj->testObj->drvObj[instID];
+    UdmaChPrms_init(&chPrms, chType);
+    chPrms.fqRingPrms.elemCnt     = elemCnt;
+    chPrms.fqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+    chPrms.fqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.fqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+    chPrms.cqRingPrms.elemCnt     = elemCnt;
+    chPrms.cqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+    chPrms.cqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.cqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+    chPrms.peerChNum              = UDMA_PSIL_CH_MCU_CPSW0_RX;
+    retVal                        = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+    Udma_ChRxPrms rxChPrms;
+    UdmaChRxPrms_init(&rxChPrms, chType);
+    if(UDMA_SOK == retVal)
+    {
+        retVal = Udma_chConfigRx(chHandle, &rxChPrms);
+        if(UDMA_SOK != retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chConfigRx failed!!\n");
+        }
+        Udma_chClose(chHandle);
+    }
+    if(NULL != chPrms.cqRingPrms.ringMem)
+    {
+        retVal  = Utils_memFree(heapIdSrc, chPrms.fqRingPrms.ringMem, chPrms.fqRingPrms.ringMemSize);
+        retVal += Utils_memFree(heapIdSrc, chPrms.cqRingPrms.ringMem, chPrms.cqRingPrms.ringMemSize);
+        if(UDMA_SOK != retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR, " Ring free failed!!\n");
+        }
+    }
+
+    return retVal;
+}

@@ -1473,7 +1473,7 @@ int32_t UdmaRmAllocRxChTestNeg(UdmaTestTaskObj *taskObj)
  *                  startIrIntr for the function Udma_rmAllocIrIntr
  * Test scenario 6: Check when preferredIrIntrNum is UDMA_INTR_INVALID for 
  *                  the function Udma_rmAllocIrIntr
- * Test scenario 7: Check when irIntrNum is UDMA_INTR_INVALID and devIdIr is 0U for 
+ * Test scenario 7: Check when irIntrNum is UDMA_INTR_INVALID for 
  *                  the function Udma_rmTranslateIrOutput
  */
 int32_t UdmaRmAllocTestNeg(UdmaTestTaskObj *taskObj)
@@ -1578,6 +1578,7 @@ int32_t UdmaRmAllocTestNeg(UdmaTestTaskObj *taskObj)
     /* Test scenario 6: Check when preferredIrIntrNum is UDMA_INTR_INVALID */
     instID              = UDMA_TEST_INST_ID_MAIN_0;
     chHandle->drvHandle = &taskObj->testObj->drvObj[instID];
+    backUpChObj         = chObj;
     preferredIrIntrNum  = UDMA_INTR_INVALID;
     retVal              = Udma_rmAllocIrIntr(preferredIrIntrNum, chHandle->drvHandle);
     if(UDMA_SOK == retVal)
@@ -1589,21 +1590,29 @@ int32_t UdmaRmAllocTestNeg(UdmaTestTaskObj *taskObj)
     }
     else
     {
-        /* Test scenario 7: Check when irIntrNum is UDMA_INTR_INVALID and devIdIr is 0U */
+        /* Test scenario 7: Check when irIntrNum is UDMA_INTR_INVALID */
         retVal    = UDMA_SOK;
-        irIntrNum = preferredIrIntrNum;
-        chHandle->drvHandle->devIdIr = 0U;
-        retVal    = Udma_rmTranslateIrOutput(chHandle->drvHandle, irIntrNum);
-        if(UDMA_INTR_INVALID != retVal)
         {
-            GT_0trace(taskObj->traceMask, GT_ERR,
-                      " |TEST INFO|:: FAIL:: UDMA:: Udma_rmTranslateIrOutput:: Neg::"
-                      " Check when irIntrNum is UDMA_INTR_INVALID and devIdIr is 0U!!\n");
-            retVal = UDMA_EFAIL;
-        }
-        else 
-        {
-            retVal = UDMA_SOK;
+            irIntrNum = preferredIrIntrNum;
+        #if defined(BUILD_C66X)
+            chHandle->drvHandle->initPrms.rmInitPrms.startIrIntr       = 0U;
+            chHandle->drvHandle->initPrms.rmInitPrms.startC66xCoreIntr = 0U;
+        #else
+            chHandle->drvHandle->devIdIr = 0U;
+        #endif
+            retVal = Udma_rmTranslateIrOutput(chHandle->drvHandle, irIntrNum);
+            if(UDMA_INTR_INVALID != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR,
+                          " |TEST INFO|:: FAIL:: UDMA:: Udma_rmTranslateIrOutput:: Neg::"
+                          " Check when irIntrNum is UDMA_INTR_INVALID!!\n");
+                retVal = UDMA_EFAIL;
+            }
+            else 
+            {
+                retVal = UDMA_SOK;
+                chObj  = backUpChObj;
+            }
         }
     }
     taskObj->testObj->drvObj[instID] = backUpDrvObj;
