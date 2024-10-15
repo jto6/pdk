@@ -62,6 +62,8 @@ portUInt32Type ulGetDataFaultStatusRegister( void );
 portUInt32Type ulGetDataFaultAddressRegister( void );
 portUInt32Type ulGetInstructionFaultStatusRegister( void );
 portUInt32Type ulGetInstructionFaultAddressRegister( void );
+void vUndefAbort_c(void);
+void vPrefetchAbort_c(void);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
