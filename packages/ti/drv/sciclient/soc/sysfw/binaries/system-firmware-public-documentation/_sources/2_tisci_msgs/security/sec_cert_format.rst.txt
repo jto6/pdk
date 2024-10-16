@@ -67,6 +67,8 @@ The following X509 extensions are supported by |sysfw|.
 +--------------------------------------+----------------------------------------------------+-------------------------+
 | :ref:`sysfw_encryption_extended_ext` | Extended Encryption extension                      | 1.3.6.1.4.1.294.1.40    |
 +--------------------------------------+----------------------------------------------------+-------------------------+
+| :ref:`sysfw_debug_suspend_ext`       | Debug Suspend extension                            | 1.3.6.1.4.1.294.1.41    |
++--------------------------------------+----------------------------------------------------+-------------------------+
 
 Specific extensions are required for particular image types. The below table
 summarizes which extensions are mandatory (**M**) for a particular image type, which
@@ -204,6 +206,15 @@ or not applicable (**.**).
      - .
      - .
      - **M**
+
+   * - :ref:`Debug Suspend Encryption<sysfw_debug_suspend_ext>`
+     - . 
+     - .
+     - .
+     - .
+     - O
+     - .
+     - .
 
 .. [#f1] See device Technical Reference Manual for details on these extensions
 
@@ -823,6 +834,60 @@ The following table shows the enumeration of values for **debug_priv_level**:
       ``DEBUG_SECURE_USER``.
 
 For an example, please refer to the section ``[ debug ]`` in :ref:`sysfw_x509_template_example`.
+
+.. _sysfw_debug_suspend_ext:
+
+|sysfw| Debug Suspend Extension
+-------------------------------
+
+.. note::
+   Currently this extension is supported only on am62x.
+
+The custom extension field used for 'suspend peripherals on debug' is identified by the OID
+**1.3.6.1.4.1.294.1.41**. This extension can be used to enable the suspension of peripheral
+when a particular core is being debugged.
+
+Every processor core on the system is associated with a list of peripherals that can be
+configured to be suspended when it is being debugged. Certificate authors can choose to
+enable suspend for multiple peripherals. Also, one can enable suspend for peripherals
+related to multiple cores using the same certificate.
+
+The extension is supposed to contain multiple integer entries. First integer denotes the number
+of entries while the consecutive entries are comprised of processor-id, peripheral-id pair each
+with processor-id occupying the upper 16 bits and the peripheral-id occupying the lower 32 bits.
+
+The structure of the field is shown below in ASN.1 notation.
+
+::
+
+    UID-Debug ::= SEQUENCE
+    {
+        numEntries INTEGER, -- number of entries (processor id - peripheral id pairs)
+        entry0 INTEGER, -- First entry
+        ...
+        entryN INTEGER -- Last entry
+    }
+
+The debug control data is decoded as a structure below:
+
+::
+
+    struct debug_suspend_info {
+        u32 numEntries;
+        u32 entries[DBG_SUSP_MAX_PERIPHERALS]
+    }
+
+The table below contains list of valid peripherals for wakeup R5 core (processor id: 1).
+
++---------------+-----------------------------+
+| peripheral id |         Description         |
++===============+=============================+
+| 60            | wakeup rti                  |
++---------------+-----------------------------+
+
+.. note::
+   Currently, this extension allows only one core, wakeup r5, and only one peripheral for the same which is wakeup rti.
+   Support for more cores and associated peripherals will be added in the future.
 
 .. _sysfw_hs_bcfg_ext:
 
@@ -1494,6 +1559,7 @@ Sample x509 template
     1.3.6.1.4.1.294.1.36=ASN1:SEQUENCE:sysfw_hs_boardcfg
     1.3.6.1.4.1.294.1.37=ASN1:SEQUENCE:sysfw_fwl_ext
     1.3.6.1.4.1.294.1.40=ASN1:SEQUENCE:encryption_extended
+    1.3.6.1.4.1.294.1.41=ASN1:SEQUENCE:debug_suspend_info
 
     [ sysfw_boot_seq ]
     bootCore = INTEGER:0x20
@@ -1542,6 +1608,10 @@ Sample x509 template
     debugCtrl = INTEGER:0x00000004
     coreDbgEn = INTEGER:0x20210102
     coreDbgSecEn = INTEGER:0x2223
+
+    [debug_suspend_info]
+    numEntried = INTEGER:1
+    entry0 = INTEGER:0x0001003C
 
     [ encryption ]
     initalVector =  FORMAT:HEX,OCT:TEST_IMAGE_ENC_IV

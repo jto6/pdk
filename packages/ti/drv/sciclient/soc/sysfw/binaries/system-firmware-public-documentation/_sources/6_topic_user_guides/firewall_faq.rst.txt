@@ -199,7 +199,7 @@ The exception description can be interpreted as follows:
 2. Line 2 (Exception addr ...) - This is the base address of the exception logging registers.
 3. Line 3 (FWL Exception ...) - Let this number be N, then:
    
-  - N[0-7] - Destination ID
+  - N[0-7] - Destination ID. Not used, will be 0.
   - N[8-23] - Source ID
 
 4. Line 4 - Let this number be N, then:

@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.00.08
+                10.01.03
               </div>
             
           
@@ -220,19 +220,21 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <span id="soc-doc-j721s2-public-fwl-desc-region-fwl-list"></span><h2>List of Region Based Firewalls<a class="headerlink" href="#list-of-region-based-firewalls" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="8%" />
+<col width="10%" />
 <col width="7%" />
+<col width="6%" />
+<col width="15%" />
+<col width="11%" />
+<col width="10%" />
+<col width="14%" />
 <col width="13%" />
-<col width="12%" />
-<col width="17%" />
-<col width="16%" />
-<col width="16%" />
+<col width="13%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Firewall ID</th>
 <th class="head">Region</th>
 <th class="head">Owner</th>
+<th class="head">Dev Group</th>
 <th class="head">Start Address</th>
 <th class="head">End Address</th>
 <th class="head">CBA_PERMISSION_0</th>
@@ -244,6 +246,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>104</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x00A00000</td>
 <td>0x00A007FF</td>
 <td>tifs,rwcd</td>
@@ -253,6 +256,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>105</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x00A10000</td>
 <td>0x00A107FF</td>
 <td>tifs,rwcd</td>
@@ -262,6 +266,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>106</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x00A20000</td>
 <td>0x00A207FF</td>
 <td>tifs,rwcd</td>
@@ -271,6 +276,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>168</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x42200000</td>
 <td>0x422003FF</td>
 <td>tifs,rwcd</td>
@@ -280,6 +286,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>512</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x00014000</td>
 <td>0x00016FFF</td>
 <td>tifs,rc</td>
@@ -289,6 +296,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>513</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>tifs,rwcd</td>
@@ -298,6 +306,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>514</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>tifs,rwcd</td>
@@ -307,6 +316,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>582</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44234000</td>
 <td>0x44234FFF</td>
 <td>everyone,r</td>
@@ -316,6 +326,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>582</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44235000</td>
 <td>0x44237FFF</td>
 <td>tifs,rwcd</td>
@@ -325,6 +336,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>602</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x4423C000</td>
 <td>0x4423CFFF</td>
 <td>tifs,rwcd</td>
@@ -334,6 +346,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>602</td>
 <td>1</td>
 <td>hsm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x4423D000</td>
 <td>0x4423DFFF</td>
 <td>hsm,rwcd</td>
@@ -343,6 +356,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44800000</td>
 <td>0x44FFFFFF</td>
 <td>tifs,rwcd</td>
@@ -352,6 +366,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43702000</td>
 <td>0x43702FFF</td>
 <td>tifs,rwcd</td>
@@ -361,6 +376,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44880000</td>
 <td>0x44887FFF</td>
 <td>everyone,rwcd</td>
@@ -370,6 +386,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44914000</td>
 <td>0x44915FFF</td>
 <td>tifs,rwcd</td>
@@ -379,6 +396,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>4</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44918000</td>
 <td>0x44918FFF</td>
 <td>tifs,rwcd</td>
@@ -388,6 +406,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>5</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44940000</td>
 <td>0x4494FFFF</td>
 <td>tifs,rwcd</td>
@@ -397,6 +416,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>6</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44960000</td>
 <td>0x4496FFFF</td>
 <td>tifs,rwcd</td>
@@ -406,6 +426,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>7</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x44801000</td>
 <td>0x44801FFF</td>
 <td>tifs,rwcd</td>
@@ -415,6 +436,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>639</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x45000000</td>
 <td>0x45FFFFFF</td>
 <td>tifs,rwd</td>
@@ -424,6 +446,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>639</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x45D00000</td>
 <td>0x45DFFFFF</td>
 <td>tifs,rwd</td>
@@ -433,6 +456,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>639</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x45B00000</td>
 <td>0x45BFFFFF</td>
 <td>tifs,rwd</td>
@@ -442,6 +466,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>639</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x45000000</td>
 <td>0x4507FFFF</td>
 <td>tifs,rwd</td>
@@ -451,6 +476,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>639</td>
 <td>4</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x45080000</td>
 <td>0x450FFFFF</td>
 <td>tifs,rwd</td>
@@ -460,528 +486,597 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>639</td>
 <td>5</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x45100000</td>
 <td>0x45624FFF</td>
 <td>tifs,rwd</td>
 <td>tifs,rwd</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>641</td>
+<tr class="row-odd"><td>639</td>
+<td>6</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
+<td>0x45800000</td>
+<td>0x458FFFFF</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>641</td>
 <td>0</td>
 <td>none</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43C00000</td>
 <td>0x43C2FFFF</td>
 <td>pulsar_0,rwcd</td>
 <td>hsm,rwcd</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>642</td>
+<tr class="row-odd"><td>642</td>
 <td>0</td>
 <td>none</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43C30000</td>
 <td>0x43C3FFFF</td>
 <td>pulsar_0,rwcd</td>
 <td>hsm,rwcd</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>672</td>
+<tr class="row-even"><td>672</td>
 <td>0</td>
 <td>hsm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43936000</td>
 <td>0x43936FFF</td>
 <td>hsm,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>673</td>
+<tr class="row-odd"><td>673</td>
 <td>0</td>
 <td>hsm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43935000</td>
 <td>0x439350FF</td>
 <td>hsm,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>680</td>
+<tr class="row-even"><td>680</td>
 <td>0</td>
 <td>hsm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43A00000</td>
 <td>0x43A00FFF</td>
 <td>hsm,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>690</td>
+<tr class="row-odd"><td>690</td>
 <td>0</td>
 <td>hsm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43701000</td>
 <td>0x437013FF</td>
 <td>hsm,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>1050</td>
+<tr class="row-even"><td>1050</td>
 <td>1</td>
 <td>none</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x41C00000</td>
 <td>0x41CFFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>1208</td>
+<tr class="row-odd"><td>1208</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x40C00000</td>
 <td>0x40C000FF</td>
 <td>tifs,rwcd</td>
 <td>tifs,rwcd</td>
 <td>tifs,rwcd</td>
 </tr>
-<tr class="row-odd"><td>1276</td>
+<tr class="row-even"><td>1276</td>
 <td>1</td>
 <td>hsm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43604000</td>
 <td>0x43607FFF</td>
 <td>everyone,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>1276</td>
+<tr class="row-odd"><td>1276</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x43600000</td>
 <td>0x4360FFFF</td>
 <td>tifs,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>1280</td>
+<tr class="row-even"><td>1280</td>
 <td>0</td>
 <td>none</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>2306</td>
+<tr class="row-odd"><td>2306</td>
 <td>0</td>
 <td>none</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>2308</td>
+<tr class="row-even"><td>2308</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x053F0000</td>
 <td>0x053F00FF</td>
 <td>tifs,rwcd</td>
 <td>tifs,rwcd</td>
 <td>tifs,rwcd</td>
 </tr>
-<tr class="row-even"><td>2465</td>
+<tr class="row-odd"><td>2465</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
 <td>tifs,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>4160</td>
+<tr class="row-even"><td>4160</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x38000000</td>
 <td>0x383FFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>4288</td>
+<tr class="row-odd"><td>4288</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31080000</td>
 <td>0x310BFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4288</td>
+<tr class="row-even"><td>4288</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31160000</td>
 <td>0x311603FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4288</td>
+<tr class="row-odd"><td>4288</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x32000000</td>
 <td>0x3201FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4288</td>
+<tr class="row-even"><td>4288</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x3C000000</td>
 <td>0x3C3FFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>4352</td>
+<tr class="row-odd"><td>4352</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30802000</td>
 <td>0x3080201F</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4352</td>
+<tr class="row-even"><td>4352</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30880000</td>
 <td>0x3088FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4352</td>
+<tr class="row-odd"><td>4352</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30940000</td>
 <td>0x3094FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4352</td>
+<tr class="row-even"><td>4352</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31040000</td>
 <td>0x31043FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4352</td>
+<tr class="row-odd"><td>4352</td>
 <td>4</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31100000</td>
 <td>0x31101FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4352</td>
+<tr class="row-even"><td>4352</td>
 <td>5</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31110000</td>
 <td>0x31113FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4352</td>
+<tr class="row-odd"><td>4352</td>
 <td>6</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x33800000</td>
 <td>0x339FFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4352</td>
+<tr class="row-even"><td>4352</td>
 <td>7</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x33D00000</td>
 <td>0x33DFFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>4384</td>
+<tr class="row-odd"><td>4384</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30B00000</td>
 <td>0x30B1FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4384</td>
+<tr class="row-even"><td>4384</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30C00000</td>
 <td>0x30C07FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4384</td>
+<tr class="row-odd"><td>4384</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30D00000</td>
 <td>0x30D03FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4384</td>
+<tr class="row-even"><td>4384</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31150000</td>
 <td>0x311500FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4384</td>
+<tr class="row-odd"><td>4384</td>
 <td>4</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x34000000</td>
 <td>0x3407FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4384</td>
+<tr class="row-even"><td>4384</td>
 <td>5</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x35000000</td>
 <td>0x351FFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>4392</td>
+<tr class="row-odd"><td>4392</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x311A0000</td>
 <td>0x311A00FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4392</td>
+<tr class="row-even"><td>4392</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x35840000</td>
 <td>0x35840FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4392</td>
+<tr class="row-odd"><td>4392</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x35880000</td>
 <td>0x35881FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4392</td>
+<tr class="row-even"><td>4392</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x35900000</td>
 <td>0x35903FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4392</td>
+<tr class="row-odd"><td>4392</td>
 <td>4</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x35C00000</td>
 <td>0x35C0FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4392</td>
+<tr class="row-even"><td>4392</td>
 <td>5</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x35D00000</td>
 <td>0x35D1FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>4392</td>
+<tr class="row-odd"><td>4392</td>
 <td>6</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x35E00000</td>
 <td>0x35E7FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4394</td>
+<tr class="row-even"><td>4394</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31F78000</td>
 <td>0x31F781FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4660</td>
+<tr class="row-odd"><td>4660</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30800000</td>
 <td>0x3080001F</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4660</td>
+<tr class="row-even"><td>4660</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30900000</td>
 <td>0x30901FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4660</td>
+<tr class="row-odd"><td>4660</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x33C00000</td>
 <td>0x33C3FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4668</td>
+<tr class="row-even"><td>4668</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30801000</td>
 <td>0x3080101F</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4668</td>
+<tr class="row-odd"><td>4668</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x30908000</td>
 <td>0x30909FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4668</td>
+<tr class="row-even"><td>4668</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x33C40000</td>
 <td>0x33C7FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>4676</td>
+<tr class="row-odd"><td>4676</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31120000</td>
 <td>0x311200FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>4676</td>
+<tr class="row-even"><td>4676</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31130000</td>
 <td>0x31133FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>4676</td>
+<tr class="row-odd"><td>4676</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x33400000</td>
 <td>0x3343FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4704</td>
+<tr class="row-even"><td>4704</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x31140000</td>
 <td>0x329FFFFF</td>
 <td>tifs,rwcd</td>
 <td>everyone,r</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>4712</td>
+<tr class="row-odd"><td>4712</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x33000000</td>
 <td>0x3303FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>4736</td>
+<tr class="row-even"><td>4736</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>everyone,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>5140</td>
+<tr class="row-odd"><td>5140</td>
 <td>0</td>
 <td>none</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x70000000</td>
 <td>0x703EFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>5140</td>
+<tr class="row-even"><td>5140</td>
 <td>20</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x60000000</td>
 <td>0x6CFFFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>5140</td>
+<tr class="row-odd"><td>5140</td>
 <td>21</td>
 <td>none</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x6D000000</td>
 <td>0x6DFFFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>5140</td>
+<tr class="row-even"><td>5140</td>
 <td>22</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x6E000000</td>
 <td>0x6EFFFFFF</td>
 <td>tifs,rwcd</td>
 <td>everyone,r</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>5140</td>
+<tr class="row-odd"><td>5140</td>
 <td>23</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td><ol class="first last arabic simple">
 <li></li>
 </ol>
@@ -991,45 +1086,50 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>5141</td>
+<tr class="row-even"><td>5141</td>
 <td>0</td>
 <td>none</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x70000000</td>
 <td>0x703EFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>5141</td>
+<tr class="row-odd"><td>5141</td>
 <td>20</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x60000000</td>
 <td>0x6CFFFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>5141</td>
+<tr class="row-even"><td>5141</td>
 <td>21</td>
 <td>none</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x6D000000</td>
 <td>0x6DFFFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>5141</td>
+<tr class="row-odd"><td>5141</td>
 <td>22</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0x6E000000</td>
 <td>0x6EFFFFFF</td>
 <td>tifs,rwcd</td>
 <td>everyone,r</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>5141</td>
+<tr class="row-even"><td>5141</td>
 <td>23</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td><ol class="first last arabic simple">
 <li></li>
 </ol>
@@ -1039,234 +1139,260 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>6148</td>
+<tr class="row-odd"><td>6148</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x28590000</td>
 <td>0x285900FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>6148</td>
+<tr class="row-even"><td>6148</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x285A0000</td>
 <td>0x285A3FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>6148</td>
+<tr class="row-odd"><td>6148</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A580000</td>
 <td>0x2A5BFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>6156</td>
+<tr class="row-even"><td>6156</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x285B0000</td>
 <td>0x2A47FFFF</td>
 <td>tifs,rwcd</td>
 <td>everyone,r</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>6176</td>
+<tr class="row-odd"><td>6176</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x28440000</td>
 <td>0x2847FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>6176</td>
+<tr class="row-even"><td>6176</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x285D0000</td>
 <td>0x285D03FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>6176</td>
+<tr class="row-odd"><td>6176</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A280000</td>
 <td>0x2A29FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>6176</td>
+<tr class="row-even"><td>6176</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2B800000</td>
 <td>0x2BBFFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>6240</td>
+<tr class="row-odd"><td>6240</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x283C0000</td>
 <td>0x283C001F</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>6240</td>
+<tr class="row-even"><td>6240</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x28480000</td>
 <td>0x28481FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>6240</td>
+<tr class="row-odd"><td>6240</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x28560000</td>
 <td>0x28563FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>6240</td>
+<tr class="row-even"><td>6240</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x28570000</td>
 <td>0x285701FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>6240</td>
+<tr class="row-odd"><td>6240</td>
 <td>4</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x28580000</td>
 <td>0x28580FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>6240</td>
+<tr class="row-even"><td>6240</td>
 <td>5</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A600000</td>
 <td>0x2A6FFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>6240</td>
+<tr class="row-odd"><td>6240</td>
 <td>6</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A700000</td>
 <td>0x2A7FFFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>6248</td>
+<tr class="row-even"><td>6248</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x28400000</td>
 <td>0x28401FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>6248</td>
+<tr class="row-odd"><td>6248</td>
 <td>1</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x284A0000</td>
 <td>0x284A3FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>6248</td>
+<tr class="row-even"><td>6248</td>
 <td>2</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x284C0000</td>
 <td>0x284C3FFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>6248</td>
+<tr class="row-odd"><td>6248</td>
 <td>3</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x285C0000</td>
 <td>0x285C00FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-odd"><td>6248</td>
+<tr class="row-even"><td>6248</td>
 <td>4</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A800000</td>
 <td>0x2A83FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>6248</td>
+<tr class="row-odd"><td>6248</td>
 <td>5</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2AA00000</td>
 <td>0x2AA3FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>6250</td>
+<tr class="row-even"><td>6250</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A268000</td>
 <td>0x2A2681FF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,r</td>
 </tr>
-<tr class="row-even"><td>6260</td>
+<tr class="row-odd"><td>6260</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A500000</td>
 <td>0x2A53FFFF</td>
 <td>tifs,rwcd</td>
 <td>pulsar_0,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-odd"><td>6268</td>
+<tr class="row-even"><td>6268</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2A480000</td>
 <td>0x2A4FFFFF</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 <td>everyone,rwcd</td>
 </tr>
-<tr class="row-even"><td>6269</td>
+<tr class="row-odd"><td>6269</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>&#160;</td>
 <td>&#160;</td>
 <td>sproxy_private,rwcd</td>
 <td>&#160;</td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>6288</td>
+<tr class="row-even"><td>6288</td>
 <td>0</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x2B000000</td>
 <td>0x2B3FFFFF</td>
 <td>tifs,rwcd</td>
@@ -1292,17 +1418,19 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <span id="soc-doc-j721s2-public-fwl-desc-channel-fwl-list"></span><h2>List of Channelized Firewalls<a class="headerlink" href="#list-of-channelized-firewalls" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="7%" />
+<col width="10%" />
+<col width="6%" />
+<col width="15%" />
+<col width="11%" />
+<col width="10%" />
+<col width="21%" />
 <col width="13%" />
-<col width="12%" />
-<col width="25%" />
-<col width="16%" />
-<col width="16%" />
+<col width="13%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Firewall ID</th>
 <th class="head">Owner</th>
+<th class="head">Dev Group</th>
 <th class="head">Start Channel</th>
 <th class="head">End Channel</th>
 <th class="head">CBA_PERMISSION_0</th>
@@ -1313,6 +1441,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tbody valign="top">
 <tr class="row-even"><td>4128</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>768</td>
 <td>877</td>
 <td>sproxy_private,rwcd</td>
@@ -1321,6 +1450,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4224</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>768</td>
 <td>877</td>
 <td>sproxy_private,rwcd</td>
@@ -1329,6 +1459,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4224</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>1024</td>
 <td>1055</td>
 <td>everyone,r</td>
@@ -1337,6 +1468,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4320</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1345,6 +1477,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4320</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>256</td>
 <td>256</td>
 <td>block_everyone,r</td>
@@ -1353,6 +1486,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4368</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1361,6 +1495,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4368</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>1</td>
 <td>340</td>
 <td>tifs,r</td>
@@ -1369,6 +1504,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4368</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>341</td>
 <td>341</td>
 <td>block_everyone,r</td>
@@ -1377,6 +1513,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4368</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>342</td>
 <td>422</td>
 <td>tifs,r</td>
@@ -1385,6 +1522,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4388</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1393,6 +1531,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4388</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>1</td>
 <td>15</td>
 <td>tifs,r</td>
@@ -1401,6 +1540,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4388</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>16</td>
 <td>16</td>
 <td>block_everyone,r</td>
@@ -1409,6 +1549,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4388</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>17</td>
 <td>47</td>
 <td>tifs,r</td>
@@ -1417,6 +1558,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4656</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1425,6 +1567,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4664</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1433,6 +1576,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4672</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1441,6 +1585,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4688</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>369</td>
 <td>tifs,rwcd</td>
@@ -1449,6 +1594,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4708</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1457,6 +1603,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>0</td>
 <td>9</td>
 <td>a72_secure_supervisor,rwcd</td>
@@ -1465,6 +1612,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>10</td>
 <td>24</td>
 <td>a72_non_secure_supervisor,rwcd</td>
@@ -1473,6 +1621,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>25</td>
 <td>29</td>
 <td>main_0_c7x_0_secure,rwcd</td>
@@ -1481,6 +1630,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>30</td>
 <td>34</td>
 <td>main_0_c7x_0_nonsecure,rwcd</td>
@@ -1489,6 +1639,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>35</td>
 <td>39</td>
 <td>main_1_c7x_0_secure,rwcd</td>
@@ -1497,6 +1648,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>40</td>
 <td>44</td>
 <td>main_1_c7x_0_nonsecure,rwcd</td>
@@ -1505,6 +1657,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>45</td>
 <td>49</td>
 <td>gpu_0,rwcd</td>
@@ -1513,6 +1666,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>50</td>
 <td>54</td>
 <td>main_0_r5_0_nonsecure,rwcd</td>
@@ -1521,6 +1675,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>55</td>
 <td>59</td>
 <td>main_0_r5_0_secure,rwcd</td>
@@ -1529,6 +1684,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>60</td>
 <td>64</td>
 <td>main_0_r5_1_nonsecure,rwcd</td>
@@ -1537,6 +1693,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>65</td>
 <td>69</td>
 <td>main_0_r5_1_secure,rwcd</td>
@@ -1545,6 +1702,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>70</td>
 <td>74</td>
 <td>main_1_r5_0_nonsecure,rwcd</td>
@@ -1553,6 +1711,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>75</td>
 <td>79</td>
 <td>main_1_r5_0_secure,rwcd</td>
@@ -1561,6 +1720,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>80</td>
 <td>84</td>
 <td>main_1_r5_1_nonsecure,rwcd</td>
@@ -1569,6 +1729,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>85</td>
 <td>89</td>
 <td>main_1_r5_1_secure,rwcd</td>
@@ -1577,6 +1738,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>328</td>
 <td>350</td>
 <td>dm,rwcd</td>
@@ -1585,6 +1747,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>4720</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
 <td>351</td>
 <td>369</td>
 <td>tifs,rwcd</td>
@@ -1593,6 +1756,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6146</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1601,6 +1765,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6152</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0</td>
 <td>4</td>
 <td>tifs,rwcd</td>
@@ -1609,6 +1774,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6152</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>5</td>
 <td>5</td>
 <td>everyone,r</td>
@@ -1617,6 +1783,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6152</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>6</td>
 <td>89</td>
 <td>tifs,rwcd</td>
@@ -1625,6 +1792,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6160</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>286</td>
 <td>317</td>
 <td>everyone,r</td>
@@ -1633,6 +1801,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6208</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0</td>
 <td>255</td>
 <td>tifs,rwcd</td>
@@ -1641,6 +1810,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6208</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>256</td>
 <td>511</td>
 <td>tifs,rwcd</td>
@@ -1649,6 +1819,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6244</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1657,6 +1828,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6244</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>1</td>
 <td>47</td>
 <td>tifs,r</td>
@@ -1665,6 +1837,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6244</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>48</td>
 <td>48</td>
 <td>block_everyone,r</td>
@@ -1673,6 +1846,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6244</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>49</td>
 <td>95</td>
 <td>tifs,r</td>
@@ -1681,6 +1855,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6256</td>
 <td>rm</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0</td>
 <td>0</td>
 <td>block_everyone,r</td>
@@ -1689,6 +1864,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6264</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0</td>
 <td>9</td>
 <td>pulsar_0,rwcd</td>
@@ -1697,6 +1873,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6264</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>10</td>
 <td>19</td>
 <td>pulsar_1,rwcd</td>
@@ -1705,6 +1882,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6264</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>20</td>
 <td>24</td>
 <td>pulsar_0,rwcd</td>
@@ -1713,6 +1891,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6264</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>25</td>
 <td>29</td>
 <td>tifs,rwcd</td>
@@ -1721,6 +1900,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6264</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>72</td>
 <td>80</td>
 <td>dm,rwcd</td>
@@ -1729,6 +1909,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-even"><td>6264</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>81</td>
 <td>89</td>
 <td>tifs,rwcd</td>
@@ -1737,6 +1918,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 </tr>
 <tr class="row-odd"><td>6272</td>
 <td>tifs</td>
+<td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>256</td>
 <td>285</td>
 <td>sproxy_private,rwcd</td>
@@ -2006,7 +2188,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.00.08',
+            VERSION:'10.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

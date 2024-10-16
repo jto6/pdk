@@ -22,4 +22,5 @@
    ./key_writer
    ./otp_revision
    ./keyring
+   ./csp
    ./fwl_safety_core

@@ -1,0 +1,60 @@
+======================
+Cryptographic Services 
+======================
+
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+
+.. _dref_csp_intro:
+
+Introduction
+============
+
+The Cryptographic services allow tifs client to encrypt/decrypt data blobs using one of AES-ECB, AES-CBC or AES-GCM operations.
+
+.. _dref_csp_func-goals:
+
+Functional Goals
+================
+
+Cryptographic Service System provides the following functionality:
+
+1. API to encrypt a data blob.
+2. API to decrypt a data blob.
+
+.. _dref_csp_design:
+
+Design
+======
+
+The to-be encrypted/decrypted blob must be preceded by a context. The
+blob starts immediately after the context blob ends. The context blob
+contains information like the algorithm to use, key, key size, iv, data
+length etc.
+
+The response contains calculated tag when the mode is AES-GCM and operation
+type is 'encryption'.
+
+The context also contains a revision field that denotes the context version.
+The revision field has been added to support different variations of the
+service in the future. Currently, just one version is supported which is
+version 0.
+
+The structure of the context v0 is given below.
+
+.. _dref_csp_context_structure:
+
+.. code-block:: c
+
+  struct csp_aes_ctx_v0 {
+    uint8_t	mode;
+    uint8_t	key_size;
+    uint8_t	ctr_width;
+    uint8_t	resv0;
+    uint64_t	data_len;
+    uint64_t	dest_addr;
+    uint32_t	key[8];
+    uint32_t	iv[4];
+    uint32_t	tag[4];
+  }

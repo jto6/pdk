@@ -68,4 +68,5 @@ Secure Management
    security/keywriter
    security/otp_revision
    security/keyring
+   security/csp
    security/fwl_safety_core

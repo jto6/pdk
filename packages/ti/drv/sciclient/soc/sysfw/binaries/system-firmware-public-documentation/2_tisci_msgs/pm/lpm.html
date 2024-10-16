@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.00.08
+                10.01.03
               </div>
             
           
@@ -223,7 +223,7 @@ supported by the SOC.</p>
 <td>am62x, am62ax, am62px</td>
 </tr>
 <tr class="row-even"><td>IO_ONLY_PLUS_DDR</td>
-<td>None</td>
+<td>am62ax, am62px</td>
 </tr>
 <tr class="row-odd"><td>PARTIAL_IO</td>
 <td>am62x, am62ax, am62px</td>
@@ -792,7 +792,7 @@ smaller padcfg number will be returned.</p>
 <p>Restore the minimal context saved during lpm entry.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This message is registered only if IO Plus DDR low power mode
+<p class="last">This message is registered only if IO Only Plus DDR low power mode
 exit is detected from MMR read.</p>
 </div>
 </div>
@@ -1002,9 +1002,9 @@ All constraints will be auto cleared at every resume cycle.</p>
 <h3>Latency Table<a class="headerlink" href="#latency-table" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
-<col width="36%" />
-<col width="32%" />
-<col width="32%" />
+<col width="39%" />
+<col width="30%" />
+<col width="30%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Low power mode</th>
@@ -1013,16 +1013,22 @@ All constraints will be auto cleared at every resume cycle.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>DEEP_SLEEP</td>
-<td>101</td>
+<tr class="row-even"><td>DEEPEST</td>
+<td>251</td>
 <td>X</td>
 </tr>
-<tr class="row-odd"><td>MCU_ONLY</td>
+<tr class="row-odd"><td>DEEP_SLEEP</td>
+<td>101</td>
+<td>250</td>
+</tr>
+<tr class="row-even"><td>MCU_ONLY</td>
 <td>10</td>
 <td>100</td>
 </tr>
 </tbody>
 </table>
+<p>In the above table, DEEPEST is DEEP_SLEEP for am62x and IO_ONLY_PLUS_DDR for
+am62ax and am62px.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">By setting a wakeup latency constraint, the host ensures that the resume
@@ -1556,7 +1562,7 @@ one of the following system modes.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.00.08',
+            VERSION:'10.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

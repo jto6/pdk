@@ -3537,7 +3537,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          2 | DEV_MCU_TIMER0_TIMER_TCLK_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER0_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
-|          3 | DEV_MCU_TIMER0_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER0_TIMER_TCLK_CLK |
+|          3 | DEV_MCU_TIMER0_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER0_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          4 | DEV_MCU_TIMER0_TIMER_TCLK_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER0_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
@@ -3593,7 +3593,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          1 | DEV_MCU_TIMER1_CLKSEL_VD_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER1_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
-|          2 | DEV_MCU_TIMER1_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER1_CLKSEL_VD_CLK |
+|          2 | DEV_MCU_TIMER1_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER1_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          3 | DEV_MCU_TIMER1_CLKSEL_VD_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER1_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
@@ -3627,7 +3627,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          2 | DEV_MCU_TIMER2_TIMER_TCLK_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER2_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
-|          3 | DEV_MCU_TIMER2_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER2_TIMER_TCLK_CLK |
+|          3 | DEV_MCU_TIMER2_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER2_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          4 | DEV_MCU_TIMER2_TIMER_TCLK_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER2_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
@@ -3683,7 +3683,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          1 | DEV_MCU_TIMER3_CLKSEL_VD_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER3_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
-|          2 | DEV_MCU_TIMER3_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER3_CLKSEL_VD_CLK |
+|          2 | DEV_MCU_TIMER3_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER3_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          3 | DEV_MCU_TIMER3_CLKSEL_VD_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER3_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
@@ -3717,7 +3717,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          2 | DEV_MCU_TIMER4_TIMER_TCLK_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER4_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
-|          3 | DEV_MCU_TIMER4_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER4_TIMER_TCLK_CLK |
+|          3 | DEV_MCU_TIMER4_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER4_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          4 | DEV_MCU_TIMER4_TIMER_TCLK_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER4_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
@@ -3773,7 +3773,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          1 | DEV_MCU_TIMER5_CLKSEL_VD_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER5_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
-|          2 | DEV_MCU_TIMER5_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER5_CLKSEL_VD_CLK |
+|          2 | DEV_MCU_TIMER5_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER5_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          3 | DEV_MCU_TIMER5_CLKSEL_VD_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER5_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
@@ -3807,7 +3807,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          2 | DEV_MCU_TIMER6_TIMER_TCLK_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER6_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
-|          3 | DEV_MCU_TIMER6_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER6_TIMER_TCLK_CLK |
+|          3 | DEV_MCU_TIMER6_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER6_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          4 | DEV_MCU_TIMER6_TIMER_TCLK_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER6_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
@@ -3863,7 +3863,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          1 | DEV_MCU_TIMER7_CLKSEL_VD_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER7_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
-|          2 | DEV_MCU_TIMER7_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER7_CLKSEL_VD_CLK |
+|          2 | DEV_MCU_TIMER7_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER7_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          3 | DEV_MCU_TIMER7_CLKSEL_VD_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER7_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
@@ -3897,7 +3897,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          2 | DEV_MCU_TIMER8_TIMER_TCLK_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER8_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
-|          3 | DEV_MCU_TIMER8_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER8_TIMER_TCLK_CLK |
+|          3 | DEV_MCU_TIMER8_TIMER_TCLK_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER8_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
 |          4 | DEV_MCU_TIMER8_TIMER_TCLK_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER8_TIMER_TCLK_CLK |
 +------------+-----------------------------------------------------------------------------------+------------------------------------------------------------+
@@ -3953,7 +3953,7 @@ Following is a mapping of Clocks IDs to function:
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          1 | DEV_MCU_TIMER9_CLKSEL_VD_CLK_PARENT_GLUELOGIC_HFOSC0_CLKOUT                      | Parent input clock option to DEV_MCU_TIMER9_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
-|          2 | DEV_MCU_TIMER9_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK16  | Parent input clock option to DEV_MCU_TIMER9_CLKSEL_VD_CLK |
+|          2 | DEV_MCU_TIMER9_CLKSEL_VD_CLK_PARENT_K3_PLL_CTRL_WRAP_WKUP_0_CHIP_DIV1_CLK_CLK4   | Parent input clock option to DEV_MCU_TIMER9_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+
 |          3 | DEV_MCU_TIMER9_CLKSEL_VD_CLK_PARENT_J7VC_WAKEUP_16FF_WKUP_0_WKUP_RCOSC_12P5M_CLK | Parent input clock option to DEV_MCU_TIMER9_CLKSEL_VD_CLK |
 +------------+----------------------------------------------------------------------------------+-----------------------------------------------------------+

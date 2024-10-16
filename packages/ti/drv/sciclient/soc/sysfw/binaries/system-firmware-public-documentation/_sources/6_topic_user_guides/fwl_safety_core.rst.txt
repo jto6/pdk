@@ -64,8 +64,8 @@ Call TISCI API - TISCI_MSG_ALLOW_FWL_CTRL_READ
 
 Call the TISCI API - TISCI_MSG_ALLOW_FWL_CTRL_READ to request the read access of the firewall configuration region to the safety core.
 
-Read firewall configuration data using the Safety Checker library API
----------------------------------------------------------------------
+Read firewall and isc configuration data using the Safety Checker library API
+-----------------------------------------------------------------------------
 
 Once the read access to the firewall configuration region is granted to the safety core, the firewall configuration data can be read 
 in the safety core (via API call to the Safety Checker library API - implemented using the formula explained in the section - 
@@ -78,11 +78,12 @@ Call the TISCI API -  TISCI_MSG_FORBID_FWL_CTRL_READ to disable the read access 
 
 .. _dref_secfwl_access_safety_core_func-reading:
 
-Reading the firewall data in the Safety core
-============================================
+Reading the firewall and isc data in the Safety core
+====================================================
 
 Firewall Data of a particular firewall ID and region can be then read directly from the safety core.
-Firewall data of a given ID and contains 32 bytes for each region.
+ISC configuration data for a given ISC ID can also be read directly from the safety core.
+Firewall data of a given ID and contains 32 bytes for each region. 
 
 For getting the firewall data of a given Firewall ID and a given region, the safety checker needs to read 32 bytes from the firewall region offset.
 
@@ -95,3 +96,5 @@ For eg:
 In J784S4, to calculate the firewall region offset of firewall Id 10, region 2,  read 32 bytes from below address - 
 
 0x45000000 + (10 x 1024) + (2 x 32) = 0x45002840
+
+ISC data can also be calculated similarly using the above formula with ISC base address as 0x45800000.

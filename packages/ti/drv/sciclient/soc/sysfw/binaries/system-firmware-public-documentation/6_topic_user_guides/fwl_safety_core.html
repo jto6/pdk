@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="TISCI User Guide" href="../index.html"/>
         <link rel="up" title="Chapter 6: Topic User Guides" href="index.html"/>
-        <link rel="prev" title="Keyring Management" href="keyring.html"/> 
+        <link rel="prev" title="Cryptographic Services" href="csp.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -78,7 +78,7 @@
             
             
               <div class="version">
-                10.00.08
+                10.01.03
               </div>
             
           
@@ -121,16 +121,17 @@
 <li class="toctree-l2"><a class="reference internal" href="key_writer.html">Key  Writer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="otp_revision.html">Run time read/write to KEYREV and SWREV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="keyring.html">Keyring Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="csp.html">Cryptographic Services</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Firewall Data Access to Safety Core</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#design">Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#steps-for-firewall-read-access-enablement-in-safety-core">Steps for firewall read access enablement in safety core</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#update-tifs-board-configuration-to-enable-firewall-config-read-access">Update TIFS board configuration to enable Firewall config read access.</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#call-tisci-api-tisci-msg-allow-fwl-ctrl-read">Call TISCI API - TISCI_MSG_ALLOW_FWL_CTRL_READ</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#read-firewall-configuration-data-using-the-safety-checker-library-api">Read firewall configuration data using the Safety Checker library API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#read-firewall-and-isc-configuration-data-using-the-safety-checker-library-api">Read firewall and isc configuration data using the Safety Checker library API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#call-tisci-api-tisci-msg-forbid-fwl-ctrl-read">Call TISCI API - TISCI_MSG_FORBID_FWL_CTRL_READ</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#reading-the-firewall-data-in-the-safety-core">Reading the firewall data in the Safety core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reading-the-firewall-and-isc-data-in-the-safety-core">Reading the firewall and isc data in the Safety core</a></li>
 </ul>
 </li>
 </ul>
@@ -188,11 +189,11 @@
 <li><a class="reference internal" href="#steps-for-firewall-read-access-enablement-in-safety-core" id="id3">Steps for firewall read access enablement in safety core</a><ul>
 <li><a class="reference internal" href="#update-tifs-board-configuration-to-enable-firewall-config-read-access" id="id4">Update TIFS board configuration to enable Firewall config read access.</a></li>
 <li><a class="reference internal" href="#call-tisci-api-tisci-msg-allow-fwl-ctrl-read" id="id5">Call TISCI API - TISCI_MSG_ALLOW_FWL_CTRL_READ</a></li>
-<li><a class="reference internal" href="#read-firewall-configuration-data-using-the-safety-checker-library-api" id="id6">Read firewall configuration data using the Safety Checker library API</a></li>
+<li><a class="reference internal" href="#read-firewall-and-isc-configuration-data-using-the-safety-checker-library-api" id="id6">Read firewall and isc configuration data using the Safety Checker library API</a></li>
 <li><a class="reference internal" href="#call-tisci-api-tisci-msg-forbid-fwl-ctrl-read" id="id7">Call TISCI API - TISCI_MSG_FORBID_FWL_CTRL_READ</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#reading-the-firewall-data-in-the-safety-core" id="id8">Reading the firewall data in the Safety core</a></li>
+<li><a class="reference internal" href="#reading-the-firewall-and-isc-data-in-the-safety-core" id="id8">Reading the firewall and isc data in the Safety core</a></li>
 </ul>
 </div>
 <div class="section" id="design">
@@ -261,20 +262,21 @@ Host ID of WKUP R5 in AM62x      = 0x23</td>
 <h3><a class="toc-backref" href="#id5">Call TISCI API - TISCI_MSG_ALLOW_FWL_CTRL_READ</a><a class="headerlink" href="#call-tisci-api-tisci-msg-allow-fwl-ctrl-read" title="Permalink to this headline">¶</a></h3>
 <p>Call the TISCI API - TISCI_MSG_ALLOW_FWL_CTRL_READ to request the read access of the firewall configuration region to the safety core.</p>
 </div>
-<div class="section" id="read-firewall-configuration-data-using-the-safety-checker-library-api">
-<h3><a class="toc-backref" href="#id6">Read firewall configuration data using the Safety Checker library API</a><a class="headerlink" href="#read-firewall-configuration-data-using-the-safety-checker-library-api" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="read-firewall-and-isc-configuration-data-using-the-safety-checker-library-api">
+<h3><a class="toc-backref" href="#id6">Read firewall and isc configuration data using the Safety Checker library API</a><a class="headerlink" href="#read-firewall-and-isc-configuration-data-using-the-safety-checker-library-api" title="Permalink to this headline">¶</a></h3>
 <p>Once the read access to the firewall configuration region is granted to the safety core, the firewall configuration data can be read
 in the safety core (via API call to the Safety Checker library API - implemented using the formula explained in the section -
-<a class="reference internal" href="#dref-secfwl-access-safety-core-func-reading"><span class="std std-ref">Reading the firewall data in the Safety core</span></a></p>
+<a class="reference internal" href="#dref-secfwl-access-safety-core-func-reading"><span class="std std-ref">Reading the firewall and isc data in the Safety core</span></a></p>
 </div>
 <div class="section" id="call-tisci-api-tisci-msg-forbid-fwl-ctrl-read">
 <h3><a class="toc-backref" href="#id7">Call TISCI API - TISCI_MSG_FORBID_FWL_CTRL_READ</a><a class="headerlink" href="#call-tisci-api-tisci-msg-forbid-fwl-ctrl-read" title="Permalink to this headline">¶</a></h3>
 <p>Call the TISCI API -  TISCI_MSG_FORBID_FWL_CTRL_READ to disable the read access of the firewall configuration region to the safety core.</p>
 </div>
 </div>
-<div class="section" id="reading-the-firewall-data-in-the-safety-core">
-<span id="dref-secfwl-access-safety-core-func-reading"></span><h2><a class="toc-backref" href="#id8">Reading the firewall data in the Safety core</a><a class="headerlink" href="#reading-the-firewall-data-in-the-safety-core" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="reading-the-firewall-and-isc-data-in-the-safety-core">
+<span id="dref-secfwl-access-safety-core-func-reading"></span><h2><a class="toc-backref" href="#id8">Reading the firewall and isc data in the Safety core</a><a class="headerlink" href="#reading-the-firewall-and-isc-data-in-the-safety-core" title="Permalink to this headline">¶</a></h2>
 <p>Firewall Data of a particular firewall ID and region can be then read directly from the safety core.
+ISC configuration data for a given ISC ID can also be read directly from the safety core.
 Firewall data of a given ID and contains 32 bytes for each region.</p>
 <p>For getting the firewall data of a given Firewall ID and a given region, the safety checker needs to read 32 bytes from the firewall region offset.</p>
 <p>The firewall region offset can be calculated using the below formula:</p>
@@ -282,6 +284,7 @@ Firewall data of a given ID and contains 32 bytes for each region.</p>
 <p>For eg:</p>
 <p>In J784S4, to calculate the firewall region offset of firewall Id 10, region 2,  read 32 bytes from below address -</p>
 <p>0x45000000 + (10 x 1024) + (2 x 32) = 0x45002840</p>
+<p>ISC data can also be calculated similarly using the above formula with ISC base address as 0x45800000.</p>
 </div>
 </div>
 
@@ -293,7 +296,7 @@ Firewall data of a given ID and contains 32 bytes for each region.</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="keyring.html" class="btn btn-neutral" title="Keyring Management" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="csp.html" class="btn btn-neutral" title="Cryptographic Services" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -324,7 +327,7 @@ Firewall data of a given ID and contains 32 bytes for each region.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'10.00.08',
+            VERSION:'10.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

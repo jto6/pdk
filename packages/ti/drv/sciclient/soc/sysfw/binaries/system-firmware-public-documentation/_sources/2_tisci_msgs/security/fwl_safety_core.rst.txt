@@ -5,7 +5,7 @@ FIREWALL READ ACCESS SAFETY CORE TISCI Description
 .. _fwl_read_access_safety_core_desc:
 
 
-This chapter provides information on  |sysfw| firewall read access safety core API for . The 2 APIs are added to allow / disable 
+This chapter provides information on  |sysfw| firewall and isc read access safety core API for . The 2 APIs are added to allow / disable 
 the read access of the firewall configuration region to the safety core. The available API are listed below.
 
 +------------------+-----------------------------------------------------------------------+-----------------+--------------------+

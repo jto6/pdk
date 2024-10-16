@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.00.08
+                10.01.03
               </div>
             
           
@@ -126,6 +126,7 @@
 <li class="toctree-l3"><a class="reference internal" href="keywriter.html">OTP Keywriter TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otp_revision.html">OTP Revision Read/Write Message Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="keyring.html">KEYRING TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csp.html">Cryto Service TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fwl_safety_core.html">FIREWALL READ ACCESS SAFETY CORE TISCI Description</a></li>
 </ul>
 </li>
@@ -275,6 +276,10 @@ frameworks
 <td>Extended Encryption extension</td>
 <td>1.3.6.1.4.1.294.1.40</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="#sysfw-debug-suspend-ext"><span class="std std-ref">System Firmware Debug Suspend Extension</span></a></td>
+<td>Debug Suspend extension</td>
+<td>1.3.6.1.4.1.294.1.41</td>
+</tr>
 </tbody>
 </table>
 <p>Specific extensions are required for particular image types. The below table
@@ -421,6 +426,15 @@ or not applicable (<strong>.</strong>).</p>
 <td>.</td>
 <td>.</td>
 <td><strong>M</strong></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#sysfw-debug-suspend-ext"><span class="std std-ref">Debug Suspend Encryption</span></a></td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>O</td>
+<td>.</td>
+<td>.</td>
 </tr>
 </tbody>
 </table>
@@ -1108,6 +1122,62 @@ as one of <code class="docutils literal"><span class="pre">DEBUG_PUBLIC</span></
 </div>
 <p>For an example, please refer to the section <code class="docutils literal"><span class="pre">[</span> <span class="pre">debug</span> <span class="pre">]</span></code> in <a class="reference internal" href="#sysfw-x509-template-example"><span class="std std-ref">Sample x509 template</span></a>.</p>
 </div>
+<div class="section" id="sysfw-debug-suspend-extension">
+<span id="sysfw-debug-suspend-ext"></span><h3>System Firmware Debug Suspend Extension<a class="headerlink" href="#sysfw-debug-suspend-extension" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently this extension is supported only on am62x.</p>
+</div>
+<p>The custom extension field used for ‘suspend peripherals on debug’ is identified by the OID
+<strong>1.3.6.1.4.1.294.1.41</strong>. This extension can be used to enable the suspension of peripheral
+when a particular core is being debugged.</p>
+<p>Every processor core on the system is associated with a list of peripherals that can be
+configured to be suspended when it is being debugged. Certificate authors can choose to
+enable suspend for multiple peripherals. Also, one can enable suspend for peripherals
+related to multiple cores using the same certificate.</p>
+<p>The extension is supposed to contain multiple integer entries. First integer denotes the number
+of entries while the consecutive entries are comprised of processor-id, peripheral-id pair each
+with processor-id occupying the upper 16 bits and the peripheral-id occupying the lower 32 bits.</p>
+<p>The structure of the field is shown below in ASN.1 notation.</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="n">UID</span><span class="o">-</span><span class="n">Debug</span><span class="w"> </span><span class="o">::=</span><span class="w"> </span><span class="n">SEQUENCE</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">numEntries</span><span class="w"> </span><span class="n">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">entries</span><span class="w"> </span><span class="p">(</span><span class="n">processor</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">peripheral</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">pairs</span><span class="p">)</span>
+<span class="w">    </span><span class="n">entry0</span><span class="w"> </span><span class="n">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">First</span><span class="w"> </span><span class="n">entry</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="n">entryN</span><span class="w"> </span><span class="n">INTEGER</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="n">Last</span><span class="w"> </span><span class="n">entry</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The debug control data is decoded as a structure below:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">debug_suspend_info</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">u32</span><span class="w"> </span><span class="n">numEntries</span><span class="p">;</span>
+<span class="w">    </span><span class="n">u32</span><span class="w"> </span><span class="n">entries</span><span class="p">[</span><span class="n">DBG_SUSP_MAX_PERIPHERALS</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The table below contains list of valid peripherals for wakeup R5 core (processor id: 1).</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">peripheral id</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>60</td>
+<td>wakeup rti</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently, this extension allows only one core, wakeup r5, and only one peripheral for the same which is wakeup rti.
+Support for more cores and associated peripherals will be added in the future.</p>
+</div>
+</div>
 <div class="section" id="sysfw-hs-board-configuration-extension">
 <span id="sysfw-hs-bcfg-ext"></span><h3>System Firmware HS Board Configuration Extension<a class="headerlink" href="#sysfw-hs-board-configuration-extension" title="Permalink to this headline">¶</a></h3>
 <p>System Firmware extends the Encryption extension/OID as defined by ROM for the purpose
@@ -1684,6 +1754,7 @@ Image integrity (<code class="docutils literal"><span class="pre">sysfw_image_in
 <span class="m">1</span>.3.6.1.4.1.294.1.36<span class="o">=</span>ASN1:SEQUENCE:sysfw_hs_boardcfg
 <span class="m">1</span>.3.6.1.4.1.294.1.37<span class="o">=</span>ASN1:SEQUENCE:sysfw_fwl_ext
 <span class="m">1</span>.3.6.1.4.1.294.1.40<span class="o">=</span>ASN1:SEQUENCE:encryption_extended
+<span class="m">1</span>.3.6.1.4.1.294.1.41<span class="o">=</span>ASN1:SEQUENCE:debug_suspend_info
 
 <span class="o">[</span><span class="w"> </span>sysfw_boot_seq<span class="w"> </span><span class="o">]</span>
 <span class="nv">bootCore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>INTEGER:0x20
@@ -1732,6 +1803,10 @@ Image integrity (<code class="docutils literal"><span class="pre">sysfw_image_in
 <span class="nv">debugCtrl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>INTEGER:0x00000004
 <span class="nv">coreDbgEn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>INTEGER:0x20210102
 <span class="nv">coreDbgSecEn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>INTEGER:0x2223
+
+<span class="o">[</span>debug_suspend_info<span class="o">]</span>
+<span class="nv">numEntried</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>INTEGER:1
+<span class="nv">entry0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>INTEGER:0x0001003C
 
 <span class="o">[</span><span class="w"> </span>encryption<span class="w"> </span><span class="o">]</span>
 <span class="nv">initalVector</span><span class="w"> </span><span class="o">=</span><span class="w">  </span>FORMAT:HEX,OCT:TEST_IMAGE_ENC_IV
@@ -1813,7 +1888,7 @@ Image integrity (<code class="docutils literal"><span class="pre">sysfw_image_in
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.00.08',
+            VERSION:'10.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

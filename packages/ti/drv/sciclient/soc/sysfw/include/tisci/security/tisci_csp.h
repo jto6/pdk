@@ -80,23 +80,23 @@ struct csp_aes_opn_resp_data {
  * \brief Request for encryption/decryption
  *
  * \param hdr tisci header
- * \param aes_req The request structure
+ * \param aes_req Structure containing context address
  */
 struct tisci_csp_aes_req {
     struct tisci_header hdr;
     struct csp_aes_opn_req_data aes_req;
-};
+} __attribute__((__packed__));
 
 /**
  * \brief Response of the encryption/decryption process
  *
  * \param hdr tisci header
- * \param aes_resp The response stucture
+ * \param aes_resp Structure containing service response
  */
 struct tisci_csp_aes_resp {
     struct tisci_header hdr;
     struct csp_aes_opn_resp_data aes_resp;
-};
+} __attribute__((__packed__));
 
 #endif
 

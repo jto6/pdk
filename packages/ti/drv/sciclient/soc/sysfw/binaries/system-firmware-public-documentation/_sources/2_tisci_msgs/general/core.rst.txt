@@ -250,7 +250,11 @@ Each bit in the response indicating a certain functionality is present or not.
 +----------------------------------+-------------------+
 | DM Managed low power mode        | 5                 |
 +----------------------------------+-------------------+
-| Reserved                         | 6-63              |
+| IO Only Plus DDR low power mode  | 6                 |
++----------------------------------+-------------------+
+| IO Isolation capability          | 7                 |
++----------------------------------+-------------------+
+| Reserved                         | 8-63              |
 +----------------------------------+-------------------+
 
 TISCI Message ID

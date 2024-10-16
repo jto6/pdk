@@ -31,7 +31,7 @@ Supported low power modes
 +------------------+-----------------------+
 | MCU_ONLY         | am62x, am62ax, am62px | 
 +------------------+-----------------------+
-| IO_ONLY_PLUS_DDR | None                  | 
+| IO_ONLY_PLUS_DDR | am62ax, am62px        | 
 +------------------+-----------------------+
 | PARTIAL_IO       | am62x, am62ax, am62px | 
 +------------------+-----------------------+
@@ -279,7 +279,7 @@ Objective
 Restore the minimal context saved during lpm entry.
 
 .. note::
-  This message is registered only if IO Plus DDR low power mode 
+  This message is registered only if IO Only Plus DDR low power mode 
   exit is detected from MMR read.
 
 Usage
@@ -355,14 +355,18 @@ Any host can set a constraint on the low power mode that the SoC can enter.
 Latency Table
 -------------
 
-+----------------+--------------+--------------+
-| Low power mode | Minimum (ms) | Maximum (ms) |
-+================+==============+==============+
-| DEEP_SLEEP     | 101          | X            |
-+----------------+--------------+--------------+
-| MCU_ONLY       | 10           | 100          |
-+----------------+--------------+--------------+
-
++------------------+--------------+--------------+
+| Low power mode   | Minimum (ms) | Maximum (ms) |
++==================+==============+==============+
+| DEEPEST          | 251          | X            |
++------------------+--------------+--------------+
+| DEEP_SLEEP       | 101          | 250          |
++------------------+--------------+--------------+
+| MCU_ONLY         | 10           | 100          |
++------------------+--------------+--------------+
+ 
+In the above table, DEEPEST is DEEP_SLEEP for am62x and IO_ONLY_PLUS_DDR for 
+am62ax and am62px.
 
 .. note::
   By setting a wakeup latency constraint, the host ensures that the resume

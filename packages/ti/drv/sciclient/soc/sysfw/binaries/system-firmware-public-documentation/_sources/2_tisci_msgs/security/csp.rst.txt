@@ -1,0 +1,76 @@
+===============================
+Cryto Service TISCI Description
+===============================
+
+.. _csp_tisci_desc:
+
+This chapter provides information on  |sysfw| API for Cryptographic Services. The available API are listed below.
+
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+
+| TISCI Message ID |                        Message Name                                   | Available in GP | Available in HS-FS | Available in HS-SE |
++==================+=======================================================================+=================+====================+====================+
+| 0x9040           | :ref:`TISCI_MSG_SA2UL_AES_ENCRYPT <csp-encrypt>`                      | NO              | YES                | YES                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+
+| 0x9041           | :ref:`TISCI_MSG_SA2UL_AES_DECRYPT <csp-decrypt>`                      | NO              | YES                | YES                |
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+
+
+API Description
+===============
+
+Request and Response structures
+-------------------------------
+
+.. code-block:: c
+
+    struct csp_aes_opn_req_data {
+        u32 ctx_address_lo;
+        u32 ctx_address_hi;
+    }
+
+    struct csp_aes_opn_resp_data {
+        u8 tag[16];
+    }
+
+.. _csp-encrypt:
+
+TISCI_MSG_SA2UL_AES_ENCRYPT - Encrypt a blob
+--------------------------------------------
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | Yes    |
++------------------------+--------+
+
+TISCI Message ID
+----------------
+
+.. sysfwapimacro:: TISCI_MSG_SA2UL_AES_ENCRYPT
+
+.. sysfwapistruct:: tisci_csp_aes_req
+
+.. sysfwapistruct:: tisci_csp_aes_resp
+
+.. _csp-decrypt:
+
+TISCI_MSG_SA2UL_AES_DECRYPT - Decrypt a blob
+--------------------------------------------
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | Yes    |
++------------------------+--------+
+
+TISCI Message ID
+----------------
+
+.. sysfwapimacro:: TISCI_MSG_SA2UL_AES_DECRYPT
+
+.. sysfwapistruct:: tisci_csp_aes_req
+
+.. sysfwapistruct:: tisci_csp_aes_resp
