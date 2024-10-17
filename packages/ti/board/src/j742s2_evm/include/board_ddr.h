@@ -122,6 +122,12 @@ typedef struct Board_DdrObject_s
     uint32_t *ddrPhyReg;
     /** ECC base address */
     void *eccAddr;
+    /** Pointer to DDR control register golden reference array */
+    uint32_t *ddrCtlRegRef;
+    /** Pointer to DDR PHY register golden reference array */
+    uint32_t *ddrPhyIndepRegRef;
+    /** Pointer to DDR PHY register golden reference array */
+    uint32_t *ddrPhyRegRef;
 } Board_DdrObject_t;
 
 typedef Board_DdrObject_t * Board_DdrHandle;

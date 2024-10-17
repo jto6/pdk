@@ -263,6 +263,16 @@ Board_STATUS Board_PLLInit(uint32_t modId, uint32_t clkId, uint64_t clkRate);
  */
 Board_STATUS Board_DDRInit(Bool eccEnable);
 
+/**
+ * \brief DDR4 register value verification function
+ *
+ * Reads the DDR registers configured and compares with expected values.
+ *
+ * \return  BOARD_SOK in case of success or appropriate error code
+ *
+ */
+Board_STATUS Board_DDRRegVerify(void);
+
 #ifdef BOARD_DDR_ENABLE_DDR_MEM_PRIME
 /**
  *

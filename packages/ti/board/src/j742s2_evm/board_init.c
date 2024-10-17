@@ -149,6 +149,13 @@ static Board_STATUS Board_sysDeinit(void)
  *      based in the DDR PLL controller configuration done by the board library.
  *      Any changes to DDR PLL requires change to DDR timing.
  *
+ *  BOARD_INIT_DDR_REG_VERIFY -
+ *      Verifies the DDR register configurations written during DDR init.
+ *      DDR register verification is not done while processing the 
+ *      BOARD_INIT_DDR request since it is time consuming. 
+ *      Applications intended to verify the DDR register configurations can
+ *      use this flag after DDR init.
+ *
  *  BOARD_INIT_PINMUX_CONFIG -
  *      Enables pinmux for the board interfaces. Pin mux is done based on the
  *      default/primary functionality of the board. Any pins shared by multiple
@@ -291,6 +298,15 @@ Board_STATUS Board_init(Board_initCfg cfg)
 
     if (ret != BOARD_SOK)
         return ret;
+
+#if defined(BOARD_ENABLE_DDR_REG_VERIFY)
+    if (cfg & BOARD_INIT_DDR_REG_VERIFY)
+    {
+        ret = Board_DDRRegVerify();
+    }
+    if (BOARD_SOK != ret)
+        return ret;
+#endif
 
     if (cfg & BOARD_INIT_ETH_PHY)
         ret = Board_cpsw2gEthPhyConfig();
