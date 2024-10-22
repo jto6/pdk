@@ -78,8 +78,8 @@ const Ipc_ResourceTable ti_ipc_remoteproc_ResourceTable __attribute__ ((section 
 {
     .base =
     {
-        .num = 1U,                  /* we're the first version that implements this */
-        .ver = NUM_ENTRIES,         /* number of entries in the table */
+        .num = NUM_ENTRIES,         /* number of entries in the table */
+        .ver = 1U,                  /* we're the first version that implements this */
         .reserved = {0U, 0U},       /* reserved, must be zero */
     },
 
