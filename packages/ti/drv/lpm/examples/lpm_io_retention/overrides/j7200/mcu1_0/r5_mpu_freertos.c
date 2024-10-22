@@ -6,7 +6,7 @@
  */
 
 /*
- * Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2021-2024 Texas Instruments Incorporated - http://www.ti.com/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -87,13 +87,14 @@ const CSL_ArmR5MpuRegionCfg gCslR5MpuCfg[CSL_ARM_R5F_MPU_REGIONS_MAX] =
     {
         /* Region 5 configuration: 32 KB BTCM */
         /* Address of ATCM/BTCM are configured via MCU_SEC_MMR registers
-           It can either be '0x0' or '0x41010000'. Application/Boot-loader shall
-           take care this configurations and linker command file shall be
-           in sync with this. For either of the above configurations,
-           MPU configurations will not changes as both regions will have same
-           set of permissions in almost all scenarios.
-           Application can chose to overwrite this MPU configuration if needed.
-           The same is true for the region corresponding to ATCM. */
+         * It can either be '0x0' or '0x41010000'. Application/Boot-loader shall
+         * take care this configurations and linker command file shall be
+         * in sync with this. For either of the above configurations,
+         * MPU configurations will not changes as both regions will have same
+         * set of permissions in almost all scenarios.
+         * Application can chose to overwrite this MPU configuration if needed.
+         * The same is true for the region corresponding to ATCM. 
+         */
         .regionId         = 3U,
         .enable           = 1U,
         .baseAddr         = 0x41010000,

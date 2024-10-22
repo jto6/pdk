@@ -1,4 +1,4 @@
-# Copyright (C) 2019-2020 Texas Instruments Incorporated - http://www.ti.com/
+# Copyright (C) 2019-2024 Texas Instruments Incorporated - http://www.ti.com/
 #
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,9 @@ PACKAGE_SRCS_COMMON = .
 SRCS_COMMON += 
 
 CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) -DDEVICE_NAME=j7vcl_core 
+
+# Uncomment below line to print debug logs.
+# CFLAGS_LOCAL_COMMON += -DLPM_DEBUG_ENABLE
 
 # Core/SoC/platform specific source files and CFLAGS
 # Example:

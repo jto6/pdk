@@ -1,77 +1,54 @@
 /*
-*
-* Copyright (c) 2021-22 Texas Instruments Incorporated
-*
-* All rights reserved not granted herein.
-*
-* Limited License.
-*
-* Texas Instruments Incorporated grants a world-wide, royalty-free, non-exclusive
-* license under copyrights and patents it now or hereafter owns or controls to make,
-* have made, use, import, offer to sell and sell ("Utilize") this software subject to the
-* terms herein.  With respect to the foregoing patent license, such license is granted
-* solely to the extent that any such patent is necessary to Utilize the software alone.
-* The patent license shall not apply to any combinations which include this software,
-* other than combinations with devices manufactured by or for TI ("TI Devices").
-* No hardware patent is licensed hereunder.
-*
-* Redistributions must preserve existing copyright notices and reproduce this license
-* (including the above copyright notice and the disclaimer and (if applicable) source
-* code license limitations below) in the documentation and/or other materials provided
-* with the distribution
-*
-* Redistribution and use in binary form, without modification, are permitted provided
-* that the following conditions are met:
-*
-* *       No reverse engineering, decompilation, or disassembly of this software is
-* permitted with respect to any software provided in binary form.
-*
-* *       any redistribution and use are licensed by TI for use only with TI Devices.
-*
-* *       Nothing shall obligate TI to provide you with source code for the software
-* licensed and provided to you in object code.
-*
-* If software source code is provided to you, modification and redistribution of the
-* source code are permitted provided that the following conditions are met:
-*
-* *       any redistribution and use of the source code, including any resulting derivative
-* works, are licensed by TI for use only with TI Devices.
-*
-* *       any redistribution and use of any object code compiled from the source code
-* and any resulting derivative works, are licensed by TI for use only with TI Devices.
-*
-* Neither the name of Texas Instruments Incorporated nor the names of its suppliers
-*
-* may be used to endorse or promote products derived from this software without
-* specific prior written permission.
-*
-* DISCLAIMER.
-*
-* THIS SOFTWARE IS PROVIDED BY TI AND TI'S LICENSORS "AS IS" AND ANY EXPRESS
-* OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-* IN NO EVENT SHALL TI AND TI'S LICENSORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-* BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
-* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-* OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-* OF THE POSSIBILITY OF SUCH DAMAGE.
-*
-*/
+ *  Copyright (c) Texas Instruments Incorporated 2018-2024
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *    Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ *    Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the
+ *    distribution.
+ *
+ *    Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
-/* FreeRTOS Header files */
+/**
+ *  \file main_rtos.c
+ *
+ *  \brief Main file for lpm_io_retention build
+ */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <ti/osal/osal.h>
 #include <ti/osal/src/nonos/Nonos_config.h>
 #include <ti/osal/TaskP.h>
 #include <ti/osal/HwiP.h>
 
-#include <ti/csl/soc.h>
 #include <ti/csl/cslr_pmmc.h>
 #include <dmsc_cm.h>
-#include <dev_info.h>
 #include <lpm_mmr_functions.h>
-#include <ti/drv/lpm/include/lpm_pmic.h>
 #include <ti/drv/lpm/lpm.h>
 #include <ti/drv/gpio/soc/GPIO_soc.h>
 
@@ -79,6 +56,10 @@
 #include <ti/drv/uart/UART_stdio.h>
 
 #include <ti/drv/lpm/include/io_retention/dev_info.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 #if (defined(SOC_J721E) || defined(SOC_J7200))
 Board_I2cInitCfg_t boardI2cInitCfg = {0, BOARD_SOC_DOMAIN_WKUP, false};
@@ -92,9 +73,23 @@ Board_I2cInitCfg_t boardI2cInitCfg = {0, BOARD_SOC_DOMAIN_WKUP, false};
 /* Enable to pause before entering the low power mode and check the PADCONF values*/
 #define PAUSE_BEFORE_ENTERING_LPM        (0)
 
-/*********************************  *************************************
- ************************** Internal functions ************************
- **********************************************************************/
+/* Board specific definitions */
+#define io_timeout  150
+
+/* Boot defines */
+#define COLD_BOOT (0x0)
+#define IO_RETENTION_BOOT (0x1)
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
 int main_io_pm_seq (void);
 void main_configure_can_uart_lock_dmsc();
 void wkup_configure_can_uart_lock_dmsc();
@@ -110,13 +105,12 @@ TaskP_Params mainAppTaskParams;
 static uint8_t MainApp_TaskStack[APP_TASK_STACK] __attribute__((aligned(32)));
 extern GPIO_v0_Config GPIO_v0_config;
 
-/* Board specific definitions */
-#define io_timeout  150
-
 /* Boot defines */
-#define COLD_BOOT (0x0)
-#define IO_RETENTION_BOOT (0x1)
 uint32_t global_boot_mode_status = COLD_BOOT;
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 
 int io_retention_main()
@@ -311,7 +305,7 @@ int wkup_io_pm_seq (void)
     UART_printf("MCAN0_TX (0x4301C0B8) immediately after pad value is set : 0x%x\n", *mkptr(CSL_WKUP_CTRL_MMR0_CFG0_BASE, 0x1C0B8));
 
 /* Enable to check that wakeup events are being received */
-#if 0
+#if defined(LPM_DEBUG_ENABLE)
     AppUtils_Printf(MSG_NORMAL, "Trigger the interrupt and then press enter : ");
     int c;
     UART_scanFmt("%d", &c);
@@ -436,9 +430,10 @@ static void MainApp_TaskFxn(void* a0, void* a1)
     }
 
     /* make sure that DMSC isolation bit is turned off
-       and that mmrs are unlocked. If this is not the
-       case, code will not execute correctly on other
-       cores */
+     * and that mmrs are unlocked. If this is not the
+     * case, code will not execute correctly on other
+     * cores 
+     */
     disable_isolation_bit_and_unlock();
 
 	/* execute overall application*/
@@ -479,7 +474,8 @@ int32_t SetupSciServer(void)
     appPrms.taskPriority[SCISERVER_TASK_USER_HI] = 7;
 
     /* Sciclient needs to be initialized before Sciserver. Sciserver depends on
-     * Sciclient API to execute message forwarding */
+     * Sciclient API to execute message forwarding 
+     */
     ret = Sciclient_configPrmsInit(&clientPrms);
 
     if (ret == CSL_PASS)
