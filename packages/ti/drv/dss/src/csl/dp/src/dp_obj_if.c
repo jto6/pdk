@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -72,6 +72,7 @@ DP_OBJ *DP_GetInstance(void)
         .getHdcpClockConfig = DP_GetHdcpClockConfig,
         .configurePhyAuxCtrl = DP_ConfigurePhyAuxCtrl,
         .configurePhyStartUp = DP_ConfigurePhyStartUp,
+        .configureMlPhyStartUp = DP_ConfigureMlPhyStartUp,
         .sendEdidReadRequest = DP_SendEdidReadRequest,
         .getEdidReadResponse = DP_GetEdidReadResponse,
         .readEdid = DP_ReadEdid,

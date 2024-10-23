@@ -2,7 +2,7 @@
 /* parasoft-begin-suppress MISRA2012-DIR-4_8 "Hidden implementation when never dereferenced structure" */
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:

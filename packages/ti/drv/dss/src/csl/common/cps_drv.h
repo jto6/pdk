@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2019 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -37,8 +37,8 @@
 
 #include "cps.h"
 
-/* parasoft-begin-suppress MISRA2012-DIR-4_9-4 "function-like macro, DRV-4760" */
-/* parasoft-begin-suppress MISRA2012-RULE-20_10-4 "## preprocessor operator, DRV-4761" */
+/* parasoft-begin-suppress MISRAC2012-DIR_4_9-a "function-like macro, DRV-4760" */
+/* parasoft-begin-suppress MISRAC2012-RULE_20_10-a "## preprocessor operator, DRV-4761" */
 /* parasoft-begin-suppress METRICS-36-3 "A function should not be called from more than 5 different functions, DRV-3823" */
 
 /**
@@ -166,9 +166,9 @@ static inline void CPS_RegWrite64(volatile uint64_t* reg, uint64_t value)
  */
 static inline uint32_t CPS_FldRead(uint32_t mask, uint32_t shift, uint32_t reg_value)
 {
-    /* parasoft-begin-suppress MISRA2012-RULE-12_2-2 "shift ranges, DRV-4915" */
+    /* parasoft-begin-suppress MISRAC2012-RULE_12_2-a "shift ranges, DRV-4915" */
     uint32_t result = (reg_value & mask) >> shift;
-    /* parasoft-end-suppress MISRA2012-RULE-12_2-2 */
+    /* parasoft-end-suppress MISRAC2012-RULE_12_2-a */
 
     return (result);
 }
@@ -183,9 +183,9 @@ static inline uint32_t CPS_FldRead(uint32_t mask, uint32_t shift, uint32_t reg_v
  */
 static inline uint32_t CPS_FldWrite(uint32_t mask, uint32_t shift, uint32_t reg_value, uint32_t value)
 {
-    /* parasoft-begin-suppress MISRA2012-RULE-12_2-2 "shift ranges, DRV-4915" */
+    /* parasoft-begin-suppress MISRAC2012-RULE_12_2-a "shift ranges, DRV-4915" */
     uint32_t new_value = (value << shift) & mask;
-    /* parasoft-end-suppress MISRA2012-RULE-12_2-2 */
+    /* parasoft-end-suppress MISRAC2012-RULE_12_2-a */
 
     new_value = (reg_value & ~mask) | new_value;
     return (new_value);
@@ -230,8 +230,8 @@ static inline uint32_t CPS_FldClear(uint32_t width, uint32_t mask, uint32_t is_w
     return (new_value);
 }
 
-/* parasoft-end-suppress MISRA2012-RULE-20_10-4 */
-/* parasoft-end-suppress MISRA2012-DIR-4_9-4 */
+/* parasoft-end-suppress MISRAC2012-RULE_20_10-a */
+/* parasoft-end-suppress MISRAC2012-DIR_4_9-a */
 /* parasoft-end-suppress METRICS-36-3 */
 
 #endif /* CPS_DRV_H_ */

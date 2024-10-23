@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2019 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -38,8 +38,8 @@
 #include "cdn_assert.h"
 #include "cdn_inttypes.h"
 
-/* parasoft-begin-suppress MISRA2012-RULE-8_6-2 "An identifier with external linkage shall have exactly one external definition, DRV-4757" */
-/* parasoft-begin-suppress MISRA2012-DIR-4_9-4 "A function should be used in preference to a function-like macro where they are interchangeable, DRV-4759" */
+/* parasoft-begin-suppress MISRAC2012-RULE_8_6-a "An identifier with external linkage shall have exactly one external definition, DRV-4757" */
+/* parasoft-begin-suppress MISRAC2012-DIR_4_9-a "A function should be used in preference to a function-like macro where they are interchangeable, DRV-4759" */
 
 #ifdef DEBUG
  #if DEBUG
@@ -142,7 +142,7 @@ extern void DbgPrint(const char *fmt, ...);
 #define SetDbgState( _x ) (g_dbg_state = (_x) )
 #define GetDbgState       (g_dbg_state)
 
-/* parasoft-end-suppress MISRA2012-RULE-8_6-2 */
-/* parasoft-end-suppress MISRA2012-DIR-4_4-4 */
+/* parasoft-end-suppress MISRAC2012-RULE_8_6-a */
+/* parasoft-end-suppress MISRAC2012-DIR_4_9-a */
 
 #endif /* INCLUDE_CDN_LOG_H */

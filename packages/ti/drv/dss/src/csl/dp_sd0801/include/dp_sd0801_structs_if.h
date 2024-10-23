@@ -1,6 +1,6 @@
 /* parasoft suppress item  MISRA2012-DIR-4_8 "Consider hiding implementation of structure" */
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -66,7 +66,7 @@ struct DP_SD0801_VoltageCoefficients_s
     uint16_t CpostMult;
 };
 
-/** Structure containing parameters of physical link. */
+/** Structure containing parameters of physical DP link. */
 struct DP_SD0801_LinkState_s
 {
     /** Link Rate */
@@ -81,6 +81,19 @@ struct DP_SD0801_LinkState_s
     uint8_t preEmphasis[DP_SD0801_MAX_LANE_COUNT];
     /** SSC (Spread-Spectrum Clock) enabled. */
     bool ssc;
+};
+
+/** Structure containing parameters of a link(PHY instance) for multilink PHY configuration. */
+struct DP_SD0801_MlPhyInstance_s
+{
+    /** Master lane number of a link. */
+    uint8_t mLane;
+    /** Number of PHY lanes used for this link. */
+    uint8_t numLanes;
+    /** PHY protocol type for this link. */
+    DP_SD0801_PhyType phyType;
+    /** SSC (Spread-Spectrum Clock) mode. */
+    DP_SD0801_PhySscMode ssc;
 };
 
 /** Configuration parameters passed to probe & init functions. */

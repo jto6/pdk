@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -57,6 +57,7 @@
 uint32_t DP_SD0801_CallbacksSF(const DP_SD0801_Callbacks *obj);
 uint32_t DP_SD0801_ConfigSF(const DP_SD0801_Config *obj);
 uint32_t DP_SD0801_LinkStateSF(const DP_SD0801_LinkState *obj);
+uint32_t DP_SD0801_MlPhyInstanceSF(const DP_SD0801_MlPhyInstance *obj);
 uint32_t DP_SD0801_PrivateDataSF(const DP_SD0801_PrivateData *obj);
 uint32_t DP_SD0801_VoltageCoefficientSF(const DP_SD0801_VoltageCoefficients *obj);
 
@@ -69,6 +70,7 @@ uint32_t DP_SD0801_SanityFunction12(const DP_SD0801_PrivateData* pD, const uint8
 uint32_t DP_SD0801_SanityFunction14(const DP_SD0801_PrivateData* pD, const uint8_t voltageSwing, const uint8_t preEmphasis, const DP_SD0801_VoltageCoefficients* coefficients);
 uint32_t DP_SD0801_SanityFunction15(const DP_SD0801_PrivateData* pD, const DP_SD0801_LinkState* linkState);
 uint32_t DP_SD0801_SanityFunction16(const DP_SD0801_PrivateData* pD, const DP_SD0801_Callbacks* callbacks);
+uint32_t DP_SD0801_SanityFunction17(const DP_SD0801_PrivateData* pD, const DP_SD0801_MlPhyInstance* dpPhyInst, const DP_SD0801_LinkRate linkRate, const DP_SD0801_MlPhyInstance* otherPhyInst);
 
 #define DP_SD0801_ProbeSF DP_SD0801_SanityFunction1
 #define DP_SD0801_InitSF DP_SD0801_SanityFunction2
@@ -86,6 +88,8 @@ uint32_t DP_SD0801_SanityFunction16(const DP_SD0801_PrivateData* pD, const DP_SD
 #define DP_SD0801_SetCoefficientsSF DP_SD0801_SanityFunction14
 #define DP_SD0801_ReadLinkStatSF DP_SD0801_SanityFunction15
 #define DP_SD0801_RegisterCbSF DP_SD0801_SanityFunction16
+#define DP_SD0801_MlPhyStartUpSF DP_SD0801_SanityFunction17
+#define DP_SD0801_MlPhyInitSF DP_SD0801_SanityFunction17
 
 #endif  /* DP_SD0801_SANITY_H */
 

@@ -1,6 +1,6 @@
 /* parasoft suppress item  MISRA2012-DIR-4_8 "Consider hiding implementation of structure" */
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -623,6 +623,17 @@ struct DP_AudioVideoClkCfg_s
     bool audioClockEnable;
     /** source packet data clock configuration (true - enabled, false - disabled) */
     bool pktDataClockEnable;
+};
+
+/** Structure containing parameters of a link(PHY instance) for multilink PHY configuration. */
+struct DP_MlPhyInstance_s
+{
+    /** Master lane number of a link. */
+    uint8_t mLane;
+    /** Number of PHY lanes used for this link. */
+    uint8_t numLanes;
+    /** PHY protocol type for this link. */
+    DP_SD0801_PhyType phyType;
 };
 
 /**

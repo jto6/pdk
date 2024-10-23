@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -36,6 +36,39 @@
 /* parasoft-begin-suppress MISRA2012-RULE-1_1_b_c90-2, "More than 31 initial characters in macro", DRV-4788 */
 #ifndef DP_SD0801_SPEC_H
 #define DP_SD0801_SPEC_H
+
+void mlConfigurePhyPmaCfg(const DP_SD0801_PrivateData*   pD,
+                          const DP_SD0801_MlPhyInstance* phyInst1,
+                          const DP_SD0801_MlPhyInstance* phyInst2);
+
+/**
+ * Unique key id for vals table entry
+ * REFCLK0_RATE | LINK0_TYPE | LINK1_TYPE | SSC_TYPE
+ */
+#define REFCLK0_SHIFT   9
+#define REFCLK0_MASK    (0x7U << REFCLK0_SHIFT)
+#define LINK0_SHIFT 6
+#define LINK0_MASK  (0x7U << LINK0_SHIFT)
+#define LINK1_SHIFT 3
+#define LINK1_MASK  (0x7U << LINK1_SHIFT)
+#define SSC_SHIFT   0
+#define SSC_MASK    (0x7U << SSC_SHIFT)
+
+/* parasoft-begin-suppress MISRAC2012-DIR_4_9-a-4, "Do not define function-like macro", DRV-6294 */
+
+#define DP_SD0801_KEY(refclk0, link0, link1, ssc)    \
+    ((((uint32_t)(refclk0) << REFCLK0_SHIFT) & REFCLK0_MASK) | \
+     (((uint32_t)(link0) << LINK0_SHIFT) & LINK0_MASK)       | \
+     (((uint32_t)(link1) << LINK1_SHIFT) & LINK1_MASK)       | \
+     (((uint32_t)(ssc) << SSC_SHIFT) & SSC_MASK))
+
+#define DP_SD0801_KEY_ANYCLK(link0, link1) \
+    DP_SD0801_KEY(DP_SD0801_CLK_ANY,       \
+                  (link0), (link1), DP_SD0801_ANY_SSC)
+
+#define ARRAY_SIZE(arr) ((uint32_t)sizeof(arr) / (uint32_t)sizeof((arr)[0]))
+
+/* parasoft-end-suppress MISRAC2012-DIR_4_9-a-4 */
 
 #define AUX_CONFIG_ADDR               0xC280U
 #define AUX_CTRL_ADDR                 0xC281U
@@ -175,6 +208,9 @@
 #define CMN_PLL0_SS_CTRL3_M1 0x00aaU
 #define CMN_PLL0_SS_CTRL4_M1 0x00abU
 
+#define CMN_PLL0_VCOCAL_TCTRL 0x0082U
+#define CMN_PLL1_VCOCAL_TCTRL 0x00c2U
+
 /* Common PLL0 control and diagnostic registers address space */
 #define CMN_PLL0_PDIAG_MODE0_BASE 0x01A0U
 /* Common PLL1 control and diagnostic registers address space */
@@ -190,6 +226,7 @@
 #define CMN_PDIAG_PLL_FILT_PADJ_M0_OFFSET 0x0006U
 #define CMN_PDIAG_PLL_CP_TUNE_M0_OFFSET 0x0007U
 
+#define CMN_PDIAG_PLL0_CLK_SEL_M0 0x01a1U
 #define CMN_PDIAG_PLL0_CTRL_M1 0x01b0U
 #define CMN_PDIAG_PLL0_CLK_SEL_M1 0x01b1U
 #define CMN_PDIAG_PLL0_OVRD_M1 0x01b2U
@@ -312,6 +349,9 @@
 #define PHY_REFCLK_DET_THRES_HIGH 0xc011U
 #define PHY_REFCLK_DET_THRES_LOW 0xc010U
 #define PHY_STATE_CHG_TIMEOUT 0xc00aU
+#define PHY_PIPE_USB3_GEN2_PRE_CFG0 0xc020U
+#define PHY_PIPE_USB3_GEN2_POST_CFG0 0xc022U
+#define PHY_PIPE_USB3_GEN2_POST_CFG1 0xc023U
 #define RX_BIST_CTRL 0x80b0U
 #define RX_BIST_ERRCNT 0x80b3U
 #define RX_BIST_SYNCCNT 0x80b1U
@@ -632,4 +672,4 @@ typedef enum
 } ENUM_VCO_FREQ;
 
 #endif /* DP_SD0801_SPEC_H */
-/* parasoft-begin-suppress MISRA2012-RULE-1_1_b_c90-2 */
+/* parasoft-end-suppress MISRA2012-RULE-1_1_b_c90-2 */

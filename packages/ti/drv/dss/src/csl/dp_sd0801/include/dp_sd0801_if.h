@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -78,6 +78,7 @@
 **********************************************************************/
 typedef struct DP_SD0801_VoltageCoefficients_s DP_SD0801_VoltageCoefficients;
 typedef struct DP_SD0801_LinkState_s DP_SD0801_LinkState;
+typedef struct DP_SD0801_MlPhyInstance_s DP_SD0801_MlPhyInstance;
 typedef struct DP_SD0801_Config_s DP_SD0801_Config;
 typedef struct DP_SD0801_Callbacks_s DP_SD0801_Callbacks;
 
@@ -132,6 +133,37 @@ typedef enum
     /** PLL1 used/configured */
     DP_SD0801_PLL_1 = 0x02U
 } DP_SD0801_Pll;
+
+/** Protocol type for which PHY is configured */
+typedef enum
+{
+    DP_SD0801_PHY_TYPE_NONE = 0x00U,
+    DP_SD0801_PHY_TYPE_DP = 0x01U,
+    DP_SD0801_PHY_TYPE_PCIE = 0x02U,
+    DP_SD0801_PHY_TYPE_USB = 0x03U
+} DP_SD0801_PhyType;
+
+/** Input reference clock frequency used */
+typedef enum
+{
+    DP_SD0801_CLK_19_2_MHZ = 0x00U,
+    DP_SD0801_CLK_20_MHZ = 0x01U,
+    DP_SD0801_CLK_24_MHZ = 0x02U,
+    DP_SD0801_CLK_25_MHZ = 0x03U,
+    DP_SD0801_CLK_26_MHZ = 0x04U,
+    DP_SD0801_CLK_27_MHZ = 0x05U,
+    DP_SD0801_CLK_100_MHZ = 0x06U,
+    DP_SD0801_CLK_ANY = 0x07U
+} DP_SD0801_PhyRefClk;
+
+/** Type of SSC used */
+typedef enum
+{
+    DP_SD0801_NO_SSC = 0x00U,
+    DP_SD0801_EXTERNAL_SSC = 0x01U,
+    DP_SD0801_INTERNAL_SSC = 0x02U,
+    DP_SD0801_ANY_SSC = 0x03U
+} DP_SD0801_PhySscMode;
 
 /**********************************************************************
 * Callbacks
@@ -331,6 +363,33 @@ uint32_t DP_SD0801_ReadLinkStat(const DP_SD0801_PrivateData* pD, DP_SD0801_LinkS
  * @return CDN_EINVAL If pD or Callbacks pointer is NULL.
  */
 uint32_t DP_SD0801_RegisterCb(DP_SD0801_PrivateData* pD, const DP_SD0801_Callbacks* callbacks);
+
+/**
+ * Automatically initialize and configure PHY for multilink
+ * configuration. Maximum 2 links with one link being DP are
+ * supported. This is a recommended way to bring up PHY, instead of
+ * manual initialization. DP AUX channel still has to be initialized
+ * separately.
+ * @param[in] pD Driver state info specific to this instance.
+ * @param[in] dpPhyInst Configuration parameters for a DP link.
+ * @param[in] linkRate Link rate to initialize PHY DP link with.
+ * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+ * @return CDN_EOK success
+ * @return CDN_EINVAL If pD is NULL or parameters are invalid.
+ */
+uint32_t DP_SD0801_MlPhyStartUp(DP_SD0801_PrivateData* pD, const DP_SD0801_MlPhyInstance* dpPhyInst, DP_SD0801_LinkRate linkRate, const DP_SD0801_MlPhyInstance* otherPhyInst);
+
+/**
+ * Part of PHY initialization for multilink configuration. Performs
+ * operations to be done before releasing PHY reset.
+ * @param[in] pD Driver state info specific to this instance.
+ * @param[in] dpPhyInst Configuration parameters for a DP link.
+ * @param[in] linkRate Link rate to initialize PHY with.
+ * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+ * @return CDN_EOK success
+ * @return CDN_EINVAL If pD is NULL or parameters are invalid.
+ */
+uint32_t DP_SD0801_MlPhyInit(DP_SD0801_PrivateData* pD, const DP_SD0801_MlPhyInstance* dpPhyInst, DP_SD0801_LinkRate linkRate, const DP_SD0801_MlPhyInstance* otherPhyInst);
 
 /**
  *  @}

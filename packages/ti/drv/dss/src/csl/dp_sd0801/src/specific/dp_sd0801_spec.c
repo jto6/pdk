@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -62,6 +62,7 @@ typedef enum {
 #define PID_TYPE_SD (uint16_t)0x7364 /* ASCII for "SD", SerDes */
 #define PID_NUM_0801 (uint16_t)0x0801
 
+static void mlSetLinkRate(DP_SD0801_PrivateData* pD, const DP_SD0801_LinkState* linkState);
 bool isPhySupported(const DP_SD0801_PrivateData* pD);
 
 /**
@@ -641,9 +642,9 @@ static uint16_t getHsclkDivVal(DP_SD0801_LinkRate linkRate)
     return hsclkDivVal;
 }
 
-static void configurePhyPmaCmnDpRate(const DP_SD0801_PrivateData* pD, uint8_t linkCfg, DP_SD0801_LinkRate dp_rate, uint8_t dpPll)
+static void configurePhyPmaCmnDpRate(const DP_SD0801_PrivateData* pD, uint8_t linkCfg, DP_SD0801_LinkRate dpRate, uint8_t dpPll)
 {
-    uint16_t hsclkDivVal = getHsclkDivVal(dp_rate);
+    uint16_t hsclkDivVal = getHsclkDivVal(dpRate);
     /* uint32_t used for consistency with bitwise operations. */
     uint32_t i;
 
@@ -653,10 +654,10 @@ static void configurePhyPmaCmnDpRate(const DP_SD0801_PrivateData* pD, uint8_t li
 
     /* Configure appropriate PLL (0 / 1) */
     if (isPllSet(dpPll, 0)) {
-        afeWrite(pD, (CMN_PLL0_PDIAG_MODE0_BASE + CMN_PDIAG_PLL_CLK_SEL_M0_OFFSET), getClkSelM0Val(dp_rate));
+        afeWrite(pD, (CMN_PLL0_PDIAG_MODE0_BASE + CMN_PDIAG_PLL_CLK_SEL_M0_OFFSET), getClkSelM0Val(dpRate));
     }
     if (isPllSet(dpPll, 1)) {
-        afeWrite(pD, (CMN_PLL1_PDIAG_MODE0_BASE + CMN_PDIAG_PLL_CLK_SEL_M0_OFFSET), getClkSelM0Val(dp_rate));
+        afeWrite(pD, (CMN_PLL1_PDIAG_MODE0_BASE + CMN_PDIAG_PLL_CLK_SEL_M0_OFFSET), getClkSelM0Val(dpRate));
     }
 
     /* PMA lane configuration to deal with multi-link operation */
@@ -983,6 +984,48 @@ uint32_t DP_SD0801_ConfigLane(DP_SD0801_PrivateData* pD, uint8_t lane, const DP_
     return retVal;
 }
 
+/* Wait for PLL ready de-assertion */
+static void waitForPllReadyDeAssert(const DP_SD0801_PrivateData* pD, uint8_t dpPll)
+{
+    uint16_t regTmp;
+
+    /**
+     * For PLL0 - PHY_PMA_CMN_CTRL2[2] == 1
+     * For PLL1 - PHY_PMA_CMN_CTRL2[3] == 1
+     */
+    if (isPllSet(dpPll, 0)) {
+        do {
+            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
+        } while (((regTmp >> 2U) & 1U) == 0U);
+    }
+    if (isPllSet(dpPll, 1)) {
+        do {
+            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
+        } while (((regTmp >> 3U) & 1U) == 0U);
+    }
+}
+
+/* Wait for PLL ready assertion */
+static void waitForPllReadyAssert(const DP_SD0801_PrivateData* pD, uint8_t dpPll)
+{
+    uint16_t regTmp;
+
+    /**
+     * For PLL0 - PHY_PMA_CMN_CTRL2[0] == 1
+     * For PLL1 - PHY_PMA_CMN_CTRL2[1] == 1
+     */
+    if (isPllSet(dpPll, 0)) {
+        do {
+            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
+        } while (((regTmp) & 1U) == 0U);
+    }
+    if (isPllSet(dpPll, 1)) {
+        do {
+            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
+        } while (((regTmp >> 1U) & 1U) == 0U);
+    }
+}
+
 /**
  * Enable or disable PLL for selected lanes)
  */
@@ -1034,23 +1077,11 @@ static void setPllEnable(const DP_SD0801_PrivateData* pD, uint8_t laneCount, boo
  */
 static void reconfigureLinkRate(const DP_SD0801_PrivateData* pD, DP_SD0801_LinkRate linkRate, uint8_t dpPll, uint8_t linkCfg, bool ssc)
 {
-    uint32_t regTmp;
     /* Disable the cmn_pll0_en before re-programming the new data rate */
     afeWrite(pD, PHY_PMA_PLL_RAW_CTRL, 0x0000U);
 
-    /* Wait for PLL ready de-assertion */
-    /* For PLL0 - PHY_PMA_CMN_CTRL2[2] == 1 */
-    /* For PLL1 - PHY_PMA_CMN_CTRL2[3] == 1 */
-    if (isPllSet(dpPll, 0)) {
-        do {
-            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
-        } while (((regTmp >> 2U) & 1U) == 0U);
-    }
-    if (isPllSet(dpPll, 1)) {
-        do {
-            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
-        } while (((regTmp >> 3U) & 1U) == 0U);
-    }
+    waitForPllReadyDeAssert(pD, dpPll);
+
     CPS_DelayNs(200);
     /* DP Rate Change - VCO Output setting */
     /* used 1 link, then both should be set as same */
@@ -1062,19 +1093,41 @@ static void reconfigureLinkRate(const DP_SD0801_PrivateData* pD, DP_SD0801_LinkR
     /* Enable the cmn_pll0_en */
     afeWrite(pD, PHY_PMA_PLL_RAW_CTRL, 0x0003U);
 
-    /* Wait for PLL ready assertion */
-    /* For PLL0 - PHY_PMA_CMN_CTRL2[0] == 1 */
-    /* For PLL1 - PHY_PMA_CMN_CTRL2[1] == 1 */
-    if (isPllSet(dpPll, 0)) {
-        do {
-            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
-        } while (((regTmp) & 1U) == 0U);
-    }
-    if (isPllSet(dpPll, 1)) {
-        do {
-            regTmp = afeRead(pD, PHY_PMA_CMN_CTRL2);
-        } while (((regTmp >> 1U) & 1U) == 0U);
-    }
+    waitForPllReadyAssert(pD, dpPll);
+}
+
+static void setLinkRate(DP_SD0801_PrivateData* pD, const DP_SD0801_LinkState* linkState)
+{
+    const DP_SD0801_LinkRate linkRate = linkState->linkRate;
+    const uint8_t laneCount = linkState->laneCount;
+    uint8_t dpPll = (uint8_t)DP_SD0801_PLL_0; /* TBD how to set */
+    uint8_t mLane = pD->linkState.mLane;
+    const bool ssc = linkState->ssc;
+    uint8_t linkCfg = 0U;
+
+    /* Store new settings in pD. */
+    pD->linkState.linkRate = linkRate;
+    pD->linkState.laneCount = laneCount;
+    pD->linkState.ssc = ssc;
+
+    linkCfg = getLaneCfg(mLane, laneCount);
+
+    setPowerState(pD, POWERSTATE_A3, laneCount);
+
+    /* Disable PLLs */
+    setPllEnable(pD, laneCount, false);
+    CPS_DelayNs(100);
+
+    reconfigureLinkRate(pD, linkRate, dpPll, linkCfg, ssc);
+    /* No need as far as pma_xcvr_standard_mode_ln_* and pma_xcvr_data_width_ln_* are IPS fixed */
+    CPS_DelayNs(200);
+
+    /* Enable PLLs */
+    setPllEnable(pD, laneCount, true);
+
+    setPowerState(pD, POWERSTATE_A2, laneCount);
+    setPowerState(pD, POWERSTATE_A0, laneCount);
+    CPS_DelayNs(900); /* 100ns in total with delay in setPowerState */
 }
 
 uint32_t DP_SD0801_SetLinkRate(DP_SD0801_PrivateData* pD, const DP_SD0801_LinkState* linkState)
@@ -1085,41 +1138,16 @@ uint32_t DP_SD0801_SetLinkRate(DP_SD0801_PrivateData* pD, const DP_SD0801_LinkSt
     /* According to above there's no need to place link in A3 power state */
 
     uint32_t retVal;
-    uint8_t linkCfg = 0U;
-    uint8_t dpPll = (uint8_t)DP_SD0801_PLL_0; /* TBD how to set */
 
     retVal = DP_SD0801_SetLinkRateSF(pD, linkState);
 
     if (CDN_EOK == retVal) {
-
-        const uint8_t laneCount = linkState->laneCount;
-        const DP_SD0801_LinkRate linkRate = linkState->linkRate;
-        const bool ssc = linkState->ssc;
-        uint8_t mLane = pD->linkState.mLane;
-
-        /* Store new settings in pD. */
-        pD->linkState.linkRate = linkRate;
-        pD->linkState.laneCount = laneCount;
-        pD->linkState.ssc = ssc;
-
-        linkCfg = getLaneCfg(mLane, laneCount);
-
-        setPowerState(pD, POWERSTATE_A3, laneCount);
-
-        /* Disable PLLs */
-        setPllEnable(pD, laneCount, false);
-        CPS_DelayNs(100);
-
-        reconfigureLinkRate(pD, linkRate, dpPll, linkCfg, ssc);
-        /* No need as far as pma_xcvr_standard_mode_ln_* and pma_xcvr_data_width_ln_* are IPS fixed */
-        CPS_DelayNs(200);
-
-        /* Enable PLLs */
-        setPllEnable(pD, laneCount, true);
-
-        setPowerState(pD, POWERSTATE_A2, laneCount);
-        setPowerState(pD, POWERSTATE_A0, laneCount);
-        CPS_DelayNs(900); /* 100ns in total with delay in setPowerState */
+        if (pD->isMultilink) {
+            /* For multilink configuration */
+            mlSetLinkRate(pD, linkState);
+        } else {
+            setLinkRate(pD, linkState);
+        }
     }
 
     return retVal;
@@ -1269,4 +1297,372 @@ uint32_t DP_SD0801_GetDefaultCoeffs(const DP_SD0801_PrivateData*   pD,
 }
 
 /* parasoft-end-suppress METRICS-39-3 */
+
+/*--------------------------------------- Multilink configuration-------------------------------------------------*/
+
+static void ml100MhzPhyPmaCmnVcoCfg10_8(const DP_SD0801_PrivateData* pD, DP_SD0801_Pll dpPll, bool ssc)
+{
+    /* Settings for VCO equals 10.8GHz */
+
+    if (isPllSet((uint8_t)dpPll, 0)) {
+        afeWrite(pD, (CMN_PLL0_MODE0_BASE + CMN_PLL_DSM_FBH_OVRD_M0_OFFSET), 0x0022);
+    }
+    if (isPllSet((uint8_t)dpPll, 1)) {
+        afeWrite(pD, (CMN_PLL1_PDIAG_MODE0_BASE + CMN_PDIAG_PLL_CP_PADJ_M0_OFFSET), 0x0028);
+        afeWrite(pD, (CMN_PLL1_MODE0_BASE + CMN_PLL_DSM_FBH_OVRD_M0_OFFSET), 0x0022);
+        afeWrite(pD, (CMN_PLL1_MODE0_BASE + CMN_PLL_DSM_FBL_OVRD_M0_OFFSET), 0x000C);
+    }
+
+    if (ssc) {
+        /* Do nothing */
+    }
+}
+
+/* parasoft-begin-suppress METRICS-39-3 "The value of VOCF metric for a function should not be higher than 4, DRV-3852" */
+static void ml100MhzPhyPmaCmnVcoCfg9_72(const DP_SD0801_PrivateData* pD, DP_SD0801_Pll dpPll, bool ssc)
+{
+    /* Settings for VCO equals 9.72GHz */
+    static const phyRegValue mlPllCmnCfg9p72[] = {
+        {.addr = CMN_PLL_DSM_DIAG_M0_OFFSET, .val = 0x0004},
+        {.addr = CMN_PLL_INTDIV_M0_OFFSET, .val = 0x0061},
+        {.addr = CMN_PLL_FRACDIVL_M0_OFFSET, .val = 0x3333},
+        {.addr = CMN_PLL_FRACDIVH_M0_OFFSET, .val = 0x0002},
+        {.addr = CMN_PLL_HIGH_THR_M0_OFFSET, .val = 0x0042},
+    };
+
+    /* PLL diagnostic regs */
+    static const phyRegValue pllPdiagCmnCfg9p72[] = {
+        {.addr = CMN_PDIAG_PLL_CP_PADJ_M0_OFFSET, .val = 0x0509},
+        {.addr = CMN_PDIAG_PLL_CP_IADJ_M0_OFFSET, .val = 0x0F00},
+        {.addr = CMN_PDIAG_PLL_FILT_PADJ_M0_OFFSET, .val = 0x0F08},
+        {.addr = CMN_PDIAG_PLL_CTRL_M0_OFFSET, .val = 0x0002}
+    };
+
+    uint32_t i;
+    uint32_t regCount;
+    uint32_t pllBase = getPllCmnM0Base(dpPll);
+    uint32_t pllPdiagBase = getPllPdiagM0Base(dpPll);
+
+    regCount = ARRAY_SIZE(mlPllCmnCfg9p72);
+
+    for (i = 0U; i < regCount; i++) {
+        afeWrite(pD, (pllBase + mlPllCmnCfg9p72[i].addr), mlPllCmnCfg9p72[i].val);
+    }
+
+    regCount = ARRAY_SIZE(pllPdiagCmnCfg9p72);
+
+    for (i = 0U; i < regCount; i++) {
+        afeWrite(pD, (pllPdiagBase + pllPdiagCmnCfg9p72[i].addr), pllPdiagCmnCfg9p72[i].val);
+    }
+
+    if (ssc) {
+        /* Do nothing */
+    }
+}
+
+static void ml100MhzPhyPmaCmnVcoCfg8_64(const DP_SD0801_PrivateData* pD, DP_SD0801_Pll dpPll, bool ssc)
+{
+    /* Settings for VCO equals 8.64GHz */
+    static const phyRegValue mlPllCmnCfg8p64[] = {
+        {.addr = CMN_PLL_DSM_DIAG_M0_OFFSET, .val = 0x0004},
+        {.addr = CMN_PLL_INTDIV_M0_OFFSET, .val = 0x0056},
+        {.addr = CMN_PLL_FRACDIVL_M0_OFFSET, .val = 0x6666},
+        {.addr = CMN_PLL_FRACDIVH_M0_OFFSET, .val = 0x0002},
+        {.addr = CMN_PLL_HIGH_THR_M0_OFFSET, .val = 0x003A},
+    };
+
+    /* PLL diagnostic regs */
+    static const phyRegValue pllPdiagCmnCfg8p64[] = {
+        {.addr = CMN_PDIAG_PLL_CP_PADJ_M0_OFFSET, .val = 0x0509},
+        {.addr = CMN_PDIAG_PLL_CP_IADJ_M0_OFFSET, .val = 0x0F00},
+        {.addr = CMN_PDIAG_PLL_FILT_PADJ_M0_OFFSET, .val = 0x0F08},
+        {.addr = CMN_PDIAG_PLL_CTRL_M0_OFFSET, .val = 0x0002}
+    };
+
+    uint32_t i;
+    uint32_t regCount;
+    uint32_t pllBase = getPllCmnM0Base(dpPll);
+    uint32_t pllPdiagBase = getPllPdiagM0Base(dpPll);
+
+    regCount = ARRAY_SIZE(mlPllCmnCfg8p64);
+
+    for (i = 0U; i < regCount; i++) {
+        afeWrite(pD, (pllBase + mlPllCmnCfg8p64[i].addr), mlPllCmnCfg8p64[i].val);
+    }
+
+    regCount = ARRAY_SIZE(pllPdiagCmnCfg8p64);
+
+    for (i = 0U; i < regCount; i++) {
+        afeWrite(pD, (pllPdiagBase + pllPdiagCmnCfg8p64[i].addr), pllPdiagCmnCfg8p64[i].val);
+    }
+
+    if (ssc) {
+        /* Do nothing */
+    }
+}
+
+static void ml100MhzPhyPmaCmnVcoCfg8_1(const DP_SD0801_PrivateData* pD, DP_SD0801_Pll dpPll, bool ssc)
+{
+    /* Settings for VCO equals 8.1GHz */
+    static const phyRegValue mlPllCmnCfg8p1[] = {
+        {.addr = CMN_PLL_DSM_DIAG_M0_OFFSET, .val = 0x0004},
+        {.addr = CMN_PLL_INTDIV_M0_OFFSET, .val = 0x0051},
+        {.addr = CMN_PLL_FRACDIVH_M0_OFFSET, .val = 0x0002},
+        {.addr = CMN_PLL_HIGH_THR_M0_OFFSET, .val = 0x0036},
+    };
+
+    /* PLL diagnostic regs */
+    static const phyRegValue pllPdiagCmnCfg8p1[] = {
+        {.addr = CMN_PDIAG_PLL_CP_PADJ_M0_OFFSET, .val = 0x0509},
+        {.addr = CMN_PDIAG_PLL_CP_IADJ_M0_OFFSET, .val = 0x0F00},
+        {.addr = CMN_PDIAG_PLL_FILT_PADJ_M0_OFFSET, .val = 0x0F08},
+        {.addr = CMN_PDIAG_PLL_CTRL_M0_OFFSET, .val = 0x0002}
+    };
+
+    uint32_t i;
+    uint32_t regCount;
+    uint32_t pllBase = getPllCmnM0Base(dpPll);
+    uint32_t pllPdiagBase = getPllPdiagM0Base(dpPll);
+
+    regCount = ARRAY_SIZE(mlPllCmnCfg8p1);
+
+    for (i = 0U; i < regCount; i++) {
+        afeWrite(pD, (pllBase + mlPllCmnCfg8p1[i].addr), mlPllCmnCfg8p1[i].val);
+    }
+
+    regCount = ARRAY_SIZE(pllPdiagCmnCfg8p1);
+
+    for (i = 0U; i < regCount; i++) {
+        afeWrite(pD, (pllPdiagBase + pllPdiagCmnCfg8p1[i].addr), pllPdiagCmnCfg8p1[i].val);
+    }
+
+    if (ssc) {
+        /* Do nothing */
+    }
+}
+/* parasoft-end-suppress METRICS-39-3 */
+
+/* Configure PLL for requested VCO frequency. */
+static void ml100MhzPhyPmaCmnVcoCfg(const DP_SD0801_PrivateData* pD,
+                                    DP_SD0801_LinkRate linkRate,
+                                    uint8_t pll, bool ssc)
+{
+    const ENUM_VCO_FREQ vco_freq = getVcoFreq(linkRate);
+    DP_SD0801_Pll dpPll;
+
+    /* Check PLL used for DP */
+    if (isPllSet(pll, 0)) {
+        dpPll = DP_SD0801_PLL_0;
+    }
+    if (isPllSet(pll, 1)) {
+        dpPll = DP_SD0801_PLL_1;
+    }
+
+    /* Perform register writes specific to VCO frequency. */
+    switch (vco_freq)
+    {
+    case VCO_10GHz8_refclk:
+        ml100MhzPhyPmaCmnVcoCfg10_8(pD, dpPll, ssc);
+        break;
+    case VCO_9GHz72_refclk:
+        ml100MhzPhyPmaCmnVcoCfg9_72(pD, dpPll, ssc);
+        break;
+    case VCO_8GHz64_refclk:
+        ml100MhzPhyPmaCmnVcoCfg8_64(pD, dpPll, ssc);
+        break;
+    default:
+        ml100MhzPhyPmaCmnVcoCfg8_1(pD, dpPll, ssc);
+        break;
+    }
+}
+
+static void mlConfigurePhyPmaCmnDpRate(const DP_SD0801_PrivateData* pD, uint8_t linkCfg,
+                                       DP_SD0801_LinkRate dpRate, uint8_t dpPll)
+{
+    uint16_t hsclkDivVal = getHsclkDivVal(dpRate);
+    /* uint32_t used for consistency with bitwise operations. */
+    uint32_t i;
+
+    /* Configure appropriate PLL (0 / 1) */
+    if (isPllSet(dpPll, 0)) {
+        afeWrite(pD, (CMN_PLL0_PDIAG_MODE0_BASE + CMN_PDIAG_PLL_CLK_SEL_M0_OFFSET), getClkSelM0Val(dpRate));
+    }
+    if (isPllSet(dpPll, 1)) {
+        afeWrite(pD, (CMN_PLL1_PDIAG_MODE0_BASE + CMN_PDIAG_PLL_CLK_SEL_M0_OFFSET), getClkSelM0Val(dpRate));
+    }
+
+    /* PMA lane configuration to deal with multi-link operation */
+    for (i = 0; i < 4U; i++)
+    {
+        if (0U != (linkCfg & (1U << i)))
+        {
+            /* ******* Writing XCVR_DIAG_HSCLK_DIV Register for Lane 'i' ******* */
+            afeWrite(pD, (XCVR_DIAG_HSCLK_DIV | (i << 9U)), hsclkDivVal);
+        }
+    }
+}
+
+/* Get PLL used for DP for single link and multi-link configurations */
+static void mlGetDpPll(uint8_t* dpPll, DP_SD0801_PhyType otherphyType)
+{
+    switch (otherphyType) {
+    case DP_SD0801_PHY_TYPE_PCIE:
+    case DP_SD0801_PHY_TYPE_USB:
+        *dpPll = (uint8_t)DP_SD0801_PLL_1;
+        break;
+    default:    /* Single link case */
+        *dpPll = 0x3U; /* (DP_SD0801_PLL_0 | DP_SD0801_PLL_1) */
+        break;
+    }
+}
+
+static void mlPhyInitDP(DP_SD0801_PrivateData*         pD,
+                        const DP_SD0801_MlPhyInstance* dpPhyInst,
+                        DP_SD0801_LinkRate             linkRate)
+{
+    uint32_t regTmp;
+    uint8_t laneCfg = 0U;
+    uint8_t mLaneDp = 0U;
+    uint8_t dpLaneCfg = 0U;
+
+    /* For PHY APB register addresses */
+    laneCfg = getLaneCfg(dpPhyInst->mLane, dpPhyInst->numLanes);
+
+    /* For DPTX controller's register addresses */
+    dpLaneCfg = getLaneCfg(mLaneDp, dpPhyInst->numLanes);
+
+    setPowerA0(pD, dpPhyInst->numLanes);
+
+    /* release phy_l0*_reset_n and pma_tx_elec_idle_ln_* based on used laneCount */
+    regTmp = CPS_REG_READ(&pD->regBaseDp->dp_regs.PHY_RESET_p);
+
+    regTmp |= (0x000FU & (uint32_t)dpLaneCfg);
+    regTmp &= ~((uint32_t)dpLaneCfg << 4U);
+
+    CPS_REG_WRITE(&pD->regBaseDp->dp_regs.PHY_RESET_p, regTmp);
+
+    /* release pma_xcvr_pllclk_en_ln_*, only for the master lane */
+    regTmp = CPS_REG_READ(&pD->regBaseDp->dp_regs.PMA_PLLCLK_EN_p);
+
+    regTmp |= 0x1U;
+
+    CPS_REG_WRITE(&pD->regBaseDp->dp_regs.PMA_PLLCLK_EN_p, regTmp);
+
+    /* PHY PMA registers configuration functions */
+    /* Set SSC disabled on init, can be enabled on link rate change. */
+    if (pD->refClk == DP_SD0801_CLK_100_MHZ) {
+        ml100MhzPhyPmaCmnVcoCfg(pD, linkRate, pD->dpPll, false);
+    }
+
+    mlConfigurePhyPmaCmnDpRate(pD, laneCfg, linkRate, pD->dpPll);
+}
+
+/**
+ * Part of PHY initialization for multilink configuration. Performs
+ * operations to be done before releasing PHY reset.
+ */
+uint32_t DP_SD0801_MlPhyInit(DP_SD0801_PrivateData*         pD,
+                             const DP_SD0801_MlPhyInstance* dpPhyInst,
+                             DP_SD0801_LinkRate             linkRate,
+                             const DP_SD0801_MlPhyInstance* otherPhyInst)
+{
+    uint32_t retVal = CDN_EOK;
+
+    retVal = DP_SD0801_MlPhyInitSF(pD, dpPhyInst, linkRate, otherPhyInst);
+
+    if (CDN_EOK == retVal)
+    {
+        /* Configure PHY PMA multilink configuration */
+        mlConfigurePhyPmaCfg(pD, otherPhyInst, dpPhyInst);
+
+        mlGetDpPll(&pD->dpPll, otherPhyInst->phyType);
+
+        /* DP specific configuration */
+        mlPhyInitDP(pD, dpPhyInst, linkRate);
+
+        pD->linkState.linkRate  = linkRate;
+        pD->linkState.mLane = dpPhyInst->mLane;
+        pD->linkState.laneCount = dpPhyInst->numLanes;
+    }
+
+    return retVal;
+}
+
+/**
+ * Reconfigure VCO to required one and configure Link Rate, while PLLs are
+ * disabled
+ */
+static void mlReconfigureLinkRate(const DP_SD0801_PrivateData* pD,
+                                  DP_SD0801_LinkRate linkRate,
+                                  uint8_t dpPll, uint8_t linkCfg, bool ssc)
+{
+    uint16_t regTmp;
+
+    /**
+     * Disable the associated PLL (cmn_pll0_en or cmn_pll1_en)
+     * before re-programming the new data rate.
+     */
+    regTmp = afeRead(pD, PHY_PMA_PLL_RAW_CTRL);
+    regTmp &= ~dpPll;
+    afeWrite(pD, PHY_PMA_PLL_RAW_CTRL, regTmp);
+
+    waitForPllReadyDeAssert(pD, dpPll);
+
+    CPS_DelayNs(200);
+
+    /* DP Rate Change - VCO Output setting, 100MHz refclk */
+    if (pD->refClk == DP_SD0801_CLK_100_MHZ) {
+        ml100MhzPhyPmaCmnVcoCfg(pD, linkRate, dpPll, false);
+    }
+
+    mlConfigurePhyPmaCmnDpRate(pD, linkCfg, linkRate, dpPll);
+
+    /* Enable the associated PLL (cmn_pll0_en or cmn_pll1_en) */
+    regTmp = afeRead(pD, PHY_PMA_PLL_RAW_CTRL);
+    regTmp |= dpPll;
+    afeWrite(pD, PHY_PMA_PLL_RAW_CTRL, regTmp);
+
+    waitForPllReadyAssert(pD, dpPll);
+
+    if (ssc) {
+        /* Do nothing */
+    }
+}
+
+static void mlSetLinkRate(DP_SD0801_PrivateData* pD, const DP_SD0801_LinkState* linkState)
+{
+    const DP_SD0801_LinkRate linkRate = linkState->linkRate;
+    const uint8_t laneCount = linkState->laneCount;
+    uint8_t mLane = pD->linkState.mLane;
+    bool ssc = false;   /* linkState->ssc */
+    uint8_t dpPll = pD->dpPll;
+    uint8_t linkCfg = 0U;
+
+    /* Store new settings in pD. */
+    pD->linkState.linkRate = linkRate;
+    pD->linkState.laneCount = laneCount;
+    pD->linkState.ssc = ssc;
+
+    linkCfg = getLaneCfg(mLane, laneCount);
+
+    setPowerState(pD, POWERSTATE_A3, laneCount);
+
+    /* Disable PLLs */
+    setPllEnable(pD, laneCount, false);
+    CPS_DelayNs(100);
+
+    mlReconfigureLinkRate(pD, linkRate, dpPll, linkCfg, ssc);
+    /* No need as far as pma_xcvr_standard_mode_ln_* and pma_xcvr_data_width_ln_* are IPS fixed */
+    CPS_DelayNs(200);
+
+    /* Enable PLLs */
+    setPllEnable(pD, laneCount, true);
+
+    setPowerState(pD, POWERSTATE_A2, laneCount);
+    setPowerState(pD, POWERSTATE_A0, laneCount);
+    CPS_DelayNs(900); /* 100ns in total with delay in setPowerState */
+}
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
 /* parasoft-end-suppress METRICS-36-3 */

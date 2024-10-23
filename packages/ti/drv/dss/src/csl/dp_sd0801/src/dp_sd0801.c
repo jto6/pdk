@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -43,6 +43,26 @@
 #include "dp_sd0801_internal.h"
 
 bool isPhySupported(const DP_SD0801_PrivateData* pD);
+
+/* Set PHY input reference clock */
+static void phySetRefClk(DP_SD0801_PrivateData* pD)
+{
+#if defined REF_CLK_19_2MHz
+    pD->refClk = DP_SD0801_CLK_19_2_MHZ;
+#elif defined REF_CLK_20MHz
+    pD->refClk = DP_SD0801_CLK_20_MHZ;
+#elif defined REF_CLK_24MHz
+    pD->refClk = DP_SD0801_CLK_24_MHZ;
+#elif defined REF_CLK_26MHz
+    pD->refClk = DP_SD0801_CLK_26_MHZ;
+#elif defined REF_CLK_27MHz
+    pD->refClk = DP_SD0801_CLK_27_MHZ;
+#elif defined REF_CLK_100MHz
+    pD->refClk = DP_SD0801_CLK_100_MHZ;
+#else
+    pD->refClk = DP_SD0801_CLK_25_MHZ;
+#endif
+}
 
 /**
  * Adapt address to bus and write to PHY APB.
@@ -136,6 +156,7 @@ uint32_t DP_SD0801_Init(DP_SD0801_PrivateData* pD, const DP_SD0801_Config* confi
         pD->linkState.mLane = 0; /* Default master lane. */
         pD->linkState.laneCount = 0; /* Indicates uninitialized PHY driver. */
         pD->linkState.linkRate = DP_SD0801_LINK_RATE_1_62;
+        pD->isMultilink = false;
         for (i = 0; i < 4U; i++)
         {
             pD->linkState.voltageSwing[i] = 0;
@@ -175,11 +196,13 @@ uint32_t DP_SD0801_PhySetReset(const DP_SD0801_PrivateData* pD, bool reset)
         regTmp = CPS_REG_READ(&pD->regBaseDp->dp_regs.PHY_RESET_p);
         regTmp = CPS_FLD_WRITE(DP__DP_REGS__PHY_RESET_P, PHY_RESET, regTmp, (reset ? 0 : 1));
         CPS_REG_WRITE(&pD->regBaseDp->dp_regs.PHY_RESET_p, regTmp);
+
         CPS_ExtPhyReset(reset);
         if (pD->callbacks.extPhyReset != NULL) {
             pD->callbacks.extPhyReset(reset);
         }
     }
+
     return retVal;
 }
 
@@ -272,6 +295,55 @@ uint32_t DP_SD0801_PhyStartUp(DP_SD0801_PrivateData* pD, uint8_t mLane, uint8_t 
     if (CDN_EOK == retVal) {
         /* Perform operations to be done after releasing reset. */
         retVal = DP_SD0801_PhyRun(pD, laneCount);
+    }
+
+    return retVal;
+}
+
+/**
+ * Automatically initialize and configure PHY for multilink configuration.
+ * Maximum 2 links with one link being DP are supported. This is a recommended
+ * way to bring up PHY, instead of manual initialization. DP AUX channel still
+ * has to be initialized separately.
+ */
+uint32_t DP_SD0801_MlPhyStartUp(DP_SD0801_PrivateData*         pD,
+                                const DP_SD0801_MlPhyInstance* dpPhyInst,
+                                DP_SD0801_LinkRate             linkRate,
+                                const DP_SD0801_MlPhyInstance* otherPhyInst)
+{
+    uint32_t retVal;
+
+    retVal = DP_SD0801_MlPhyStartUpSF(pD, dpPhyInst, linkRate, otherPhyInst);
+
+    if (CDN_EOK == retVal) {
+        phySetRefClk(pD);
+
+        /* Check limits. */
+        if (((dpPhyInst->numLanes + otherPhyInst->numLanes) > DP_SD0801_MAX_LANE_COUNT) ||
+            (pD->refClk != DP_SD0801_CLK_100_MHZ)) {
+            retVal = CDN_EINVAL;
+        }
+    }
+
+    if (CDN_EOK == retVal) {
+        /* Perform operations to be done before releasing reset. */
+        retVal = DP_SD0801_MlPhyInit(pD, dpPhyInst, linkRate, otherPhyInst);
+    }
+
+    if (CDN_EOK == retVal) {
+        /* release PHY reset */
+        retVal = DP_SD0801_PhySetReset(pD, false);
+    }
+
+    if (CDN_EOK == retVal) {
+        retVal = DP_SD0801_WaitPmaCmnReady(pD);
+    }
+
+    if (CDN_EOK == retVal) {
+        pD->isMultilink = true;
+
+        /* Perform operations to be done after releasing reset. */
+        retVal = DP_SD0801_PhyRun(pD, dpPhyInst->numLanes);
     }
 
     return retVal;

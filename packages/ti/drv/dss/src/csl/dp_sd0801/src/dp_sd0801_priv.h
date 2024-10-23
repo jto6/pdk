@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -74,6 +74,12 @@ struct DP_SD0801_PrivateData_s
     DP_SD0801_VoltageCoefficients vCoeffs[DP_SD0801_SWING_LEVEL_COUNT][DP_SD0801_EMPHASIS_LEVEL_COUNT];
     /** Struct with callbacks to external functions. */
     DP_SD0801_Callbacks callbacks;
+    /** PHY input reference clock. */
+    DP_SD0801_PhyRefClk refClk;
+    /** Single link or multilink configuration. */
+    bool isMultilink;
+    /** DisplayPort PLL information. */
+    uint8_t dpPll;
 };
 
 /**

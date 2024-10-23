@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -160,7 +160,8 @@ void messageReceive(DP_PrivateData *pD, DP_BusType busType)
     uint16_t i = 0U;
     uint16_t messageSize;
     uint32_t mailboxEmpty;
-    uint32_t readVal, timeout = 4000U;
+    uint32_t readVal;
+    uint32_t timeout = 4000U;   /* 4 seconds */
     MHDP_ApbRegs* regBase = selectRegBase(pD, busType);
 
     /* read header first, to get size of message */

@@ -1,7 +1,7 @@
 /* parasoft-begin-suppress MISRA2012-RULE-1_1_a_c90-2 "C90 - limits" */
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:

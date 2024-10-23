@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -623,6 +623,41 @@ uint32_t DP_AudioVideoClkCfgSF(const DP_AudioVideoClkCfg *obj)
     if (obj == NULL)
     {
         ret = CDN_EINVAL;
+    }
+
+    return ret;
+}
+
+/**
+ * Function to validate struct MlPhyInstance
+ *
+ * @param[in] obj pointer to struct to be verified
+ * @returns 0 for valid
+ * @returns CDN_EINVAL for invalid
+ */
+uint32_t DP_MlPhyInstanceSF(const DP_MlPhyInstance *obj)
+{
+    uint32_t ret = 0;
+
+    if (obj == NULL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else
+    {
+        if ((obj->numLanes < (1)) || (obj->numLanes > ((DP_MAX_NUMBER_OF_LANES))))
+        {
+            ret = CDN_EINVAL;
+        }
+        if (
+            (obj->phyType != DP_SD0801_PHY_TYPE_NONE) &&
+            (obj->phyType != DP_SD0801_PHY_TYPE_DP) &&
+            (obj->phyType != DP_SD0801_PHY_TYPE_PCIE) &&
+            (obj->phyType != DP_SD0801_PHY_TYPE_USB)
+            )
+        {
+            ret = CDN_EINVAL;
+        }
     }
 
     return ret;
@@ -1399,11 +1434,62 @@ uint32_t DP_SanityFunction30(const DP_PrivateData* pD, const DP_LinkRate linkRat
  * A common function to check the validity of API functions with
  * following parameter types
  * @param[in] pD Driver state info specific to this instance.
+ * @param[in] dpPhyInst Configuration parameters for a DP link.
+ * @param[in] linkRate Link rate to initialize PHY DP link with.
+ * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+ * @return 0 success
+ * @return CDN_EINVAL invalid parameters
+ */
+uint32_t DP_SanityFunction31(const DP_PrivateData* pD, const DP_MlPhyInstance* dpPhyInst, const DP_LinkRate linkRate, const DP_MlPhyInstance* otherPhyInst)
+{
+    /* Declaring return variable */
+    uint32_t ret = 0;
+
+    if (DP_PrivateDataSF(pD) == CDN_EINVAL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else if (DP_MlPhyInstanceSF(dpPhyInst) == CDN_EINVAL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else if (
+        (linkRate != DP_LINK_RATE_1_62) &&
+        (linkRate != DP_LINK_RATE_2_16) &&
+        (linkRate != DP_LINK_RATE_2_43) &&
+        (linkRate != DP_LINK_RATE_2_70) &&
+        (linkRate != DP_LINK_RATE_3_24) &&
+        (linkRate != DP_LINK_RATE_4_32) &&
+        (linkRate != DP_LINK_RATE_5_40) &&
+        (linkRate != DP_LINK_RATE_8_10)
+        )
+    {
+        ret = CDN_EINVAL;
+    }
+    else if (DP_MlPhyInstanceSF(otherPhyInst) == CDN_EINVAL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else
+    {
+        /*
+         * All 'if ... else if' constructs shall be terminated with an 'else' statement
+         * (MISRA2012-RULE-15_7-3)
+         */
+    }
+
+    return ret;
+}
+
+/**
+ * A common function to check the validity of API functions with
+ * following parameter types
+ * @param[in] pD Driver state info specific to this instance.
  * @param[in] resp Pointer structure to be filled with response.
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction32(const DP_PrivateData* pD, const DP_ReadEdidResponse* resp)
+uint32_t DP_SanityFunction33(const DP_PrivateData* pD, const DP_ReadEdidResponse* resp)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1435,7 +1521,7 @@ uint32_t DP_SanityFunction32(const DP_PrivateData* pD, const DP_ReadEdidResponse
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction34(const DP_PrivateData* pD, const DP_PwrMode mode)
+uint32_t DP_SanityFunction35(const DP_PrivateData* pD, const DP_PwrMode mode)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1471,7 +1557,7 @@ uint32_t DP_SanityFunction34(const DP_PrivateData* pD, const DP_PwrMode mode)
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction35(const DP_PrivateData* pD, const DP_SourceDeviceCapabilities* caps)
+uint32_t DP_SanityFunction36(const DP_PrivateData* pD, const DP_SourceDeviceCapabilities* caps)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1503,7 +1589,7 @@ uint32_t DP_SanityFunction35(const DP_PrivateData* pD, const DP_SourceDeviceCapa
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction36(const DP_PrivateData* pD, const DP_SinkDeviceCapabilities* caps)
+uint32_t DP_SanityFunction37(const DP_PrivateData* pD, const DP_SinkDeviceCapabilities* caps)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1538,7 +1624,7 @@ uint32_t DP_SanityFunction36(const DP_PrivateData* pD, const DP_SinkDeviceCapabi
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction38(const DP_PrivateData* pD, const DP_TestPattern pattern, const DP_LinkState* linkParams)
+uint32_t DP_SanityFunction39(const DP_PrivateData* pD, const DP_TestPattern pattern, const DP_LinkState* linkParams)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1587,7 +1673,7 @@ uint32_t DP_SanityFunction38(const DP_PrivateData* pD, const DP_TestPattern patt
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction39(const DP_PrivateData* pD, const DP_DpcdTransfer* request)
+uint32_t DP_SanityFunction40(const DP_PrivateData* pD, const DP_DpcdTransfer* request)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1622,7 +1708,7 @@ uint32_t DP_SanityFunction39(const DP_PrivateData* pD, const DP_DpcdTransfer* re
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction40(const DP_PrivateData* pD, const DP_DpcdTransfer* transfer)
+uint32_t DP_SanityFunction41(const DP_PrivateData* pD, const DP_DpcdTransfer* transfer)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1654,7 +1740,7 @@ uint32_t DP_SanityFunction40(const DP_PrivateData* pD, const DP_DpcdTransfer* tr
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction45(const DP_PrivateData* pD, const DP_I2cTransfer* request)
+uint32_t DP_SanityFunction46(const DP_PrivateData* pD, const DP_I2cTransfer* request)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1689,7 +1775,7 @@ uint32_t DP_SanityFunction45(const DP_PrivateData* pD, const DP_I2cTransfer* req
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction46(const DP_PrivateData* pD, const DP_I2cTransfer* transfer)
+uint32_t DP_SanityFunction47(const DP_PrivateData* pD, const DP_I2cTransfer* transfer)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1721,7 +1807,7 @@ uint32_t DP_SanityFunction46(const DP_PrivateData* pD, const DP_I2cTransfer* tra
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction53(const DP_PrivateData* pD, const DP_TrainingStatus* resultLt)
+uint32_t DP_SanityFunction54(const DP_PrivateData* pD, const DP_TrainingStatus* resultLt)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1753,7 +1839,7 @@ uint32_t DP_SanityFunction53(const DP_PrivateData* pD, const DP_TrainingStatus* 
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction60(const DP_VideoFormatParams* vicParams, const DP_VicModes vicMode)
+uint32_t DP_SanityFunction61(const DP_VideoFormatParams* vicParams, const DP_VicModes vicMode)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1937,7 +2023,7 @@ uint32_t DP_SanityFunction60(const DP_VideoFormatParams* vicParams, const DP_Vic
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction61(const DP_PrivateData* pD, const DP_VideoParameters* parameters)
+uint32_t DP_SanityFunction62(const DP_PrivateData* pD, const DP_VideoParameters* parameters)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -1970,7 +2056,7 @@ uint32_t DP_SanityFunction61(const DP_PrivateData* pD, const DP_VideoParameters*
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction62(const DP_PrivateData* pD, const DP_SyncPolarity hSyncPolarity, const DP_SyncPolarity vSyncPolarity)
+uint32_t DP_SanityFunction63(const DP_PrivateData* pD, const DP_SyncPolarity hSyncPolarity, const DP_SyncPolarity vSyncPolarity)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2012,7 +2098,7 @@ uint32_t DP_SanityFunction62(const DP_PrivateData* pD, const DP_SyncPolarity hSy
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction65(const DP_PrivateData* pD, const DP_LinkState* linkState)
+uint32_t DP_SanityFunction66(const DP_PrivateData* pD, const DP_LinkState* linkState)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2044,7 +2130,7 @@ uint32_t DP_SanityFunction65(const DP_PrivateData* pD, const DP_LinkState* linkS
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction67(const DP_PrivateData* pD, const DP_AuxStatus* status)
+uint32_t DP_SanityFunction68(const DP_PrivateData* pD, const DP_AuxStatus* status)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2076,7 +2162,7 @@ uint32_t DP_SanityFunction67(const DP_PrivateData* pD, const DP_AuxStatus* statu
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction70(const DP_PrivateData* pD, const DP_I2cStatus* status)
+uint32_t DP_SanityFunction71(const DP_PrivateData* pD, const DP_I2cStatus* status)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2108,7 +2194,7 @@ uint32_t DP_SanityFunction70(const DP_PrivateData* pD, const DP_I2cStatus* statu
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction77(const DP_PrivateData* pD, const DP_SdpEntry* packetData)
+uint32_t DP_SanityFunction78(const DP_PrivateData* pD, const DP_SdpEntry* packetData)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2140,7 +2226,7 @@ uint32_t DP_SanityFunction77(const DP_PrivateData* pD, const DP_SdpEntry* packet
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction78(const DP_PrivateData* pD, const uint8_t entryID)
+uint32_t DP_SanityFunction79(const DP_PrivateData* pD, const uint8_t entryID)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2172,7 +2258,7 @@ uint32_t DP_SanityFunction78(const DP_PrivateData* pD, const uint8_t entryID)
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction79(const DP_PrivateData* pD, const DP_HdcpTxConfiguration* config)
+uint32_t DP_SanityFunction80(const DP_PrivateData* pD, const DP_HdcpTxConfiguration* config)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2204,7 +2290,7 @@ uint32_t DP_SanityFunction79(const DP_PrivateData* pD, const DP_HdcpTxConfigurat
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction80(const DP_PrivateData* pD, const DP_Hdcp2TxPublicKey* key)
+uint32_t DP_SanityFunction81(const DP_PrivateData* pD, const DP_Hdcp2TxPublicKey* key)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2236,7 +2322,7 @@ uint32_t DP_SanityFunction80(const DP_PrivateData* pD, const DP_Hdcp2TxPublicKey
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction81(const DP_PrivateData* pD, const DP_HdcpTxKmEncCustomKey* key)
+uint32_t DP_SanityFunction82(const DP_PrivateData* pD, const DP_HdcpTxKmEncCustomKey* key)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2268,7 +2354,7 @@ uint32_t DP_SanityFunction81(const DP_PrivateData* pD, const DP_HdcpTxKmEncCusto
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction82(const DP_PrivateData* pD, const DP_HdcpDebugRandomNumbers* numbers)
+uint32_t DP_SanityFunction83(const DP_PrivateData* pD, const DP_HdcpDebugRandomNumbers* numbers)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2300,7 +2386,7 @@ uint32_t DP_SanityFunction82(const DP_PrivateData* pD, const DP_HdcpDebugRandomN
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction84(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData)
+uint32_t DP_SanityFunction85(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2332,7 +2418,7 @@ uint32_t DP_SanityFunction84(const DP_PrivateData* pD, const DP_HdcpPairingData*
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction85(const DP_PrivateData* pD, const DP_Hdcp1Keys* keySet)
+uint32_t DP_SanityFunction86(const DP_PrivateData* pD, const DP_Hdcp1Keys* keySet)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2364,7 +2450,7 @@ uint32_t DP_SanityFunction85(const DP_PrivateData* pD, const DP_Hdcp1Keys* keySe
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction88(const DP_PrivateData* pD, const DP_HdcpTxStatus* status)
+uint32_t DP_SanityFunction89(const DP_PrivateData* pD, const DP_HdcpTxStatus* status)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2396,7 +2482,7 @@ uint32_t DP_SanityFunction88(const DP_PrivateData* pD, const DP_HdcpTxStatus* st
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction94(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData)
+uint32_t DP_SanityFunction95(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2429,7 +2515,7 @@ uint32_t DP_SanityFunction94(const DP_PrivateData* pD, const DP_HdcpPairingData*
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction97(const DP_PrivateData* pD, const DP_HdcpRecvIdList* list)
+uint32_t DP_SanityFunction98(const DP_PrivateData* pD, const DP_HdcpRecvIdList* list)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2461,7 +2547,7 @@ uint32_t DP_SanityFunction97(const DP_PrivateData* pD, const DP_HdcpRecvIdList* 
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction102(const DP_PrivateData* pD, const DP_AudioMuteMode muteMode)
+uint32_t DP_SanityFunction103(const DP_PrivateData* pD, const DP_AudioMuteMode muteMode)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2496,7 +2582,7 @@ uint32_t DP_SanityFunction102(const DP_PrivateData* pD, const DP_AudioMuteMode m
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction103(const DP_PrivateData* pD, const DP_AudioParams* params)
+uint32_t DP_SanityFunction104(const DP_PrivateData* pD, const DP_AudioParams* params)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2528,7 +2614,7 @@ uint32_t DP_SanityFunction103(const DP_PrivateData* pD, const DP_AudioParams* pa
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction105(const DP_PrivateData* pD, const DP_AudioMode mode)
+uint32_t DP_SanityFunction106(const DP_PrivateData* pD, const DP_AudioMode mode)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2563,7 +2649,7 @@ uint32_t DP_SanityFunction105(const DP_PrivateData* pD, const DP_AudioMode mode)
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction106(const DP_PrivateData* pD, const DP_DscConfig* dscConfig)
+uint32_t DP_SanityFunction107(const DP_PrivateData* pD, const DP_DscConfig* dscConfig)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2595,7 +2681,7 @@ uint32_t DP_SanityFunction106(const DP_PrivateData* pD, const DP_DscConfig* dscC
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction107(const DP_PrivateData* pD, const DP_DscConfig* dscConfig)
+uint32_t DP_SanityFunction108(const DP_PrivateData* pD, const DP_DscConfig* dscConfig)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2627,7 +2713,7 @@ uint32_t DP_SanityFunction107(const DP_PrivateData* pD, const DP_DscConfig* dscC
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction115(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice)
+uint32_t DP_SanityFunction116(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2659,7 +2745,7 @@ uint32_t DP_SanityFunction115(const DP_PrivateData* pD, const DP_SinkDevice* sin
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction118(const DP_PrivateData* pD, const DP_SinkDevice** sinkList)
+uint32_t DP_SanityFunction119(const DP_PrivateData* pD, const DP_SinkDevice** sinkList)
 {
     /* Declaring return variable */
     uint32_t ret = 0;
@@ -2692,7 +2778,7 @@ uint32_t DP_SanityFunction118(const DP_PrivateData* pD, const DP_SinkDevice** si
  * @return 0 success
  * @return CDN_EINVAL invalid parameters
  */
-uint32_t DP_SanityFunction122(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice, const DP_ReadEdidResponse* edidResponse)
+uint32_t DP_SanityFunction123(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice, const DP_ReadEdidResponse* edidResponse)
 {
     /* Declaring return variable */
     uint32_t ret = 0;

@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -69,6 +69,7 @@ uint32_t DP_HdcpTxConfigurationSF(const DP_HdcpTxConfiguration *obj);
 uint32_t DP_HdcpTxKmEncCustomKeySF(const DP_HdcpTxKmEncCustomKey *obj);
 uint32_t DP_I2cTransferSF(const DP_I2cTransfer *obj);
 uint32_t DP_LinkStateSF(const DP_LinkState *obj);
+uint32_t DP_MlPhyInstanceSF(const DP_MlPhyInstance *obj);
 uint32_t DP_PrivateDataSF(const DP_PrivateData *obj);
 uint32_t DP_ReadEdidResponseSF(const DP_ReadEdidResponse *obj);
 uint32_t DP_SdpEntrySF(const DP_SdpEntry *obj);
@@ -97,41 +98,42 @@ uint32_t DP_SanityFunction23(const DP_PrivateData* pD, const DP_EccErrorMemType 
 uint32_t DP_SanityFunction25(const DP_PrivateData* pD, const uint8_t streamId, const DP_AudioVideoClkCfg* audioVideoClkCfg);
 uint32_t DP_SanityFunction26(const DP_PrivateData* pD, const uint8_t streamId, const DP_AudioVideoClkCfg* audioVideoClkCfg);
 uint32_t DP_SanityFunction30(const DP_PrivateData* pD, const DP_LinkRate linkRate);
-uint32_t DP_SanityFunction32(const DP_PrivateData* pD, const DP_ReadEdidResponse* resp);
-uint32_t DP_SanityFunction34(const DP_PrivateData* pD, const DP_PwrMode mode);
-uint32_t DP_SanityFunction35(const DP_PrivateData* pD, const DP_SourceDeviceCapabilities* caps);
-uint32_t DP_SanityFunction36(const DP_PrivateData* pD, const DP_SinkDeviceCapabilities* caps);
-uint32_t DP_SanityFunction38(const DP_PrivateData* pD, const DP_TestPattern pattern, const DP_LinkState* linkParams);
-uint32_t DP_SanityFunction39(const DP_PrivateData* pD, const DP_DpcdTransfer* request);
-uint32_t DP_SanityFunction40(const DP_PrivateData* pD, const DP_DpcdTransfer* transfer);
-uint32_t DP_SanityFunction45(const DP_PrivateData* pD, const DP_I2cTransfer* request);
-uint32_t DP_SanityFunction46(const DP_PrivateData* pD, const DP_I2cTransfer* transfer);
-uint32_t DP_SanityFunction53(const DP_PrivateData* pD, const DP_TrainingStatus* resultLt);
-uint32_t DP_SanityFunction60(const DP_VideoFormatParams* vicParams, const DP_VicModes vicMode);
-uint32_t DP_SanityFunction61(const DP_PrivateData* pD, const DP_VideoParameters* parameters);
-uint32_t DP_SanityFunction62(const DP_PrivateData* pD, const DP_SyncPolarity hSyncPolarity, const DP_SyncPolarity vSyncPolarity);
-uint32_t DP_SanityFunction65(const DP_PrivateData* pD, const DP_LinkState* linkState);
-uint32_t DP_SanityFunction67(const DP_PrivateData* pD, const DP_AuxStatus* status);
-uint32_t DP_SanityFunction70(const DP_PrivateData* pD, const DP_I2cStatus* status);
-uint32_t DP_SanityFunction77(const DP_PrivateData* pD, const DP_SdpEntry* packetData);
-uint32_t DP_SanityFunction78(const DP_PrivateData* pD, const uint8_t entryID);
-uint32_t DP_SanityFunction79(const DP_PrivateData* pD, const DP_HdcpTxConfiguration* config);
-uint32_t DP_SanityFunction80(const DP_PrivateData* pD, const DP_Hdcp2TxPublicKey* key);
-uint32_t DP_SanityFunction81(const DP_PrivateData* pD, const DP_HdcpTxKmEncCustomKey* key);
-uint32_t DP_SanityFunction82(const DP_PrivateData* pD, const DP_HdcpDebugRandomNumbers* numbers);
-uint32_t DP_SanityFunction84(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData);
-uint32_t DP_SanityFunction85(const DP_PrivateData* pD, const DP_Hdcp1Keys* keySet);
-uint32_t DP_SanityFunction88(const DP_PrivateData* pD, const DP_HdcpTxStatus* status);
-uint32_t DP_SanityFunction94(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData);
-uint32_t DP_SanityFunction97(const DP_PrivateData* pD, const DP_HdcpRecvIdList* list);
-uint32_t DP_SanityFunction102(const DP_PrivateData* pD, const DP_AudioMuteMode muteMode);
-uint32_t DP_SanityFunction103(const DP_PrivateData* pD, const DP_AudioParams* params);
-uint32_t DP_SanityFunction105(const DP_PrivateData* pD, const DP_AudioMode mode);
-uint32_t DP_SanityFunction106(const DP_PrivateData* pD, const DP_DscConfig* dscConfig);
+uint32_t DP_SanityFunction31(const DP_PrivateData* pD, const DP_MlPhyInstance* dpPhyInst, const DP_LinkRate linkRate, const DP_MlPhyInstance* otherPhyInst);
+uint32_t DP_SanityFunction33(const DP_PrivateData* pD, const DP_ReadEdidResponse* resp);
+uint32_t DP_SanityFunction35(const DP_PrivateData* pD, const DP_PwrMode mode);
+uint32_t DP_SanityFunction36(const DP_PrivateData* pD, const DP_SourceDeviceCapabilities* caps);
+uint32_t DP_SanityFunction37(const DP_PrivateData* pD, const DP_SinkDeviceCapabilities* caps);
+uint32_t DP_SanityFunction39(const DP_PrivateData* pD, const DP_TestPattern pattern, const DP_LinkState* linkParams);
+uint32_t DP_SanityFunction40(const DP_PrivateData* pD, const DP_DpcdTransfer* request);
+uint32_t DP_SanityFunction41(const DP_PrivateData* pD, const DP_DpcdTransfer* transfer);
+uint32_t DP_SanityFunction46(const DP_PrivateData* pD, const DP_I2cTransfer* request);
+uint32_t DP_SanityFunction47(const DP_PrivateData* pD, const DP_I2cTransfer* transfer);
+uint32_t DP_SanityFunction54(const DP_PrivateData* pD, const DP_TrainingStatus* resultLt);
+uint32_t DP_SanityFunction61(const DP_VideoFormatParams* vicParams, const DP_VicModes vicMode);
+uint32_t DP_SanityFunction62(const DP_PrivateData* pD, const DP_VideoParameters* parameters);
+uint32_t DP_SanityFunction63(const DP_PrivateData* pD, const DP_SyncPolarity hSyncPolarity, const DP_SyncPolarity vSyncPolarity);
+uint32_t DP_SanityFunction66(const DP_PrivateData* pD, const DP_LinkState* linkState);
+uint32_t DP_SanityFunction68(const DP_PrivateData* pD, const DP_AuxStatus* status);
+uint32_t DP_SanityFunction71(const DP_PrivateData* pD, const DP_I2cStatus* status);
+uint32_t DP_SanityFunction78(const DP_PrivateData* pD, const DP_SdpEntry* packetData);
+uint32_t DP_SanityFunction79(const DP_PrivateData* pD, const uint8_t entryID);
+uint32_t DP_SanityFunction80(const DP_PrivateData* pD, const DP_HdcpTxConfiguration* config);
+uint32_t DP_SanityFunction81(const DP_PrivateData* pD, const DP_Hdcp2TxPublicKey* key);
+uint32_t DP_SanityFunction82(const DP_PrivateData* pD, const DP_HdcpTxKmEncCustomKey* key);
+uint32_t DP_SanityFunction83(const DP_PrivateData* pD, const DP_HdcpDebugRandomNumbers* numbers);
+uint32_t DP_SanityFunction85(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData);
+uint32_t DP_SanityFunction86(const DP_PrivateData* pD, const DP_Hdcp1Keys* keySet);
+uint32_t DP_SanityFunction89(const DP_PrivateData* pD, const DP_HdcpTxStatus* status);
+uint32_t DP_SanityFunction95(const DP_PrivateData* pD, const DP_HdcpPairingData* pairingData);
+uint32_t DP_SanityFunction98(const DP_PrivateData* pD, const DP_HdcpRecvIdList* list);
+uint32_t DP_SanityFunction103(const DP_PrivateData* pD, const DP_AudioMuteMode muteMode);
+uint32_t DP_SanityFunction104(const DP_PrivateData* pD, const DP_AudioParams* params);
+uint32_t DP_SanityFunction106(const DP_PrivateData* pD, const DP_AudioMode mode);
 uint32_t DP_SanityFunction107(const DP_PrivateData* pD, const DP_DscConfig* dscConfig);
-uint32_t DP_SanityFunction115(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice);
-uint32_t DP_SanityFunction118(const DP_PrivateData* pD, const DP_SinkDevice** sinkList);
-uint32_t DP_SanityFunction122(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice, const DP_ReadEdidResponse* edidResponse);
+uint32_t DP_SanityFunction108(const DP_PrivateData* pD, const DP_DscConfig* dscConfig);
+uint32_t DP_SanityFunction116(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice);
+uint32_t DP_SanityFunction119(const DP_PrivateData* pD, const DP_SinkDevice** sinkList);
+uint32_t DP_SanityFunction123(const DP_PrivateData* pD, const DP_SinkDevice* sinkDevice, const DP_ReadEdidResponse* edidResponse);
 
 #define DP_ProbeSF DP_SanityFunction1
 #define DP_InitSF DP_SanityFunction2
@@ -163,83 +165,84 @@ uint32_t DP_SanityFunction122(const DP_PrivateData* pD, const DP_SinkDevice* sin
 #define DP_GetHdcpClockConfigSF DP_SanityFunction16
 #define DP_ConfigurePhyAuxCtrlSF DP_SanityFunction3
 #define DP_ConfigurePhyStartUpSF DP_SanityFunction30
+#define DP_ConfigureMlPhyStartUpSF DP_SanityFunction31
 #define DP_SendEdidReadRequestSF DP_SanityFunction3
-#define DP_GetEdidReadResponseSF DP_SanityFunction32
-#define DP_ReadEdidSF DP_SanityFunction32
-#define DP_SetPowerModeSF DP_SanityFunction34
-#define DP_SetSourceCapabilitiesSF DP_SanityFunction35
-#define DP_GetSinkCapabilitiesSF DP_SanityFunction36
+#define DP_GetEdidReadResponseSF DP_SanityFunction33
+#define DP_ReadEdidSF DP_SanityFunction33
+#define DP_SetPowerModeSF DP_SanityFunction35
+#define DP_SetSourceCapabilitiesSF DP_SanityFunction36
+#define DP_GetSinkCapabilitiesSF DP_SanityFunction37
 #define DP_SetCustomPatternSF DP_SanityFunction3
-#define DP_SetTestPatternSF DP_SanityFunction38
-#define DP_SendDpcdReadRequestSF DP_SanityFunction39
-#define DP_GetDpcdReadResponseSF DP_SanityFunction40
-#define DP_ReadDpcdSF DP_SanityFunction40
-#define DP_SendDpcdWriteRequestSF DP_SanityFunction39
-#define DP_GetDpcdWriteResponseSF DP_SanityFunction40
-#define DP_WriteDpcdSF DP_SanityFunction40
-#define DP_SendI2cReadRequestSF DP_SanityFunction45
-#define DP_GetI2cReadResponseSF DP_SanityFunction46
-#define DP_I2cReadSF DP_SanityFunction46
-#define DP_SendI2cWriteRequestSF DP_SanityFunction45
-#define DP_GetI2cWriteResponseSF DP_SanityFunction46
-#define DP_I2cWriteSF DP_SanityFunction46
+#define DP_SetTestPatternSF DP_SanityFunction39
+#define DP_SendDpcdReadRequestSF DP_SanityFunction40
+#define DP_GetDpcdReadResponseSF DP_SanityFunction41
+#define DP_ReadDpcdSF DP_SanityFunction41
+#define DP_SendDpcdWriteRequestSF DP_SanityFunction40
+#define DP_GetDpcdWriteResponseSF DP_SanityFunction41
+#define DP_WriteDpcdSF DP_SanityFunction41
+#define DP_SendI2cReadRequestSF DP_SanityFunction46
+#define DP_GetI2cReadResponseSF DP_SanityFunction47
+#define DP_I2cReadSF DP_SanityFunction47
+#define DP_SendI2cWriteRequestSF DP_SanityFunction46
+#define DP_GetI2cWriteResponseSF DP_SanityFunction47
+#define DP_I2cWriteSF DP_SanityFunction47
 #define DP_SetAssrEnableSF DP_SanityFunction3
 #define DP_SetShortenedAuxPreambleSF DP_SanityFunction3
-#define DP_LinkTrainingSF DP_SanityFunction53
+#define DP_LinkTrainingSF DP_SanityFunction54
 #define DP_CheckLinkStableSF DP_SanityFunction16
 #define DP_SetEventMaskSF DP_SanityFunction3
 #define DP_GetEventMaskSF DP_SanityFunction14
 #define DP_SendReadHpdEventRequestSF DP_SanityFunction3
 #define DP_GetReadHpdEventResponseSF DP_SanityFunction19
 #define DP_ReadHpdEventSF DP_SanityFunction19
-#define DP_FillVideoFormatSF DP_SanityFunction60
-#define DP_SetVicSF DP_SanityFunction61
-#define DP_SetMsaSyncPolaritySF DP_SanityFunction62
+#define DP_FillVideoFormatSF DP_SanityFunction61
+#define DP_SetVicSF DP_SanityFunction62
+#define DP_SetMsaSyncPolaritySF DP_SanityFunction63
 #define DP_SetFramerEnableSF DP_SanityFunction3
 #define DP_SetVideoSstSF DP_SanityFunction3
-#define DP_ReadLinkStatSF DP_SanityFunction65
+#define DP_ReadLinkStatSF DP_SanityFunction66
 #define DP_SendAuxStatusRequestSF DP_SanityFunction3
-#define DP_GetAuxStatusResponseSF DP_SanityFunction67
-#define DP_GetAuxStatusSF DP_SanityFunction67
+#define DP_GetAuxStatusResponseSF DP_SanityFunction68
+#define DP_GetAuxStatusSF DP_SanityFunction68
 #define DP_SendI2cStatusRequestSF DP_SanityFunction3
-#define DP_GetI2cStatusResponseSF DP_SanityFunction70
-#define DP_GetI2cStatusSF DP_SanityFunction70
+#define DP_GetI2cStatusResponseSF DP_SanityFunction71
+#define DP_GetI2cStatusSF DP_SanityFunction71
 #define DP_SendHpdStatusRequestSF DP_SanityFunction3
 #define DP_GetHpdStatusResponseSF DP_SanityFunction16
 #define DP_GetHpdStatusSF DP_SanityFunction16
 #define DP_SetFecEnableSF DP_SanityFunction3
 #define DP_SetFecReadySF DP_SanityFunction3
-#define DP_SetSdpSF DP_SanityFunction77
-#define DP_RemoveSdpSF DP_SanityFunction78
-#define DP_ConfigureHdcpTxSF DP_SanityFunction79
-#define DP_SetHdcp2TxPublicKeySF DP_SanityFunction80
-#define DP_SetHdcpKmEncCustomKeySF DP_SanityFunction81
-#define DP_SetHdcp2DebugRandomSF DP_SanityFunction82
+#define DP_SetSdpSF DP_SanityFunction78
+#define DP_RemoveSdpSF DP_SanityFunction79
+#define DP_ConfigureHdcpTxSF DP_SanityFunction80
+#define DP_SetHdcp2TxPublicKeySF DP_SanityFunction81
+#define DP_SetHdcpKmEncCustomKeySF DP_SanityFunction82
+#define DP_SetHdcp2DebugRandomSF DP_SanityFunction83
 #define DP_Hdcp2RespondKmNotStoredSF DP_SanityFunction3
-#define DP_Hdcp2RespondKmStoredSF DP_SanityFunction84
-#define DP_SetHdcp1TxKeysSF DP_SanityFunction85
+#define DP_Hdcp2RespondKmStoredSF DP_SanityFunction85
+#define DP_SetHdcp1TxKeysSF DP_SanityFunction86
 #define DP_SetHdcp1RandomAnSF DP_SanityFunction3
 #define DP_SendHdcpTxStatusRequestSF DP_SanityFunction3
-#define DP_GetHdcpTxStatusResponseSF DP_SanityFunction88
-#define DP_GetHdcpTxStatusSF DP_SanityFunction88
+#define DP_GetHdcpTxStatusResponseSF DP_SanityFunction89
+#define DP_GetHdcpTxStatusSF DP_SanityFunction89
 #define DP_SendHdcp2RecvIdRequestSF DP_SanityFunction3
 #define DP_GetHdcp2RecvIdResponseSF DP_SanityFunction3
 #define DP_GetHdcp2RecvIdSF DP_SanityFunction3
 #define DP_SendHdcp2PairingDataRequeSF DP_SanityFunction3
-#define DP_GetHdcp2PairingDataResponSF DP_SanityFunction94
-#define DP_GetHdcp2PairingDataSF DP_SanityFunction94
+#define DP_GetHdcp2PairingDataResponSF DP_SanityFunction95
+#define DP_GetHdcp2PairingDataSF DP_SanityFunction95
 #define DP_SendHdcpRecvIdListRequestSF DP_SanityFunction3
-#define DP_GetHdcpRecvIdListResponseSF DP_SanityFunction97
-#define DP_GetHdcpRecvIdListSF DP_SanityFunction97
+#define DP_GetHdcpRecvIdListResponseSF DP_SanityFunction98
+#define DP_GetHdcpRecvIdListSF DP_SanityFunction98
 #define DP_SetHdcpRecvValidSF DP_SanityFunction3
 #define DP_SetHdcp2LcSF DP_SanityFunction3
 #define DP_SetHdcpSeedSF DP_SanityFunction3
-#define DP_AudioSetMuteSF DP_SanityFunction102
-#define DP_AudioAutoConfigSF DP_SanityFunction103
+#define DP_AudioSetMuteSF DP_SanityFunction103
+#define DP_AudioAutoConfigSF DP_SanityFunction104
 #define DP_AudioStopSF DP_SanityFunction3
-#define DP_AudioSetModeSF DP_SanityFunction105
-#define DP_SetDscConfigSF DP_SanityFunction106
-#define DP_GetDscConfigSF DP_SanityFunction107
+#define DP_AudioSetModeSF DP_SanityFunction106
+#define DP_SetDscConfigSF DP_SanityFunction107
+#define DP_GetDscConfigSF DP_SanityFunction108
 #define DP_DscSendPpsSF DP_SanityFunction3
 #define DP_SetCompressedStreamFlagSF DP_SanityFunction3
 #define DP_DscResetSF DP_SanityFunction3
@@ -247,14 +250,14 @@ uint32_t DP_SanityFunction122(const DP_PrivateData* pD, const DP_SinkDevice* sin
 #define DP_MstDisableSF DP_SanityFunction3
 #define DP_MstStreamEnableSF DP_SanityFunction3
 #define DP_MstStreamDisableSF DP_SanityFunction3
-#define DP_MstAllocateVcpiSF DP_SanityFunction115
-#define DP_MstDeallocateVcpiSF DP_SanityFunction115
+#define DP_MstAllocateVcpiSF DP_SanityFunction116
+#define DP_MstDeallocateVcpiSF DP_SanityFunction116
 #define DP_MstGetSinkCountSF DP_SanityFunction19
-#define DP_MstGetSinkListSF DP_SanityFunction118
+#define DP_MstGetSinkListSF DP_SanityFunction119
 #define DP_MstSetEncryptionEnableSF DP_SanityFunction3
 #define DP_MstSetEncryptionSF DP_SanityFunction3
 #define DP_MstScanTopologySF DP_SanityFunction3
-#define DP_MstReadRemoteEdidSF DP_SanityFunction122
+#define DP_MstReadRemoteEdidSF DP_SanityFunction123
 #define DP_MstHpdIrqSF DP_SanityFunction3
 
 #endif  /* DP_SANITY_H */

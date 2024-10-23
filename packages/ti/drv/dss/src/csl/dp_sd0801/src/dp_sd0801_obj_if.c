@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -58,6 +58,8 @@ DP_SD0801_OBJ *DP_SD0801_GetInstance(void)
         .setCoefficients = DP_SD0801_SetCoefficients,
         .readLinkStat = DP_SD0801_ReadLinkStat,
         .registerCb = DP_SD0801_RegisterCb,
+        .mlPhyStartUp = DP_SD0801_MlPhyStartUp,
+        .mlPhyInit = DP_SD0801_MlPhyInit,
     };
 
     return &driver;

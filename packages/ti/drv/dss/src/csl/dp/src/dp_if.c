@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -2304,6 +2304,7 @@ uint32_t DP_Start(DP_PrivateData* pD)
     if (CDN_EOK == retVal) {
         /* Disable the mailbox interrupt. Else it will keep interrupting */
         CPS_REG_WRITE(&pD->regBase->mhdp_apb_regs.MAILBOX_INT_MASK_p, ~(0U));
+
         reg  = CPS_FLD_WRITE(MHDP__MHDP_APB_REGS__APB_INT_MASK_P, APB_MAILBOX_INTR_MASK, 0U, 0U)
                | CPS_FLD_WRITE(MHDP__MHDP_APB_REGS__APB_INT_MASK_P, APB_SW_INTR_MASK, 0U, 0U)
                | CPS_FLD_WRITE(MHDP__MHDP_APB_REGS__APB_INT_MASK_P, APB_PIF_INTR_MASK, 0U, 0U)
@@ -2459,7 +2460,7 @@ uint32_t DP_GetEvent(const DP_PrivateData* pD, uint32_t* events)
     }
 
     if ((CDN_EOK == retVal) &&
-    (0U != readVal))
+        (0U != readVal))
     {
         readVal = CPS_REG_READ(&pD->regBase->mhdp_apb_regs.SW_EVENTS0_p);
         *events = CPS_FLD_READ(MHDP__MHDP_APB_REGS__SW_EVENTS0_P, SW_EVENTS7_0, readVal);
@@ -2640,6 +2641,46 @@ uint32_t DP_ConfigurePhyStartUp(DP_PrivateData* pD, uint8_t mLane, uint8_t laneC
 
     if (CDN_EOK == retVal) {
         retVal = DP_SD0801_PhyStartUp(pD->phyPd, mLane, laneCount, toLinkRateSd(linkRate));
+    }
+
+    return retVal;
+}
+
+/**
+ * Automatically initialize and configure DP SD0801 Torrent PHY in
+ * multilink multiprotocol configuration. Maximum 2 links with one
+ * link being DP are supported. Has to be called before performing
+ * Link Training. This is a recommended way to bring up PHY, instead
+ * of manual initialization. AUX channel still has to be initialized
+ * separately. Alternatively, respective PHY driver's function may be
+ * called instead.
+ * @param[in] pD Driver state info specific to this instance.
+ * @param[in] dpPhyInst Configuration parameters for a DP link.
+ * @param[in] linkRate Link rate to initialize PHY DP link with.
+ * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+ * @return CDN_EOK success
+ * @return CDN_EINVAL If pD is NULL or parameters are invalid.
+ */
+uint32_t DP_ConfigureMlPhyStartUp(DP_PrivateData* pD, DP_MlPhyInstance* dpPhyInst,
+                                  DP_LinkRate linkRate, DP_MlPhyInstance* otherPhyInst)
+{
+    uint32_t retVal;
+    DP_SD0801_MlPhyInstance sd0801DpPhyInst;
+    DP_SD0801_MlPhyInstance sd0801OtherPhyInst;
+
+    retVal = DP_ConfigureMlPhyStartUpSF(pD, dpPhyInst, linkRate, otherPhyInst);
+    if (CDN_EOK == retVal) {
+        sd0801DpPhyInst.mLane = dpPhyInst->mLane;
+        sd0801DpPhyInst.numLanes = dpPhyInst->numLanes;
+        sd0801DpPhyInst.phyType = DP_SD0801_PHY_TYPE_DP;
+        sd0801DpPhyInst.ssc = DP_SD0801_NO_SSC;
+
+        sd0801OtherPhyInst.mLane = otherPhyInst->mLane;
+        sd0801OtherPhyInst.numLanes = otherPhyInst->numLanes;
+        sd0801OtherPhyInst.phyType = otherPhyInst->phyType;
+        sd0801OtherPhyInst.ssc = DP_SD0801_NO_SSC;
+
+        retVal = DP_SD0801_MlPhyStartUp(pD->phyPd, &sd0801DpPhyInst, toLinkRateSd(linkRate), &sd0801OtherPhyInst);
     }
 
     return retVal;
@@ -2926,7 +2967,7 @@ uint32_t DP_GetDpcdReadResponse(DP_PrivateData*  pD,
 }
 
 static uint32_t DP_ReadDpcdInternal(DP_PrivateData*  pD,
-                     DP_DpcdTransfer* transfer)
+                                    DP_DpcdTransfer* transfer)
 {
     uint32_t retVal;
 
@@ -2936,7 +2977,7 @@ static uint32_t DP_ReadDpcdInternal(DP_PrivateData*  pD,
     {
         retVal = DP_GetDpcdReadResponse(pD, transfer);
     }
-    
+
     return retVal;
 }
 
@@ -2948,18 +2989,18 @@ uint32_t DP_ReadDpcd(DP_PrivateData*  pD,
 
     retVal = DP_ReadDpcdSF(pD, transfer);
 
-    if(CDN_EOK == retVal)
+    if (CDN_EOK == retVal)
     {
         /* Store addr and size, FW can corrupt it */
         uint32_t addr_c = transfer->addr;
         uint16_t size_c = transfer->size;
 
-        while(i--) {
+        while (i--) {
             transfer->addr = addr_c;
             transfer->size = size_c;
 
             retVal = DP_ReadDpcdInternal(pD, transfer);
-            if(CDN_EOK == retVal)
+            if (CDN_EOK == retVal)
             {
                 break;
             }

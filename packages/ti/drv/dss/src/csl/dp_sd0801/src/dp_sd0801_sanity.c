@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -107,6 +107,50 @@ uint32_t DP_SD0801_LinkStateSF(const DP_SD0801_LinkState *obj)
 }
 
 /**
+ * Function to validate struct MlPhyInstance
+ *
+ * @param[in] obj pointer to struct to be verified
+ * @returns 0 for valid
+ * @returns CDN_EINVAL for invalid
+ */
+uint32_t DP_SD0801_MlPhyInstanceSF(const DP_SD0801_MlPhyInstance *obj)
+{
+    uint32_t ret = 0;
+
+    if (obj == NULL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else
+    {
+        if (obj->mLane > (DP_SD0801_MAX_LANE_COUNT - 1U))
+        {
+            ret = CDN_EINVAL;
+        }
+        if (
+            (obj->phyType != DP_SD0801_PHY_TYPE_NONE) &&
+            (obj->phyType != DP_SD0801_PHY_TYPE_DP) &&
+            (obj->phyType != DP_SD0801_PHY_TYPE_PCIE) &&
+            (obj->phyType != DP_SD0801_PHY_TYPE_USB)
+            )
+        {
+            ret = CDN_EINVAL;
+        }
+        if (
+            (obj->ssc != DP_SD0801_NO_SSC) &&
+            (obj->ssc != DP_SD0801_EXTERNAL_SSC) &&
+            (obj->ssc != DP_SD0801_INTERNAL_SSC) &&
+            (obj->ssc != DP_SD0801_ANY_SSC)
+            )
+        {
+            ret = CDN_EINVAL;
+        }
+    }
+
+    return ret;
+}
+
+/**
  * Function to validate struct Config
  *
  * @param[in] obj pointer to struct to be verified
@@ -162,6 +206,19 @@ uint32_t DP_SD0801_PrivateDataSF(const DP_SD0801_PrivateData *obj)
     else
     {
         if (DP_SD0801_LinkStateSF(&obj->linkState) == CDN_EINVAL)
+        {
+            ret = CDN_EINVAL;
+        }
+        if (
+            (obj->refClk != DP_SD0801_CLK_19_2_MHZ) &&
+            (obj->refClk != DP_SD0801_CLK_20_MHZ) &&
+            (obj->refClk != DP_SD0801_CLK_24_MHZ) &&
+            (obj->refClk != DP_SD0801_CLK_25_MHZ) &&
+            (obj->refClk != DP_SD0801_CLK_26_MHZ) &&
+            (obj->refClk != DP_SD0801_CLK_27_MHZ) &&
+            (obj->refClk != DP_SD0801_CLK_100_MHZ) &&
+            (obj->refClk != DP_SD0801_CLK_ANY)
+            )
         {
             ret = CDN_EINVAL;
         }
@@ -472,6 +529,57 @@ uint32_t DP_SD0801_SanityFunction16(const DP_SD0801_PrivateData* pD, const DP_SD
         ret = CDN_EINVAL;
     }
     else if (DP_SD0801_CallbacksSF(callbacks) == CDN_EINVAL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else
+    {
+        /*
+         * All 'if ... else if' constructs shall be terminated with an 'else' statement
+         * (MISRA2012-RULE-15_7-3)
+         */
+    }
+
+    return ret;
+}
+
+/**
+ * A common function to check the validity of API functions with
+ * following parameter types
+ * @param[in] pD Driver state info specific to this instance.
+ * @param[in] dpPhyInst Configuration parameters for a DP link.
+ * @param[in] linkRate Link rate to initialize PHY DP link with.
+ * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+ * @return 0 success
+ * @return CDN_EINVAL invalid parameters
+ */
+uint32_t DP_SD0801_SanityFunction17(const DP_SD0801_PrivateData* pD, const DP_SD0801_MlPhyInstance* dpPhyInst, const DP_SD0801_LinkRate linkRate, const DP_SD0801_MlPhyInstance* otherPhyInst)
+{
+    /* Declaring return variable */
+    uint32_t ret = 0;
+
+    if (DP_SD0801_PrivateDataSF(pD) == CDN_EINVAL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else if (DP_SD0801_MlPhyInstanceSF(dpPhyInst) == CDN_EINVAL)
+    {
+        ret = CDN_EINVAL;
+    }
+    else if (
+        (linkRate != DP_SD0801_LINK_RATE_1_62) &&
+        (linkRate != DP_SD0801_LINK_RATE_2_16) &&
+        (linkRate != DP_SD0801_LINK_RATE_2_43) &&
+        (linkRate != DP_SD0801_LINK_RATE_2_70) &&
+        (linkRate != DP_SD0801_LINK_RATE_3_24) &&
+        (linkRate != DP_SD0801_LINK_RATE_4_32) &&
+        (linkRate != DP_SD0801_LINK_RATE_5_40) &&
+        (linkRate != DP_SD0801_LINK_RATE_8_10)
+        )
+    {
+        ret = CDN_EINVAL;
+    }
+    else if (DP_SD0801_MlPhyInstanceSF(otherPhyInst) == CDN_EINVAL)
     {
         ret = CDN_EINVAL;
     }

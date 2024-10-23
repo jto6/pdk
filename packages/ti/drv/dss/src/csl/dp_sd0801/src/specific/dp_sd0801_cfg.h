@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -747,4 +747,4 @@
 #endif
 
 #endif /* DP_SD0801_CFG_H */
-/* parasoft-begin-suppress MISRA2012-RULE-1_1_b_c90-2 */
+/* parasoft-end-suppress MISRA2012-RULE-1_1_b_c90-2 */

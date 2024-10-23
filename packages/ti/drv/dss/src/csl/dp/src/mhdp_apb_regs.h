@@ -2,7 +2,7 @@
 /* parasoft-begin-suppress item MISRA2012-DIR-4_8 "Consider hiding implementation of structure, DRV-3667" */
 
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:

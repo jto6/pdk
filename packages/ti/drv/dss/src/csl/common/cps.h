@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright (C) 2012-2019 Cadence Design Systems, Inc.
+ * Copyright (C) 2012-2024 Cadence Design Systems, Inc.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -43,7 +43,7 @@
 
 #include "cdn_stdtypes.h"
 
-/* parasoft-begin-suppress MISRA2012-RULE-8_6-2 "An identifier with external linkage shall have exactly one external definition, DRV-4757" */
+/* parasoft-begin-suppress MISRAC2012-RULE_8_6-a "An identifier with external linkage shall have exactly one external definition, DRV-4757" */
 /* parasoft-begin-suppress METRICS-36-3 "A function should not be called from more than 5 different functions, DRV-3823" */
 /****************************************************************************
  * Prototypes
@@ -222,14 +222,12 @@ extern void CPS_MemoryBarrierWrite(void);
 extern void CPS_MemoryBarrierRead(void);
 
 /**
- * External (platform specific PHY reset
+ * External (platform specific) PHY reset
  */
 extern void CPS_ExtPhyReset(bool reset);
 
-extern void CPS_ExtPhyReset(bool reset);
-
 /* parasoft-end-suppress METRICS-36-3 */
-/* parasoft-end-suppress MISRA2012-RULE-8_6-2 */
+/* parasoft-end-suppress MISRAC2012-RULE_8_6-a */
 
 #endif /* ERROR_INJECTION */
 

@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -233,6 +233,33 @@ typedef struct DP_SD0801_OBJ_s
      * @return CDN_EINVAL If pD or Callbacks pointer is NULL.
      */
     uint32_t (*registerCb)(DP_SD0801_PrivateData* pD, const DP_SD0801_Callbacks* callbacks);
+
+    /**
+     * Automatically initialize and configure PHY for multilink
+     * configuration. Maximum 2 links with one link being DP are
+     * supported. This is a recommended way to bring up PHY, instead of
+     * manual initialization. DP AUX channel still has to be initialized
+     * separately.
+     * @param[in] pD Driver state info specific to this instance.
+     * @param[in] dpPhyInst Configuration parameters for a DP link.
+     * @param[in] linkRate Link rate to initialize PHY DP link with.
+     * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+     * @return CDN_EOK success
+     * @return CDN_EINVAL If pD is NULL or parameters are invalid.
+     */
+    uint32_t (*mlPhyStartUp)(DP_SD0801_PrivateData* pD, const DP_SD0801_MlPhyInstance* dpPhyInst, DP_SD0801_LinkRate linkRate, const DP_SD0801_MlPhyInstance* otherPhyInst);
+
+    /**
+     * Part of PHY initialization for multilink configuration. Performs
+     * operations to be done before releasing PHY reset.
+     * @param[in] pD Driver state info specific to this instance.
+     * @param[in] dpPhyInst Configuration parameters for a DP link.
+     * @param[in] linkRate Link rate to initialize PHY with.
+     * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+     * @return CDN_EOK success
+     * @return CDN_EINVAL If pD is NULL or parameters are invalid.
+     */
+    uint32_t (*mlPhyInit)(DP_SD0801_PrivateData* pD, const DP_SD0801_MlPhyInstance* dpPhyInst, DP_SD0801_LinkRate linkRate, const DP_SD0801_MlPhyInstance* otherPhyInst);
 
 } DP_SD0801_OBJ;
 

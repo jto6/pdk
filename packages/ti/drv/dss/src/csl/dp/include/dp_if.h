@@ -1,5 +1,5 @@
 /**********************************************************************
-* Copyright (C) 2012-2022 Cadence Design Systems, Inc.
+* Copyright (C) 2012-2024 Cadence Design Systems, Inc.
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
 * are met:
@@ -62,6 +62,9 @@
 /** Max. possible amount of DPCD bytes to write/read using a single request. */
 #define DP_MAX_DPCD_TRANSFER_SIZE 1014U
 
+/** Max. possible DPCD read retries before bailing out. */
+#define DP_MAX_DPCD_READ_RETRIES 3U
+
 /**
  * Max. possible amount of bytes to write/read using I2C-over-AUX using a
  * single request.
@@ -121,7 +124,6 @@
 
 #define DP_MAX_NUMBER_OF_LANES (4U)
 
-#define DP_MAX_DPCD_READ_RETRIES 3U
 /**
  *  @}
  */
@@ -163,6 +165,7 @@ typedef struct DP_SinkDevice_s DP_SinkDevice;
 typedef struct DP_FirmwareImage_s DP_FirmwareImage;
 typedef struct DP_UcpuClock_s DP_UcpuClock;
 typedef struct DP_AudioVideoClkCfg_s DP_AudioVideoClkCfg;
+typedef struct DP_MlPhyInstance_s DP_MlPhyInstance;
 
 typedef struct DP_PrivateData_s DP_PrivateData;
 
@@ -1023,6 +1026,23 @@ uint32_t DP_ConfigurePhyAuxCtrl(const DP_PrivateData* pD);
  * @return CDN_EINVAL If pD is NULL or parameters are invalid.
  */
 uint32_t DP_ConfigurePhyStartUp(DP_PrivateData* pD, uint8_t mLane, uint8_t laneCount, DP_LinkRate linkRate);
+
+/**
+ * Automatically initialize and configure DP SD0801 Torrent PHY in
+ * multilink multiprotocol configuration. Maximum 2 links with one
+ * link being DP are supported. Has to be called before performing
+ * Link Training. This is a recommended way to bring up PHY, instead
+ * of manual initialization. AUX channel still has to be initialized
+ * separately. Alternatively, respective PHY driver's function may be
+ * called instead.
+ * @param[in] pD Driver state info specific to this instance.
+ * @param[in] dpPhyInst Configuration parameters for a DP link.
+ * @param[in] linkRate Link rate to initialize PHY DP link with.
+ * @param[in] otherPhyInst Configuration parameters for a second PHY link.
+ * @return CDN_EOK success
+ * @return CDN_EINVAL If pD is NULL or parameters are invalid.
+ */
+uint32_t DP_ConfigureMlPhyStartUp(DP_PrivateData* pD, DP_MlPhyInstance* dpPhyInst, DP_LinkRate linkRate, DP_MlPhyInstance* otherPhyInst);
 
 /**
  * Sends request for reading EDID from sink device. DP_checkResponse
