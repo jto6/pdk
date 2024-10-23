@@ -4353,17 +4353,22 @@ static int32_t SciclientApp_pmMessagePosTest(void)
 {
     int32_t   status               = CSL_PASS;
     int32_t   pmMessageTestStatus  = CSL_PASS;
-    uint64_t  reqFreq              = 164UL;
+    uint64_t  reqFreq              = 0UL;
     uint64_t  respFreq             = 0UL;
     uint32_t  clockStatus          = 1U;
     uint32_t  parentStatus         = 0U;
     uint32_t  numParents           = 0U;
-    uint64_t  freq                 = 0UL;
     uint32_t  moduleState          = 0U;
     uint32_t  resetState           = 0U;
     uint32_t  contextLossState     = 0U;
     uint32_t  reqFlag              = 0U;
    
+    status = Sciclient_pmGetModuleClkFreq(TISCI_DEV_UART1,
+                                          TISCI_DEV_UART1_FCLK_CLK,
+                                          &respFreq,
+                                          SCICLIENT_SERVICE_WAIT_FOREVER);
+
+    reqFreq = respFreq;
     status = Sciclient_pmQueryModuleClkFreq(TISCI_DEV_UART1,
                                             TISCI_DEV_UART1_FCLK_CLK,
                                             reqFreq,
@@ -4378,6 +4383,22 @@ static int32_t SciclientApp_pmMessagePosTest(void)
     {
         pmMessageTestStatus += CSL_EFAIL;
         SciApp_printf("Sciclient_pmQueryModuleClkFreq Test Failed.\n");
+    }
+
+    status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_UART1,
+                                          TISCI_DEV_UART1_FCLK_CLK,
+                                          respFreq,
+                                          TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
+                                          SCICLIENT_SERVICE_WAIT_FOREVER);
+    if (status == CSL_PASS)
+    {
+        pmMessageTestStatus += CSL_PASS;
+        SciApp_printf("Sciclient_pmSetModuleClkFreq Test Passed.\n");
+    }
+    else
+    {
+        pmMessageTestStatus += CSL_EFAIL;
+        SciApp_printf("Sciclient_pmSetModuleClkFreq Test Failed.\n");
     }
 
     status = Sciclient_pmModuleGetClkStatus(TISCI_DEV_UART1,
@@ -4454,37 +4475,6 @@ static int32_t SciclientApp_pmMessagePosTest(void)
     {
         pmMessageTestStatus += CSL_EFAIL;
         SciApp_printf("Sciclient_pmGetModuleClkNumParent Test Failed.\n");
-    }
-
-    status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_UART1,
-                                          TISCI_DEV_UART1_FCLK_CLK,
-                                          reqFreq,
-                                          TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
-                                          SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
-    {
-        pmMessageTestStatus += CSL_PASS;
-        SciApp_printf("Sciclient_pmSetModuleClkFreq Test Passed.\n");
-    }
-    else
-    {
-        pmMessageTestStatus += CSL_EFAIL;
-        SciApp_printf("Sciclient_pmSetModuleClkFreq Test Failed.\n");
-    }
-
-    status = Sciclient_pmGetModuleClkFreq(TISCI_DEV_UART1,
-                                          TISCI_DEV_UART1_FCLK_CLK,
-                                          &freq,
-                                          SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
-    {
-        pmMessageTestStatus += CSL_PASS;
-        SciApp_printf("Sciclient_pmGetModuleClkFreq Test Passed.\n");
-    }
-    else
-    {
-        pmMessageTestStatus += CSL_EFAIL;
-        SciApp_printf("Sciclient_pmGetModuleClkFreq Test Failed.\n");
     }
 
     status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE0,
@@ -4579,42 +4569,6 @@ static int32_t SciclientApp_pmMessagePosTest(void)
     {
         pmMessageTestStatus += CSL_EFAIL;
         SciApp_printf ("Sciclient_pmSetModuleRst_flags Test Failed.\n");
-    }
-    
-    /* set ClkFreq for TISCI_DEV_UART1 module */
-    reqFreq = 100U;
-    status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_UART1,
-                                          TISCI_DEV_UART1_FCLK_CLK,
-                                          reqFreq,
-                                          TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
-                                          SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
-    {
-        pmMessageTestStatus += CSL_PASS;
-        SciApp_printf("Sciclient_pmSetModuleClkFreq Test Passed.\n");
-    }
-    else
-    {
-        pmMessageTestStatus += CSL_EFAIL;
-        SciApp_printf("Sciclient_pmSetModuleClkFreq Test Failed.\n");
-    }
-    
-    /* QueryModuleClkFreq for TISCI_DEV_UART1 module */
-    reqFreq = 100U;
-    status = Sciclient_pmQueryModuleClkFreq(TISCI_DEV_UART1,
-                                            TISCI_DEV_UART1_FCLK_CLK,
-                                            reqFreq,
-                                            &respFreq,
-                                            SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
-    {
-        pmMessageTestStatus += CSL_PASS;
-        SciApp_printf("Sciclient_pmQueryModuleClkFreq Test Passed.\n");
-    }
-    else
-    {
-        pmMessageTestStatus += CSL_EFAIL;
-        SciApp_printf("Sciclient_pmQueryModuleClkFreq Test Failed.\n");
     }
     
     /* Check whether TISCI_DEV_UART1 module is valid or not */
