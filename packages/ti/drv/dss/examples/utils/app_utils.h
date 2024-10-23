@@ -62,6 +62,12 @@ extern "C" {
 #define APP_OUTPUT_DSI           ((uint32_t) 2)
 #endif
 
+#if defined (SOC_J721S2)
+/* Multilink Serdes enables USB or PCI alongside DP during dp init, which 
+*  requires the serdes reference clock to be 100Mhz*/
+#define DO_MULTILINK             (1U)
+#endif
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */

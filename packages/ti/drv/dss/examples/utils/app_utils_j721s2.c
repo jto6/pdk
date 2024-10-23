@@ -51,6 +51,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+/* None */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -343,6 +344,36 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
         {
             printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_CLK is STILL DISABLED !!!\r\n");
         }
+
+#if (1U == DO_MULTILINK)
+        status = Sciclient_pmSetModuleClkParent(TISCI_DEV_SERDES_10G0,
+                TISCI_DEV_SERDES_10G0_CORE_REF_CLK,
+                TISCI_DEV_SERDES_10G0_CORE_REF_CLK_PARENT_HSDIV4_16FFT_MAIN_2_HSDIVOUT4_CLK,
+                SCICLIENT_SERVICE_WAIT_FOREVER);
+        
+        if(PM_SUCCESS == status)
+        {
+            printf("\nTISCI_DEV_SERDES_10G0_CORE_REF_CLK Parent has been set to 100MHz !\r\n");
+        }
+        else
+        {
+            printf("\nFAILED to set TISCI_DEV_SERDES_10G0_CORE_REF_CLK to 100MHz !\r\n");
+        }
+        uint64_t clkFreq = 0U;
+        status = Sciclient_pmGetModuleClkFreq(TISCI_DEV_SERDES_10G0,
+                TISCI_DEV_SERDES_10G0_CORE_REF_CLK,
+                &clkFreq,
+                SCICLIENT_SERVICE_WAIT_FOREVER);
+
+        if(status == PM_SUCCESS)
+        {
+            printf("\n Serdes Core RefClk is set to = %lld Hz\r\n", clkFreq);
+        }
+        else
+        {
+            printf("\n Failed to get clock frequency !!\r\n");
+        }
+#endif
     }
 
 }

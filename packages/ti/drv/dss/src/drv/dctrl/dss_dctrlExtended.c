@@ -135,7 +135,7 @@ Fvid2_ModeInfo gDpStdModeInfo[] = {
 /*                  Internal/Private Function Declarations                    */
 /* ========================================================================== */
 
-static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported);
+static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkPhyType);
 static void Dss_dctrlDrvDpIntr(uintptr_t arg);
 static int32_t Dss_dctrlDrvDpStartVideo(Dss_DctrlDisplayPortDrvObj *pObj);
 static int32_t Dss_dctrlDrvDpStopVideo(Dss_DctrlDisplayPortDrvObj *pObj);
@@ -289,7 +289,7 @@ int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo,
     return retVal;
 }
 
-int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported)
+int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported, uint32_t multilinkPhyType)
 {
     int32_t retVal = FVID2_SOK;
 
@@ -355,7 +355,7 @@ int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported)
     /* Set DPTX_SRC_CFG, 0:vif0_en, 1:vif_1_en, 2:vif_2_en, 3: vif_3_en, 4: vif_0_sel, TBD */
     CSL_REG32_WR(CSL_DSS_EDP0_INTG_CFG_VP_BASE + CSL_DPTX_DPTX_SRC_CFG, 0x1F);
 
-    retVal = Dss_dctrlDrvInitDPTX(isHpdSupported);
+    retVal = Dss_dctrlDrvInitDPTX(isHpdSupported, multilinkPhyType);
 
     return retVal;
 }
@@ -665,7 +665,7 @@ static int32_t Dss_dctrlDrvDpStartVideo(Dss_DctrlDisplayPortDrvObj *pObj)
     return retVal;
 }
 
-static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported)
+static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkPhyType)
 {
     Dss_DctrlDisplayPortDrvObj *pObj;
     uint32_t memReqDp, memReqDpPhy;
@@ -839,10 +839,37 @@ static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported)
     if(FVID2_SOK == retVal)
     {
 #if defined (SOC_J721S2)
-        dpApiRet = DP_ConfigurePhyStartUp(pObj->dpPrivData,
-                0x2,
-                pObj->srcCaps.laneCount,
-                pObj->srcCaps.maxLinkRate);
+        if(multilinkPhyType == DSS_DP_MULTILINK_PHY_NONE)
+        {
+            dpApiRet = DP_ConfigurePhyStartUp(pObj->dpPrivData,
+                    0x2,
+                    pObj->srcCaps.laneCount,
+                    pObj->srcCaps.maxLinkRate);
+        }
+        else
+        {
+            DP_MlPhyInstance dpPhyInst, otherPhyInst;
+
+            dpPhyInst.mLane = 2;
+            otherPhyInst.mLane = 0;
+            dpPhyInst.phyType = DP_SD0801_PHY_TYPE_DP;
+            if(multilinkPhyType == DSS_DP_MULTILINK_PHY_USB)
+            {
+                otherPhyInst.phyType = DP_SD0801_PHY_TYPE_USB;
+            }
+            else
+            {
+                otherPhyInst.phyType = DP_SD0801_PHY_TYPE_PCIE;
+            }
+            
+            dpPhyInst.numLanes = 2;
+            otherPhyInst.numLanes = 2;
+
+            dpApiRet = DP_ConfigureMlPhyStartUp(pObj->dpPrivData,
+                    &dpPhyInst,
+                    pObj->srcCaps.maxLinkRate,
+                    &otherPhyInst);
+        }
 #else          
         dpApiRet = DP_ConfigurePhyStartUp(pObj->dpPrivData,
                 0x0,

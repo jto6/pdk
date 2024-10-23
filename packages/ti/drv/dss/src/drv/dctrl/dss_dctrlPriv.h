@@ -217,7 +217,7 @@ int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo,
                                   uint32_t hsyncPolarity,
                                   uint32_t vsyncPolarity);
 
-int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported);
+int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported, uint32_t multilinkPhyType);
 int32_t Dss_dctrlDrvProcessHpdDp(uint32_t hpdState);
 int32_t Dss_dctrlDrvRegisterHpdCb(const Dss_DctrlDpHpdCbParams *cbParams);
 int32_t Dss_dctrlDrvDetectDp(void);

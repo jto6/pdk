@@ -303,7 +303,7 @@ int32_t Dss_dctrlDrvInit(const Dss_DctrlDrvInitParams *drvInitParams)
     if((FVID2_SOK == retVal) &&
     (UTRUE == drvInitParams->dpInitParams.isAvailable))
     {
-        retVal = Dss_dctrlDrvInitDp(drvInitParams->dpInitParams.isHpdSupported);
+        retVal = Dss_dctrlDrvInitDp(drvInitParams->dpInitParams.isHpdSupported, drvInitParams->dpInitParams.multilinkPhyType);
     }
 
     if (UTRUE == drvInitParams->dsiInitParams.isAvailable)

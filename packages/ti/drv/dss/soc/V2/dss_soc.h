@@ -226,6 +226,20 @@ typedef void (*Dss_DctrlDpHpdCbFxn)(uint32_t hpdState, void *appData);
 #define DSS_DSI_CONNECTION_MAX                       (2U)
 /* @} */
 
+/**
+ *  \anchor Dss_MultilinkPhyType
+ *  \name   Multilink Phy Type Available
+ *
+ *  @{
+ */
+/** \brief Multilink Phy used alongside DP is PCI. */
+#define DSS_DP_MULTILINK_PHY_PCI                     (0U)
+/** \brief Multilink Phy used alongside DP is USB */
+#define DSS_DP_MULTILINK_PHY_USB                     (1U)
+/** \brief Multilink option not used */
+#define DSS_DP_MULTILINK_PHY_NONE                    (2U)
+/* @} */
+
 /*
  *  SOC specific IOCTLs.
  */
@@ -327,6 +341,9 @@ typedef struct
     /**< Flag to indicate whether driver should detect and
      *   handle hot-plug interrupts
      */
+    uint32_t multilinkPhyType;
+    /**< Multilink Phy Type indicates whether USB or PCI is enabled alongside DP.
+     *   Refer to \ref Dss_MultilinkPhyType for values */
 } Dss_DpInitParams;
 
 /**
@@ -517,6 +534,7 @@ static inline void Dss_dpInitParamsInit(Dss_DpInitParams *dpInitParams)
     {
         dpInitParams->isAvailable    = UTRUE;
         dpInitParams->isHpdSupported = UFALSE;
+        dpInitParams->multilinkPhyType = DSS_DP_MULTILINK_PHY_NONE;
     }
 }
 

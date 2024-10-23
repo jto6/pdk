@@ -46,6 +46,7 @@
 #include <dss_display_test.h>
 #include <dss_display_buffer1.h>
 #include <dss_display_buffer2.h>
+#include <ti/drv/dss/examples/utils/app_utils.h>
 #include <ti/drv/uart/UART.h>
 #include <ti/drv/uart/UART_stdio.h>
 
@@ -256,6 +257,9 @@ static void DispApp_init(DispApp_Obj *appObj)
     appObj->initParams.socParams.irqParams.irqNum[DSS_EVT_MGR_INST_ID_SECURITY] = 57U;
 #endif
     appObj->initParams.socParams.dpInitParams.isHpdSupported                    = UFALSE;
+#if ((defined (SOC_J721S2)) && (1U == DO_MULTILINK))
+    appObj->initParams.socParams.dpInitParams.multilinkPhyType                  = DSS_DP_MULTILINK_PHY_USB;
+#endif
     Dss_init(&appObj->initParams);
 
 #if (1U == ENABLE_DP_TO_HDMI_CONVERTER)

@@ -138,6 +138,7 @@ int32_t Dss_init(const Dss_InitParams *initParams)
 #if defined(SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
         dctrlInitParams.dpInitParams.isAvailable = initParams->socParams.dpInitParams.isAvailable;
         dctrlInitParams.dpInitParams.isHpdSupported = initParams->socParams.dpInitParams.isHpdSupported;
+        dctrlInitParams.dpInitParams.multilinkPhyType = initParams->socParams.dpInitParams.multilinkPhyType;
 #endif
 
         dctrlInitParams.dsiInitParams.isAvailable = UFALSE;
