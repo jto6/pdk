@@ -476,8 +476,12 @@ int32_t Dss_dctrlDrvSetDSIParams(Dss_DctrlDrvInfo *drvInfo,
 
     status = dssdctrlCalcDsiParams(dsiObj, dsiPrms);
 
-    /* Checks to see if the configuration (num of lanes) is valid */
-    status = DSITX_Probe(&dsiObj->cfgDsiTx, &dsiObj->sysReqDsiTx);
+    if(FVID2_SOK == status)
+    {
+        /* Checks to see if the configuration (num of lanes) is valid */
+        status = DSITX_Probe(&dsiObj->cfgDsiTx, &dsiObj->sysReqDsiTx);
+    }
+    
     if (CDN_EOK == (uint32_t)status)
     {
         /* Calculate lane parameters based on the input speed */
@@ -683,6 +687,13 @@ static int32_t dssdctrlCalcDsiParams(Dss_DctrlDSIDrvObj *dsiObj, const Dss_Dctrl
                           ((uint64_t)2U) *
                           ((uint64_t)dsiObj->dphyTxIpDiv) *
                           ((uint64_t)dsiObj->dphyTxOpDiv));
+            if ((tempResult % refClkKHz) != 0U)
+            {
+                GT_0trace(DssTrace, 
+                          GT_ERR, 
+                          "Invalid lane speed provided, FbDiv value should turn out integral\r\n");
+                retVal = FVID2_EINVALID_PARAMS;
+            }
             tempResult /= (uint64_t)refClkKHz;
 
             dsiObj->dphyTxFbDiv = (uint32_t)tempResult;
