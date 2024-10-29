@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020, Texas Instruments Incorporated
+ * Copyright (c) 2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -808,28 +808,9 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
     if (status == CSL_PASS)
     {
         pLocalRespPayload = (uint8_t *)(pRespPrm->pRespPayload);
+        /* START OF CRITICAL SECTION */
+        status = Sciclient_criticalSectionStart(key, pReqPrm->timeout, &gSciclient_writeInProgress);
     }
-
-    /* CRITICAL Section */
-    key = HwiP_disable();
-    timeToWait = pReqPrm->timeout;
-    while (gSciclient_writeInProgress == 1U)
-    {
-        HwiP_restore(key);
-        if (timeToWait > 0U)
-        {
-            timeToWait--;
-        }
-        else
-        {
-            status = CSL_ETIMEOUT;
-            break;
-        }
-        Osal_delay(10);
-        key = HwiP_disable();
-    }
-    gSciclient_writeInProgress = 1U;
-    HwiP_restore(key);
 
     if (CSL_PASS == status)
     {
@@ -1022,9 +1003,9 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         Osal_EnableInterrupt(0, gSciclientMap[contextId].respIntrNum);
         #endif
     }
-    key = HwiP_disable();
-    gSciclient_writeInProgress = 0U;
-    HwiP_restore(key);
+    Sciclient_criticalSectionEnd(key, &gSciclient_writeInProgress);
+    /* End of critical section */
+    
     return status;
 }
 
