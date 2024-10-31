@@ -77,7 +77,7 @@ extern "C" {
  *  \return CSL_PASS on success, else failure
  *
  */
-uint32_t Sciclient_criticalSectionStart(uintptr_t key,
+int32_t Sciclient_criticalSectionStart(uintptr_t key,
                                         uint32_t timeout, 
                                         uint32_t* gSciclient_writeInProgress);
 

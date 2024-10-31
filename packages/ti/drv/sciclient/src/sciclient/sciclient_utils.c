@@ -41,10 +41,10 @@
 #include <ti/csl/csl_rat.h>
 #include <ti/osal/osal.h>
 
-uint32_t Sciclient_criticalSectionStart(uintptr_t key, uint32_t timeout, uint32_t* gSciclient_writeInProgress)
+int32_t Sciclient_criticalSectionStart(uintptr_t key, uint32_t timeout, uint32_t* gSciclient_writeInProgress)
 {
     uint32_t timeToWait = 0;
-    uint32_t status = CSL_PASS;
+    int32_t status = CSL_PASS;
 
     key = HwiP_disable();
     timeToWait = timeout;
