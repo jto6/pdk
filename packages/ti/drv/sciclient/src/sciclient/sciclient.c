@@ -793,7 +793,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
     uint32_t          rxThread;
     uint8_t           localSeqId;
     uintptr_t         key = 0U;
-    uint32_t          timeToWait;
+    uint32_t          timeToWait = pReqPrm->timeout;
     uint32_t numWords = 0U;
     uint8_t  trailBytes = 0;
     struct tisci_header *header;
