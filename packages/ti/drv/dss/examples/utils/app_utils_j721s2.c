@@ -44,7 +44,6 @@
 #include <ti/board/src/j721s2_evm/include/board_control.h>
 #include <ti/csl/soc/cslr_soc_ctrl_mmr.h>
 #include <ti/drv/sciclient/sciclient.h>
-#include <ti/drv/pm/pmlib.h>
 #include "app_utils.h"
 
 /* ========================================================================== */
@@ -87,19 +86,19 @@ void App_configureSoC(void)
 
 void App_configureLCD(App_utilsLcdCfgParams cfgParams)
 {
-    int32_t status = PM_SUCCESS;
+    int32_t status = CSL_PASS;
     uint32_t clockStatus;
     uint64_t minRate, respClkRate;
     if(APP_OUTPUT_HDMI == cfgParams.outType)
     {       
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkParent(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
                     TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK_PARENT_DPI0_EXT_CLKSEL_OUT0,
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(TISCI_DEV_DSS0,
                     TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
@@ -107,7 +106,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmModuleClkRequest(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_FUNC_CLK,
@@ -115,7 +114,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     0,
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
@@ -123,7 +122,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     0,
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmModuleClkRequest(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
@@ -131,7 +130,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     0,
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             Board_control(BOARD_CTRL_CMD_SET_HDMI_MUX, (void*) 0U);
             Board_control(BOARD_CTRL_CMD_SET_HDMI_PD_HIGH, (void*) 0U);
@@ -140,13 +139,13 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
     else if (APP_OUTPUT_DSI == cfgParams.outType)
     {
         /* Power on DSI and DPHY. */
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(
                 TISCI_DEV_DSS_DSI0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                 TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(
                 TISCI_DEV_DPHY_TX0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
@@ -158,7 +157,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
                 TISCI_MSG_FLAG_AOP,
                 SCICLIENT_SERVICE_WAIT_FOREVER);
-        if(status == PM_SUCCESS)
+        if(status == CSL_PASS)
         {
             printf("\n TISCI_DEV_DSS0 device shutdown successful !\r\n");
         }
@@ -174,7 +173,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                             minRate,
                                             &respClkRate,
                                             SCICLIENT_SERVICE_WAIT_FOREVER);
-        if(status == PM_SUCCESS)
+        if(status == CSL_PASS)
         {
             printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_16_HSDIVOUT0_CLK possible rate = %lld Hz\r\n", respClkRate);
         }
@@ -182,7 +181,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
         {
             printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_16_HSDIVOUT0_CLK requested rate range NOT possible !!\r\n");
         }
-        if(status == PM_SUCCESS)
+        if(status == CSL_PASS)
         {
             /* Check if the clock is enabled or not */
             status = Sciclient_pmModuleGetClkStatus(TISCI_DEV_DSS0,
@@ -191,7 +190,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if ((status == PM_SUCCESS) && (respClkRate >= minRate))
+        if ((status == CSL_PASS) && (respClkRate >= minRate))
         {
             /* Set the required DPI clock frequency. */
              status = Sciclient_pmSetModuleClkFreq(
@@ -200,7 +199,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                       respClkRate,
                                       TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
                                       SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status == PM_SUCCESS)
+            if (status == CSL_PASS)
             {
                 if (clockStatus == TISCI_MSG_VALUE_CLOCK_SW_STATE_UNREQ)
                 {
@@ -217,9 +216,10 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
 
         /* Read back the set clock frequency. */
         uint64_t clkFreq = 0U;
-        PMLIBClkRateGet(TISCI_DEV_DSS0,
-            TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_16_HSDIVOUT0_CLK,
-            &clkFreq);
+        Sciclient_pmGetModuleClkFreq(TISCI_DEV_DSS0,
+                                    TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_16_HSDIVOUT0_CLK,
+                                    &clkFreq,
+                                    SCICLIENT_SERVICE_WAIT_FOREVER);
         printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_16_HSDIVOUT0_CLK = %lld Hz\r\n", clkFreq);
 
         status = Sciclient_pmModuleClkRequest(TISCI_DEV_DSS0,
@@ -229,7 +229,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                               SCICLIENT_SERVICE_WAIT_FOREVER);
 
         /* Set the parent clock for TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK. */
-        if (PM_SUCCESS == status)
+        if (CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkParent(TISCI_DEV_DSS0,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK,
@@ -238,17 +238,18 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
         }
 
         /* Read back the clock of the child that required the clock configuration. */
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
-            PMLIBClkRateGet(TISCI_DEV_DSS0,
-                TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK,
-                &clkFreq);
+            Sciclient_pmGetModuleClkFreq(TISCI_DEV_DSS0,
+                                        TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK,
+                                        &clkFreq,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
             printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK: Expected %lld and getting %lld Hz\r\n", cfgParams.pixelClk, clkFreq);
         }
     }
     else
     {
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             /* Power on SerDes module. */
             status = Sciclient_pmSetModuleState(TISCI_DEV_SERDES_10G0,
@@ -257,7 +258,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             /* Power on EDP module. */
             status = Sciclient_pmSetModuleState(TISCI_DEV_DSS_EDP0,
@@ -272,7 +273,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 TISCI_MSG_FLAG_AOP,
                 SCICLIENT_SERVICE_WAIT_FOREVER);
 
-        if(status == PM_SUCCESS)
+        if(status == CSL_PASS)
         {
             printf("\n TISCI_DEV_DSS0 device shutdown successful !\r\n");
         }
@@ -289,7 +290,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                             &respClkRate,
                                             SCICLIENT_SERVICE_WAIT_FOREVER);
 
-        if(status == PM_SUCCESS)
+        if(status == CSL_PASS)
         {
             printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_16_HSDIVOUT0_CLK possible rate = %lld Hz\r\n", respClkRate);
         }
@@ -298,7 +299,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
             printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_16_HSDIVOUT0_CLK requested rate range NOT possible !!\r\n");
         }
 
-        if(status == PM_SUCCESS)
+        if(status == CSL_PASS)
         {
             /* Check if the clock is enabled or not. */
             status = Sciclient_pmModuleGetClkStatus(TISCI_DEV_DSS0,
@@ -307,7 +308,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if ((status == PM_SUCCESS) && (respClkRate >= minRate))
+        if ((status == CSL_PASS) && (respClkRate >= minRate))
         {
             /* Set the pixel clock. */
             status = Sciclient_pmSetModuleClkFreq(
@@ -316,7 +317,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                       respClkRate,
                                       TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
                                       SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status == PM_SUCCESS)
+            if (status == CSL_PASS)
             {
                 if (clockStatus == TISCI_MSG_VALUE_CLOCK_SW_STATE_UNREQ)
                 {
@@ -331,7 +332,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
             }
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             printf("\nTISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_CLK is now ENABLED !\r\n");
             /* Enable the DSS device as clock configuration has been successful. */
@@ -351,7 +352,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 TISCI_DEV_SERDES_10G0_CORE_REF_CLK_PARENT_HSDIV4_16FFT_MAIN_2_HSDIVOUT4_CLK,
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             printf("\nTISCI_DEV_SERDES_10G0_CORE_REF_CLK Parent has been set to 100MHz !\r\n");
         }
@@ -365,7 +366,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 &clkFreq,
                 SCICLIENT_SERVICE_WAIT_FOREVER);
 
-        if(status == PM_SUCCESS)
+        if(status == CSL_PASS)
         {
             printf("\n Serdes Core RefClk is set to = %lld Hz\r\n", clkFreq);
         }

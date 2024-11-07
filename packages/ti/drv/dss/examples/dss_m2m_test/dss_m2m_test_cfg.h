@@ -52,7 +52,6 @@
 #include <ti/drv/dss/examples/utils/app_utils.h>
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/csl/soc.h>
-#include <ti/drv/pm/pmlib.h>
 #include <ti/drv/uart/UART.h>
 #include <ti/drv/uart/UART_stdio.h>
 #include <ti/drv/dss/examples/utils/app_utils_prf.h>

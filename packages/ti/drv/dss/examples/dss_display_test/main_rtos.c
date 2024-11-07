@@ -51,7 +51,6 @@
 #include "dss_display_test.h"
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/csl/soc.h>
-#include <ti/drv/pm/pmlib.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -237,21 +236,26 @@ static void taskFxn(void* a0, void* a1)
                    TISCI_DEV_DSS0_DSS_INST0_DPI_3_IN_2X_CLK,
                    148500000U);
     /* Get the CSITX clock frequencies */
-    retVal += PMLIBClkRateGet(TISCI_DEV_DSS0,
-                              TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK,
-                              &clkFreq);
+    retVal += Sciclient_pmGetModuleClkFreq(TISCI_DEV_DSS0,
+                                        TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK,
+                                        &clkFreq,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
     App_print("\n TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK = %lld Hz\n", clkFreq);
-    retVal += PMLIBClkRateGet(TISCI_DEV_DSS0,
-                              TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
-                              &clkFreq);
+    retVal += Sciclient_pmGetModuleClkFreq(TISCI_DEV_DSS0,
+                                        TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
+                                        &clkFreq,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
+
     App_print("\n TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK = %lld Hz\n", clkFreq);
-    retVal += PMLIBClkRateGet(TISCI_DEV_DSS0,
-                              TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK,
-                              &clkFreq);
+    retVal += Sciclient_pmGetModuleClkFreq(TISCI_DEV_DSS0,
+                                        TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK,
+                                        &clkFreq,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
     App_print("\n TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK = %lld Hz\n", clkFreq);
-    retVal += PMLIBClkRateGet(TISCI_DEV_DSS0,
-                              TISCI_DEV_DSS0_DSS_INST0_DPI_3_IN_2X_CLK,
-                              &clkFreq);
+    retVal += Sciclient_pmGetModuleClkFreq(TISCI_DEV_DSS0,
+                                        TISCI_DEV_DSS0_DSS_INST0_DPI_3_IN_2X_CLK,
+                                        &clkFreq,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
     App_print("\n TISCI_DEV_DSS0_DSS_INST0_DPI_3_IN_2X_CLK = %lld Hz\n", clkFreq);
 #endif
     if (CSL_PASS == retVal)
@@ -309,18 +313,25 @@ static void App_clkRateSet(uint32_t moduleId,
     int32_t status;
     uint64_t currClkFreqHz;
 
-    status = PMLIBClkRateGet(moduleId, clkId, &currClkFreqHz);
+    status = Sciclient_pmGetModuleClkFreq(moduleId,
+                                        clkId,
+                                        &currClkFreqHz,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
     if ((CSL_PASS == status) &&
         (currClkFreqHz != clkRateHz))
     {
-        status = PMLIBClkRateSet(moduleId, clkId, clkRateHz);
+        status = Sciclient_pmSetModuleClkFreq(moduleId,
+                                            clkId,
+                                            clkRateHz,
+                                            0,
+                                            SCICLIENT_SERVICE_WAIT_FOREVER);      
         if (CSL_PASS == status)
         {
-            App_print("\nPMLIBClkRateSet Passed for clock Id = %d\n", clkId);
+            App_print("\nSciclient_pmSetModuleClkFreq Passed for clock Id = %d\n", clkId);
         }
         else
         {
-            App_print("\nPMLIBClkRateSet failed for clock Id = %d\n", clkId);
+            App_print("\nSciclient_pmSetModuleClkFreq failed for clock Id = %d\n", clkId);
         }
     }
 }

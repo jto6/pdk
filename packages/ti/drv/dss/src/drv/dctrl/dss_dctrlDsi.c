@@ -51,7 +51,6 @@
 #include <ti/drv/dss/src/csl/dphy/csl_dphy.h>
 #include <dss_soc_priv.h>
 #include <ti/drv/sciclient/sciclient.h>
-#include <ti/drv/pm/pmlib.h>
 #include <string.h>
 
 /* ========================================================================== */
@@ -628,9 +627,10 @@ static int32_t dssdctrlCalcDsiParams(Dss_DctrlDSIDrvObj *dsiObj, const Dss_Dctrl
 
     if (FVID2_SOK == retVal)
     {
-        PMLIBClkRateGet(TISCI_DEV_DPHY_TX0,
-                    TISCI_DEV_DPHY_TX0_DPHY_REF_CLK,
-                    &refClkKHz);
+        Sciclient_pmGetModuleClkFreq(TISCI_DEV_DPHY_TX0,
+                                    TISCI_DEV_DPHY_TX0_DPHY_REF_CLK,
+                                    &refClkKHz,
+                                    SCICLIENT_SERVICE_WAIT_FOREVER);
         refClkKHz = refClkKHz/1000;
         /* Calculate DPHY ipdiv - PLL input divider */
         if (FVID2_SOK == retVal)

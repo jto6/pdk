@@ -44,7 +44,6 @@
 #include <ti/board/src/j721e_evm/include/board_control.h>
 #include <ti/csl/soc/cslr_soc_ctrl_mmr.h>
 #include <ti/drv/sciclient/sciclient.h>
-#include <ti/drv/pm/pmlib.h>
 #include "app_utils.h"
 
 /* ========================================================================== */
@@ -86,11 +85,11 @@ void App_configureSoC(void)
 
 void App_configureLCD(App_utilsLcdCfgParams cfgParams)
 {
-    int32_t status = PM_SUCCESS;
+    int32_t status = CSL_PASS;
 
     if(APP_OUTPUT_HDMI == cfgParams.outType)
     {
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkParent(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
@@ -98,7 +97,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(TISCI_DEV_DSS0,
                     TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
@@ -106,7 +105,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmModuleClkRequest(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_FUNC_CLK,
@@ -115,7 +114,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
@@ -124,7 +123,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmModuleClkRequest(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
@@ -132,7 +131,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     0,
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             Board_control(BOARD_CTRL_CMD_SET_HDMI_MUX, (void*) 0U);
             Board_control(BOARD_CTRL_CMD_SET_HDMI_PD_HIGH, (void*) 0U);
@@ -140,26 +139,26 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
     }
     else if (APP_OUTPUT_DSI == cfgParams.outType)
     {
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(
                 TISCI_DEV_DSS_DSI0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                 TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(
                 TISCI_DEV_DPHY_TX0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                 TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(TISCI_DEV_DSS0,
                     TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                     TISCI_MSG_FLAG_AOP,
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmModuleClkRequest(TISCI_DEV_DSS0,
                     TISCI_DEV_DSS0_DSS_FUNC_CLK,
@@ -167,14 +166,14 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                     0,
                     SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if (PM_SUCCESS == status)
+        if (CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkParent(TISCI_DEV_DSS0,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK_PARENT_HSDIV1_16FFT_MAIN_18_HSDIVOUT0_CLK,
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
-        if (PM_SUCCESS == status)
+        if (CSL_PASS == status)
         {
             /* Set the clock at the desirable frequency*/
             status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_DSS0,
@@ -186,7 +185,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
     }
     else
     {
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(TISCI_DEV_SERDES_10G0,
                 TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
@@ -194,7 +193,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(TISCI_DEV_DSS_EDP0,
                 TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
@@ -202,7 +201,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(TISCI_DEV_DSS0,
                 TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
@@ -210,7 +209,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkParent(TISCI_DEV_DSS0,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK,
@@ -218,7 +217,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkParent(TISCI_DEV_DSS0,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_3_IN_2X_CLK,
@@ -226,7 +225,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkParent(TISCI_DEV_DSS0,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK,
@@ -234,7 +233,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_DSS0,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK,
@@ -243,7 +242,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                 SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
-        if(PM_SUCCESS == status)
+        if(CSL_PASS == status)
         {
             status = Sciclient_pmModuleClkRequest(TISCI_DEV_DSS0,
                 TISCI_DEV_DSS0_DSS_INST0_DPI_0_IN_2X_CLK,

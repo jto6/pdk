@@ -47,7 +47,6 @@
 #include <ti/csl/csl_gpio.h>
 #include <ti/board/src/evmKeystone3/include/board_i2c_io_exp.h>
 #include <ti/drv/sciclient/sciclient.h>
-#include <ti/drv/pm/pmlib.h>
 #include "app_utils.h"
 
 /* ========================================================================== */
@@ -126,13 +125,15 @@ void App_configureSoC(void)
 
 void App_configureLCD(App_utilsLcdCfgParams cfgParams)
 {
-    int32_t status = PM_SUCCESS;
+    int32_t status = CSL_PASS;
     Sciclient_init(NULL);
-    status = PMLIBClkRateSet(TISCI_DEV_OLDI_TX_CORE_MAIN_0,
-                             TISCI_DEV_OLDI_TX_CORE_MAIN_0_BUS_OLDI_PLL_CLK,
-                             cfgParams.pixelClk);
+    status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_OLDI_TX_CORE_MAIN_0,
+                                        TISCI_DEV_OLDI_TX_CORE_MAIN_0_BUS_OLDI_PLL_CLK,
+                                        cfgParams.pixelClk,
+                                        0,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);                         
 
-    if(PM_SUCCESS == status)
+    if(CSL_PASS == status)
     {
         Board_i2cIoExpInit();
         Board_i2cIoExpSetPinDirection(BOARD_I2C_IOEXP_DEVICE2_ADDR,

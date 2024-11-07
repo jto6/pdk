@@ -50,7 +50,6 @@
 #include "dss_colorbar_test.h"
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/csl/soc.h>
-#include <ti/drv/pm/pmlib.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
