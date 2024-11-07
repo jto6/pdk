@@ -91,6 +91,10 @@
 #define MAIN_APP_TASK_PRIORITY          (2)
 /**< Task Priority Levels */
 
+#define APP_SCISERVER_INIT_TSK_STACK    (32U * 1024U)
+
+#define LPM_INIT_SCISERVER_TASK_PRI     (8)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -102,7 +106,7 @@
 /* ========================================================================== */
 
 static void MainApp_TaskFxn(void* a0, void* a1);
-int32_t SetupSciServer(void);
+static void SetupSciServer(void* a0, void* a1);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -112,6 +116,9 @@ TaskP_Handle mainAppTask;
 TaskP_Params mainAppTaskParams;
 static uint8_t MainApp_TaskStack[APP_TASK_STACK] __attribute__((aligned(32)));
 /**< Stack for the Main task */
+
+static uint8_t  gSciserverInitTskStack[APP_SCISERVER_INIT_TSK_STACK]
+__attribute__ ((aligned(8192)));
 
 /* ========================================================================== */
 /*                            External Variables                              */
@@ -154,8 +161,22 @@ static void MainApp_TaskFxn(void* a0, void* a1)
     Board_init(BOARD_INIT_UART_STDIO);
 
     Sciclient_init(NULL_PTR);
+
+    TaskP_Handle sciserverInitTask;
+    TaskP_Params sciserverInitTaskParams;
+
     /* Initialize SCI Client Server */
-    ret = SetupSciServer();
+    TaskP_Params_init(&sciserverInitTaskParams);
+    sciserverInitTaskParams.priority     = LPM_INIT_SCISERVER_TASK_PRI;
+    sciserverInitTaskParams.stack        = gSciserverInitTskStack;
+    sciserverInitTaskParams.stacksize    = sizeof (gSciserverInitTskStack);
+
+    sciserverInitTask = TaskP_create(&SetupSciServer, &sciserverInitTaskParams);
+    if(NULL == sciserverInitTask)
+    {
+        OS_stop();
+    }
+
     if(ret != CSL_PASS)
     {
         OS_stop();
@@ -222,7 +243,7 @@ static void MainApp_TaskFxn(void* a0, void* a1)
     return;
 }
 
-int32_t SetupSciServer(void)
+void SetupSciServer(void* a0, void* a1)
 {
 
     Sciserver_TirtosCfgPrms_t appPrms;
@@ -255,5 +276,5 @@ int32_t SetupSciServer(void)
         AppUtils_Printf(MSG_NORMAL, "Starting Sciserver..... FAILED\n");
     }
 
-    return ret;
+    return ;
 }
