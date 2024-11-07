@@ -232,12 +232,12 @@ typedef void (*Dss_DctrlDpHpdCbFxn)(uint32_t hpdState, void *appData);
  *
  *  @{
  */
-/** \brief Multilink Phy used alongside DP is PCI. */
-#define DSS_DP_MULTILINK_PHY_PCI                     (0U)
-/** \brief Multilink Phy used alongside DP is USB */
-#define DSS_DP_MULTILINK_PHY_USB                     (1U)
 /** \brief Multilink option not used */
-#define DSS_DP_MULTILINK_PHY_NONE                    (2U)
+#define DSS_DP_MULTILINK_PHY_NONE                    (0U)
+/** \brief Multilink Phy used alongside DP is PCI. */
+#define DSS_DP_MULTILINK_PHY_PCI                     (1U)
+/** \brief Multilink Phy used alongside DP is USB */
+#define DSS_DP_MULTILINK_PHY_USB                     (2U)
 /* @} */
 
 /*
