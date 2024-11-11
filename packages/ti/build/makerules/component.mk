@@ -927,7 +927,7 @@ export PDK_CFLAGS
 export PDK_LNKFLAGS
 
 ifeq ($(SOC),$(filter $(SOC), j721e))
-  PDK_COMMON_COMP = csl uart i2c udma gpio pmic
+  PDK_COMMON_COMP = csl uart i2c udma gpio pmic pm_lib
   ifneq ($(CORE),$(filter $(CORE), c7x-hostemu))
     PDK_COMMON_COMP += board
   endif
@@ -948,7 +948,7 @@ ifeq ($(SOC),$(filter $(SOC), j7200))
 endif
 
 ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j742s2))
-  PDK_COMMON_COMP = csl uart board udma i2c gpio
+  PDK_COMMON_COMP = csl uart board udma i2c gpio pm_lib
   ifeq ($(CORE),mcu1_0)
     PDK_COMMON_COMP += sciclient_direct rm_pm_hal
   else
