@@ -384,7 +384,7 @@ typedef uint8_t devgrp_t;
 #include <ti/drv/sciclient/include/sciclient_procboot.h>
 #include <ti/drv/sciclient/include/sciclient_boardcfg.h>
 #include <ti/drv/sciclient/include/sciclient_keywriter.h>
-#include <ti/drv/sciclient/include/sciclient_utils.h>
+#include <ti/drv/sciclient/include/sciclient_osal.h>
 
 #ifdef __cplusplus
 extern "C" {

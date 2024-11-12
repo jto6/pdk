@@ -49,7 +49,7 @@ ifeq ($(SOC),$(filter $(SOC), am65xx j721e j7200 j721s2 j784s4 j742s2 am64x))
 # Keep the sciclient.c the first file in this list. This is used to trigger
 # the generation of the header files from the firware binary file.
 SRCS_COMMON  = sciclient.c
-SRCS_COMMON += sciclient_utils.c
+SRCS_COMMON += sciclient_osal.c
 SRCS_COMMON += sciclient_direct.c
 SRCS_COMMON += sciclient_fmwSecureProxyMap.c
 SRCS_COMMON += sciclient_pm.c

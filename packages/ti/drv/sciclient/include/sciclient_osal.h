@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,15 +31,16 @@
  *
  */
 /**
- *  \file  sciclient_utils.h
+ *  \file  sciclient_osal.h
  *
- *  \brief This file contains the definitions of the helper functions to the 
- *         critical section code in Sciclient_serviceSecureProxy().
+ *  \brief This file contains the declarations of the helper functions to 
+ *         Sciclient_serviceSecureProxy(), which contain the OS dependent
+ *         implementations for acquiring and the releasing the access to secureproxy.
  *
  */
 
-#ifndef SCICLIENT_UTILS_H_
-#define SCICLIENT_UTILS_H_
+#ifndef SCICLIENT_OSAL_H_
+#define SCICLIENT_OSAL_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
@@ -68,35 +69,31 @@ extern "C" {
 /* ========================================================================== */
 
 /**
- *  \brief  Sciclient_criticalSectionStart Locks the resource.
+ *  \brief  Sciclient_osalAcquireSecureProxyAcess Acquires the access to secureproxy
  *
- *  \param key                             [IN]  Return value from HwiP_disable
+ *  \param key                             [IN]  Pointer to the return value from HwiP_disable
  *  \param timeout                         [IN]  Timeout for receiving response
- *  \param gSciclient_writeInProgress      [OUT] Variable to control the access to critical section
  *
  *  \return CSL_PASS on success, else failure
  *
  */
-int32_t Sciclient_criticalSectionStart(uintptr_t key,
-                                        uint32_t timeout, 
-                                        uint32_t* gSciclient_writeInProgress);
+int32_t Sciclient_osalAcquireSecureProxyAcess(uintptr_t* key,
+                                              uint32_t timeout);
 
 /**
- *  \brief  Sciclient_criticalSectionEnd Releases the resource.
+ *  \brief  Sciclient_osalReleaseSecureProxyAcess Releases the access to secureproxy
  *
- *  \param key                           [IN]  Return value from HwiP_disable
- *  \param gSciclient_writeInProgress    [OUT] Variable to control the access to critical section
+ *  \param key                           [IN]  Pointer to the return value from HwiP_disable
  *
  *  \return CSL_PASS on success, else failure
  *
  */
-void Sciclient_criticalSectionEnd(uintptr_t key, 
-                                  uint32_t* gSciclient_writeInProgress);
+void Sciclient_osalReleaseSecureProxyAcess(uintptr_t* key);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef SCICLIENT_UTILS_H_ */
+#endif /* #ifndef SCICLIENT_OSAL_H_ */
 
 /* @} */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Texas Instruments Incorporated
+ * Copyright (c) 2017-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@ static uint8_t gSecHeaderSizeWords = 0;
 static uint32_t gSciclient_maxMsgSizeBytes;
 
 /** \brief Flag to mention write in progress or not */
-static uint32_t gSciclient_writeInProgress = 0U;
+uint32_t gSciclient_writeInProgress = 0U;
 
 /**
  *  \brief Static Header for Security Messages.
@@ -809,7 +809,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
     {
         pLocalRespPayload = (uint8_t *)(pRespPrm->pRespPayload);
         /* START OF CRITICAL SECTION */
-        status = Sciclient_criticalSectionStart(key, pReqPrm->timeout, &gSciclient_writeInProgress);
+        status = Sciclient_osalAcquireSecureProxyAcess(&key, pReqPrm->timeout);
     }
 
     if (CSL_PASS == status)
@@ -1003,7 +1003,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         Osal_EnableInterrupt(0, gSciclientMap[contextId].respIntrNum);
         #endif
     }
-    Sciclient_criticalSectionEnd(key, &gSciclient_writeInProgress);
+    Sciclient_osalReleaseSecureProxyAcess(&key);
     /* End of critical section */
     
     return status;
