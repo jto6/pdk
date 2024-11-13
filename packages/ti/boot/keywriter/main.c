@@ -318,11 +318,7 @@ int main()
     HW_WR_REG32(WKUP_UART_TXD_MUX_ADDR, PIN_OUTPUT | PIN_MODE(0));
 
     UART_socGetInitCfg(KEYWRITER_BOARD_UART_INSTANCE, &uart_cfg);
-#if defined(SBL_COMBINED_BOOT)
-    uart_cfg.frequency       = SBL_SYSFW_UART_MODULE_INPUT_CLK;
-#else
     uart_cfg.frequency       = SBL_ROM_UART_MODULE_INPUT_CLK;
-#endif
     uart_cfg.enableInterrupt = UFALSE;
     UART_socSetInitCfg(KEYWRITER_BOARD_UART_INSTANCE, &uart_cfg);
     UART_stdioInit(KEYWRITER_BOARD_UART_INSTANCE);

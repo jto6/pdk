@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -87,6 +87,6 @@
     0x00000000U,     0x00000000U,     0x00000000U,     0x00000000U, \
     0x00000000U,     0x00000000U,     0x00000000U,     0x70000000U, \
     0x80000c51U,     0x5a000000U,     0xbe000000U,     0x00000023U, \
-    0xaf045a00U,     0x00001042U,     0x00000000U,     0x00000000U, \
+    0xaf000000U,     0x00001042U,     0x00000000U,     0x00000000U, \
     0x00000000U,     0x00000000U,     0x00000000U,     0x00000000U\
 } /* 349 bytes */
