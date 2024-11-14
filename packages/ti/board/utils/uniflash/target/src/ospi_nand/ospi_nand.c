@@ -382,7 +382,10 @@ static int8_t UFP_ospiNandInit(void)
     ospi_cfg.dmaEnable  = BTRUE;
     ospiUdmaInit(&ospi_cfg);
 #endif
-    ospi_cfg.phyEnable  = BFALSE;
+    ospi_cfg.phyEnable    = BFALSE;
+    ospi_cfg.cacheEnable  = BFALSE;
+    ospi_cfg.funcClk      = OSPI_MODULE_CLK_133M;
+    ospi_cfg.devDelays[3] = OSPI_DEV_DELAY_CSDA;
 
     /* Set the default ospi init configurations */
     OSPI_socSetInitCfg(BOARD_OSPI_DOMAIN, BOARD_OSPI_INSTANCE, &ospi_cfg);
