@@ -74,9 +74,9 @@ __SVC_STACK_SIZE=0x2000;
 MEMORY
 {
     RESET_VECTORS      (X) 	   : origin=0x41C00100         length=0x100
-    OCMRAM_Keywriter   (RWIX)  : origin=0x41C00200         length=0x70000-0x200
-    OCMRAM_Certificate (RWIX)  : origin=0x41C70000         length=4
-    OCMRAM_Stack       (RWIX)  : origin=0x41C70000+0x2000  length=0xA000
+    OCMRAM_Keywriter   (RWIX)  : origin=0x41C00200         length=0x7F000-0x200
+    OCMRAM_Certificate (RWIX)  : origin=0x41C7F000         length=4
+    OCMRAM_Stack       (RWIX)  : origin=0x41C7F000+0x2000  length=0xA000
 }
 
 SECTIONS

@@ -65,8 +65,8 @@
 #                             to be compiled in the application build stage.
 #
 ifeq ($(keywriter_component_make_include), )
-keywriter_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
-keywriter_SOCLIST = j721e j7200 j721s2 j784s4 j742s2
+keywriter_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm
+keywriter_SOCLIST = j721e j7200 j721s2 j784s4
 keywriter_j721e_CORELIST := mcu1_0
 keywriter_j7200_CORELIST := mcu1_0
 
@@ -100,23 +100,6 @@ export keywriter_img_$(SOC)_CORELIST  = mcu1_0
 export keywriter_img_KEYWR_IMAGEGEN   = yes
 
 keywriter_EXAMPLE_LIST                = keywriter_img
-
-export keywriter_img_combined_COMP_LIST        = keywriter_img_combined
-export keywriter_img_combined_RELPATH          = ti/boot/keywriter/build
-export keywriter_img_combined_CUSTOM_BINPATH   = $(PDK_KEYWR_COMP_PATH)/binary/$(SOC)
-export keywriter_img_combined_PATH             = $(PDK_KEYWR_COMP_PATH)/build
-export keywriter_img_combined_MAKEFILE         = -f$(PDK_KEYWR_COMP_PATH)/build/keywriter.mk SBL_IMAGE_TYPE=combined BUILD_HS_FS=yes
-export keywriter_img_combined_KEYWR_CERT_KEY   = $(ROOTDIR)/ti/build/makerules/k3_dev_mpk.pem
-export keywriter_img_combined_BOARD_DEPENDENCY = yes
-export keywriter_img_combined_SOC_DEPENDENCY   = yes
-export keywriter_img_combined_CORE_DEPENDENCY  = yes
-export keywriter_img_combined_PKG_LIST         = sbl
-export keywriter_img_combined_INCLUDE          = $(keywriter_img_combined_PATH)
-export keywriter_img_combined_BOARDLIST        = $(keywriter_BOARDLIST)
-export keywriter_img_combined_$(SOC)_CORELIST  = mcu1_0
-export keywriter_img_combined_KEYWR_IMAGEGEN   = yes
-
-keywriter_EXAMPLE_LIST                        += keywriter_img_combined
 
 # KEYWRITER Test image generation
 export keywriter_UTILS_LIST = keywriter_cfg_test_gen

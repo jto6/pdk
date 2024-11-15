@@ -4,17 +4,12 @@
 #
 include $(PDK_INSTALL_PATH)/ti/build/Rules.make
 
-ifeq ($(SBL_IMAGE_TYPE), combined)
-  APP_NAME                     = keywriter_img_combined
-  LOCAL_APP_NAME               = keywriter_img_combined_$(SOC)
-else
-  APP_NAME                     = keywriter_img
-  LOCAL_APP_NAME               = keywriter_img_$(SOC)
-endif
+APP_NAME                     = keywriter_img
+LOCAL_APP_NAME               = keywriter_img_$(SOC)
 BUILD_OS_TYPE                = baremetal
 
 # J784S4 EVM does not use PMIC
-ifneq ($(filter $(BOARD),j784s4_evm j742s2_evm),)
+ifeq ($(BOARD),j784s4_evm)
 VPP_EN_CONTROL               = gpio
 else
 VPP_EN_CONTROL               = pmic
@@ -65,12 +60,6 @@ ifeq ($(SOC),j721e)
   CFLAGS_LOCAL_COMMON		+= -DJ721E_USE_GPIO_FOR_VPP
 endif
 
-# Combined boot image flags
-ifeq ($(SBL_IMAGE_TYPE), combined)
-  SBL_CFLAGS += -DSBL_COMBINED_BOOT
-  CFLAGS_LOCAL_COMMON += -DSBL_COMBINED_BOOT
-endif
-
 SRCS_COMMON                 += main.c
 ifeq ($(VPP_EN_CONTROL),pmic)
 SRCS_COMMON                 += soc/common/pmic_example.c
@@ -99,7 +88,6 @@ ifeq ($(MAKERULEDIR), )
   MAKERULEDIR               := $(ROOTDIR)/ti/build/makerules
   export MAKERULEDIR
 endif
-include $(MAKERULEDIR)/platform.mk
 include $(MAKERULEDIR)/common.mk
 include $(PDK_KEYWR_COMP_PATH)/build/bin2c.mk
 
