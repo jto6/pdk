@@ -864,7 +864,7 @@ int32_t UdmaChDisableTest(UdmaTestTaskObj *taskObj)
                 retVal  = Udma_chSetChaining(chHandle, chHandle, trigger);
                 if(UDMA_SOK == retVal)
                 {
-                    retVal = Udma_chDisable(chHandle, timeout);
+                    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
                     if(UDMA_SOK != retVal)
                     {
                         GT_0trace(taskObj->traceMask, GT_ERR,
