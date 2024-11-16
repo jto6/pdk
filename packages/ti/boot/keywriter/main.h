@@ -74,7 +74,7 @@
 
 #define OTP_VERSION_STR  "OTP Keywriter Version: 02.00.00.00"
 
-#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)
+#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
 
 #define MCU_UART_TXD_MUX_ADDR           (BOARD_WKUP_PMUX_CTRL_ADDR + \
                                              PIN_WKUP_GPIO0_12)
