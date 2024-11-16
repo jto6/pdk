@@ -96,11 +96,11 @@ OsalInterruptRetCode_e Osal_RegisterInterrupt(OsalRegisterIntrParams_t *interrup
     HwiP_Params                 hwiInputParams;
 
      /* Program the corepac interrupt */
-      if (((void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
-          (NULL==interruptRegParams) ||
+      if ((NULL==interruptRegParams) ||
+          ((void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
           (NULL == hwiPHandlePtr) ||
 #if defined (_TMS320C6X)
-          (CSL_COREPAC_MAX_EVENT_ID < interruptRegParams->corepacConfig.corepacEventNum) ||
+          (CSL_COREPAC_MAX_EVENT_ID <= interruptRegParams->corepacConfig.corepacEventNum) ||
 #endif
           (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.intVecNum)
           )
@@ -208,12 +208,14 @@ OsalInterruptRetCode_e Osal_RegisterInterruptDirect(OsalRegisterIntrParams_t *in
 {
 
     OsalInterruptRetCode_e     ret=OSAL_INT_SUCCESS;
+#ifndef _TMS320C6X
     HwiP_Handle                hwiPHandle=NULL_PTR;
+#endif /* ifndef  */
     HwiP_Params                 hwiInputParams;
 
     /* Program the corepac interrupt */
-    if (( (void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
-        (NULL==interruptRegParams) ||
+    if ((NULL==interruptRegParams) ||
+        ( (void (*)(uintptr_t arg)) NULL_PTR == interruptRegParams->corepacConfig.isrRoutine) ||
         (NULL == hwiPHandlePtr) ||
 #if defined (_TMS320C6X)
         (CSL_INVALID_EVENT_ID == interruptRegParams->corepacConfig.corepacEventNum) ||
@@ -252,13 +254,17 @@ OsalInterruptRetCode_e Osal_RegisterInterruptDirect(OsalRegisterIntrParams_t *in
 #endif
 
         hwiPHandle =  HwiP_createDirect(interruptRegParams->corepacConfig.intVecNum,isrFxn, &hwiInputParams);
-        if(NULL_PTR == hwiPHandle) {
+        if(NULL_PTR == hwiPHandle) 
+        {
             ret = OSAL_INT_ERR_HWICREATE;
+        }
+        else
+        {
+            *hwiPHandlePtr=hwiPHandle;
         }
 #endif
     }
 
-    *hwiPHandlePtr=hwiPHandle;
     return ret ;
 }
 
