@@ -54,6 +54,8 @@
 #define PIN_PULL_DISABLE                (0x1U << 16U)
 /** \brief Receiver enable */
 #define PIN_INPUT_ENABLE                (0x1U << 18U)
+/** \brief Pin mux mode */
+#define GPIO_PADCONFIG_MUX_MODE         (7U)
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -68,7 +70,7 @@ void Sciclient_pmicShutdown(void)
     uint32_t regVal;
 
     /* Sets the pinmux mode to 7 for using the gpio pin(WKUP_GPIO0_57) corresponding to SYS_MCU_PWRDN */
-    CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_PADCONFIG41, (PIN_PULL_DISABLE | PIN_INPUT_ENABLE) | 7);
+    CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_PADCONFIG41, (PIN_PULL_DISABLE | PIN_INPUT_ENABLE) | GPIO_PADCONFIG_MUX_MODE);
 
     /* Sets the gpio pin to an output pin */
     regVal = CSL_REG32_RD((uint32_t *)(CSL_WKUP_GPIO0_BASE + CSL_GPIO_DIR(gpio_pin_reg_offset)));
