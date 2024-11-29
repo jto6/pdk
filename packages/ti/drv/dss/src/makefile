@@ -32,10 +32,10 @@ ifeq ($(SOC),$(filter $(SOC), j721s2))
   SRCDIR += soc/V2
   INCDIR += soc/V2
   PACKAGE_SRCS_COMMON = soc/V2 include/dss_m2m.h
-  CFLAGS_LOCAL_COMMON = -DREF_CLK_100MHz  -DHAVE_CMN_PLL1
+  CFLAGS_LOCAL_COMMON = -DREF_CLK_19_2MHz  -DHAVE_CMN_PLL1
 endif
-# By default we are enabling multilink with DP, therefore the reference clock is REF_CLK_100MHz
-# If multilink is not required then it can be set to REF_CLK_19_2MHz
+# By default we are disabling multilink with DP for j721s2, therefore the reference clock is REF_CLK_19_2MHz
+# If multilink is required then it can be set to REF_CLK_100MHz
 
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component
