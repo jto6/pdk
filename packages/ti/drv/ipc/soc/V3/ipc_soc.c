@@ -318,14 +318,14 @@ uintptr_t Ipc_getMailboxBaseAddr(uint32_t clusterId)
 
 uint32_t Ipc_getNavss512MailboxInputIntr(uint32_t clusterId, uint32_t userId)
 {
-    uint64_t   mailboxIntrNum = 0U;
+    uint32_t   mailboxIntrNum = 0U;
 
     if( (clusterId != MAILBOX_CLUSTER_INVALID) &&
         (clusterId < IPC_MAILBOX_CLUSTER_CNT)  &&
         (userId != MAILBOX_USER_INVALID)       &&
         (userId < IPC_MAILBOX_USER_CNT))
     {
-        mailboxIntrNum =(uint64_t)g_Navss512MbInput[clusterId] + (uint64_t)userId;
+        mailboxIntrNum =(uint32_t)(g_Navss512MbInput[clusterId] + userId);
     }
     return mailboxIntrNum;
 }
@@ -424,7 +424,7 @@ const char* Ipc_getCoreName(uint32_t procId)
 #if defined(BUILD_C7X)
 uint32_t Ipc_configClecRouter(uint32_t corePackEvent, uint32_t corePackEventBase)
 {
-    uint64_t              input;
+    uint32_t              input;
     CSL_ClecEventConfig   cfgClec;
     CSL_CLEC_EVTRegs     *clecBaseAddr = (CSL_CLEC_EVTRegs*)C7X_CLEC_BASE_ADDR;
     uint32_t              corepackIrq;
@@ -437,7 +437,7 @@ uint32_t Ipc_configClecRouter(uint32_t corePackEvent, uint32_t corePackEventBase
    /* corePackEvent is derived from the NAVSS IR o/p range returned from BoardCfg,
     * based on core specific allocation. And this is different for c7x_1 and c7x_2.
     * Hence same C7X_CLEC_OFFSET can be used for both C7x cores. */
-    input = (uint64_t)corePackEvent + (uint64_t)C7X_CLEC_OFFSET;
+    input = (uint32_t)(corePackEvent + C7X_CLEC_OFFSET);
 
     /* Configure CLEC */
     cfgClec.secureClaimEnable = FALSE;

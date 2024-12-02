@@ -370,14 +370,14 @@ uintptr_t Ipc_getMailboxBaseAddr(uint32_t clusterId)
 
 uint32_t Ipc_getNavss512MailboxInputIntr(uint32_t clusterId, uint32_t userId)
 {
-    uint64_t   mailboxIntrNum = 0U;
+    uint32_t   mailboxIntrNum = 0U;
 
     if( (clusterId != MAILBOX_CLUSTER_INVALID) &&
         (clusterId < IPC_MAILBOX_CLUSTER_CNT)  &&
         (userId != MAILBOX_USER_INVALID)       &&
         (userId < IPC_MAILBOX_USER_CNT))
     {
-        mailboxIntrNum =(uint64_t)g_Navss512MbInput[clusterId] + (uint64_t)userId;
+        mailboxIntrNum =(uint32_t)(g_Navss512MbInput[clusterId] + userId);
     }
     return mailboxIntrNum;
 }
@@ -480,7 +480,7 @@ void Ipc_configC66xIntrRouter(uint32_t input)
     uint32_t           inputBase   = 0U;
     uint32_t           outputBase  = 0U;
     uint32_t           mbIntrBase  = 0U;
-    uint64_t           outputPin   = 0U;
+    uint32_t           outputPin   = 0U;
     uint32_t           inputPin    = 0U;
 
     /* program virtual address to REGION_BASE */
@@ -510,7 +510,7 @@ void Ipc_configC66xIntrRouter(uint32_t input)
 #endif
 
     inputPin  = inputBase  + (input - mbIntrBase);
-    outputPin = (uint64_t)outputBase + ((uint64_t)input - (uint64_t)mbIntrBase);
+    outputPin = (uint32_t)(outputBase + input - mbIntrBase);
 
 #ifdef SUPPORT_C66X_BIT0
     outputPin++;
@@ -524,14 +524,14 @@ void Ipc_configC66xIntrRouter(uint32_t input)
 #if defined(BUILD_C7X)
 uint32_t Ipc_configClecRouter(uint32_t corePackEvent, uint32_t corePackEventBase)
 {
-    uint64_t              input;
+    uint32_t              input;
     CSL_ClecEventConfig   cfgClec;
     CSL_CLEC_EVTRegs     *clecBaseAddr = (CSL_CLEC_EVTRegs*)C7X_CLEC_BASE_ADDR;
     uint32_t              corepackIrq;
 
     corepackIrq = (corePackEvent - corePackEventBase) + IPC_C7X_MBINTR_OFFSET;
 
-    input = (uint64_t)corePackEvent + (uint64_t)C7X_CLEC_OFFSET;
+    input = (uint32_t)(corePackEvent + C7X_CLEC_OFFSET);
 
     /* Configure CLEC */
     cfgClec.secureClaimEnable = FALSE;

@@ -197,7 +197,7 @@ void* IpcUtils_Qnext(const IpcUtils_QElem *qelem)
     void *rtnVal = NULL;
     if (NULL != qelem)
     {
-        rtnVal = qelem->next;
+        rtnVal = (void*)qelem->next;
     }
 
     return rtnVal;

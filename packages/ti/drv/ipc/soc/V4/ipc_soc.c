@@ -474,14 +474,14 @@ uintptr_t Ipc_getMailboxBaseAddr(uint32_t clusterId)
 
 uint32_t Ipc_getNavss512MailboxInputIntr(uint32_t clusterId, uint32_t userId)
 {
-    uint64_t   mailboxIntrNum = 0U;
+    uint32_t   mailboxIntrNum = 0U;
 
     if( (clusterId != MAILBOX_CLUSTER_INVALID) &&
         (clusterId < IPC_MAILBOX_CLUSTER_CNT)  &&
         (userId != MAILBOX_USER_INVALID)       &&
         (userId < IPC_MAILBOX_USER_CNT))
     {
-        mailboxIntrNum = (uint64_t)g_Navss512MbInput[clusterId] +  (uint64_t)userId;
+        mailboxIntrNum = (uint32_t)(g_Navss512MbInput[clusterId] + userId);
     }
     return mailboxIntrNum;
 }
@@ -490,7 +490,7 @@ int32_t Ipc_setCoreEventId(uint32_t selfId, Ipc_MbConfig* cfg, uint32_t intrCnt)
 {
     int32_t    retVal          = IPC_SOK;
     uint32_t   outIntrBaseNum  = 0;
-    uint64_t   outIntrNum      = 0;
+    uint32_t   outIntrNum      = 0;
     uint32_t   vimEventBaseNum = 0;
     uint32_t   vimEventNum     = 0;
     uint16_t   proc_irq        = 0;
@@ -527,7 +527,7 @@ int32_t Ipc_setCoreEventId(uint32_t selfId, Ipc_MbConfig* cfg, uint32_t intrCnt)
             offset = range;
         }
         outIntrBaseNum = ((uint32_t)start + (uint32_t)range) - (uint32_t)offset;
-        outIntrNum = (uint64_t)outIntrBaseNum + (uint64_t)intrCnt;
+        outIntrNum = (uint32_t)(outIntrBaseNum + intrCnt);
 
         /* Translate to CorePack IRQ number */
         /* Translation must happen after this offset */
@@ -592,20 +592,20 @@ const char* Ipc_getCoreName(uint32_t procId)
 #if defined(BUILD_C7X)
 uint32_t Ipc_configClecRouter(uint32_t corePackEvent, uint32_t corePackEventBase)
 {
-    uint64_t              input;
+    uint32_t              input;
     CSL_ClecEventConfig   cfgClec;
     CSL_CLEC_EVTRegs     *clecBaseAddr = (CSL_CLEC_EVTRegs*)C7X_CLEC_BASE_ADDR;
-    uint64_t              corepackIrq;
+    uint32_t              corepackIrq;
 
    /* Even though same CLEC is shared b/w all C7x cores, CLEC can broadcast the
     * event to any C7x core and CPU IRQ(corepackIrq) is core specific.
     * Hence same Mailbox Interrupt offset can be used for both C7x cores.  */
-    corepackIrq = (uint64_t)g_ipc_mBoxCnt + (uint64_t)IPC_C7X_MBINTR_OFFSET;
+    corepackIrq = (uint32_t)(g_ipc_mBoxCnt + IPC_C7X_MBINTR_OFFSET);
 
    /* corePackEvent is derived from the NAVSS IR o/p range returned from BoardCfg,
     * based on core specific allocation. And this is different for each C7x.
     * Hence same C7X_CLEC_OFFSET can be used for both C7x cores. */
-    input = (uint64_t)corePackEvent + (uint64_t)C7X_CLEC_OFFSET;
+    input = (uint32_t)(corePackEvent + C7X_CLEC_OFFSET);
 
     /* Configure CLEC */
     cfgClec.secureClaimEnable = FALSE;

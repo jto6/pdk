@@ -345,7 +345,7 @@ static int32_t Ipc_physToVirt(uint32_t pa, uintptr_t *va)
 static int32_t Ipc_virtToPhys(uintptr_t va, uint32_t *pa)
 {
     uint32_t              n;
-    uintptr_t              offset;
+    uint32_t              offset;
     int32_t               rtnVal = IPC_EFAIL;
     Ipc_TranslationEntry *e;
 
@@ -361,8 +361,8 @@ static int32_t Ipc_virtToPhys(uintptr_t va, uint32_t *pa)
         e = &vrTranslationTable.entry[n];
         if ((va >= e->va) && (va < (e->va + e->len)))
         {
-            offset = ((uintptr_t)va - (uintptr_t)e->va);
-            *pa = e->pa + offset;
+            offset = (uint32_t)(va - e->va);
+            *pa = (uint32_t)(e->pa + offset);
              rtnVal = IPC_SOK;
              break;
         }

@@ -685,7 +685,7 @@ static int32_t RPMessage_processAnnounceMsg(const RPMessage_Announcement *amsg, 
 
                 } while (elem != head);
 
-                while(count!= 0)
+                while(0U != count)
                 {
                     pOsalPrms->unlockMutex(semaphoreHandle[loop]);
                     count--;
@@ -1475,7 +1475,7 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
     Bool                skiplist = FALSE;
     RPMessage_MsgElem  *payload;
     int32_t             key;
-    int32_t             clearTimeout = 0;
+    uint32_t            clearTimeout = 0;
     /* Fix ME TBD, skipping the null tests, as this function check's/error
         handling would require an overhaul */
     Ipc_OsalPrms *pOsalPrms = &gIpcObject.initPrms.osalPrms;
@@ -1520,7 +1520,7 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
                 /* Cleanup live copy status */
                 status = IPC_SOK;
                 semStatus = IPC_SOK;
-                obj->unblocked = FALSE;
+                obj->unblocked = (uint8_t)FALSE;
 
                 /* Copy message values */
                 *len = (uint16_t)obj->payload.len;
@@ -1536,7 +1536,7 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
         pOsalPrms->unLockHIsrGate(module.gateSwi, key);
 
         /* If we expect semaphore to be posted late, wait to clear it. */
-        if (clearTimeout)
+        if (0U != clearTimeout)
         {
             (void)pOsalPrms->lockMutex(obj->semHandle, (uint32_t)IPC_RPMESSAGE_TIMEOUT_FOREVER);
         }
@@ -1581,6 +1581,10 @@ int32_t RPMessage_recv(RPMessage_Handle handle, void* data, uint16_t *len,
             }
 
             pOsalPrms->unLockHIsrGate(module.gateSwi, key);
+        }
+        else
+        {
+            /* To fix MISRA C issue */
         }
     }
     return (status);
