@@ -101,7 +101,8 @@ ifeq ($(MAKERULEDIR), )
 endif
 include $(MAKERULEDIR)/platform.mk
 include $(MAKERULEDIR)/common.mk
-include $(PDK_KEYWR_COMP_PATH)/build/bin2c.mk
+# Uncomment the below to auto-generate new "tifs_keywriter.h" 
+#include $(PDK_KEYWR_COMP_PATH)/build/bin2c.mk
 
 # OBJs and libraries are built by using rule defined in rules_<target>.mk
 #     and need not be explicitly specified here
