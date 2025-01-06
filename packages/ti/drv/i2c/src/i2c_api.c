@@ -125,39 +125,45 @@ static void I2C_close_v1(I2C_Handle handle)
     hwAttrs = (I2C_HwAttrs const *)handle->hwAttrs;
     object = (I2C_v1_Object*)handle->object;
 
-    /* Check to see if a I2C transaction is in progress */
-    if (NULL == object->headPtr)
+    if ((NULL != object->currentTransaction) && (BFALSE == object->currentTransaction->masterMode))
     {
-        /* Mask I2C interrupts */
-        I2CMasterIntDisableEx(hwAttrs->baseAddr, CSL_I2C_INT_ALL);
-
-        /* Disable the I2C Master */
-        I2CMasterDisable(hwAttrs->baseAddr);
-
-        if (I2C_OPER_MODE_POLLING != object->operMode)
-        {
-            if (hwAttrs->configSocIntrPath != NULL)
-            {
-                (void)hwAttrs->configSocIntrPath((const void *)hwAttrs, BFALSE);
-            }
-
-            /* Destruct the Hwi */
-            (void)I2C_osalHardwareIntDestruct(object->hwi, hwAttrs->eventId);
-        }
-
-        /* Destruct the instance lock */
-        (void)I2C_osalDeleteBlockingLock(object->mutex);
-
-        if (I2C_OPER_MODE_BLOCKING == object->operMode)
-        {
-            /* Destruct the transfer completion lock */
-            (void)I2C_osalDeleteBlockingLock(object->transferComplete);
-        }
-
-        object->isOpen = BFALSE;
-
-        I2C_drv_log1("\n I2C: Object closed 0x%x \n", hwAttrs->baseAddr);
+        /* Mask I2C Slave interrupts */
+        I2CSlaveIntDisableEx(hwAttrs->baseAddr, CSL_I2C_INT_ALL);
     }
+    else
+    {
+        /* Mask I2C Master interrupts */
+        I2CMasterIntDisableEx(hwAttrs->baseAddr, CSL_I2C_INT_ALL);
+    }
+
+    /* Disable the I2C Master */
+    I2CMasterDisable(hwAttrs->baseAddr);
+
+    if (I2C_OPER_MODE_POLLING != object->operMode)
+    {
+        if (hwAttrs->configSocIntrPath != NULL)
+        {
+            (void)hwAttrs->configSocIntrPath((const void *)hwAttrs, BFALSE);
+        }
+
+        /* Destruct the Hwi */
+        (void)I2C_osalHardwareIntDestruct(object->hwi, hwAttrs->eventId);
+    }
+
+    /* Destruct the instance lock */
+    (void)I2C_osalDeleteBlockingLock(object->mutex);
+
+    if (I2C_OPER_MODE_BLOCKING == object->operMode)
+    {
+        /* Destruct the transfer completion lock */
+        (void)I2C_osalDeleteBlockingLock(object->transferComplete);
+    }
+
+    object->headPtr = NULL;
+    object->isOpen  = BFALSE;
+
+    I2C_drv_log1("\n I2C: Object closed 0x%x \n", hwAttrs->baseAddr);
+
     return;
 }
 /*
