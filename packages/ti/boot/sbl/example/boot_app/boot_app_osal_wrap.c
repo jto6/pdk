@@ -62,7 +62,10 @@
 /* ========================================================================== */
 
 pSDL_OSAL_hwipHandle BootApp_registerInterrupt(SDL_OSAL_hwipParams *pParams);
+int32_t BootApp_enableInterrupt(uint32_t intNum);
+int32_t BootApp_disableInterrupt(uint32_t intNum);
 int32_t BootApp_globalDisableInterrupts(uintptr_t *key);
+int32_t BootApp_globalRestoreInterrupts(uintptr_t key);
 void* BootApp_addrTranslate(uint64_t addr, uint32_t size);
 
 /* ========================================================================== */
@@ -71,12 +74,12 @@ void* BootApp_addrTranslate(uint64_t addr, uint32_t size);
 
 SDL_OSAL_Interface osal_interface =
 {
-    .enableInterrupt = (pSDL_OSAL_interruptFunction) HwiP_enableInterrupt,
-    .disableInterrupt = (pSDL_OSAL_interruptFunction) HwiP_disableInterrupt,
+    .enableInterrupt = (pSDL_OSAL_interruptFunction) BootApp_enableInterrupt,
+    .disableInterrupt = (pSDL_OSAL_interruptFunction) BootApp_disableInterrupt,
     .registerInterrupt = (pSDL_OSAL_registerFunction) BootApp_registerInterrupt,
     .deregisterInterrupt = (pSDL_OSAL_deregisterFunction) HwiP_delete,
     .globalDisableInterrupts = (pSDL_OSAL_globalDisableInterruptsFunction) BootApp_globalDisableInterrupts,
-    .globalRestoreInterrupts = (pSDL_OSAL_globalRestoreInterruptsFunction) HwiP_restore,
+    .globalRestoreInterrupts = (pSDL_OSAL_globalRestoreInterruptsFunction) BootApp_globalRestoreInterrupts,
     .printFxn = (pSDL_OSAL_printFunction) UART_printf,
     .delay = (pSDL_OSAL_delayFunction) Osal_delay,
     .addrTranslate = (pSDL_OSAL_addrTranslateFunction) BootApp_addrTranslate
@@ -108,9 +111,27 @@ pSDL_OSAL_hwipHandle BootApp_registerInterrupt(SDL_OSAL_hwipParams *pParams)
     return HwiP_create(pParams->intNum, pParams->callback, &hwipParams);
 }
 
+int32_t BootApp_enableInterrupt(uint32_t intNum)
+{
+    HwiP_enableInterrupt(intNum);
+    return SDL_PASS;
+}
+
+int32_t BootApp_disableInterrupt(uint32_t intNum)
+{
+    HwiP_disableInterrupt(intNum);
+    return SDL_PASS;
+}
+
 int32_t BootApp_globalDisableInterrupts(uintptr_t *key)
 {
     *key = HwiP_disable();
+    return SDL_PASS;
+}
+
+int32_t BootApp_globalRestoreInterrupts(uintptr_t key)
+{
+    HwiP_restore(key);
     return SDL_PASS;
 }
 
@@ -122,7 +143,18 @@ int32_t BootApp_globalDisableInterrupts(uintptr_t *key)
  * The expectation is that this mapping will be retained in perpetuity because in order to obtain
  * information about the ECC errors, the ECC Aggregator configuration registers require to be
  * visible from the MCU. */
-
+#if defined(SOC_J784S4) && defined (ECC_TESTS)
+__attribute((section(".my_aggr_reg"))) uint8_t mappedEccRegs[0x400];
+__attribute((section(".my_aggr_reg1"))) uint8_t mappedEccRegs1[0x4000]
+__attribute((section(".my_aggr_reg2"))) uint8_t mappedEccRegs2[0x4000]
+__attribute((section(".my_aggr_reg3"))) uint8_t mappedEccRegs3[0x2000]
+__attribute((section(".my_aggr_reg4"))) uint8_t mappedEccRegs4[0x2000]
+__attribute((section(".my_aggr_reg5"))) uint8_t mappedEccRegs5[0x2000]
+__attribute((section(".my_aggr_reg6"))) uint8_t mappedEccRegs6[0x2000]
+__attribute((section(".my_aggr_reg7"))) uint8_t mappedEccRegs7[0x2000]
+__attribute((section(".my_aggr_reg8"))) uint8_t mappedEccRegs8[0x2000]
+__attribute((section(".my_aggr_reg9"))) uint8_t mappedEccRegs9[0x400];
+#else
 __attribute((section(".my_aggr_reg"))) uint8_t mappedEccRegs[0x400];
 __attribute((section(".my_aggr_reg1"))) uint8_t mappedEccRegs1[0x400];
 __attribute((section(".my_aggr_reg2"))) uint8_t mappedEccRegs2[0x400];
@@ -133,6 +165,7 @@ __attribute((section(".my_aggr_reg6"))) uint8_t mappedEccRegs6[0x400];
 __attribute((section(".my_aggr_reg7"))) uint8_t mappedEccRegs7[0x400];
 __attribute((section(".my_aggr_reg8"))) uint8_t mappedEccRegs8[0x400];
 __attribute((section(".my_aggr_reg9"))) uint8_t mappedEccRegs9[0x400];
+#endif
 
 void* BootApp_addrTranslate(uint64_t addr, uint32_t size)
 {
@@ -142,6 +175,13 @@ void* BootApp_addrTranslate(uint64_t addr, uint32_t size)
     uint32_t index = 0;
     bool result;
     uint32_t offset = 0;
+
+#if defined(SOC_J721S2)
+    if ((addr == SDL_COMPUTE_CLUSTER0_MSMC_PBIST0_BASE) ||
+        (addr == SDL_COMPUTE_CLUSTER0_MPU_PBIST0_BASE) ||
+        (addr == SDL_COMPUTE_CLUSTER0_DSP0_PBIST_BASE) ||
+        (addr == SDL_COMPUTE_CLUSTER0_DSP1_PBIST_BASE))
+#elif defined(SOC_J784S4)
     if ((addr == SDL_COMPUTE_CLUSTER0_VBUSP4_CFG_MSMC_PBIST0_CFG_MSMC_PBIST0_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_VBUSP_CFG0_CFG_ARM_PBIST0_0_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_VBUSP_CFG0_CFG_ARM_PBIST0_1_BASE) ||
@@ -154,7 +194,8 @@ void* BootApp_addrTranslate(uint64_t addr, uint32_t size)
         (addr == SDL_COMPUTE_CLUSTER0_VBUSP4_CFG_AW4_CFG_MSMC1_PBIST4_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_VBUSP4_CFG_AW5_CFG_MSMC1_PBIST5_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_VBUSP4_CFG_AW6_CFG_MSMC1_PBIST6_BASE) ||
-        (addr == SDL_COMPUTE_CLUSTER0_VBUSP4_CFG_AW7_CFG_MSMC1_PBIST7_BASE))	
+        (addr == SDL_COMPUTE_CLUSTER0_VBUSP4_CFG_AW7_CFG_MSMC1_PBIST7_BASE))
+#endif
     {
         /* Disable RAT translation */
         result = CSL_ratDisableRegionTranslation((CSL_ratRegs *)PBIST_RAT_CFG_BASE,
@@ -170,6 +211,72 @@ void* BootApp_addrTranslate(uint64_t addr, uint32_t size)
              * those additional aggregators. */
             switch(addr)
             {
+#if defined(SOC_J721S2)
+                case SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR0_BASE:
+                case SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR1_BASE:
+                case SDL_COMPUTE_CLUSTER0_MSMC_DDR_0_ECC_AGGR2_BASE:
+                    transAddr = (uint32_t)mappedEccRegs2;
+                    offset = (addr - SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR0_BASE);
+                    addr = SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR0_BASE;
+                    size = 0x1000;
+                                        index = 2;
+                    break;
+                case SDL_COMPUTE_CLUSTER0_ECC_AGGR_BASE:
+                    transAddr = (uint32_t)mappedEccRegs;
+                                        index = 0;
+                    break;
+                case SDL_COMPUTE_CLUSTER0_MPU0_COREPAC_ECC_AGGR_BASE:
+                case SDL_COMPUTE_CLUSTER0_MPU0_CORE0_ECC_AGGR_BASE:
+                case SDL_COMPUTE_CLUSTER0_MPU0_CORE1_ECC_AGGR_BASE:
+                    transAddr = (uint32_t)mappedEccRegs3;
+                    offset = (addr - SDL_COMPUTE_CLUSTER0_MPU0_COREPAC_ECC_AGGR_BASE);
+                    addr = SDL_COMPUTE_CLUSTER0_MPU0_COREPAC_ECC_AGGR_BASE;
+                    size = 0x1000;
+                                        index = 3;
+                    break;
+                case SDL_COMPUTE_CLUSTER0_DDR0_0_ECC_AGGR_CTL_BASE:
+                case SDL_COMPUTE_CLUSTER0_DDR0_0_ECC_AGGR_CFG_BASE:
+                case SDL_COMPUTE_CLUSTER0_DDR0_0_ECC_AGGR_VBUS_BASE:
+                case SDL_COMPUTE_CLUSTER0_DDR1_1_ECC_AGGR_CTL_BASE:
+                    transAddr = (uint32_t)mappedEccRegs4;
+                    offset = (addr - SDL_COMPUTE_CLUSTER0_DDR0_0_ECC_AGGR_CTL_BASE);
+                    addr = SDL_COMPUTE_CLUSTER0_DDR0_0_ECC_AGGR_CTL_BASE;
+                    size = 0x1000;
+                                        index = 4;
+                    break;
+                case SDL_COMPUTE_CLUSTER0_DDR1_1_ECC_AGGR_CFG_BASE:
+                case SDL_COMPUTE_CLUSTER0_DDR1_1_ECC_AGGR_VBUS_BASE:
+                    transAddr = (uint32_t)mappedEccRegs5;
+                    offset = (addr - SDL_COMPUTE_CLUSTER0_DDR1_1_ECC_AGGR_VBUS_BASE);
+                    addr = SDL_COMPUTE_CLUSTER0_DDR1_1_ECC_AGGR_VBUS_BASE;
+                    size = 0x1000;
+                                        index = 5;
+                    break;
+                case SDL_COMPUTE_CLUSTER0_MSMC_DDR_1_ECC_AGGR3_BASE:
+                    transAddr = (uint32_t)mappedEccRegs6;
+                                        index = 6;
+                    break;
+                case SDL_COMPUTE_CLUSTER0_DSP1_ECCAGGR_BASE:
+                    transAddr = (uint32_t)mappedEccRegs7;
+                                        index = 7;
+                    break;
+                case SDL_COMPUTE_CLUSTER0_DSP0_ECC_AGGR_BASE:
+                    transAddr = (uint32_t)mappedEccRegs8;
+                                        index = 8;
+                    break;
+                case SDL_MSRAM_512K0_RAM_BASE:
+                case SDL_MSRAM_512K1_RAM_BASE:
+                    transAddr = (uint32_t)mappedEccRegs9;
+                                        index = 9;
+                    break;
+                case 0x0:
+                    if (sdl_ecc_psram_test == (bool)true)
+                    {
+                        transAddr = (uint32_t)mappedEccRegs9;
+                                            index = 9;
+                    }
+                    break;
+#elif defined(SOC_J784S4)
                 case SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR0_BASE:
                 case SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR1_BASE:
                 case SDL_COMPUTE_CLUSTER0_VBUSP_MSMC_DDR_0_ECC_AGGR_CFG_MSMC_ECC2_BASE:
@@ -281,6 +388,7 @@ void* BootApp_addrTranslate(uint64_t addr, uint32_t size)
                                             index = 9;
                     }
                     break;
+#endif
                 default:
                     break;
             }

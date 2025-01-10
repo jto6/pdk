@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,13 +32,14 @@
  */
 
 /**
- *  \file pbist_defs.h
+ *  \file     armv8_power_utils.h
  *
- *  \brief PBIST header that defines SOC-specific structures and functions
+ *  \brief    This header defines functions to specifically handle
+ *            proper power sequencing for the armv8 cores/cluster.
  */
 
-#ifndef PBIST_DEFS_H_
-#define PBIST_DEFS_H_
+#ifndef ARMV8_POWER_UTILS_H_
+#define ARMV8_POWER_UTILS_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -49,12 +50,13 @@ extern "C"
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <stdbool.h>
-#include <ti/csl/csl_types.h>
-#include <ti/csl/csl_pbist.h>
-#include <ti/csl/soc.h>
+/* None */
 
-#include "bist_core_defs.h"
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* None */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -69,69 +71,13 @@ extern "C"
 /* None */
 
 /* ========================================================================== */
-/*                           Macros & Typedefs                                */
-/* ========================================================================== */
-
-#define PBIST_REGION_LOCAL_BASE           (0x60000000u)
-
-#define PBIST_REGION2_LOCAL_BASE          (0x68000000u)
-
-#define PBIST_RAT_REGION_INDEX            0
-#define PBIST_RAT_REGION2_INDEX           1
-
-#define PBIST_REG_REGION_SIZE             (0x400u)
-#define PBIST_REG_REGION2_SIZE            (0x10000u)
-
-/* Firewall definitions */
-#define FW_REGION_ENABLE                  (0xAU)
-#define FW_MCU_R5F0_PRIVID                (96U)
-
-typedef void (*PBIST_handlerPtr)(uint32_t instanceId);
-
-/*
-    InitRestore function : Initialize or Restore based on init flag
-    init : TRUE  --> Initialize
-    init : FALSE --> Restore
-*/
-typedef int32_t (*PBIST_auxInitRestoreFunctionPtr)(bool init);
-
-typedef struct PBIST_TestHandle_s
-{
-    char     testName[PBIST_INSTANCE_NAME_MAX_LENGTH];
-    SDL_PBIST_inst pbistInst;
-    uint32_t tisciPBISTDeviceId;
-    bool procRstNeeded;
-    bool secondaryCoreNeeded;
-    bool thirdCoreNeeded;
-    bool fourthCoreNeeded;
-    char coreName[16];
-    char secCoreName[16];
-    char thCoreName[16];
-    char foCoreName[16];
-    uint32_t tisciProcId;
-    uint32_t tisciSecProcId;
-    uint32_t tisciThProcId;
-    uint32_t tisciFoProcId;
-    uint32_t tisciDeviceId;
-    uint32_t tisciSecDeviceId;
-    uint32_t tisciThDeviceId;
-    uint32_t tisciFoDeviceId;
-    bool     coreCustPwrSeqNeeded;
-    uint8_t  numPostPbistToCheck;
-    uint32_t numAuxDevices;
-    uint32_t *auxDeviceIdsP;
-    PBIST_auxInitRestoreFunctionPtr auxInitRestoreFunction;
-} PBIST_TestHandle_t;
-
-extern PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1];
-
-/* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-void PBIST_printPostStatus(SDL_PBIST_postResult *result);
+int32_t BootApp_armv8PowerDownSequence(uint8_t processorId);
+int32_t BootApp_armv8PowerPrepareForPowerUpSequence(uint8_t processorId);
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* PBIST_DEFS_H_ */
+#endif /* ARMV8_POWER_UTILS_H_ */

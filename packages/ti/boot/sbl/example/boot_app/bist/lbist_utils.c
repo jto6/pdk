@@ -141,7 +141,7 @@ int32_t BootApp_lbistRunTest(uint32_t coreIndex)
         }
         else
         {
-            BootApp_lbistPrintPostStatus(&postResult);
+            LBIST_printPostStatus(&postResult);
         }
     }
     else

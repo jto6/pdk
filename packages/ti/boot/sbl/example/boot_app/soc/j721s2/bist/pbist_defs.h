@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -97,30 +97,22 @@ typedef int32_t (*PBIST_auxInitRestoreFunctionPtr)(bool init);
 
 typedef struct PBIST_TestHandle_s
 {
-    char     testName[PBIST_INSTANCE_NAME_MAX_LENGTH];
-    SDL_PBIST_inst pbistInst;
-    uint32_t tisciPBISTDeviceId;
-    bool procRstNeeded;
-    bool secondaryCoreNeeded;
-    bool thirdCoreNeeded;
-    bool fourthCoreNeeded;
-    char coreName[16];
-    char secCoreName[16];
-    char thCoreName[16];
-    char foCoreName[16];
-    uint32_t tisciProcId;
-    uint32_t tisciSecProcId;
-    uint32_t tisciThProcId;
-    uint32_t tisciFoProcId;
-    uint32_t tisciDeviceId;
-    uint32_t tisciSecDeviceId;
-    uint32_t tisciThDeviceId;
-    uint32_t tisciFoDeviceId;
-    bool     coreCustPwrSeqNeeded;
-    uint8_t  numPostPbistToCheck;
-    uint32_t numAuxDevices;
-    uint32_t *auxDeviceIdsP;
-    PBIST_auxInitRestoreFunctionPtr auxInitRestoreFunction;
+  char               testName[PBIST_INSTANCE_NAME_MAX_LENGTH];
+  SDL_PBIST_inst     pbistInst;
+  uint32_t           tisciPBISTDeviceId;
+  bool               procRstNeeded;
+  bool               secondaryCoreNeeded;
+  char               coreName[16];
+  char               secCoreName[16];
+  uint32_t           tisciProcId;
+  uint32_t           tisciSecProcId;
+  uint32_t           tisciDeviceId;
+  uint32_t           tisciSecDeviceId;
+  bool               coreCustPwrSeqNeeded;
+  uint8_t            numPostPbistToCheck;
+  uint32_t           numAuxDevices;
+  uint32_t          *auxDeviceIdsP;
+  PBIST_auxInitRestoreFunctionPtr auxInitRestoreFunction;
 } PBIST_TestHandle_t;
 
 extern PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1];

@@ -211,6 +211,22 @@ void BootApp_bistFxn(void)
                 BootApp_pbistClecConfig(pbist_array[i]);
 
                 #if defined (SOC_J784S4)
+                /* Main Infra0/1, NAVSS and MSMC should be run in SBL, if Boot App is running in DDR */
+                if((i==2)||(i==6)||(i==7)||(i==25))
+                {
+                    continue;
+                }
+                /* HC has MMCSD in Auxiallary list */
+                if(i==9)
+                {
+                    continue;
+                }
+                /* BISTs executed in SBL */
+                if((i==13)||(i==14)||(i==15)||(i==16)||(i==1)||(i==12)||(i==4))
+                {
+                    continue;
+                }
+     
                 /* Run test on selected instance */	
                 testResult = BootApp_pbistRunTest(pbist_array[i], (uint8_t)PBIST_TEST_POSITIVE);
 
@@ -223,9 +239,38 @@ void BootApp_bistFxn(void)
                                     pbist_array[i]);
                     break;
                 }
-                #else
-                testResult = BootApp_pbistRunTest(pbist_array[i], (uint8_t)0);
+                #elif defined (SOC_J721S2)
+                /* Main Infra0/1, NAVSS and MSMC should be run in SBL, if Boot App is running in DDR */
+                if((i==1)||(i==5)||(i==7)||(i==13))
+                {
+                    continue;
+                }
 
+                /* HC has MMCSD in Auxiallary list */
+                if(i==6)
+                {
+
+                    continue;
+                }
+
+                /* BISTs executed in SBL */
+                if((i==12)||(i==17)||(i==8))
+                {
+                    continue;
+                }
+
+                testResult = BootApp_pbistRunTest(pbist_array[i], (uint8_t)0);
+                /* Convert signed return value (with -1 = failure and 0 = pass) to become
+                 * a single bit as part of bitfield with 0 = failure and 1 = pass */
+                pbist_stage_status[j] |= ((uint32_t)(testResult + 1) << i);
+                if ( testResult != 0)
+                {
+                    UART_printf("PBIST functional test failed for %d\n",
+                                    pbist_array[i]);
+                    break;
+                }
+                #else 
+                testResult = BootApp_pbistRunTest(pbist_array[i], (uint8_t)0);
                 /* Convert signed return value (with -1 = failure and 0 = pass) to become
                  * a single bit as part of bitfield with 0 = failure and 1 = pass */
                 pbist_stage_status[j] |= ((uint32_t)(testResult + 1) << i);
@@ -291,6 +336,38 @@ void BootApp_bistFxn(void)
 #if defined(GATHER_BIST_STAGE_DETAILS)
             for (i = 0; i < num_pbists_per_boot_stage[j]; i++)
             {
+            #if defined(SOC_J784S4)
+                /* Main Infra0/1, NAVSS and MSMC should be run in SBL, if Boot App is running in DDR */
+                if((i==2)||(i==6)||(i==7)||(i==25))
+                {
+                    continue;
+                }
+                /* HC has MMCSD in Auxiallary list */
+                if(i==9)
+                {
+                    continue;
+                }
+                /* BISTs executed in SBL */
+                if((i==13)||(i==14)||(i==15)||(i==16)||(i==1)||(i==12)||(i==4))
+                {
+                    continue;
+                }
+            #elif defined(SOC_J721S2)
+                if((i==1)||(i==5)||(i==7)||(i==13))
+                {
+                    continue;
+                }
+                /* HC has MMCSD in Auxiallary list */
+                if(i==6)
+                {
+                    continue;
+                }
+                /* BISTs executed in SBL */
+                if((i==12)||(i==17)||(i==8))
+                {
+                    continue;
+                }
+            #endif
                 UART_printf("BIST: Stage %d - Ran PBIST ID - %s, Result = %s\n",
                                 j, BootApp_pbistName(pbist_array[i]),
                                 testStatusPrint((pbist_stage_status[j] >> i) & 0x1));

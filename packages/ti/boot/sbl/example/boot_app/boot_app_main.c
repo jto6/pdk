@@ -83,10 +83,12 @@
 /* Task Priority Levels, CAN Task has the highest priority,
  * followed by the safety tasks as it is recommended to test them before the Boot Task */
 #if defined(SDL_SAFETY_TASK_ENABLED)
-#define BOOT_APP_BIST_TASK_PRIORITY       (9)
+#define BOOT_APP_BIST_TASK_PRIORITY      (9)
+#if defined(SOC_J784S4)
 #define BOOT_APP_VTM_TASK_PRIORITY       (8)
 #define BOOT_APP_POK_TASK_PRIORITY       (6)
 #define BOOT_APP_TOG_TASK_PRIORITY       (7)
+#endif
 #endif
 #if defined(CAN_RESP_TASK_ENABLED)
 #define BOOT_APP_CAN_TASK_PRIORITY        (10)
@@ -107,6 +109,7 @@
 /* ========================================================================== */
 
 #if defined(SDL_SAFETY_TASK_ENABLED)
+#if defined(SOC_J784S4)
 /* Stack for the TOG task */
 static uint8_t gBootAppTogStack[BOOT_APP_TASK_STACK] __attribute__((aligned(32)));
 TaskP_Handle gBootAppTogTask;
@@ -130,7 +133,7 @@ TaskP_Handle gBootAppVtmTask;
 static uint64_t gBootAppVtmTimeStart, gBootAppVtmTimeFinish;
 /* Semaphore to indicate VTM Task completion */
 static SemaphoreP_Handle gBootAppVtmCompletedSem = NULL;
-
+#endif
 /* Stack for the BIST task */
 static uint8_t gBootAppBistStack[BOOT_APP_TASK_STACK] __attribute__((aligned(32)));
 TaskP_Handle gBootAppBistTask;
@@ -243,6 +246,7 @@ static int32_t BootApp_safetyCheckerLoop(void);
 #endif
 
 #if defined(SDL_SAFETY_TASK_ENABLED)
+#if defined(SOC_J784S4)
 /**
  * \brief  TOG Task Function
  *
@@ -269,7 +273,7 @@ static void BootApp_pokTaskFxn(void* a0, void* a1);
  * \return None
  */
 static void BootApp_vtmTaskFxn(void* a0, void* a1);
-
+#endif
 /**
  * \brief  BIST Task Function
  *
@@ -328,6 +332,7 @@ int32_t main(void)
     UART_printf("MCU R5F App started at %d usecs\r\n", BootApp_getTimeInMicroSec(CSL_armR5PmuReadCntr(CSL_ARM_R5_PMU_CYCLE_COUNTER_NUM)));
 
 #if defined(SDL_SAFETY_TASK_ENABLED)
+#if defined(SOC_J784S4)
     /* Initialize the TOG task params */
     TaskP_Params togTaskParams;
     TaskP_Params_init(&togTaskParams);
@@ -363,7 +368,7 @@ int32_t main(void)
     {
         OS_stop();
     }
-
+#endif
     /* Initialize the BIST task params */
     TaskP_Params bistTaskParams;
     TaskP_Params_init(&bistTaskParams);
@@ -477,6 +482,7 @@ static void BootApp_armR5PmuCntrInit(void)
 }
 
 #if defined(SDL_SAFETY_TASK_ENABLED)
+#if defined(SOC_J784S4)
 static void BootApp_togTaskFxn(void* a0, void* a1)
 {
     /* Initialize the Semaphore */
@@ -551,7 +557,7 @@ static void BootApp_vtmTaskFxn(void* a0, void* a1)
 
     return;
 }
-
+#endif
 static void BootApp_bistTaskFxn(void* a0, void* a1)
 {
 #if !defined(CAN_RESP_TASK_ENABLED)
@@ -713,6 +719,7 @@ static void BootApp_mainDomainSetup()
 static void BootApp_bootTaskFxn(void* a0, void* a1)
 {
 #if defined(SDL_SAFETY_TASK_ENABLED)
+#if defined(SOC_J784S4)
     /* Wait for the TOG task completion */
     SemaphoreP_pend(gBootAppTogCompletedSem, SemaphoreP_WAIT_FOREVER);
 
@@ -721,7 +728,7 @@ static void BootApp_bootTaskFxn(void* a0, void* a1)
 
     /* Wait for the VTM task completion */
     SemaphoreP_pend(gBootAppVtmCompletedSem, SemaphoreP_WAIT_FOREVER);
-
+#endif
     /* Wait for the BIST task completion */
     SemaphoreP_pend(gBootAppBistCompletedSem, SemaphoreP_WAIT_FOREVER);
 #endif

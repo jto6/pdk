@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -74,66 +74,45 @@ extern "C"
 /* ========================================================================== */
 
 /* Defines total number of Boot Stages for the Main Domain
- * multi-stage boot sequence for J784S4 SOC */
-#define NUM_BOOT_STAGES     3
+ * multi-stage boot sequence for J721S2 SOC */
+#define NUM_BOOT_STAGES                           (3U)  
 
 #define PBIST_HWPOST_MCU_INDEX                    (0U)
-#define PBIST_INSTANCE_MAINR5F0                   (1U)
-#define PBIST_INSTANCE_CODEC                      (2U)
-#define PBIST_INSTANCE_MAININFRA_1                (3U)
-#define PBIST_INSTANCE_VPAC_0                     (4U)
-#define PBIST_INSTANCE_DSS                        (5U)
-#define PBIST_INSTANCE_DMPAC                      (6U)
-#define PBIST_INSTANCE_NAVSS                      (7U)
-#define PBIST_INSTANCE_MAININFRA_0                (8U)
-#define PBIST_INSTANCE_GPU                        (9U)
-#define PBIST_INSTANCE_HC                         (10U)
-#define PBIST_INSTANCE_VPAC_1                     (11U)
-#define PBIST_INSTANCE_MAINR5F2                   (12U)
-#define PBIST_INSTANCE_CODEC_1                    (13U)
-#define PBIST_INSTANCE_A72_0_0                    (14U)
-#define PBIST_INSTANCE_A72_0_1                    (15U)
-#define PBIST_INSTANCE_A72_1_0                    (16U)
-#define PBIST_INSTANCE_A72_1_1                    (17U)
-#define PBIST_INSTANCE_C7X_0                      (18U)
-#define PBIST_INSTANCE_C7X_1                      (19U)
-#define PBIST_INSTANCE_C7X_2                      (20U)
-#define PBIST_INSTANCE_C7X_3                      (21U)
-#define PBIST_INSTANCE_ANA_0                      (22U)
-#define PBIST_INSTANCE_ANA_1                      (23U)
-#define PBIST_INSTANCE_ANA_2                      (24U)
-#define PBIST_INSTANCE_ANA_3                      (25U)
-#define PBIST_INSTANCE_MSMC                       (26U)
-#define PBIST_INSTANCE_MAINR5F1                   (27U)
+#define PBIST_INSTANCE_VPAC_0                     (1U)
+#define PBIST_INSTANCE_MAININFRA_1                (2U)
+#define PBIST_INSTANCE_DMPAC                      (3U)
+#define PBIST_INSTANCE_MAINR5F0                   (4U)
+#define PBIST_INSTANCE_MAINR5F1                   (5U)
+#define PBIST_INSTANCE_MAININFRA_0                (6U)
+#define PBIST_INSTANCE_HC                         (7U)
+#define PBIST_INSTANCE_NAVSS                      (8U)
+#define PBIST_INSTANCE_CODEC_1                    (9U)
+#define PBIST_INSTANCE_GPU                        (10U)
+#define PBIST_INSTANCE_C7x_0                      (11U)
+#define PBIST_INSTANCE_C7x_1                      (12U)
+#define PBIST_INSTANCE_A72_0                      (13U)
+#define PBIST_INSTANCE_MSMC                       (14U)
+#define PBIST_INSTANCE_MCUR5F1                    (15U)
+#define PBIST_INSTANCE_MCU_0                      (16U)
+#define PBIST_INSTANCE_MCU_1                      (17U)
+#define PBIST_INSTANCE_DSS                        (18U)
 
-#define PBIST_MAX_INSTANCE                        (PBIST_INSTANCE_MAINR5F1+1)
+#define PBIST_MAX_INSTANCE                (PBIST_INSTANCE_DSS+1U)
 
-#define PBIST_INSTANCE_NAME_MAX_LENGTH            (20U)
+#define PBIST_INSTANCE_NAME_MAX_LENGTH            (20)
 
-#define LBIST_HWPOST_INST_SMS_INDEX     (0U)
-#define LBIST_HWPOST_INST_MCU_INDEX     (1U)
-#define LBIST_INST_MAINR5F0_INDEX       (2U)
-#define LBIST_INST_MAINR5F1_INDEX       (3U)
-#define LBIST_INST_C7X0_INDEX           (4U)
-#define LBIST_INST_C7X1_INDEX           (5U)
-#define LBIST_INST_VPAC0_INDEX          (6U)
-#define LBIST_INST_DMPAC_INDEX          (7U)
-#define LBIST_INST_A72_0_INDEX          (8U)
-#define LBIST_INST_VPAC1_INDEX          (9U)
-#define LBIST_INST_A72_1_INDEX          (10U)
-#define LBIST_INST_C7X2_INDEX           (11U)
-#define LBIST_INST_C7X3_INDEX           (12U)
-#define LBIST_INST_A72SS0_CORE0_INDEX   (13U)
-#define LBIST_INST_A72SS0_CORE1_INDEX   (14U)
-#define LBIST_INST_A72SS0_CORE2_INDEX   (15U)
-#define LBIST_INST_A72SS0_CORE3_INDEX   (16U)
-#define LBIST_INST_A72SS1_CORE0_INDEX   (17U)
-#define LBIST_INST_A72SS1_CORE1_INDEX   (18U)
-#define LBIST_INST_A72SS1_CORE2_INDEX   (19U)
-#define LBIST_INST_A72SS1_CORE3_INDEX   (20U)
-#define LBIST_INST_MAINR5F2_INDEX       (21U)
+#define LBIST_HWPOST_INST_SMS_INDEX               (0U)
+#define LBIST_HWPOST_INST_MCU_INDEX               (1U)
+#define LBIST_INST_MAINR5F0_INDEX                 (2U)
+#define LBIST_INST_MAINR5F1_INDEX                 (3U)
+#define LBIST_INST_C7X0_INDEX                     (4U)
+#define LBIST_INST_C7X1_INDEX                     (5U)
+#define LBIST_INST_VPAC0_INDEX                    (6U)
+#define LBIST_INST_DMPAC_INDEX                    (7U)
+#define LBIST_INST_A72_0_INDEX                    (8U)
 
-#define LBIST_MAX_CORE_INDEX                      (LBIST_INST_MAINR5F2_INDEX+1)
+#define LBIST_MAX_CORE_INDEX                      (LBIST_INST_A72_0_INDEX+1U)
+
 
 /* HW POST core definitions */
 #define LBIST_POST_CORE_SMS                       LBIST_HWPOST_INST_SMS_INDEX

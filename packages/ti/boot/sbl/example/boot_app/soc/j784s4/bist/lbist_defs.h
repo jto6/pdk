@@ -112,7 +112,7 @@ extern LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1];
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-void BootApp_lbistPrintPostStatus(SDL_LBIST_postResult *result);
+void LBIST_printPostStatus(SDL_LBIST_postResult *result);
 
 #ifdef __cplusplus
 }

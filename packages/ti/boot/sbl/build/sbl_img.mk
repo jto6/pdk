@@ -70,6 +70,9 @@ else ifeq ($(BOOTMODE), xip)
 else ifeq ($(RAT), 1)
   APP_NAME = sbl_cust_rat_main_ocm_img
   LOCAL_APP_NAME = sbl_cust_rat_main_ocm_img_$(CORE)
+else ifeq ($(SBL_ENABLE_BIST), yes)
+  APP_NAME = sbl_$(BOOTMODE)_bist_img
+  LOCAL_APP_NAME=sbl_$(BOOTMODE)_bist_img_$(CORE)
 else
   APP_NAME = sbl_$(SECURE_HSM_BOOT_SUFFIX)$(BOOTMODE)$(OSPI_NAND_SUFFIX)$(EMMC_SUFFIX)_img$(COMBINE_SUFFIX)$(HLOS_SUFFIX)$(HS_SUFFIX)$(HS_FS_SUFFIX)
   LOCAL_APP_NAME=sbl_$(SECURE_HSM_BOOT_SUFFIX)$(BOOTMODE)$(OSPI_NAND_SUFFIX)$(EMMC_SUFFIX)_img$(COMBINE_SUFFIX)$(HLOS_SUFFIX)_$(CORE)
@@ -221,6 +224,49 @@ SBL_CFLAGS += -DMAX_APP_SIZE_EMMC=$(MAX_APP_SIZE_EMMC)
 SBL_CFLAGS += -DEEPROM_DATA_DDR_ADDRESS=$(EEPROM_DATA_DDR_ADDRESS)
 
 SRCS_COMMON += sbl_main.c
+
+ifeq ($(SBL_ENABLE_BIST), yes)
+
+  SBL_CFLAGS += -DSBL_ENABLE_BIST
+
+  # SDL Include File Paths
+  SDL_INSTALL_PATH=$(PDK_INSTALL_PATH)/../../sdl
+  INCDIR += $(SDL_INSTALL_PATH)/
+  INCDIR += $(SDL_INSTALL_PATH)/src/sdl
+  INCDIR += $(SDL_INSTALL_PATH)/include
+  INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC)
+  INCDIR += $(SDL_INSTALL_PATH)/osal/
+  INCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
+  INCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
+  INCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+  INCDIR += $(SDL_INSTALL_PATH)/src/ip/r5
+
+  # PDK Include File Paths
+  INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
+  INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+
+  # SDL Source File Paths
+  SRCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
+  SRCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
+  SRCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+
+  # PDK Source File Paths
+  SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app
+  SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
+  SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+
+  # SDL Integration
+  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
+  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
+  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
+  SRCS_COMMON += boot_app_osal_wrap.c
+  SRCS_COMMON += sbl_pbist.c
+  SRCS_COMMON += bist.c bist_core_defs.c
+  SRCS_COMMON += lbist_utils.c lbist_defs.c
+  SRCS_COMMON += pbist_utils.c pbist_defs.c
+  SRCS_COMMON += power_seq.c armv8_power_utils.c       
+
+endif
 
 EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_SBL_COMP_PATH)/soc/k3/$(SOC_DIR)/linker.cmd
 

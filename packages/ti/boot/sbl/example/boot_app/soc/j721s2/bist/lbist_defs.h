@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,13 +32,13 @@
  */
 
 /**
- *  \file pbist_defs.h
+ *  \file lbist_defs.h
  *
- *  \brief PBIST header that defines SOC-specific structures and functions
+ *  \brief LBIST header that defines SOC-specific structures and functions
  */
 
-#ifndef PBIST_DEFS_H_
-#define PBIST_DEFS_H_
+#ifndef LBIST_DEFS_H_
+#define LBIST_DEFS_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -50,9 +50,7 @@ extern "C"
 /* ========================================================================== */
 
 #include <stdbool.h>
-#include <ti/csl/csl_types.h>
-#include <ti/csl/csl_pbist.h>
-#include <ti/csl/soc.h>
+#include <ti/csl/csl_lbist.h>
 
 #include "bist_core_defs.h"
 
@@ -72,66 +70,51 @@ extern "C"
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define PBIST_REGION_LOCAL_BASE           (0x60000000u)
+typedef void (*LBIST_handlerPtr)(uint32_t coreIndex);
 
-#define PBIST_REGION2_LOCAL_BASE          (0x68000000u)
-
-#define PBIST_RAT_REGION_INDEX            0
-#define PBIST_RAT_REGION2_INDEX           1
-
-#define PBIST_REG_REGION_SIZE             (0x400u)
-#define PBIST_REG_REGION2_SIZE            (0x10000u)
-
-/* Firewall definitions */
-#define FW_REGION_ENABLE                  (0xAU)
-#define FW_MCU_R5F0_PRIVID                (96U)
-
-typedef void (*PBIST_handlerPtr)(uint32_t instanceId);
-
-/*
-    InitRestore function : Initialize or Restore based on init flag
-    init : TRUE  --> Initialize
-    init : FALSE --> Restore
-*/
-typedef int32_t (*PBIST_auxInitRestoreFunctionPtr)(bool init);
-
-typedef struct PBIST_TestHandle_s
+typedef struct LBIST_TestHandle_s
 {
-    char     testName[PBIST_INSTANCE_NAME_MAX_LENGTH];
-    SDL_PBIST_inst pbistInst;
-    uint32_t tisciPBISTDeviceId;
-    bool procRstNeeded;
-    bool secondaryCoreNeeded;
-    bool thirdCoreNeeded;
-    bool fourthCoreNeeded;
+    /** Core name */
     char coreName[16];
+    /** Core instance */
+    SDL_LBIST_inst instance;
+    /** Indicate secondary core need to be handled */
+    bool secondaryCoreNeeded;
+    bool wfiCheckNeeded;
+    /** Secondary core name */
     char secCoreName[16];
-    char thCoreName[16];
-    char foCoreName[16];
+    /** Mask used to check CPU Status */
+    uint32_t cpuStatusFlagMask;
+    /** Core Processor Id */
     uint32_t tisciProcId;
+    /** Secondary Core Processor Id */
     uint32_t tisciSecProcId;
-    uint32_t tisciThProcId;
-    uint32_t tisciFoProcId;
+    /** Core Device Id */
     uint32_t tisciDeviceId;
+    /** Secondary Core Device Id */
     uint32_t tisciSecDeviceId;
-    uint32_t tisciThDeviceId;
-    uint32_t tisciFoDeviceId;
-    bool     coreCustPwrSeqNeeded;
-    uint8_t  numPostPbistToCheck;
-    uint32_t numAuxDevices;
-    uint32_t *auxDeviceIdsP;
-    PBIST_auxInitRestoreFunctionPtr auxInitRestoreFunction;
-} PBIST_TestHandle_t;
+    /** Number of Auxiliary devices needed for the test */
+    uint32_t      numAuxDevices;
+    /** List of Auxiliary devices needed for the test */
+    uint32_t     *auxDeviceIdsP;
+    /** Indicates if test is just checking output MISR values for
+     *  already-completed test. If true, it is not a SW-initiated test */
+    bool hwPostCoreCheck;
+    /** If test is just HW POST result check, this designates
+     *  the core for which the logic result is being checked,
+     *  i.e. LBIST_POST_CORE_XXX */
+    uint32_t hwPostCoreNum;
+} LBIST_TestHandle_t;
 
-extern PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1];
+extern LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1];
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-void PBIST_printPostStatus(SDL_PBIST_postResult *result);
+void LBIST_printPostStatus(SDL_LBIST_postResult *result);
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* PBIST_DEFS_H_ */
+#endif /* LBIST_DEFS_H_ */

@@ -587,7 +587,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
             else
             {
-                BootApp_pbistPrintPostStatus(&result);
+                PBIST_printPostStatus(&result);
             }
         }
     }

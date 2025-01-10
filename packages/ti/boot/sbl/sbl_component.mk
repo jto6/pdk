@@ -223,7 +223,7 @@ endif
 # List below all examples for allowed values
 ############################
 ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4))
-  sbl_EXAMPLE_LIST = sbl_uart_img sbl_ospi_img sbl_mmcsd_img sbl_emmc_boot0_img
+  sbl_EXAMPLE_LIST = sbl_uart_img sbl_ospi_img sbl_mmcsd_img sbl_mmcsd_bist_img sbl_cust_bist_img sbl_emmc_boot0_img
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hlos sbl_ospi_img_hlos sbl_emmc_uda_img_hlos sbl_emmc_uda_img sbl_boot_perf_cust_img_combined
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hs sbl_ospi_img_hs sbl_emmc_boot0_img_hs sbl_emmc_boot0_img_hlos_hs sbl_uart_img_hs sbl_ospi_img_hlos_hs
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_combined sbl_ospi_img_combined sbl_mmcsd_img_combined_hs sbl_ospi_img_combined_hs
@@ -790,6 +790,30 @@ sbl_mmcsd_img_$(SOC)_CORELIST = mcu1_0
 export sbl_mmcsd_img_$(SOC)_CORELIST
 sbl_mmcsd_img_SBL_IMAGEGEN = yes
 export sbl_mmcsd_img_SBL_IMAGEGEN
+
+# SBL MMCSD BIST Image
+sbl_mmcsd_bist_img_COMP_LIST = sbl_mmcsd_bist_img
+sbl_mmcsd_bist_img_RELPATH = ti/boot/sbl/board/k3
+sbl_mmcsd_bist_img_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/mmcsd/bin
+sbl_mmcsd_bist_img_PATH = $(PDK_SBL_COMP_PATH)/board/k3
+sbl_mmcsd_bist_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=mmcsd SBL_USE_DMA=yes BUILD_HS=no SBL_ENABLE_BIST=yes
+export sbl_mmcsd_bist_img_MAKEFILE
+export sbl_mmcsd_bist_img_SBL_CERT_KEY=$(SBL_CERT_KEY)
+sbl_mmcsd_bist_img_BOARD_DEPENDENCY = yes
+sbl_mmcsd_bist_img_SOC_DEPENDENCY = yes
+sbl_mmcsd_bist_img_CORE_DEPENDENCY = no
+export sbl_mmcsd_bist_img_COMP_LIST
+export sbl_mmcsd_bist_img_BOARD_DEPENDENCY
+export sbl_mmcsd_bist_img_SOC_DEPENDENCY
+export sbl_mmcsd_bist_img_CORE_DEPENDENCY
+sbl_mmcsd_bist_img_PKG_LIST = sbl
+sbl_mmcsd_bist_img_INCLUDE = $(sbl_mmcsd_bist_img_PATH)
+sbl_mmcsd_bist_img_BOARDLIST = j784s4_evm j721s2_evm
+export sbl_mmcsd_bist_img_BOARDLIST
+sbl_mmcsd_bist_img_$(SOC)_CORELIST = mcu1_0
+export sbl_mmcsd_bist_img_$(SOC)_CORELIST
+sbl_mmcsd_bist_img_SBL_IMAGEGEN = yes
+export sbl_mmcsd_bist_img_SBL_IMAGEGEN
 
 # SBL MMCSD Image - Combined boot image
 sbl_mmcsd_img_combined_COMP_LIST = sbl_mmcsd_img_combined
@@ -1898,6 +1922,34 @@ sbl_EXAMPLE_LIST += sbl_cust_img
 sbl_cust_img_SBL_IMAGEGEN = yes
 export sbl_cust_img_SBL_IMAGEGEN
 
+# SBL custom image for BIST
+# This SBL target uses sbl_lib_cust if SBL_USE_DMA=yes and sbl_lib_cust_nondma if SBL_USE_DMA=no
+sbl_cust_bist_img_COMP_LIST = sbl_cust_bist_img
+sbl_cust_bist_img_RELPATH = ti/boot/sbl/board/k3
+sbl_cust_bist_img_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)/cust/bin
+sbl_cust_bist_img_PATH = $(PDK_SBL_COMP_PATH)/board/k3
+sbl_cust_bist_img_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=cust SBL_USE_DMA=yes BUILD_HS=no CUST_SBL_FLAGS=$(CUST_SBL_TEST_FLAGS) SBL_ENABLE_BIST=yes
+export sbl_cust_bist_img_MAKEFILE
+export sbl_cust_bist_img_SBL_CERT_KEY=$(SBL_CERT_KEY)
+sbl_cust_bist_img_BOARD_DEPENDENCY = yes
+sbl_cust_bist_img_SOC_DEPENDENCY = yes
+sbl_cust_bist_img_CORE_DEPENDENCY = no
+export sbl_cust_bist_img_COMP_LIST
+export sbl_cust_bist_img_BOARD_DEPENDENCY
+export sbl_cust_bist_img_SOC_DEPENDENCY
+export sbl_cust_bist_img_CORE_DEPENDENCY
+sbl_cust_bist_img_PKG_LIST = sbl
+sbl_cust_bist_img_INCLUDE = $(sbl_cust_bist_img_PATH)
+sbl_cust_bist_img_SOCLIST = j721s2 j784s4
+sbl_cust_bist_img_BOARDLIST = j721s2_evm j784s4_evm
+export sbl_cust_bist_img_SOCLIST
+export sbl_cust_bist_img_BOARDLIST
+sbl_cust_bist_img_$(SOC)_CORELIST = mcu1_0
+export sbl_cust_bist_img_$(SOC)_CORELIST
+sbl_cust_bist_img_SBL_IMAGEGEN = yes
+export sbl_cust_bist_img_SBL_IMAGEGEN
+
+
 # SBL custom image which RAT maps main OCM to DDR(0xD0000000)
 # This SBL target is used to run ocmc_memory_benchmarking app on mcu2_0.
 # Since main OCM is situated at 40 bit address RAT map main OCM to 0xD0000000
@@ -2280,8 +2332,8 @@ export boot_app_ospi_sdl_safety_SOC_DEPENDENCY
 export boot_app_ospi_sdl_safety_CORE_DEPENDENCY
 boot_app_ospi_sdl_safety_PKG_LIST = boot_app_ospi_sdl_safety
 boot_app_ospi_sdl_safety_INCLUDE = $(boot_app_ospi_sdl_safety_PATH)
-boot_app_ospi_sdl_safety_SOCLIST = j784s4
-boot_app_ospi_sdl_safety_BOARDLIST = j784s4_evm
+boot_app_ospi_sdl_safety_SOCLIST = j784s4 j721s2
+boot_app_ospi_sdl_safety_BOARDLIST = j784s4_evm j721s2_evm
 export boot_app_ospi_sdl_safety_SOCLIST
 export boot_app_ospi_sdl_safety_BOARDLIST
 boot_app_ospi_sdl_safety_$(SOC)_CORELIST = mcu1_0
@@ -2342,6 +2394,32 @@ sbl_EXAMPLE_LIST += boot_app_ospi_linux
 boot_app_ospi_linux_SBL_APPIMAGEGEN = yes
 export boot_app_ospi_linux_SBL_APPIMAGEGEN
 
+# Boot App OSPI with SDL Safety Tests to boot qnx
+boot_app_ospi_sdl_safety_qnx_COMP_LIST = boot_app_ospi_sdl_safety_qnx
+boot_app_ospi_sdl_safety_qnx_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_ospi_sdl_safety_qnx_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/ospi
+boot_app_ospi_sdl_safety_qnx_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_ospi_sdl_safety_qnx_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=ospi BUILD_HS=no HLOSBOOT=qnx SDL_SAFETY_TASK_ENABLED=yes
+export boot_app_ospi_sdl_safety_qnx_MAKEFILE
+boot_app_ospi_sdl_safety_qnx_BOARD_DEPENDENCY = yes
+boot_app_ospi_sdl_safety_qnx_SOC_DEPENDENCY = yes
+boot_app_ospi_sdl_safety_qnx_CORE_DEPENDENCY = yes
+export boot_app_ospi_sdl_safety_qnx_COMP_LIST
+export boot_app_ospi_sdl_safety_qnx_BOARD_DEPENDENCY
+export boot_app_ospi_sdl_safety_qnx_SOC_DEPENDENCY
+export boot_app_ospi_sdl_safety_qnx_CORE_DEPENDENCY
+boot_app_ospi_sdl_safety_qnx_PKG_LIST = boot_app_ospi_sdl_safety_qnx
+boot_app_ospi_sdl_safety_qnx_INCLUDE = $(boot_app_ospi_sdl_safety_qnx_PATH)
+boot_app_ospi_sdl_safety_qnx_SOCLIST = j721s2 j784s4
+boot_app_ospi_sdl_safety_qnx_BOARDLIST = j721s2_evm j784s4_evm
+export boot_app_ospi_sdl_safety_qnx_SOCLIST
+export boot_app_ospi_sdl_safety_qnx_BOARDLIST
+boot_app_ospi_sdl_safety_qnx_$(SOC)_CORELIST = mcu1_0
+export boot_app_ospi_sdl_safety_qnx_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_ospi_sdl_safety_qnx
+boot_app_ospi_sdl_safety_qnx_SBL_APPIMAGEGEN = yes
+export boot_app_ospi_sdl_safety_qnx_SBL_APPIMAGEGEN
+
 # Boot App OSPI with SDL Safety Tests to boot linux
 boot_app_ospi_sdl_safety_linux_COMP_LIST = boot_app_ospi_sdl_safety_linux
 boot_app_ospi_sdl_safety_linux_RELPATH = ti/boot/sbl/example/boot_app
@@ -2358,8 +2436,8 @@ export boot_app_ospi_sdl_safety_linux_SOC_DEPENDENCY
 export boot_app_ospi_sdl_safety_linux_CORE_DEPENDENCY
 boot_app_ospi_sdl_safety_linux_PKG_LIST = boot_app_ospi_sdl_safety_linux
 boot_app_ospi_sdl_safety_linux_INCLUDE = $(boot_app_ospi_sdl_safety_linux_PATH)
-boot_app_ospi_sdl_safety_linux_SOCLIST = j784s4
-boot_app_ospi_sdl_safety_linux_BOARDLIST = j784s4_evm
+boot_app_ospi_sdl_safety_linux_SOCLIST = j784s4 j721s2
+boot_app_ospi_sdl_safety_linux_BOARDLIST = j784s4_evm j721s2_evm
 export boot_app_ospi_sdl_safety_linux_SOCLIST
 export boot_app_ospi_sdl_safety_linux_BOARDLIST
 boot_app_ospi_sdl_safety_linux_$(SOC)_CORELIST = mcu1_0
@@ -2514,8 +2592,8 @@ export boot_app_mmcsd_sdl_safety_SOC_DEPENDENCY
 export boot_app_mmcsd_sdl_safety_CORE_DEPENDENCY
 boot_app_mmcsd_sdl_safety_PKG_LIST = boot_app_mmcsd_sdl_safety
 boot_app_mmcsd_sdl_safety_INCLUDE = $(boot_app_mmcsd_sdl_safety_PATH)
-boot_app_mmcsd_sdl_safety_SOCLIST = j784s4
-boot_app_mmcsd_sdl_safety_BOARDLIST = j784s4_evm
+boot_app_mmcsd_sdl_safety_SOCLIST = j784s4 j721s2
+boot_app_mmcsd_sdl_safety_BOARDLIST = j784s4_evm j721s2_evm
 export boot_app_mmcsd_sdl_safety_SOCLIST
 export boot_app_mmcsd_sdl_safety_BOARDLIST
 boot_app_mmcsd_sdl_safety_$(SOC)_CORELIST = mcu1_0
@@ -2576,6 +2654,32 @@ sbl_EXAMPLE_LIST += boot_app_mmcsd_linux
 boot_app_mmcsd_linux_SBL_APPIMAGEGEN = yes
 export boot_app_mmcsd_linux_SBL_APPIMAGEGEN
 
+# Boot App MMCSD with SDL Safety Tests to boot qnx
+boot_app_mmcsd_sdl_safety_qnx_COMP_LIST = boot_app_mmcsd_sdl_safety_qnx
+boot_app_mmcsd_sdl_safety_qnx_RELPATH = ti/boot/sbl/example/boot_app
+boot_app_mmcsd_sdl_safety_qnx_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/example/boot_app/binary/$(BOARD)/mmcsd
+boot_app_mmcsd_sdl_safety_qnx_PATH = $(PDK_SBL_COMP_PATH)/example/boot_app
+boot_app_mmcsd_sdl_safety_qnx_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/boot_app.mk BOOTMODE=mmcsd BUILD_HS=no HLOSBOOT=qnx SDL_SAFETY_TASK_ENABLED=yes
+export boot_app_mmcsd_sdl_safety_qnx_MAKEFILE
+boot_app_mmcsd_sdl_safety_qnx_BOARD_DEPENDENCY = yes
+boot_app_mmcsd_sdl_safety_qnx_SOC_DEPENDENCY = yes
+boot_app_mmcsd_sdl_safety_qnx_CORE_DEPENDENCY = yes
+export boot_app_mmcsd_sdl_safety_qnx_COMP_LIST
+export boot_app_mmcsd_sdl_safety_qnx_BOARD_DEPENDENCY
+export boot_app_mmcsd_sdl_safety_qnx_SOC_DEPENDENCY
+export boot_app_mmcsd_sdl_safety_qnx_CORE_DEPENDENCY
+boot_app_mmcsd_sdl_safety_qnx_PKG_LIST = boot_app_mmcsd_sdl_safety_qnx
+boot_app_mmcsd_sdl_safety_qnx_INCLUDE = $(boot_app_mmcsd_sdl_safety_qnx_PATH)
+boot_app_mmcsd_sdl_safety_qnx_SOCLIST = j721s2 j784s4
+boot_app_mmcsd_sdl_safety_qnx_BOARDLIST = j721s2_evm j784s4_evm
+export boot_app_mmcsd_sdl_safety_qnx_SOCLIST
+export boot_app_mmcsd_sdl_safety_qnx_BOARDLIST
+boot_app_mmcsd_sdl_safety_qnx_$(SOC)_CORELIST = mcu1_0
+export boot_app_mmcsd_sdl_safety_qnx_$(SOC)_CORELIST
+sbl_EXAMPLE_LIST += boot_app_mmcsd_sdl_safety_qnx
+boot_app_mmcsd_sdl_safety_qnx_SBL_APPIMAGEGEN = yes
+export boot_app_mmcsd_sdl_safety_qnx_SBL_APPIMAGEGEN
+
 # Boot App MMCSD with SDL Safety Tests to boot linux
 boot_app_mmcsd_sdl_safety_linux_COMP_LIST = boot_app_mmcsd_sdl_safety_linux
 boot_app_mmcsd_sdl_safety_linux_RELPATH = ti/boot/sbl/example/boot_app
@@ -2592,8 +2696,8 @@ export boot_app_mmcsd_sdl_safety_linux_SOC_DEPENDENCY
 export boot_app_mmcsd_sdl_safety_linux_CORE_DEPENDENCY
 boot_app_mmcsd_sdl_safety_linux_PKG_LIST = boot_app_mmcsd_sdl_safety_linux
 boot_app_mmcsd_sdl_safety_linux_INCLUDE = $(boot_app_mmcsd_sdl_safety_linux_PATH)
-boot_app_mmcsd_sdl_safety_linux_SOCLIST = j784s4
-boot_app_mmcsd_sdl_safety_linux_BOARDLIST = j784s4_evm
+boot_app_mmcsd_sdl_safety_linux_SOCLIST = j784s4 j721s2
+boot_app_mmcsd_sdl_safety_linux_BOARDLIST = j784s4_evm j721s2_evm
 export boot_app_mmcsd_sdl_safety_linux_SOCLIST
 export boot_app_mmcsd_sdl_safety_linux_BOARDLIST
 boot_app_mmcsd_sdl_safety_linux_$(SOC)_CORELIST = mcu1_0

@@ -78,7 +78,7 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-char * BootApp_lbistGetPostStatusString(SDL_LBIST_postStatus postStatus);
+char * LBIST_getPostStatusString(SDL_LBIST_postStatus postStatus);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -163,6 +163,37 @@ LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1] =
   .numAuxDevices          = 0u,                        /* No Aux devices */
  },
 
+
+ /* VPAC0 */
+ {
+  .coreName               = "VPAC0",
+  .instance               = SDL_LBIST_INST_VPAC0,
+  .secondaryCoreNeeded    = false,           /* Secondary core needed */
+  .wfiCheckNeeded         = false,           /* wfi check needed */
+  .secCoreName            = "None",          /* Secondary core */
+  .cpuStatusFlagMask      = TISCI_MSG_VAL_PROC_BOOT_STATUS_FLAG_R5_WFI, /* Expected boot status value for wfi */
+  .tisciProcId            = 0,  /* No proc id */
+  .tisciSecProcId         = 0,  /* No Proc Id */
+  .tisciDeviceId          = TISCI_DEV_VPAC0,                       /* VPAC Device Id */
+  .tisciSecDeviceId       = 0,
+  .numAuxDevices          = 0u,                                    /* No Aux devices */
+ },
+
+ /* DMPAC */
+ {
+  .coreName               = "DMPAC",
+  .instance               = SDL_LBIST_INST_DMPAC,
+  .secondaryCoreNeeded    = false,           /* Secondary core needed */
+  .wfiCheckNeeded         = false,           /* wfi check needed */
+  .secCoreName            = "None",          /* Secondary core */
+  .cpuStatusFlagMask      = TISCI_MSG_VAL_PROC_BOOT_STATUS_FLAG_R5_WFI, /* Expected boot status value for wfi */
+  .tisciProcId            = 0u,  /* No proc id */
+  .tisciSecProcId         = 0u,  /* No Proc Id */
+  .tisciDeviceId          = TISCI_DEV_DMPAC0,                       /* DMPAC Device Id */
+  .tisciSecDeviceId       = 0u,
+  .numAuxDevices          = 0u,                                     /* No Aux devices */
+ },
+
  /* A72_0*/
  {
   .coreName               = "A72SS0",
@@ -176,6 +207,21 @@ LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1] =
   .tisciDeviceId          = TISCI_DEV_A72SS0,  /* A72SS0 Device Id */
   .tisciSecDeviceId       = 0u,  /* No dev id */
   .numAuxDevices          = 0u,   /* Number of Aux devices */
+ },
+
+ /* VPAC1 */
+ {
+  .coreName               = "VPAC1",
+  .instance               = SDL_LBIST_INST_VPAC1,
+  .secondaryCoreNeeded    = false,           /* Secondary core needed */
+  .wfiCheckNeeded         = false,           /* wfi check needed */
+  .secCoreName            = "None",          /* Secondary core */
+  .cpuStatusFlagMask      = TISCI_MSG_VAL_PROC_BOOT_STATUS_FLAG_R5_WFI, /* Expected boot status value for wfi */
+  .tisciProcId            = 0u,  /* No proc id */
+  .tisciSecProcId         = 0u,  /* No Proc Id */
+  .tisciDeviceId          = TISCI_DEV_VPAC1,                       /* VPAC Device Id */
+  .tisciSecDeviceId       = 0u,
+  .numAuxDevices          = 0u,                                    /* No Aux devices */
  },
  
  /* A72_1*/
@@ -369,7 +415,7 @@ LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1] =
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-char * BootApp_lbistGetPostStatusString(SDL_LBIST_postStatus postStatus)
+char * LBIST_getPostStatusString(SDL_LBIST_postStatus postStatus)
 {
     if (postStatus == SDL_LBIST_POST_NOT_RUN)
     {
@@ -390,10 +436,10 @@ char * BootApp_lbistGetPostStatusString(SDL_LBIST_postStatus postStatus)
     return NULL;
 }
 
-void BootApp_lbistPrintPostStatus(SDL_LBIST_postResult *result)
+void LBIST_printPostStatus(SDL_LBIST_postResult *result)
 {
-    UART_printf("    HW POST MCU Status : %s\n", (BootApp_lbistGetPostStatusString(result->mcuPostStatus)) ? : "Invalid");
-    UART_printf("    HW POST DMSC Status : %s\n", (BootApp_lbistGetPostStatusString(result->smsPostStatus)) ? : "Invalid");
+    UART_printf("    HW POST MCU Status : %s\n", (LBIST_getPostStatusString(result->mcuPostStatus)) ? : "Invalid");
+    UART_printf("    HW POST DMSC Status : %s\n", (LBIST_getPostStatusString(result->smsPostStatus)) ? : "Invalid");
 
     return;
 }

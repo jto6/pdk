@@ -7,7 +7,7 @@
  */
 
 /*
- * Copyright (C) 2018-2022 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2018-2025 Texas Instruments Incorporated - http://www.ti.com/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -43,6 +43,14 @@
 #include "sbl_main.h"
 #include <ti/csl/cslr_gtc.h>
 #include <sbl_err_trap.h>
+#if defined (SBL_ENABLE_BIST)
+#include <osal/sdl_osal.h>
+#include <sdl_pbist.h>
+#include <bist.h>
+#include <pbist_utils.h>
+#include <bist_core_defs.h>
+#include "sbl_pbist.h"
+#endif
 
 /**********************************************************************
  ************************** Macros ************************************
@@ -272,6 +280,36 @@ int main()
         #define SBL_CLOCK_INIT              (BOARD_INIT_MODULE_CLOCK)
     #endif
 
+    #if defined(SBL_ENABLE_BIST)
+    #if defined(SOC_J784S4)
+    uint32_t PBIST_INSTANCES[NUM_BIST_TESTS]= {
+        PBIST_INSTANCE_CODEC,
+        PBIST_INSTANCE_MAININFRA_1,
+        PBIST_INSTANCE_DSS,
+        PBIST_INSTANCE_NAVSS,
+        PBIST_INSTANCE_MAININFRA_0,
+        PBIST_INSTANCE_HC,
+        PBIST_INSTANCE_CODEC_1,
+        PBIST_INSTANCE_A72_0_0,
+        PBIST_INSTANCE_A72_0_1,
+        PBIST_INSTANCE_A72_1_0,
+        PBIST_INSTANCE_A72_1_1,
+        PBIST_INSTANCE_MSMC 
+        };
+    #elif defined(SOC_J721S2)
+    uint32_t PBIST_INSTANCES[NUM_BIST_TESTS]= {
+        PBIST_INSTANCE_MAININFRA_1, 
+        PBIST_INSTANCE_MAININFRA_0,
+        PBIST_INSTANCE_HC,
+        PBIST_INSTANCE_NAVSS,
+        PBIST_INSTANCE_CODEC_1,
+        PBIST_INSTANCE_A72_0,
+        PBIST_INSTANCE_MSMC,
+        PBIST_INSTANCE_DSS
+        };    
+    #endif
+    #endif
+
     /* Any SoC specific Init. */
     SBL_SocEarlyInit();
 
@@ -433,11 +471,36 @@ int main()
     /* Profile Point after Board init PLL and before Board init Clocks */
     SBL_ADD_PROFILE_POINT;
     if (CSL_PASS != Board_init(SBL_CLOCK_INIT))
-    {
+	{
         retVal = CSL_EFAIL;
-        SBL_log(SBL_LOG_ERR, "\n Failed to initialize clocks !! \n");
+	    SBL_log(SBL_LOG_ERR, "\n Failed to initialize clocks !! \n");
+    }
+    SBL_log(SBL_LOG_MAX, "done.\n");
+#endif
+
+#if defined (SBL_ENABLE_BIST)
+
+    /* Initialize SDL Osal Layer */
+    int32_t ret = BootApp_osalWrapper();
+    if (ret != SDL_PASS)    {
+        SBL_log(SBL_LOG_MAX,"SDL OSAL Init Failed\n");
     }
 
+    /* Run PBIST tests */
+    for(uint32_t i = 0; i<NUM_BIST_TESTS; i++)
+    {
+        SBL_runPBIST(PBIST_INSTANCES[i]);
+	}
+    
+    /* Reset Main Domain */
+    SBL_log(SBL_LOG_MAX, "Resetting Main Domain ...");
+    SBL_swResetMainDomain();
+    SBL_log(SBL_LOG_MAX, "done.\n");
+
+    /* Recover Main Domain */
+    SBL_log(SBL_LOG_MAX, "Recovering Main Domain ...");
+    SBL_mainDomainBootSetup();
+ 
     SBL_log(SBL_LOG_MAX, "done.\n");
 #endif
     /*Profile point after Board init Clocks and before DDR init*/
@@ -472,8 +535,10 @@ int main()
     *gtcRegister = *gtcRegister | CSL_GTC_CFG1_CNTCR_EN_MASK | CSL_GTC_CFG1_CNTCR_HDBG_MASK;
 
 #if defined(SOC_J721E) || (!defined(SBL_ENABLE_HLOS_BOOT) && defined(SOC_J7200)) || (!defined(SBL_ENABLE_HLOS_BOOT) && defined(SOC_J784S4))
+#if !defined (SBL_ENABLE_BIST)
     /* Configure external Ethernet PHY and pinmux */
     SBL_ConfigureEthernet();
+#endif
 #endif
 #endif
     /*Adding a profile point after Ethernet Configuration and before EEPROM data copying*/

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@
  * */
 
 /* Defines PBIST's needed for all cores before the first stage of the Main Domain
- * boot sequence for J784S4 SOC */
+ * boot sequence for J721S2 SOC */
 int pbist_pre_boot_stage[] =
 {
     PBIST_HWPOST_MCU_INDEX,    /* Read results of HW POST MCU PBIST */          
@@ -96,19 +96,23 @@ int pbist_pre_boot_stage[] =
 int pbist_pre_boot_stage_status[] =
 {
     0,  /* HW Post status */
+    0,  /* Main Infra_0 */   
+
 };
 
 int pbist_pre_boot_stage_neg_status[] =
 {
     0,  /* HW Post status */
+    0,  /* Main Infra_0 */
 };
+
 int pbist_pre_boot_stage_rom_test_status[] =
 {
     0,  /* HW Post status */
 };
 
 /* Defines LBIST's needed for all cores before the first stage of the Main Domain
- * boot sequence for J784S4 SOC */
+ * boot sequence for J721S2 SOC */
 int lbist_pre_boot_stage[] =
 {
    LBIST_HWPOST_INST_SMS_INDEX,    /* Read results of HW POST SMS LBIST */
@@ -122,73 +126,53 @@ int lbist_pre_boot_stage_status[] =
 };
 
 /* Defines PBIST's for the first stage of the Main Domain
- * boot sequence for J784S4 SOC */
+ * boot sequence for J721S2 SOC */
 int pbist_first_boot_stage[] =
 {
-    PBIST_INSTANCE_MAINR5F0,
-    PBIST_INSTANCE_CODEC,
-    PBIST_INSTANCE_MAININFRA_1,
-    PBIST_INSTANCE_VPAC_0,
-    PBIST_INSTANCE_DSS,
-    PBIST_INSTANCE_DMPAC,
-    PBIST_INSTANCE_NAVSS,
-    PBIST_INSTANCE_MAININFRA_0,
-    PBIST_INSTANCE_GPU,
-    PBIST_INSTANCE_HC,
-    PBIST_INSTANCE_VPAC_1,
-    PBIST_INSTANCE_MAINR5F2,
-    PBIST_INSTANCE_CODEC_1,
-    PBIST_INSTANCE_A72_0_0,
-    PBIST_INSTANCE_A72_0_1,
-    PBIST_INSTANCE_A72_1_0,
-    PBIST_INSTANCE_A72_1_1,
-    PBIST_INSTANCE_C7X_0,
-    PBIST_INSTANCE_C7X_1,
-    PBIST_INSTANCE_C7X_2,
-    PBIST_INSTANCE_C7X_3,
-    PBIST_INSTANCE_ANA_0,
-    PBIST_INSTANCE_ANA_1,
-    PBIST_INSTANCE_ANA_2,
-    PBIST_INSTANCE_ANA_3,
-	PBIST_INSTANCE_MSMC,
-    PBIST_INSTANCE_MAINR5F1
+   PBIST_INSTANCE_VPAC_0,     
+   PBIST_INSTANCE_MAININFRA_1,
+   PBIST_INSTANCE_DMPAC,      
+   PBIST_INSTANCE_MAINR5F0,   
+   PBIST_INSTANCE_MAINR5F1,   
+   PBIST_INSTANCE_MAININFRA_0,
+   PBIST_INSTANCE_HC,         
+   PBIST_INSTANCE_NAVSS,      
+   PBIST_INSTANCE_CODEC_1,    
+   PBIST_INSTANCE_GPU,        
+   PBIST_INSTANCE_C7x_0,      
+   PBIST_INSTANCE_C7x_1,      
+   PBIST_INSTANCE_A72_0,      
+   PBIST_INSTANCE_MSMC,       
+   PBIST_INSTANCE_MCUR5F1,    
+   PBIST_INSTANCE_MCU_0,      
+   PBIST_INSTANCE_MCU_1,   
+   PBIST_INSTANCE_DSS
 };
 
+
 /* Defines LBIST's for the first stage of the Main Domain
- * boot sequence for J784S4 SOC */
+ * boot sequence for J721S2 SOC */
 int lbist_first_boot_stage[] =
 {
-    LBIST_INST_MAINR5F0_INDEX,       
-    LBIST_INST_MAINR5F2_INDEX        
+    LBIST_INST_MAINR5F0_INDEX               
 };
 
 /* Defines LBIST's for the second stage of the Main Domain
- * boot sequence for J784S4 SOC */
+ * boot sequence for J721S2 SOC */
 int lbist_second_boot_stage[] =
 {
-    LBIST_INST_MAINR5F1_INDEX,
-    LBIST_INST_C7X0_INDEX,
-    LBIST_INST_C7X1_INDEX,
-    LBIST_INST_C7X2_INDEX,
-    LBIST_INST_C7X3_INDEX,
-    LBIST_INST_VPAC0_INDEX,
-    LBIST_INST_DMPAC_INDEX,
-    LBIST_INST_A72_0_INDEX,
-    LBIST_INST_A72_1_INDEX
+    LBIST_INST_MAINR5F1_INDEX,   /* Main R5F 1 */
+    LBIST_INST_C7X0_INDEX,       /* C7X_0 */
+    LBIST_INST_C7X1_INDEX,       /* C7X_1 */
+    LBIST_INST_VPAC0_INDEX,      /* VPAC_0 */
+    LBIST_INST_DMPAC_INDEX       /* DMPAC */
 };
 
 /* Defines LBIST's for the third stage of the Main Domain
- * boot sequence for J784S4 SOC */
+ * boot sequence for J721S2 SOC */
 int lbist_third_boot_stage[] =
 {
-    LBIST_INST_A72SS0_CORE0_INDEX,
-    LBIST_INST_A72SS0_CORE1_INDEX,
-    LBIST_INST_A72SS0_CORE2_INDEX,
-    LBIST_INST_A72SS0_CORE3_INDEX,
-    LBIST_INST_A72SS1_CORE0_INDEX,
-    LBIST_INST_A72SS1_CORE1_INDEX,
-    LBIST_INST_A72SS1_CORE2_INDEX,
-    LBIST_INST_A72SS1_CORE3_INDEX
+    LBIST_INST_A72_0_INDEX
 
 };
 
@@ -232,87 +216,60 @@ const char *BootApp_pbistName(uint32_t pbistID)
        case (PBIST_HWPOST_MCU_INDEX):
            name="PBIST_HWPOST_MCU_INDEX";
            break;
-       case (PBIST_INSTANCE_MAINR5F0):
-           name="PBIST_INSTANCE_MAINR5F0";
-           break;
-       case (PBIST_INSTANCE_CODEC):
-           name="PBIST_INSTANCE_CODEC";
+       case (PBIST_INSTANCE_VPAC_0):
+           name="PBIST_INSTANCE_VPAC_0";
            break;
        case (PBIST_INSTANCE_MAININFRA_1):
            name="PBIST_INSTANCE_MAININFRA_1";
            break;
-       case (PBIST_INSTANCE_VPAC_0):
-           name="PBIST_INSTANCE_VPAC_0";
-           break;
-       case (PBIST_INSTANCE_DSS):
-           name="PBIST_INSTANCE_DSS";
-           break;
        case (PBIST_INSTANCE_DMPAC):
            name="PBIST_INSTANCE_DMPAC";
            break;
-       case (PBIST_INSTANCE_NAVSS):
-           name="PBIST_INSTANCE_NAVSS";
-           break;
-       case (PBIST_INSTANCE_MAININFRA_0):
-           name="PBIST_INSTANCE_MAININFRA_0";
-           break;
-       case (PBIST_INSTANCE_GPU):	
-           name="PBIST_INSTANCE_GPU";
-           break;
-       case (PBIST_INSTANCE_HC):
-           name="PBIST_INSTANCE_HC";
-           break;
-       case (PBIST_INSTANCE_VPAC_1):
-           name="PBIST_INSTANCE_VPAC_1";
-           break;
-       case (PBIST_INSTANCE_MAINR5F2):
-           name="PBIST_INSTANCE_MAINR5F2";
-           break;
-       case (PBIST_INSTANCE_CODEC_1):
-           name="PBIST_INSTANCE_CODEC_1";
-           break;
-       case (PBIST_INSTANCE_A72_0_0):
-           name="PBIST_INSTANCE_A72_0_0";
-           break;
-       case (PBIST_INSTANCE_A72_0_1):
-           name="PBIST_INSTANCE_A72_0_1";
-           break;
-       case (PBIST_INSTANCE_A72_1_0):
-           name="PBIST_INSTANCE_A72_1_0";
-           break;
-       case (PBIST_INSTANCE_A72_1_1):
-           name="PBIST_INSTANCE_A72_1_1";
-           break;
-       case (PBIST_INSTANCE_C7X_0):
-           name="PBIST_INSTANCE_C7X_0";
-           break;
-       case (PBIST_INSTANCE_C7X_1):
-           name="PBIST_INSTANCE_C7X_1";
-           break;
-       case (PBIST_INSTANCE_C7X_2):
-           name="PBIST_INSTANCE_C7X_2";
-           break;
-       case (PBIST_INSTANCE_C7X_3):
-           name="PBIST_INSTANCE_C7X_3";
-           break;
-       case (PBIST_INSTANCE_ANA_0):
-           name="PBIST_INSTANCE_ANA_0";
-           break;
-       case (PBIST_INSTANCE_ANA_1):
-           name="PBIST_INSTANCE_ANA_1";
-           break;
-       case (PBIST_INSTANCE_ANA_2):
-           name="PBIST_INSTANCE_ANA_2";
-           break;
-       case (PBIST_INSTANCE_ANA_3):
-           name="PBIST_INSTANCE_ANA_3";
-           break;
-       case (PBIST_INSTANCE_MSMC):
-           name="PBIST_INSTANCE_MSMC";
+       case (PBIST_INSTANCE_MAINR5F0):
+           name="PBIST_INSTANCE_MAINR5F0";
            break;
        case (PBIST_INSTANCE_MAINR5F1):
            name="PBIST_INSTANCE_MAINR5F1";
            break;
+       case (PBIST_INSTANCE_MAININFRA_0):
+           name="PBIST_INSTANCE_MAININFRA_0";
+           break;
+       case (PBIST_INSTANCE_HC):
+           name="PBIST_INSTANCE_HC";
+           break;
+       case (PBIST_INSTANCE_NAVSS):
+           name="PBIST_INSTANCE_NAVSS";
+           break;
+       case (PBIST_INSTANCE_CODEC_1):
+           name="PBIST_INSTANCE_CODEC_1";
+           break;		
+       case (PBIST_INSTANCE_GPU):	
+           name="PBIST_INSTANCE_GPU";
+           break;			
+       case (PBIST_INSTANCE_C7x_0):
+           name="PBIST_INSTANCE_C7x_0";
+           break;	
+       case (PBIST_INSTANCE_C7x_1):
+           name="PBIST_INSTANCE_C7x_1";
+           break;	
+       case (PBIST_INSTANCE_A72_0):
+           name="PBIST_INSTANCE_A72_0";
+           break;	
+       case (PBIST_INSTANCE_MSMC):
+           name="PBIST_INSTANCE_MSMC";
+           break;
+       case (PBIST_INSTANCE_MCUR5F1):
+           name="PBIST_INSTANCE_MCUR5F1";
+           break;	
+       case (PBIST_INSTANCE_MCU_0):
+           name="PBIST_INSTANCE_MCU_0";
+           break;	
+       case (PBIST_INSTANCE_MCU_1):
+           name="PBIST_INSTANCE_MCU_1";
+           break;			
+       case (PBIST_INSTANCE_DSS):
+           name="PBIST_INSTANCE_DSS";
+           break;				
        default:
            name="INVALID ID";
            break;
@@ -353,45 +310,6 @@ const char *BootApp_lbistName(uint32_t lbistID)
             break;
         case (LBIST_INST_A72_0_INDEX):
             name="LBIST_INST_A72_0_INDEX";
-            break;
-        case (LBIST_INST_VPAC1_INDEX):
-            name="LBIST_INST_VPAC1_INDEX";
-            break;
-        case (LBIST_INST_A72_1_INDEX):
-            name="LBIST_INST_A72_1_INDEX";
-            break;
-        case (LBIST_INST_C7X2_INDEX):
-            name="LBIST_INST_C7X2_INDEX";
-            break;
-        case (LBIST_INST_C7X3_INDEX):
-            name="LBIST_INST_C7X3_INDEX";
-            break;
-        case (LBIST_INST_A72SS0_CORE0_INDEX):
-            name="LBIST_INST_A72SS0_CORE0_INDEX";
-            break;
-        case (LBIST_INST_A72SS0_CORE1_INDEX):
-            name="LBIST_INST_A72SS0_CORE1_INDEX";
-            break;
-        case (LBIST_INST_A72SS0_CORE2_INDEX):
-            name="LBIST_INST_A72SS0_CORE2_INDEX";
-            break;
-        case (LBIST_INST_A72SS0_CORE3_INDEX):
-            name="LBIST_INST_A72SS0_CORE3_INDEX";
-            break;
-        case (LBIST_INST_A72SS1_CORE0_INDEX):
-            name="LBIST_INST_A72SS1_CORE0_INDEX";
-            break;
-        case (LBIST_INST_A72SS1_CORE1_INDEX):
-            name="LBIST_INST_A72SS1_CORE1_INDEX";
-            break;
-        case (LBIST_INST_A72SS1_CORE2_INDEX):
-            name="LBIST_INST_A72SS1_CORE2_INDEX";
-            break;
-        case (LBIST_INST_A72SS1_CORE3_INDEX):
-            name="LBIST_INST_A72SS1_CORE3_INDEX";
-            break;
-        case (LBIST_INST_MAINR5F2_INDEX):
-            name="LBIST_INST_MAINR5F2_INDEX";
             break;
         default:
             name="INVALID ID";

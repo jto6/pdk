@@ -135,18 +135,18 @@
     init : TRUE  --> Initialize
     init : FALSE --> Restore
 */
-int32_t BootApp_pbistVpac0AuxInitRestore(bool init);
-int32_t BootApp_pbistVpac1AuxInitRestore(bool init);
-int32_t BootApp_pbistHcAuxInitRestore(bool init);
-int32_t BootApp_pbistMainInfra0AuxInitRestore(bool init);
-int32_t BootApp_pbistNavssAuxInitRestore(bool init);
-int32_t BootApp_pbistCodecAuxInitRestore(bool init);
-int32_t BootApp_pbistGpuAuxInitRestore(bool init);
-int32_t BootApp_pbistDssAuxInitRestore(bool init);
-int32_t BootApp_pbistA7200AuxInitRestore(bool init);
-int32_t BootApp_pbistA7201AuxInitRestore(bool init);
-int32_t BootApp_pbistA7210AuxInitRestore(bool init);
-int32_t BootApp_pbistA7211AuxInitRestore(bool init);
+int32_t PBIST_VPAC0AuxInitRestore(bool init);
+int32_t PBIST_VPAC1AuxInitRestore(bool init);
+int32_t PBIST_HCAuxInitRestore(bool init);
+int32_t PBIST_MainInfra0AuxInitRestore(bool init);
+int32_t PBIST_NAVSSAuxInitRestore(bool init);
+int32_t PBIST_CodecAuxInitRestore(bool init);
+int32_t PBIST_GPUAuxInitRestore(bool init);
+int32_t PBIST_DSSAuxInitRestore(bool init);
+int32_t PBIST_A720_0AuxInitRestore(bool init);
+int32_t PBIST_A720_1AuxInitRestore(bool init);
+int32_t PBIST_A721_0AuxInitRestore(bool init);
+int32_t PBIST_A721_1AuxInitRestore(bool init);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -283,216 +283,595 @@ uint32_t PBIST_ANA3AuxDevList[ANA_NUM_AUX_DEVICES] =
 };
 
 PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1] =
-    {
-        /* HW POST - Used to check the status of HW POST MCU PBIST */
-        {
-            .testName              = "PBIST HWPOST MCU",
-            .pbistInst             = SDL_PBIST_INST_MCUR5F0,
-            .numPostPbistToCheck   = 1u,
-        },		
-        /* Main R5F 0 */
-        {
-            .tisciPBISTDeviceId     = TISCI_DEV_PBIST2,    /* PBIST device id  */
-            .testName               = "Main R5F 0 PBIST",
-            .pbistInst              = SDL_PBIST_INST_MAINR5F0,
-            .numPostPbistToCheck    = 0u,
-            .procRstNeeded          = true,
-            .secondaryCoreNeeded    = true,                /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "Main R5F0 core0",   /* Primary core   */
-            .secCoreName            = "Main R5F0 core1",   /* Secondary core */
-            .tisciProcId            = SCICLIENT_PROC_ID_R5FSS0_CORE0, /* Main R5F core 0 Proc Id */
-            .tisciSecProcId         = SCICLIENT_PROC_ID_R5FSS0_CORE1, /* Main R5F core 1 Proc Id */
-            .tisciDeviceId          = TISCI_DEV_R5FSS0_CORE0,   /* Main R5F core 0 Device Id */
-            .tisciSecDeviceId       = TISCI_DEV_R5FSS0_CORE1,   /* Main R5F core 1 Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = 0u,                   /* No Aux devices */
-            .auxInitRestoreFunction = NULL,                 /* Auxilliary init function */
-        },
-        /* Main R5F 2 */
-        {
-            .testName                  = "Main R5F 2 PBIST",
-            .pbistInst                 = SDL_PBIST_INST_MAINR5F2,
-            .tisciPBISTDeviceId        = TISCI_DEV_PBIST14,    /* PBIST device id  */
-            .procRstNeeded             = true,
-            .secondaryCoreNeeded       = true,                /* Secondary core needed */
-            .thirdCoreNeeded           = false,
-            .fourthCoreNeeded          = false,
-            .coreName                  = "Main R5F0 core0",   /* Primary core   */
-            .secCoreName               = "Main R5F0 core1",   /* Secondary core */
-            .tisciProcId               = SCICLIENT_PROC_ID_R5FSS2_CORE0, /* Main R5F core 0 Proc Id */
-            .tisciSecProcId            = SCICLIENT_PROC_ID_R5FSS2_CORE1, /* Main R5F core 1 Proc Id */
-            .tisciDeviceId             = TISCI_DEV_R5FSS2_CORE0,   /* Main R5F core 0 Device Id */
-            .tisciSecDeviceId          = TISCI_DEV_R5FSS2_CORE1,   /* Main R5F core 1 Device Id */
-            .coreCustPwrSeqNeeded      = false,
-            .numAuxDevices             = 0u,                   /* No Aux devices */
-            .auxInitRestoreFunction    = NULL,                 /* Auxilliary init function */
-        },
-        /* C7X_0 */
-        {
-            .testName               = "C7X_0 PBIST",
-            .pbistInst              = SDL_PBIST_INST_C7X_0,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_C71X_0_PBIST_VD,   /* PBIST device id  */
-            .procRstNeeded          = true,              /* Initialize done flag */
-            .secondaryCoreNeeded    = false,              /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "C7x 0",            /* Primary core   */
-            .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS0_CORE0_0,  /* C6x core0 Proc Id */
-            .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS0_CORE0,          /* C6x Core 0 Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = C7X0_NUM_AUX_DEVICES,                  /* No Aux devices */
-            .auxDeviceIdsP          = &PBIST_C7X0_AuxDevList[0],
-            .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
-        },
-        /* C7X_1 */
-        {
-            .testName               = "C7X_1 PBIST",
-            .pbistInst              = SDL_PBIST_INST_C7X_1,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_C71X_1_PBIST_VD,   /* PBIST device id  */
-            .procRstNeeded          = true,              /* Initialize done flag */
-            .secondaryCoreNeeded    = false,              /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "C7x 1",            /* Primary core   */
-            .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS1_CORE0_0,  /* C7x core0 Proc Id */
-            .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS1_CORE0,          /* C7x Core 0 Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = C7X1_NUM_AUX_DEVICES,                  /* No Aux devices */
-            .auxDeviceIdsP          = &PBIST_C7X1_AuxDevList[0],
-            .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
-        },
-        /* C7X_2 */
-        {
-            .testName               = "C7X_2 PBIST",
-            .pbistInst              = SDL_PBIST_INST_C7X_2,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AC71_6_DFT_EMBED_PBIST_0,   /* PBIST device id  */
-            .procRstNeeded          = true,              /* Initialize done flag */
-            .secondaryCoreNeeded    = false,              /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "C7x 2",            /* Primary core   */
-            .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS2_CORE0_0,  /* C6x core0 Proc Id */
-            .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS2_CORE0,          /* C6x Core 0 Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = C7X2_NUM_AUX_DEVICES,                  /* No Aux devices */
-            .auxDeviceIdsP          = &PBIST_C7X2_AuxDevList[0],
-            .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
-        },
-        /* C7X_3*/
-        {
-            .testName               = "C7X_3 PBIST",
-            .pbistInst              = SDL_PBIST_INST_C7X_3,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AC71_7_DFT_EMBED_PBIST_0,   /* PBIST device id  */
-            .procRstNeeded          = true,              /* Initialize done flag */
-            .secondaryCoreNeeded    = false,              /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "C7x 3",            /* Primary core   */
-            .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS3_CORE0_0,  /* C6x core0 Proc Id */
-            .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS3_CORE0,          /* C6x Core 0 Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = C7X3_NUM_AUX_DEVICES,                  /* No Aux devices */
-            .auxDeviceIdsP          = &PBIST_C7X3_AuxDevList[0],
-            .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
-        },
-        /* ANA_0 */
-        {
-            .testName               = "ANA_0 PBIST",
-            .pbistInst              = SDL_PBIST_INST_ANA_0,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW4_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
-            .procRstNeeded          = false,
-            .secondaryCoreNeeded    = false,                      /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "ANA_0",                    /* Primary core   */
-            .tisciProcId            = 0x0u,                       /* No ProcId for ANA */
-            .tisciDeviceId          = 0x0u,                       /* ANA Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = ANA_NUM_AUX_DEVICES,        /* Number of Aux devices   */
-            .auxDeviceIdsP          = &PBIST_ANA0AuxDevList[0],    /* Array of Aux device ids */
-            .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
-        },
-        /* ANA_1 */
-        {
-            .testName               = "ANA_1 PBIST",
-            .pbistInst              = SDL_PBIST_INST_ANA_1,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW5_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
-            .procRstNeeded          = false,
-            .secondaryCoreNeeded    = false,                      /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "ANA_1",                     /* Primary core   */
-            .tisciProcId            = 0x0u,                        /* No ProcId for ANA */
-            .tisciDeviceId          = 0x0u,                        /* ANA Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = ANA_NUM_AUX_DEVICES,         /* Number of Aux devices   */
-            .auxDeviceIdsP          = &PBIST_ANA1AuxDevList[0],    /* Array of Aux device ids */
-            .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
-        },
-        /* ANA_2 */
-        {
-            .testName               = "ANA_2 PBIST",
-            .pbistInst              = SDL_PBIST_INST_ANA_2,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW6_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
-            .procRstNeeded          = false,
-            .secondaryCoreNeeded    = false,                      /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "ANA_2",                    /* Primary core   */
-            .tisciProcId            = 0x0u,                       /* No ProcId for ANA */
-            .tisciDeviceId          = 0x0u,                       /* ANA Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = ANA_NUM_AUX_DEVICES,        /* Number of Aux devices   */
-            .auxDeviceIdsP          = &PBIST_ANA2AuxDevList[0],    /* Array of Aux device ids */
-            .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
-        },
-        /* ANA_3 */
-        {
-            .testName               = "ANA_3 PBIST",
-            .pbistInst              = SDL_PBIST_INST_ANA_3,
-            .numPostPbistToCheck    = 0u,
-            .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW7_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
-            .procRstNeeded          = false,
-            .secondaryCoreNeeded    = false,                      /* Secondary core needed */
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName               = "ANA_3",                    /* Primary core   */
-            .tisciProcId            = 0x0u,                       /* No ProcId for ANA */
-            .tisciDeviceId          = 0x0u,                       /* ANA Device Id */
-            .coreCustPwrSeqNeeded   = false,
-            .numAuxDevices          = ANA_NUM_AUX_DEVICES,        /* Number of Aux devices   */
-            .auxDeviceIdsP          = &PBIST_ANA3AuxDevList[0],    /* Array of Aux device ids */
-            .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
-        },
-        /* Main R5F 1 */
-        {
-            .testName = "Main R5F 1 PBIST",
-            .pbistInst = SDL_PBIST_INST_MAINR5F1,
-            .numPostPbistToCheck = 0u,
-            .tisciPBISTDeviceId = TISCI_DEV_PBIST10, /* PBIST device id  */
-            .procRstNeeded = true,
-            .secondaryCoreNeeded = true,                      /* Secondary core needed */            
-            .thirdCoreNeeded        = false,
-            .fourthCoreNeeded       = false,
-            .coreName = "Main R5F1 core0",                    /* Primary core   */
-            .secCoreName = "Main R5F1 core1",                 /* Secondary core */
-            .tisciProcId = SCICLIENT_PROC_ID_R5FSS1_CORE0,    /* Main R5F core 0 Proc Id */
-            .tisciSecProcId = SCICLIENT_PROC_ID_R5FSS1_CORE1, /* Main R5F core 1 Proc Id */
-            .tisciDeviceId = TISCI_DEV_R5FSS1_CORE0,          /* Main R5F core 0 Device id */
-            .tisciSecDeviceId = TISCI_DEV_R5FSS1_CORE1,       /* Main R5F core 1 Device id */
-            .coreCustPwrSeqNeeded = false,
-            .numAuxDevices = 0u,            /* No Aux devices */
-            .auxInitRestoreFunction = NULL, /* Auxilliary init function */     
-        },		
+{
+       /* HW POST - Used to check the status of HW POST MCU PBIST */
+       {
+           .testName              = "PBIST HWPOST MCU",
+           .pbistInst             = SDL_PBIST_INST_MCUR5F0,
+           .numPostPbistToCheck   = 1u,
+       },		
+       /* Main R5F 0 */
+       {
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST2,    /* PBIST device id  */
+           .testName               = "Main R5F 0 PBIST",
+           .pbistInst              = SDL_PBIST_INST_MAINR5F0,
+           .numPostPbistToCheck    = 0u,
+           .procRstNeeded          = true,
+           .secondaryCoreNeeded    = true,                /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "Main R5F0 core0",   /* Primary core   */
+           .secCoreName            = "Main R5F0 core1",   /* Secondary core */
+           .tisciProcId            = SCICLIENT_PROC_ID_R5FSS0_CORE0, /* Main R5F core 0 Proc Id */
+           .tisciSecProcId         = SCICLIENT_PROC_ID_R5FSS0_CORE1, /* Main R5F core 1 Proc Id */
+           .tisciDeviceId          = TISCI_DEV_R5FSS0_CORE0,   /* Main R5F core 0 Device Id */
+           .tisciSecDeviceId       = TISCI_DEV_R5FSS0_CORE1,   /* Main R5F core 1 Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = 0u,                   /* No Aux devices */
+           .auxInitRestoreFunction = NULL,                 /* Auxilliary init function */
+       },
+       /* Codec_0 */
+       {
+           .testName               = "Codec PBIST",
+           .pbistInst              = SDL_PBIST_INST_CODEC,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST11, /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,      /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "Encoder",             /* Primary core          */
+           .tisciProcId            = 0x0u,               /* No ProcId for Encoder */
+           .tisciDeviceId          = TISCI_DEV_CODEC0, /* Encoder Device Id     */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = CODEC_NUM_AUX_DEVICES,              /* No Aux devices        */
+           .auxDeviceIdsP          = &PBIST_CodecAuxDevList[0],          /* Array of Aux device ids */
+           .auxInitRestoreFunction = PBIST_CodecAuxInitRestore, /* Auxilliary init function */
+       },
+       /* Main Infra 1 */
+       {
+           .testName               = "Main Infra1 PBIST",
+           .pbistInst              = SDL_PBIST_INST_MAININFRA1,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST1, /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false, /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "",               /* No coreName   */
+           .tisciProcId            = 0x0u,          /* No Proc Id needed for Main Intrastructure */
+           .tisciDeviceId          = 0x0u,        /* No Device Id needed for Main infrastructure */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = MAIN_INFRA1_NUM_AUX_DEVICES,    /* Number of Aux devices */
+           .auxDeviceIdsP          = &PBIST_MainInfra1AuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,                  /* Auxilliary init function */
+       },
+       /* VPAC */
+       {
+           .testName               = "VPAC PBIST",
+           .pbistInst              = SDL_PBIST_INST_VPAC_0,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST8, /* PBIST device id  */
+           .procRstNeeded          = true,
+           .secondaryCoreNeeded    = false,     /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "VPAC core",          /* Primary core   */
+           .tisciProcId            = 0x0u,              /* No ProcId for VPAC */
+           .tisciDeviceId          = TISCI_DEV_VPAC0, /* VPAC core Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = 0u,                                /* No Aux devices */
+           .auxInitRestoreFunction = PBIST_VPAC0AuxInitRestore, /* Auxilliary init function */
+       },
+       /* DSS EDP DSI */
+       {
+           .testName               = "DSS EDP PBIST",
+           .pbistInst              = SDL_PBIST_INST_DSS,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST5, /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,        /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "DSS",                   /* Primary core   */
+           .tisciProcId            = 0x0u,                 /* No ProcId for MSMC */
+           .tisciDeviceId          = TISCI_DEV_DSS_DSI0, /* DSS Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = DSS_NUM_AUX_DEVICES,              /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_DSSAuxDevList[0],          /* Array of Aux device ids */
+           .auxInitRestoreFunction = PBIST_DSSAuxInitRestore, /* Auxilliary init function */
+       },
+       /* DMPAC */
+       {
+           .testName               = "DMPAC PBIST",
+           .pbistInst              = SDL_PBIST_INST_DMPAC,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST7, /* PBIST device id  */
+           .procRstNeeded          = true,
+           .secondaryCoreNeeded    = true,                /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "DMPAC core",                   /* Primary core   */
+           .secCoreName            = "DMPAC SDE core",            /* Secondary core */
+           .tisciProcId            = 0x0u,                        /* No ProcId for DMPAC */
+           .tisciSecProcId         = 0x0u,                     /* No Sec ProcId for DMPAC */
+           .tisciDeviceId          = TISCI_DEV_DMPAC0,          /* DMPAC Core Device Id */
+           .tisciSecDeviceId       = TISCI_DEV_DMPAC0_SDE_0, /* DMPAC_SDE Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = 0u,            /* No Aux devices */
+           .auxInitRestoreFunction = NULL, /* Auxilliary init function */
+       },
+       /* NAVSS */
+       {
+           .testName               = "NAVSS PBIST",
+           .pbistInst              = SDL_PBIST_INST_NAVSS,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST4, /* PBIST device id  */
+           .procRstNeeded          = true,
+           .secondaryCoreNeeded    = false,      /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "NAVSS",               /* Primary core   */
+           .tisciProcId            = 0x0u,               /* No ProcId for NAVSS */
+           .tisciDeviceId          = TISCI_DEV_NAVSS0, /* NAVSS Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = 0u,                                 /* No Aux devices */
+           .auxInitRestoreFunction = PBIST_NAVSSAuxInitRestore, /* Auxilliary init function */
+       },
+       /* Main Infra 0 */
+       {
+           .testName               = "Main Infra0 PBIST",
+           .pbistInst              = SDL_PBIST_INST_MAININFRA0,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST0, /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false, /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "",               /* No coreName   */
+           .tisciProcId            = 0x0u,          /* No Proc Id needed for Main Intrastructure */
+           .tisciDeviceId          = 0x0u,        /* No Device Id needed for Main infrastructure */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = MAIN_INFRA0_NUM_AUX_DEVICES,    /* Number of Aux devices */
+           .auxDeviceIdsP          = &PBIST_MainInfra0AuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,                  /* Auxilliary init function */
+       },
+       /* GPU */
+       {
+           .testName               = "GPU PBIST",
+           .pbistInst              = SDL_PBIST_INST_GPU,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_DFT_EMBED_PBIST_0, /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                                /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "GPU",                                           /* Primary core   */
+           .tisciProcId            = 0x0u,                                         /* No ProcId for GPU */
+           .tisciDeviceId          = TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_GPUCORE_0, /* GPU Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = GPU_NUM_AUX_DEVICES,              /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_GPUAuxDevList[0],          /* Array of Aux device ids */
+           .auxInitRestoreFunction = PBIST_GPUAuxInitRestore, /* Auxilliary init function */
+       },
+       /* HC */
+       {
+           .testName               = "HC PBIST",
+           .pbistInst              = SDL_PBIST_INST_HC,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST3, /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false, /* Secondary core needed */
+           .coreName               = "",               /* No coreName   */
+           .tisciProcId            = 0x0u,          /* No ProcId for HC */
+           .tisciDeviceId          = 0x0u,        /* No Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = HC_NUM_AUX_DEVICES,              /* No Aux devices */
+           .auxDeviceIdsP          = &PBIST_HCAuxDevList[0],          /* Array of Aux device ids */
+           .auxInitRestoreFunction = PBIST_HCAuxInitRestore, /* Auxilliary init function */
+       },
+       /* VPAC 1 */
+       {
+           .testName               = "VPAC_1 PBIST",
+           .pbistInst              = SDL_PBIST_INST_VPAC_1,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_PBIST13,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                      /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "VPAC",                      /* Primary core   */
+           .tisciProcId            = 0x0u,                       /* No ProcId for GPU */
+           .tisciDeviceId          = TISCI_DEV_VPAC1,   /* GPU Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = 0u,        /* Number of Aux devices   */
+           .auxInitRestoreFunction = PBIST_VPAC1AuxInitRestore,    /* Auxilliary init function */
+       },
+       /* Main R5F 2 */
+       {
+           .testName                  = "Main R5F 2 PBIST",
+           .pbistInst                 = SDL_PBIST_INST_MAINR5F2,
+           .tisciPBISTDeviceId        = TISCI_DEV_PBIST14,    /* PBIST device id  */
+           .procRstNeeded             = true,
+           .secondaryCoreNeeded       = true,                /* Secondary core needed */
+           .thirdCoreNeeded           = false,
+           .fourthCoreNeeded          = false,
+           .coreName                  = "Main R5F0 core0",   /* Primary core   */
+           .secCoreName               = "Main R5F0 core1",   /* Secondary core */
+           .tisciProcId               = SCICLIENT_PROC_ID_R5FSS2_CORE0, /* Main R5F core 0 Proc Id */
+           .tisciSecProcId            = SCICLIENT_PROC_ID_R5FSS2_CORE1, /* Main R5F core 1 Proc Id */
+           .tisciDeviceId             = TISCI_DEV_R5FSS2_CORE0,   /* Main R5F core 0 Device Id */
+           .tisciSecDeviceId          = TISCI_DEV_R5FSS2_CORE1,   /* Main R5F core 1 Device Id */
+           .coreCustPwrSeqNeeded      = false,
+           .numAuxDevices             = 0u,                   /* No Aux devices */
+           .auxInitRestoreFunction    = NULL,                 /* Auxilliary init function */
+	    },
+       /* Codec_1 */
+       {
+           .testName                 = "Codec 1 PBIST",
+           .pbistInst                = SDL_PBIST_INST_CODEC_1,
+           .numPostPbistToCheck      = 0u,
+           .tisciPBISTDeviceId       = TISCI_DEV_PBIST15,   /* PBIST device id  */
+           .procRstNeeded            = false,
+           .secondaryCoreNeeded      = false,                /* Secondary core needed */
+           .thirdCoreNeeded          = false,
+           .fourthCoreNeeded         = false,
+           .coreName                 = "CODEC",            /* Primary core          */
+           .tisciProcId              = 0x0u,                 /* No ProcId for Encoder */
+           .tisciDeviceId            = TISCI_DEV_CODEC1,   /* Encoder Device Id     */
+           .coreCustPwrSeqNeeded     = false,
+           .numAuxDevices            = CODEC_NUM_AUX_DEVICES,
+           .auxDeviceIdsP            = &PBIST_CodecAuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction   = PBIST_CodecAuxInitRestore, /* Auxilliary init function */
+       },
+       /* A72_0 0  */
+       {
+           .testName                 = "A72_0_0 PBIST",
+           .pbistInst                = PBIST_INSTANCE_A72_0_0,
+           .numPostPbistToCheck      = 0u,
+           .tisciPBISTDeviceId       = TISCI_DEV_COMPUTE_CLUSTER0_ARM0_DFT_EMBED_PBIST_0, /* Device Id for A72 PBIST */
+           .procRstNeeded            = true,
+           .secondaryCoreNeeded      = true,                /* Secondary core needed */
+           .thirdCoreNeeded          = true,
+           .fourthCoreNeeded         = true,
+           .coreName                 = "A72 core 0",        /* Primary core   */
+           .secCoreName              = "A72 core 1",        /* Secondary core */
+           .thCoreName               = "A72 core 2",
+           .foCoreName               = "A72 core 3",
+           .tisciProcId              = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE0_0,  /* A72 core 0 Proc Id */
+           .tisciSecProcId           = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE1_0,  /* A72 core 1 Proc Id */
+           .tisciThProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE2_0,
+           .tisciFoProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE3_0,
+           .tisciDeviceId            = TISCI_DEV_A72SS0_CORE0,  /* A72 core 0 Device Id */
+           .tisciSecDeviceId         = TISCI_DEV_A72SS0_CORE1,  /* A72 core 1 Device Id */
+           .tisciThDeviceId          = TISCI_DEV_A72SS0_CORE2,  /* A72 core 2 Device Id */
+           .tisciFoDeviceId          = TISCI_DEV_A72SS0_CORE3,  /* A72 core 3 Device Id */
+           .coreCustPwrSeqNeeded     = true,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices            = A72_NUM_AUX_DEVICES,     /* Number of Aux devices   */
+           .auxDeviceIdsP            = &PBIST_A720AuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction   = PBIST_A720_0AuxInitRestore, /* Auxilliary init function */
+       },
+       /* A72_0_1 */
+       {
+           .testName                 = "A72_0_1 PBIST",
+           .pbistInst                = SDL_PBIST_INST_A72_0_1,
+           .numPostPbistToCheck      = 0u,
+           .tisciPBISTDeviceId       = TISCI_DEV_COMPUTE_CLUSTER0_ARM0_DFT_EMBED_PBIST_1, /* Device Id for A72 PBIST */
+           .procRstNeeded            = true,
+           .secondaryCoreNeeded      = true,               /* Secondary core needed */
+           .thirdCoreNeeded          = true,
+           .fourthCoreNeeded         = true,
+           .procRstNeeded            = true,
+           .secondaryCoreNeeded      = true,                /* Secondary core needed */
+           .thirdCoreNeeded          = true,
+           .fourthCoreNeeded         = true,
+           .coreName                 = "A72 core 0",        /* Primary core   */
+           .secCoreName              = "A72 core 1",        /* Secondary core */
+           .thCoreName               = "A72 core 2",
+           .foCoreName               = "A72 core 3",
+           .tisciProcId              = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE0_0,  /* A72 core 0 Proc Id */
+           .tisciSecProcId           = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE1_0,  /* A72 core 1 Proc Id */
+           .tisciThProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE2_0,
+           .tisciFoProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE3_0,
+           .tisciDeviceId            = TISCI_DEV_A72SS0_CORE0,  /* A72 core 0 Device Id */
+           .tisciSecDeviceId         = TISCI_DEV_A72SS0_CORE1,  /* A72 core 1 Device Id */
+           .tisciThDeviceId          = TISCI_DEV_A72SS0_CORE2,  /* A72 core 2 Device Id */
+           .tisciFoDeviceId          = TISCI_DEV_A72SS0_CORE3,  /* A72 core 3 Device Id */
+           .coreCustPwrSeqNeeded     = true,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices            = A72_NUM_AUX_DEVICES,     /* Number of Aux devices   */
+           .auxDeviceIdsP            = &PBIST_A720AuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction   = PBIST_A720_1AuxInitRestore, /* Auxilliary init function */
+       },
+       /* A72_1_0 */
+       {
+           .testName                 = "A72_1_0 PBIST",
+           .pbistInst                = SDL_PBIST_INST_A72_1_0,
+           .numPostPbistToCheck      = 0u,
+           .tisciPBISTDeviceId        = TISCI_DEV_COMPUTE_CLUSTER0_ARM1_DFT_EMBED_PBIST_0, /* Device Id for A72 PBIST */
+           .procRstNeeded            = true,
+           .secondaryCoreNeeded      = true,                /* Secondary core needed */
+           .thirdCoreNeeded          = true,
+           .fourthCoreNeeded         = true,
+           .coreName                 = "A721 core 0",        /* Primary core   */
+           .secCoreName              = "A721 core 1",        /* Secondary core */
+           .thCoreName               = "A721 core 2",
+           .foCoreName               = "A721 core 3",
+           .tisciProcId              = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE0_0,  /* A72 core 0 Proc Id */
+           .tisciSecProcId           = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE1_0,  /* A72 core 1 Proc Id */
+           .tisciThProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE2_0,  /* A72 core 2 Proc Id */
+           .tisciFoProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE3_0,  /* A72 core 3 Proc Id */
+           .tisciDeviceId            = TISCI_DEV_A72SS1_CORE0,  /* A72 core 0 Device Id */
+           .tisciSecDeviceId         = TISCI_DEV_A72SS1_CORE1,  /* A72 core 1 Device Id */
+           .tisciThDeviceId          = TISCI_DEV_A72SS1_CORE2,  /* A72 core 2 Device Id */
+           .tisciFoDeviceId          = TISCI_DEV_A72SS1_CORE3,  /* A72 core 3 Device Id */
+           .coreCustPwrSeqNeeded     = true,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices            = A72_NUM_AUX_DEVICES,     /* Number of Aux devices   */
+           .auxDeviceIdsP            = &PBIST_A721AuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction   = PBIST_A721_0AuxInitRestore, /* Auxilliary init function */
+       },
+       /* A72_1_1 */
+       {
+           .testName               = "A72_1_1 PBIST",
+           .pbistInst              = SDL_PBIST_INST_A72_1_1,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_ARM1_DFT_EMBED_PBIST_1, /* Device Id for A72 PBIST */
+           .procRstNeeded          = true,
+           .secondaryCoreNeeded    = true,                /* Secondary core needed */
+           .thirdCoreNeeded        = true,
+           .fourthCoreNeeded       = true,
+           .coreName               = "A721 core 0",        /* Primary core   */
+           .secCoreName            = "A721 core 1",        /* Secondary core */
+           .thCoreName             = "A721 core 2",
+           .foCoreName             = "A721 core 3",
+           .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE0_0,  /* A72 core 0 Proc Id */
+           .tisciSecProcId         = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE1_0,  /* A72 core 1 Proc Id */
+           .tisciThProcId          = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE2_0,  /* A72 core 2 Proc Id */
+           .tisciFoProcId          = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE3_0,  /* A72 core 3 Proc Id */
+           .tisciDeviceId          = TISCI_DEV_A72SS1_CORE0,  /* A72 core 0 Device Id */
+           .tisciSecDeviceId       = TISCI_DEV_A72SS1_CORE1,  /* A72 core 1 Device Id */
+           .tisciThDeviceId        = TISCI_DEV_A72SS1_CORE2,  /* A72 core 2 Device Id */
+           .tisciFoDeviceId        = TISCI_DEV_A72SS1_CORE3,  /* A72 core 3 Device Id */
+           .coreCustPwrSeqNeeded   = true,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices          = A72_NUM_AUX_DEVICES,     /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_A721AuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction = PBIST_A721_1AuxInitRestore, /* Auxilliary init function */
+       },
+       /* C7X_0 */
+       {
+           .testName               = "C7X_0 PBIST",
+           .pbistInst              = SDL_PBIST_INST_C7X_0,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_C71X_0_PBIST_VD,   /* PBIST device id  */
+           .procRstNeeded          = true,              /* Initialize done flag */
+           .secondaryCoreNeeded    = false,              /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "C7x 0",            /* Primary core   */
+           .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS0_CORE0_0,  /* C6x core0 Proc Id */
+           .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS0_CORE0,          /* C6x Core 0 Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = C7X0_NUM_AUX_DEVICES,                  /* No Aux devices */
+           .auxDeviceIdsP          = &PBIST_C7X0_AuxDevList[0],
+           .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
+       },
+       /* C7X_1 */
+       {
+           .testName               = "C7X_1 PBIST",
+           .pbistInst              = SDL_PBIST_INST_C7X_1,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_C71X_1_PBIST_VD,   /* PBIST device id  */
+           .procRstNeeded          = true,              /* Initialize done flag */
+           .secondaryCoreNeeded    = false,              /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "C7x 1",            /* Primary core   */
+           .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS1_CORE0_0,  /* C7x core0 Proc Id */
+           .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS1_CORE0,          /* C7x Core 0 Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = C7X1_NUM_AUX_DEVICES,                  /* No Aux devices */
+           .auxDeviceIdsP          = &PBIST_C7X1_AuxDevList[0],
+           .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
+       },
+       /* C7X_2 */
+       {
+           .testName               = "C7X_2 PBIST",
+           .pbistInst              = SDL_PBIST_INST_C7X_2,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AC71_6_DFT_EMBED_PBIST_0,   /* PBIST device id  */
+           .procRstNeeded          = true,              /* Initialize done flag */
+           .secondaryCoreNeeded    = false,              /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "C7x 2",            /* Primary core   */
+           .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS2_CORE0_0,  /* C6x core0 Proc Id */
+           .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS2_CORE0,          /* C6x Core 0 Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = C7X2_NUM_AUX_DEVICES,                  /* No Aux devices */
+           .auxDeviceIdsP          = &PBIST_C7X2_AuxDevList[0],
+           .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
+       },
+       /* C7X_3*/
+       {
+           .testName               = "C7X_3 PBIST",
+           .pbistInst              = SDL_PBIST_INST_C7X_3,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AC71_7_DFT_EMBED_PBIST_0,   /* PBIST device id  */
+           .procRstNeeded          = true,              /* Initialize done flag */
+           .secondaryCoreNeeded    = false,              /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "C7x 3",            /* Primary core   */
+           .tisciProcId            = SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_C71SS3_CORE0_0,  /* C6x core0 Proc Id */
+           .tisciDeviceId          = TISCI_DEV_COMPUTE_CLUSTER0_C71SS3_CORE0,          /* C6x Core 0 Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = C7X3_NUM_AUX_DEVICES,                  /* No Aux devices */
+           .auxDeviceIdsP          = &PBIST_C7X3_AuxDevList[0],
+           .auxInitRestoreFunction = NULL,                /* Auxilliary init function */
+       },
+       /* ANA_0 */
+       {
+           .testName               = "ANA_0 PBIST",
+           .pbistInst              = SDL_PBIST_INST_ANA_0,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW4_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                      /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "ANA_0",                    /* Primary core   */
+           .tisciProcId            = 0x0u,                       /* No ProcId for ANA */
+           .tisciDeviceId          = 0x0u,                       /* ANA Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = ANA_NUM_AUX_DEVICES,        /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_ANA0AuxDevList[0],    /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
+       },
+       /* ANA_1 */
+       {
+           .testName               = "ANA_1 PBIST",
+           .pbistInst              = SDL_PBIST_INST_ANA_1,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW5_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                      /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "ANA_1",                     /* Primary core   */
+           .tisciProcId            = 0x0u,                        /* No ProcId for ANA */
+           .tisciDeviceId          = 0x0u,                        /* ANA Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = ANA_NUM_AUX_DEVICES,         /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_ANA1AuxDevList[0],    /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
+       },
+       /* ANA_2 */
+       {
+           .testName               = "ANA_2 PBIST",
+           .pbistInst              = SDL_PBIST_INST_ANA_2,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW6_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                      /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "ANA_2",                    /* Primary core   */
+           .tisciProcId            = 0x0u,                       /* No ProcId for ANA */
+           .tisciDeviceId          = 0x0u,                       /* ANA Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = ANA_NUM_AUX_DEVICES,        /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_ANA2AuxDevList[0],    /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
+       },
+       /* ANA_3 */
+       {
+           .testName               = "ANA_3 PBIST",
+           .pbistInst              = SDL_PBIST_INST_ANA_3,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_AW7_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                      /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "ANA_3",                    /* Primary core   */
+           .tisciProcId            = 0x0u,                       /* No ProcId for ANA */
+           .tisciDeviceId          = 0x0u,                       /* ANA Device Id */
+           .coreCustPwrSeqNeeded   = false,
+           .numAuxDevices          = ANA_NUM_AUX_DEVICES,        /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_ANA3AuxDevList[0],    /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,    /* Auxilliary init function */
+       },
+       /* MSMC */
+       {
+           .testName               = "MSMC PBIST",
+           .pbistInst              = SDL_PBIST_INST_MSMC,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_COMPUTE_CLUSTER0_MSMC_DFT_EMBED_PBIST_0,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "",        /* Primary core   */
+           .tisciProcId            = 0x0u,
+           .tisciDeviceId          = 0x0u,
+           .coreCustPwrSeqNeeded   = false,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices          = MSMC_NUM_AUX_DEVICES,     /* Number of Aux devices   */
+           .auxDeviceIdsP          = &PBIST_MSMCAuxDevList[0], /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,   
+       },
+       /* Main R5F 1 */
+       {
+           .testName = "Main R5F 1 PBIST",
+           .pbistInst = SDL_PBIST_INST_MAINR5F1,
+           .numPostPbistToCheck = 0u,
+           .tisciPBISTDeviceId = TISCI_DEV_PBIST10, /* PBIST device id  */
+           .procRstNeeded = true,
+           .secondaryCoreNeeded = true,                      /* Secondary core needed */            
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName = "Main R5F1 core0",                    /* Primary core   */
+           .secCoreName = "Main R5F1 core1",                 /* Secondary core */
+           .tisciProcId = SCICLIENT_PROC_ID_R5FSS1_CORE0,    /* Main R5F core 0 Proc Id */
+           .tisciSecProcId = SCICLIENT_PROC_ID_R5FSS1_CORE1, /* Main R5F core 1 Proc Id */
+           .tisciDeviceId = TISCI_DEV_R5FSS1_CORE0,          /* Main R5F core 0 Device id */
+           .tisciSecDeviceId = TISCI_DEV_R5FSS1_CORE1,       /* Main R5F core 1 Device id */
+           .coreCustPwrSeqNeeded = false,
+           .numAuxDevices = 0u,            /* No Aux devices */
+           .auxInitRestoreFunction = NULL, /* Auxilliary init function */     
+       },		
+       /* MCU PSROM*/
+       {
+           .testName               = "PBIST MCU PSROM",
+           .pbistInst              = SDL_PBIST_INST_MCUR5F0,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_MCU_PBIST0,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "",        /* Primary core   */
+           .tisciProcId            = 0x0u,
+           .tisciDeviceId          = 0x0u,
+           .coreCustPwrSeqNeeded   = false,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices          = 0x0,     /* Number of Aux devices   */
+           .auxDeviceIdsP          = 0x0, /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,   
+       },
+       /* MCU_1*/
+       {
+           .testName               = "PBIST MCU_1",
+           .pbistInst              = SDL_PBIST_INST_MCUR5F1,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_MCU_PBIST1,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "",        /* Primary core   */
+           .tisciProcId            = 0x0u,
+           .tisciDeviceId          = 0x0u,
+           .coreCustPwrSeqNeeded   = false,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices          = 0x0,     /* Number of Aux devices   */
+           .auxDeviceIdsP          = 0x0, /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,   
+       },
+       /* MCU PULSAR*/
+       {
+           .testName               = "PBIST MCU PULSAR",
+           .pbistInst              = SDL_PBIST_INST_MCU_PULSAR,
+           .numPostPbistToCheck    = 0u,
+           .tisciPBISTDeviceId     = TISCI_DEV_MCU_PBIST2,   /* PBIST device id  */
+           .procRstNeeded          = false,
+           .secondaryCoreNeeded    = false,                /* Secondary core needed */
+           .thirdCoreNeeded        = false,
+           .fourthCoreNeeded       = false,
+           .coreName               = "",        /* Primary core   */
+           .tisciProcId            = 0x0u,
+           .tisciDeviceId          = 0x0u,
+           .coreCustPwrSeqNeeded   = false,                    /* A72 needs custom powerdown sequence steps */
+           .numAuxDevices          = 0x0,     /* Number of Aux devices   */
+           .auxDeviceIdsP          = 0x0, /* Array of Aux device ids */
+           .auxInitRestoreFunction = NULL,   
+       },
 };
 
 /* ========================================================================== */
@@ -510,7 +889,7 @@ PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1] =
     init : TRUE  --> Initialize
     init : FALSE --> Restore
 */
-int32_t BootApp_pbistA7200AuxInitRestore(bool init)
+int32_t PBIST_A720_0AuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     bool result;
@@ -557,7 +936,7 @@ int32_t BootApp_pbistA7200AuxInitRestore(bool init)
     return testResult;
 }
 
-int32_t BootApp_pbistA7201AuxInitRestore(bool init)
+int32_t PBIST_A720_1AuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     bool result;
@@ -604,7 +983,7 @@ int32_t BootApp_pbistA7201AuxInitRestore(bool init)
     return testResult;
 }
 
-int32_t BootApp_pbistA7210AuxInitRestore(bool init)
+int32_t PBIST_A721_0AuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     bool result;
@@ -651,7 +1030,7 @@ int32_t BootApp_pbistA7210AuxInitRestore(bool init)
     return testResult;
 }
 
-int32_t BootApp_pbistA7211AuxInitRestore(bool init)
+int32_t PBIST_A721_1AuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     bool result;
@@ -703,7 +1082,7 @@ int32_t BootApp_pbistA7211AuxInitRestore(bool init)
 #define KICK1_UNLOCK_VAL 0xD172BC5A
 #define KICK_LOCK_VAL    0x00000000
 
-int32_t BootApp_pbistVpac0AuxInitRestore(bool init)
+int32_t PBIST_VPAC0AuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     CSL_viss_topRegs *vissTopRegsP;
@@ -729,7 +1108,7 @@ int32_t BootApp_pbistVpac0AuxInitRestore(bool init)
     return testResult;
 }
 
-int32_t BootApp_pbistVpac1AuxInitRestore(bool init)
+int32_t PBIST_VPAC1AuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     CSL_viss_topRegs *vissTopRegsP;
@@ -755,7 +1134,7 @@ int32_t BootApp_pbistVpac1AuxInitRestore(bool init)
     return testResult;
 }
 
-void BootApp_eccUfsConfig(void)
+void ecc_ufs_config(void)
 {
     uint32_t retval;
 
@@ -771,7 +1150,7 @@ void BootApp_eccUfsConfig(void)
     *((uint32_t *)(SDL_UFS0_P2A_WRAP_CFG_VBP_UFSHCI_BASE + 0xC8)) = retval;
 }
 
-int32_t BootApp_pbistHcAuxInitRestore(bool init)
+int32_t PBIST_HCAuxInitRestore(bool init)
 {
     int32_t testResult = 0;
 
@@ -785,7 +1164,7 @@ int32_t BootApp_pbistHcAuxInitRestore(bool init)
 
     if (init)
     {
-        BootApp_eccUfsConfig();
+        ecc_ufs_config();
         *((uint32_t *)(0x4E01000)) = 0xA9B;
 
         SA2ULRegsP->UPDATES.ENGINE_ENABLE |= CSL_CP_ACE_UPDATES_ENGINE_ENABLE_PKA_EN_MASK;
@@ -798,7 +1177,7 @@ int32_t BootApp_pbistHcAuxInitRestore(bool init)
     return testResult;
 }
 
-int32_t BootApp_pbistMainInfra0AuxInitRestore(bool init)
+int32_t PBIST_MainInfra0AuxInitRestore(bool init)
 {
     int32_t testResult = 0;
 
@@ -809,7 +1188,7 @@ int32_t BootApp_pbistMainInfra0AuxInitRestore(bool init)
     return testResult;
 }
 
-int32_t BootApp_pbistNavssAuxInitRestore(bool init)
+int32_t PBIST_NAVSSAuxInitRestore(bool init)
 {
     *((uint32_t *)(SDL_WKUP_CTRL_MMR0_CFG0_BASE + SDL_WKUP_CTRL_MMR_CFG0_LOCK6_KICK0)) = KICK0_UNLOCK_VAL;
     *((uint32_t *)(SDL_WKUP_CTRL_MMR0_CFG0_BASE + SDL_WKUP_CTRL_MMR_CFG0_LOCK6_KICK1)) = KICK1_UNLOCK_VAL;
@@ -818,7 +1197,7 @@ int32_t BootApp_pbistNavssAuxInitRestore(bool init)
     return 0;
 }
 
-int32_t BootApp_pbistCodecAuxInitRestore(bool init)
+int32_t PBIST_CodecAuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK3_KICK0)) = KICK0_UNLOCK_VAL;
@@ -828,7 +1207,7 @@ int32_t BootApp_pbistCodecAuxInitRestore(bool init)
 }
 
 
-int32_t BootApp_pbistGpuAuxInitRestore(bool init)
+int32_t PBIST_GPUAuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     bool result;
@@ -944,7 +1323,7 @@ int32_t BootApp_pbistGpuAuxInitRestore(bool init)
     return testResult;
 }
 
-int32_t BootApp_pbistDssAuxInitRestore(bool init)
+int32_t PBIST_DSSAuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     uint32_t value;
@@ -1001,7 +1380,7 @@ int32_t BootApp_pbistDssAuxInitRestore(bool init)
     return testResult;
 }
 
-char * BootApp_pbistGetPostStatusString(SDL_PBIST_postStatus postStatus)
+char * PBIST_getPostStatusString(SDL_PBIST_postStatus postStatus)
 {
     if (postStatus == SDL_PBIST_POST_NOT_RUN)
     {
@@ -1022,9 +1401,9 @@ char * BootApp_pbistGetPostStatusString(SDL_PBIST_postStatus postStatus)
     return NULL;
 }
 
-void BootApp_pbistPrintPostStatus(SDL_PBIST_postResult *result)
+void PBIST_printPostStatus(SDL_PBIST_postResult *result)
 {
-    UART_printf("    HW POST MCU Status : %s\n", (BootApp_pbistGetPostStatusString(result->mcuPostStatus)) ? : "Invalid");
+    UART_printf("    HW POST MCU Status : %s\n", (PBIST_getPostStatusString(result->mcuPostStatus)) ? : "Invalid");
 
     return;
 }
