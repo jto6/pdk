@@ -59,8 +59,8 @@ void  (*fp_seek)(void *srcAddr, uint32_t location);
 static uint32_t sblMemOffset = 0;
 
 /* SBL scratch memory defined at compile time */
-static uint8_t *sbl_scratch_mem = ((uint8_t *)(SBL_SCRATCH_MEM_START));
-static uint32_t sbl_scratch_sz = SBL_SCRATCH_MEM_SIZE;
+static uint8_t *sbl_scratch_mem_for_auth = ((uint8_t *)(SBL_SCRATCH_MEM_START));
+static uint32_t sbl_scratch_sz = SBL_SCRATCH_MEM_SIZE/2;
 
 /******************************************************************************
  ***                     SBL Multicore RPRC parse functions                 ***
@@ -97,7 +97,7 @@ void SBL_SeekMem(void *srcAddr, uint32_t location)
 
 void SBL_SetRsvdMem(uint8_t *scratch_mem, uint32_t scratch_sz)
 {
-    sbl_scratch_mem = scratch_mem;
+    sbl_scratch_mem_for_auth = scratch_mem;
     sbl_scratch_sz = scratch_sz;
 }
 
@@ -140,7 +140,7 @@ int32_t SBL_MulticoreImageParse(void *srcAddr,
     else
     {
         /* Verify image if possible */
-        SBL_VerifyMulticoreImage(&srcAddr, &ImageOffset, sbl_scratch_mem, sbl_scratch_sz);
+        SBL_VerifyMulticoreImage(&srcAddr, &ImageOffset, sbl_scratch_mem_for_auth, sbl_scratch_sz);
 
         /* Read Meta Header Start and get the Number of Input RPRC Files */
         fp_readData(&mHdrStr, srcAddr, sizeof (meta_header_start_t));

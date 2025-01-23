@@ -41,7 +41,12 @@ endif
 # if you want to boot app more than 500KB you need to change the following macro
 # for instance your app is x KB then you need to give the macro with the following value from cmd line
 # (x * 1024) in hexadecimal
+ifeq ($(HLOS_BOOT), no)
 MAX_APP_SIZE_EMMC ?= 0x7D000
+else
+# HLOS Image size - 22 MB
+MAX_APP_SIZE_EMMC ?= 0x1600000
+endif
 
 # If no address is specified from command prompt, SBL copies EEPROM content to 0x90000000 
 EEPROM_DATA_DDR_ADDRESS ?= 0x90000000

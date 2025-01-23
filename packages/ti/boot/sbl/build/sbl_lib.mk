@@ -180,7 +180,13 @@ SRCS_j742s2 += j784s4_qos_data.c
 
 # User needs to change below macro to boot app with size more than 500 KB.
 # E.g. If app is x KB then give MAX_APP_SIZE_EMMC as (x * 1024) in hexadecimal
+ifeq ($(HLOS_BOOT), no)
 MAX_APP_SIZE_EMMC ?= 0x7D000
+else
+# HLOS Image size - 22 MB
+MAX_APP_SIZE_EMMC ?= 0x1600000
+endif
+
 SBL_CFLAGS += -DMAX_APP_SIZE_EMMC=$(MAX_APP_SIZE_EMMC)
 
 # Include common make files

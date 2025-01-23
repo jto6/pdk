@@ -206,8 +206,8 @@ sbl_DISABLE_PARALLEL_MAKE = yes
 # sbl_ospi_img_hlos_hs uses sbl_lib_ospi_hlos_hs
 ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j721e j7200 j742s2))
   sbl_LIB_LIST = sbl_lib_mmcsd sbl_lib_ospi sbl_lib_uart sbl_lib_cust sbl_lib_emmc sbl_boot_perf_lib_cust
-  sbl_LIB_LIST += sbl_lib_mmcsd_hlos sbl_lib_ospi_hlos sbl_lib_emmc_hlos sbl_lib_ospi_hlos_hs sbl_lib_mmcsd_hlos_hs
-  sbl_LIB_LIST += sbl_lib_mmcsd_hs sbl_lib_ospi_hs sbl_lib_uart_hs sbl_lib_cust_hs sbl_boot_perf_lib_cust_hs
+  sbl_LIB_LIST += sbl_lib_mmcsd_hlos sbl_lib_ospi_hlos sbl_lib_emmc_hlos sbl_lib_ospi_hlos_hs sbl_lib_mmcsd_hlos_hs sbl_lib_emmc_hlos_hs
+  sbl_LIB_LIST += sbl_lib_mmcsd_hs sbl_lib_emmc_hs sbl_lib_ospi_hs sbl_lib_uart_hs sbl_lib_cust_hs sbl_boot_perf_lib_cust_hs
   sbl_LIB_LIST += sbl_lib_cust_nondma sbl_lib_cust_nondma_hs
 endif
 
@@ -222,7 +222,16 @@ endif
 # All the tests mentioned in list are built when test target is called
 # List below all examples for allowed values
 ############################
-ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j742s2))
+ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4))
+  sbl_EXAMPLE_LIST = sbl_uart_img sbl_ospi_img sbl_mmcsd_img sbl_emmc_boot0_img
+  sbl_EXAMPLE_LIST += sbl_mmcsd_img_hlos sbl_ospi_img_hlos sbl_emmc_uda_img_hlos sbl_emmc_uda_img sbl_boot_perf_cust_img_combined
+  sbl_EXAMPLE_LIST += sbl_mmcsd_img_hs sbl_ospi_img_hs sbl_emmc_boot0_img_hs sbl_emmc_boot0_img_hlos_hs sbl_uart_img_hs sbl_ospi_img_hlos_hs
+  sbl_EXAMPLE_LIST += sbl_mmcsd_img_combined sbl_ospi_img_combined sbl_mmcsd_img_combined_hs sbl_ospi_img_combined_hs
+  sbl_EXAMPLE_LIST += sbl_mmcsd_img_combined_hs_fs sbl_ospi_img_combined_hs_fs
+  sbl_EXAMPLE_LIST += sbl_ospi_nand_img sbl_ospi_nand_img_hs
+  # sbl_hsm_boot_uart_img_hs is used to boot hsm core securely
+  sbl_EXAMPLE_LIST += sbl_hsm_boot_uart_img_hs sbl_hsm_boot_uart_img
+else ifeq ($(SOC),$(filter $(SOC), j742s2))
   sbl_EXAMPLE_LIST = sbl_uart_img sbl_ospi_img sbl_mmcsd_img sbl_emmc_boot0_img
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hlos sbl_ospi_img_hlos sbl_emmc_uda_img_hlos sbl_emmc_uda_img sbl_boot_perf_cust_img_combined
   sbl_EXAMPLE_LIST += sbl_mmcsd_img_hs sbl_ospi_img_hs sbl_uart_img_hs sbl_ospi_img_hlos_hs
@@ -381,6 +390,32 @@ export sbl_lib_emmc_BOARDLIST
 sbl_lib_emmc_$(SOC)_CORELIST = mcu1_0
 export sbl_lib_emmc_$(SOC)_CORELIST
 
+# SBL EMMC LIB - HS build variant
+sbl_lib_emmc_hs_COMP_LIST = sbl_lib_emmc_hs
+sbl_lib_emmc_hs_RELPATH = ti/boot/sbl
+export sbl_lib_emmc_hs_OBJPATH = ti/boot/sbl/emmc_hs
+sbl_lib_emmc_hs_LIBNAME = sbl_lib_emmc_hs
+sbl_lib_emmc_hs_PATH = $(PDK_SBL_COMP_PATH)
+sbl_lib_emmc_hs_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/emmc_hs
+sbl_lib_emmc_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=emmc SBL_USE_DMA=yes BUILD_HS=yes
+export sbl_lib_emmc_hs_MAKEFILE
+export sbl_lib_emmc_hs_LIBNAME
+export sbl_lib_emmc_hs_LIBPATH
+sbl_lib_emmc_hs_BOARD_DEPENDENCY = yes
+sbl_lib_emmc_hs_SOC_DEPENDENCY = yes
+sbl_lib_emmc_hs_CORE_DEPENDENCY = no
+export sbl_lib_emmc_hs_COMP_LIST
+export sbl_lib_emmc_hs_BOARD_DEPENDENCY
+export sbl_lib_emmc_hs_CORE_DEPENDENCY
+sbl_lib_emmc_hs_PKG_LIST = sbl_lib_emmc_hs
+sbl_lib_emmc_hs_INCLUDE = $(sbl_lib_emmc_hs_PATH)
+sbl_lib_emmc_hs_SOCLIST = $(sbl_SOCLIST)
+sbl_lib_emmc_hs_BOARDLIST = $(sbl_BOARDLIST)
+export sbl_lib_emmc_hs_SOCLIST
+export sbl_lib_emmc_hs_BOARDLIST
+sbl_lib_emmc_hs_$(SOC)_CORELIST = mcu1_0
+export sbl_lib_emmc_hs_$(SOC)_CORELIST
+
 # SBL EMMC HLOS LIB
 sbl_lib_emmc_hlos_COMP_LIST = sbl_lib_emmc_hlos
 sbl_lib_emmc_hlos_RELPATH = ti/boot/sbl
@@ -406,6 +441,32 @@ export sbl_lib_emmc_hlos_SOCLIST
 export sbl_lib_emmc_hlos_BOARDLIST
 sbl_lib_emmc_hlos_$(SOC)_CORELIST = mcu1_0
 export sbl_lib_emmc_hlos_$(SOC)_CORELIST
+
+# SBL EMMC HLOS LIB - HS build variant
+sbl_lib_emmc_hlos_hs_COMP_LIST = sbl_lib_emmc_hlos_hs
+sbl_lib_emmc_hlos_hs_RELPATH = ti/boot/sbl
+export sbl_lib_emmc_hlos_hs_OBJPATH = ti/boot/sbl/emmc_hlos_hs
+sbl_lib_emmc_hlos_hs_LIBNAME = sbl_lib_emmc_hlos_hs
+sbl_lib_emmc_hlos_hs_PATH = $(PDK_SBL_COMP_PATH)
+sbl_lib_emmc_hlos_hs_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/emmc_hlos_hs
+sbl_lib_emmc_hlos_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=emmc HLOS_BOOT=yes SBL_USE_DMA=yes BUILD_HS=yes
+export sbl_lib_emmc_hlos_hs_MAKEFILE
+export sbl_lib_emmc_hlos_hs_LIBNAME
+export sbl_lib_emmc_hlos_hs_LIBPATH
+sbl_lib_emmc_hlos_hs_BOARD_DEPENDENCY = yes
+sbl_lib_emmc_hlos_hs_SOC_DEPENDENCY = yes
+sbl_lib_emmc_hlos_hs_CORE_DEPENDENCY = no
+export sbl_lib_emmc_hlos_hs_COMP_LIST
+export sbl_lib_emmc_hlos_hs_BOARD_DEPENDENCY
+export sbl_lib_emmc_hlos_hs_CORE_DEPENDENCY
+sbl_lib_emmc_hlos_hs_PKG_LIST = sbl_lib_emmc_hlos_hs
+sbl_lib_emmc_hlos_hs_INCLUDE = $(sbl_lib_emmc_hlos_hs_PATH)
+sbl_lib_emmc_hlos_hs_SOCLIST = $(sbl_SOCLIST)
+sbl_lib_emmc_hlos_hs_BOARDLIST = $(sbl_BOARDLIST)
+export sbl_lib_emmc_hlos_hs_SOCLIST
+export sbl_lib_emmc_hlos_hs_BOARDLIST
+sbl_lib_emmc_hlos_hs_$(SOC)_CORELIST = mcu1_0
+export sbl_lib_emmc_hlos_hs_$(SOC)_CORELIST
 
 # SBL OSPI LIB
 sbl_lib_ospi_COMP_LIST = sbl_lib_ospi
@@ -921,6 +982,54 @@ sbl_emmc_boot0_img_$(SOC)_CORELIST = mcu1_0
 export sbl_emmc_boot0_img_$(SOC)_CORELIST
 sbl_emmc_boot0_img_SBL_IMAGEGEN = yes
 export sbl_emmc_boot0_img_SBL_IMAGEGEN
+
+# SBL EMMC Image - Boot from BOOT0 - For HS build
+sbl_emmc_boot0_img_hs_COMP_LIST = sbl_emmc_boot0_img_hs
+sbl_emmc_boot0_img_hs_RELPATH = ti/boot/sbl/board/k3
+sbl_emmc_boot0_img_hs_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)_hs/emmc_boot0/bin
+sbl_emmc_boot0_img_hs_PATH = $(PDK_SBL_COMP_PATH)/board/k3
+sbl_emmc_boot0_img_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=emmc_boot0 SBL_USE_DMA=yes BUILD_HS=yes
+export sbl_emmc_boot0_img_hs_MAKEFILE
+export sbl_emmc_boot0_img_hs_SBL_CERT_KEY=$(SBL_CERT_KEY_HS)
+sbl_emmc_boot0_img_hs_BOARD_DEPENDENCY = yes
+sbl_emmc_boot0_img_hs_SOC_DEPENDENCY = yes
+sbl_emmc_boot0_img_hs_CORE_DEPENDENCY = no
+export sbl_emmc_boot0_img_hs_COMP_LIST
+export sbl_emmc_boot0_img_hs_BOARD_DEPENDENCY
+export sbl_emmc_boot0_img_hs_SOC_DEPENDENCY
+export sbl_emmc_boot0_img_hs_CORE_DEPENDENCY
+sbl_emmc_boot0_img_hs_PKG_LIST = sbl
+sbl_emmc_boot0_img_hs_INCLUDE = $(sbl_emmc_boot0_img_hs_PATH)
+sbl_emmc_boot0_img_hs_BOARDLIST = j721s2_evm j784s4_evm
+export sbl_emmc_boot0_img_hs_BOARDLIST
+sbl_emmc_boot0_img_hs_$(SOC)_CORELIST = mcu1_0
+export sbl_emmc_boot0_img_hs_$(SOC)_CORELIST
+sbl_emmc_boot0_img_hs_SBL_IMAGEGEN = yes
+export sbl_emmc_boot0_img_hs_SBL_IMAGEGEN
+
+# SBL EMMC "HLOS Boot" Image - Boot from BOOT0 - For HS build
+sbl_emmc_boot0_img_hlos_hs_COMP_LIST = sbl_emmc_boot0_img_hlos_hs
+sbl_emmc_boot0_img_hlos_hs_RELPATH = ti/boot/sbl/board/k3
+sbl_emmc_boot0_img_hlos_hs_CUSTOM_BINPATH = $(PDK_SBL_COMP_PATH)/binary/$(BOARD)_hs/emmc_boot0/bin
+sbl_emmc_boot0_img_hlos_hs_PATH = $(PDK_SBL_COMP_PATH)/board/k3
+sbl_emmc_boot0_img_hlos_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_img.mk BOOTMODE=emmc_boot0 HLOS_BOOT=yes SBL_USE_DMA=yes BUILD_HS=yes
+export sbl_emmc_boot0_img_hlos_hs_MAKEFILE
+export sbl_emmc_boot0_img_hlos_hs_SBL_CERT_KEY=$(SBL_CERT_KEY_HS)
+sbl_emmc_boot0_img_hlos_hs_BOARD_DEPENDENCY = yes
+sbl_emmc_boot0_img_hlos_hs_SOC_DEPENDENCY = yes
+sbl_emmc_boot0_img_hlos_hs_CORE_DEPENDENCY = no
+export sbl_emmc_boot0_img_hlos_hs_COMP_LIST
+export sbl_emmc_boot0_img_hlos_hs_BOARD_DEPENDENCY
+export sbl_emmc_boot0_img_hlos_hs_SOC_DEPENDENCY
+export sbl_emmc_boot0_img_hlos_hs_CORE_DEPENDENCY
+sbl_emmc_boot0_img_hlos_hs_PKG_LIST = sbl
+sbl_emmc_boot0_img_hlos_hs_INCLUDE = $(sbl_emmc_boot0_img_hlos_hs_PATH)
+sbl_emmc_boot0_img_hlos_hs_BOARDLIST = j721s2_evm j784s4_evm
+export sbl_emmc_boot0_img_hlos_hs_BOARDLIST
+sbl_emmc_boot0_img_hlos_hs_$(SOC)_CORELIST = mcu1_0
+export sbl_emmc_boot0_img_hlos_hs_$(SOC)_CORELIST
+sbl_emmc_boot0_img_hlos_hs_SBL_IMAGEGEN = yes
+export sbl_emmc_boot0_img_hlos_hs_SBL_IMAGEGEN
 
 # SBL OSPI Image
 sbl_ospi_img_COMP_LIST = sbl_ospi_img

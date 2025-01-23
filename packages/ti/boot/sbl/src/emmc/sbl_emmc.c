@@ -70,14 +70,15 @@ uint32_t gCidAddr;
 /* System firmware offset in eMMC boot0 partition */
 #define EMMC_BOOT0_SYSFS_OFFSET         (0x80000) //0x400 sector
 /* Application Image offset in eMMC boot0 partition */
-#define EMMC_BOOT0_APP_OFFSET           (0x280000) //0x1400 sector
+#define EMMC_BOOT0_APP_OFFSET           (0x480000) //0x2400 sector (as u-boot.img needs to be at 0x1400)
+
 /* Application Image Size */
 #define APP_SIZE                        MAX_APP_SIZE_EMMC
 extern volatile uint32_t * outData01;
 /* Handle to operate eMMC read/write */
 MMCSD_Handle gHandle=NULL;
 /* SBL scratch memory defined at compile time */
-static uint8_t *sbl_scratch_mem = ((uint8_t *)(SBL_SCRATCH_MEM_START));
+static uint8_t *sbl_scratch_mem_for_appcopy = ((uint8_t *)(SBL_SCRATCH_MEM_START + SBL_SCRATCH_MEM_SIZE/2));
 
 /**
  * \brief    SBL_FileRead function reads N bytes from eMMC and
@@ -413,7 +414,7 @@ int32_t SBL_eMMCBootImage(sblEntryPoint_t *pEntry)
     if (gIsEmmcBoot0Enable == BTRUE)
     {
         /* Read the application image into DDR */
-        retVal = MMCSD_read(gHandle, sbl_scratch_mem, mmcStartSector, num_blocks_read);
+        retVal = MMCSD_read(gHandle, sbl_scratch_mem_for_appcopy, mmcStartSector, num_blocks_read);
         if(retVal != FR_OK)
         {
             UART_printf("MMCSD_read Failed to read contents into DDR\n");
@@ -430,9 +431,9 @@ int32_t SBL_eMMCBootImage(sblEntryPoint_t *pEntry)
         SBL_ADD_PROFILE_POINT;
 
 #if defined(SBL_ENABLE_HLOS_BOOT) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2))
-        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem, SBL_SCRATCH_MEM_START, pEntry, SBL_SKIP_BOOT_AFTER_COPY);
+        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem_for_appcopy, (SBL_SCRATCH_MEM_START + SBL_SCRATCH_MEM_SIZE/2), pEntry, SBL_SKIP_BOOT_AFTER_COPY);
 #else
-        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem, SBL_SCRATCH_MEM_START, pEntry, SBL_BOOT_AFTER_COPY);
+        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem_for_appcopy, (SBL_SCRATCH_MEM_START + SBL_SCRATCH_MEM_SIZE/2), pEntry, SBL_BOOT_AFTER_COPY);
 #endif
     }
     else
