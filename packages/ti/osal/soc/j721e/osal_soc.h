@@ -103,8 +103,8 @@ extern "C" {
 
 #define TimerP_numTimerDevices          ((uint32_t) 20U )
 #if defined (BUILD_MCU)
-  #define TIMERP_ANY_MASK               ((uint32_t) 0x00FF)
-  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x00FF)
+  #define TIMERP_ANY_MASK               ((uint32_t) 0x0FFFFFU)
+  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x0FFFFFU)
 #elif defined (BUILD_C7X)
   #define TIMERP_ANY_MASK               ((uint32_t) 0x000F)
   #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x000F)

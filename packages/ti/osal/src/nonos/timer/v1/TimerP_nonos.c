@@ -918,7 +918,10 @@ TimerP_Status TimerP_start(TimerP_Handle handle)
     Osal_EnableInterrupt(eventId,timer->intNum);
   }
   else {
-      retVal = TimerP_FAILURE;
+      if (timer->tickFxn != NULL)
+      {
+        retVal = TimerP_FAILURE;
+      }
   }
 
   if (TimerP_RunMode_CONTINUOUS == timer->runMode) {
@@ -988,7 +991,10 @@ TimerP_Status TimerP_stop(TimerP_Handle handle)
       Osal_DisableInterrupt(eventId,timer->intNum);
     }
     else {
-        retVal = TimerP_FAILURE;
+      if (timer->tickFxn != NULL)
+      {
+          retVal = TimerP_FAILURE;
+      }
     }
   }
   return(retVal);

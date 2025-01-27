@@ -164,7 +164,7 @@ TimerP_dmTimerDefault gDmTimerPInfoTbl[OSAL_NONOS_MAX_TIMERP_PER_SOC] = {
         TIMERP_EVENT_NOT_AVAILABLE
     },
     {
-        "DMTimer18",
+        "DMTimer19",
         (uintptr_t)0x0,
         0,
         TIMERP_EVENT_NOT_AVAILABLE
@@ -232,15 +232,8 @@ void TimerP_updateDefaultInfoTbl(void)
             {
                 intBase = CSLR_R5FSS0_CORE0_INTR_TIMER12_INTR_PEND_0;
             }
-
-            /* Main domain timers 8 to 19 requires to be powered up, explicitly
-                current SBL, do not perform this op
-                When additional timer are required, please power up using
-                LPSC_PER_SPARE0 and skip this condition */
-            if ((uintptr_t)CSL_TIMER8_CFG_BASE <= gDmTimerPInfoTbl[i].baseAddr)
-            {
-                gDmTimerPInfoTbl[i].baseAddr = (uintptr_t)0x0;
-            }
+            gDmTimerPInfoTbl[i].intNum   = (int32_t)intBase;
+            intBase++;
         }
     }
     return;

@@ -92,9 +92,9 @@ extern "C" {
  * For J7200, Main DMT0 to Main DMT7 are powered on by default. The rest need to
  * be powered on from LPSC_PER_SPARE0.
  */
-#define TIMERP_ANY_MASK         ((uint32_t) 0x0000FFU)
+#define TIMERP_ANY_MASK         ((uint32_t) 0x0FFFFFU)
 /**< Any available */
-#define TIMERP_AVAILABLE_MASK   ((uint32_t) 0x0000FFU)
+#define TIMERP_AVAILABLE_MASK   ((uint32_t) 0x0FFFFFU)
 
 
 

@@ -124,9 +124,9 @@
 static void OsalApp_dummytimerFxn(void *arg);
 
 /*
- * Description: Testing Negative condition for Timer APIs
+ * Description: Testing Null tickfxn for Timer APIs
  */
-static int32_t OsalApp_timerNegativeTest(void);
+static int32_t OsalApp_timerTickFxnNullTest(void);
 
 /*
  * Description: Testing Timer APIs with different params
@@ -147,7 +147,7 @@ static void OsalApp_dummytimerFxn(void *arg)
     /* Do Nothing */
 }
 
-static int32_t OsalApp_timerNegativeTest(void)
+static int32_t OsalApp_timerTickFxnNullTest(void)
 {
     TimerP_Params params;
     TimerP_Handle tmhandle;
@@ -158,21 +158,25 @@ static int32_t OsalApp_timerNegativeTest(void)
     params.runMode    = TimerP_RunMode_ONESHOT;
     tmhandle = TimerP_create(OSAL_APP_TIMER_ID, NULL, &params);
 
-    if((NULL_PTR != tmhandle) && (TimerP_OK != TimerP_delete(tmhandle)))
+    if(NULL_PTR == tmhandle)
     {
         result = osal_FAILURE;
     }
     else
     {
-        if(TimerP_OK == TimerP_start(tmhandle))
+        if(TimerP_OK != TimerP_start(tmhandle))
         {
             result = osal_FAILURE;
         }
-        if((0U != TimerP_getReloadCount(tmhandle)) || (0U != TimerP_getCount(tmhandle)))
+        if((0U != TimerP_getReloadCount(tmhandle)) || (0U == TimerP_getCount(tmhandle)))
         {
             result = osal_FAILURE;
         }
-        if(TimerP_OK == TimerP_stop(tmhandle))
+        if(TimerP_OK != TimerP_stop(tmhandle))
+        {
+            result = osal_FAILURE;
+        }
+        if(TimerP_OK != TimerP_delete(tmhandle))
         {
             result = osal_FAILURE;
         }
@@ -265,7 +269,7 @@ static int32_t OsalApp_timerSetMicroNegTest(void)
 int32_t OsalApp_timerTests(void)
 {
     int32_t result = osal_OK;
-    result += OsalApp_timerNegativeTest();
+    result += OsalApp_timerTickFxnNullTest();
     result += OsalApp_timerGeneralTest();
     result += OsalApp_timerSetMicroNegTest();
 
