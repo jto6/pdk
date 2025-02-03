@@ -71,6 +71,9 @@
 #include "vtm.h"
 #include "pok.h"
 #include "tog.h"
+#if defined(ECC_ENABLED)
+#include "ecc.h"
+#endif
 #endif
 
 /* ========================================================================== */
@@ -1044,7 +1047,9 @@ static uint32_t BootApp_loadImg(void)
     } /* for (j = 0; j < NUM_BOOT_STAGES; j++) */
 
 #if defined(BOOT_MMCSD) || defined(BOOT_EMMC_UDA)
+#if !defined(ECC_ENABLED)
     BootApp_mmcBootImageDeInit();
+#endif
 #endif
 
 #if defined(BOOT_OSPI)
@@ -1074,6 +1079,10 @@ static uint32_t BootApp_loadImg(void)
 
 #if defined(SAFETY_CHECKER_LOOP_ENABLED)
     retVal = BootApp_safetyCheckerLoop();
+#endif
+
+#if defined(ECC_ENABLED)
+        retVal = BootApp_eccFxn();
 #endif
 
     return (retVal);

@@ -66,10 +66,18 @@ extern "C" {
 #define OSPI_OFFSET_SI               (0x2E0000U)
 #define OSPI_OFFSET_SYSFW            (0x80000U)
 
+/* BootApp size increases with ECC enabled, so the following offsets need an update to avoid over-writing */
+#if defined(ECC_ENABLED)
+/* Location of ATF/OPTEE - used for both Linux and QNX */
+#define OSPI_OFFSET_A72IMG1          (0x300000U)
+/* Location of Kernel for Linux or IFS for QNX */
+#define OSPI_OFFSET_A72IMG2          (0x900000U)
+#else
 /* Location of ATF/OPTEE - used for both Linux and QNX */
 #define OSPI_OFFSET_A72IMG1          (0x1C0000U)
 /* Location of Kernel for Linux or IFS for QNX */
 #define OSPI_OFFSET_A72IMG2          (0x7C0000U)
+#endif
 /* Location of DTB for Linux */
 #define OSPI_OFFSET_A72IMG3          (0x1EC0000U)
 

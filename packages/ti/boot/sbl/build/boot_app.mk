@@ -126,7 +126,11 @@ ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
     SRCS_COMMON += vtm.c event_trigger.c
     SRCS_COMMON += pok.c
     SRCS_COMMON += tog.c
-    SRCS_ASM_COMMON += 	tog_utils.asm
+    SRCS_ASM_COMMON += tog_utils.asm
+    ifeq ($(SOC), j721s2)
+        SRCS_COMMON += ecc.c soc_ecc_func.c
+        SRCS_ASM_COMMON += sdl_arm_r5_mpu.asm sdl_arm_r5_pmu.asm
+    endif
 
     # PDK Include Files
     INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
@@ -134,11 +138,17 @@ ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
     INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
     INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
     INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
+    ifeq ($(SOC), j721s2)
+        INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/ecc/soc/$(SOC)
+    endif
 
     # SDL Source File Paths
     SRCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
     SRCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
     SRCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+    ifeq ($(SOC), j721s2)
+        SRCDIR += $(SDL_INSTALL_PATH)/src/ip/r5/src
+    endif
 
     # PDK Source File Paths
     SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
@@ -146,7 +156,10 @@ ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
     SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
     SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
     SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
-
+    ifeq ($(SOC), j721s2)
+        SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/ecc/soc/$(SOC)
+        SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/ecc
+    endif
 endif
 
 ifeq ($(HLOSBOOT), linux)
@@ -157,6 +170,19 @@ endif
 
 ifeq ($(SAFETY_LOOP), yes)
     EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_SBL_COMP_PATH)/example/boot_app/linker_r5_freertos_safety.lds
+else ifeq ($(SDL_SAFETY_TASK_ENABLED), yes)
+    ifeq ($(SOC), j721s2)
+        ifneq ($(HLOSBOOT), linux)
+            CFLAGS_LOCAL_COMMON += -DECC_ENABLED
+            ifeq ($(HLOSBOOT), qnx)
+                EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_SBL_COMP_PATH)/example/boot_app/linker_r5_freertos_sdl_safety_qnx.lds
+            else
+                EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_SBL_COMP_PATH)/example/boot_app/linker_r5_freertos_sdl_safety.lds
+            endif
+        endif
+    else
+        EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_SBL_COMP_PATH)/example/boot_app/linker_r5_freertos.lds
+    endif
 else
     EXTERNAL_LNKCMD_FILE_LOCAL = $(PDK_SBL_COMP_PATH)/example/boot_app/linker_r5_freertos.lds
 endif
