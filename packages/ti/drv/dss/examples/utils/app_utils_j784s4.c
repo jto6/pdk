@@ -54,6 +54,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+/* None */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -98,13 +99,13 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
         if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(
-                TISCI_DEV_DSS_DSI0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                UTILS_TISCI_DEV_DSS_DSI, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                 TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
         }
         if(CSL_PASS == status)
         {
             status = Sciclient_pmSetModuleState(
-                TISCI_DEV_DPHY_TX0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                UTILS_TISCI_DEV_DPHY_TX, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                 TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
         }
 
@@ -122,6 +123,7 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
             printf("\n TISCI_DEV_DSS0 device shutdown NOT successful !!!\r\n");
         }
 
+#if (1U == DSI_INSTANCE_0)
         /* Check if the required clock can be supported by system firmware. */
         if(status == CSL_PASS)
         {
@@ -202,6 +204,32 @@ void App_configureLCD(App_utilsLcdCfgParams cfgParams)
                                         SCICLIENT_SERVICE_WAIT_FOREVER);
             printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_2_IN_2X_CLK: Expected %lld and getting %lld Hz\r\n", cfgParams.pixelClk, clkFreq);
         }    
+#elif (1U == DSI_INSTANCE_1)
+        if(CSL_PASS == status)
+        {        
+            status = Sciclient_pmSetModuleClkFreq(TISCI_DEV_DSS0,
+                        TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
+                        cfgParams.pixelClk,
+                        0,
+                        SCICLIENT_SERVICE_WAIT_FOREVER);      
+        }
+        if (CSL_PASS == status)
+        {
+            status = Sciclient_pmGetModuleClkFreq(TISCI_DEV_DSS0,
+                        TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK,
+                        &respClkRate,
+                        SCICLIENT_SERVICE_WAIT_FOREVER);
+
+            if (CSL_PASS == status)
+            {
+                printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK set at required frequency = %lld Hz \n", respClkRate);
+            }
+            else
+            {
+                printf("\n TISCI_DEV_DSS0_DSS_INST0_DPI_1_IN_2X_CLK not configured at desired frequency, current frequency is  = %lld Hz\n", respClkRate);
+            }
+        }
+#endif
     }
     else if (APP_OUTPUT_EDP == cfgParams.outType)
     {

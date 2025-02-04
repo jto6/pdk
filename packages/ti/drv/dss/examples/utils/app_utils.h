@@ -68,6 +68,26 @@ extern "C" {
 #define DO_MULTILINK             (0U)
 #endif
 
+#if defined (SOC_J721S2) || defined (SOC_J784S4)
+/*DSI has two instances on J721s2 and J784s4 , these macros will be used to 
+configure the clock for the required instance.*/
+#define DSI_INSTANCE_0           (1U)
+#define DSI_INSTANCE_1           (0U)
+
+#if (1U == DSI_INSTANCE_0)
+#define UTILS_TISCI_DEV_DSS_DSI     TISCI_DEV_DSS_DSI0
+#define UTILS_TISCI_DEV_DPHY_TX     TISCI_DEV_DPHY_TX0
+#elif (1U == DSI_INSTANCE_1)
+#define UTILS_TISCI_DEV_DSS_DSI     TISCI_DEV_DSS_DSI1
+#define UTILS_TISCI_DEV_DPHY_TX     TISCI_DEV_DPHY_TX1
+#endif
+#endif
+
+#if defined (SOC_J742S2)
+#define UTILS_TISCI_DEV_DSS_DSI     TISCI_DEV_DSS_DSI0
+#define UTILS_TISCI_DEV_DPHY_TX     TISCI_DEV_DPHY_TX0
+#endif
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */

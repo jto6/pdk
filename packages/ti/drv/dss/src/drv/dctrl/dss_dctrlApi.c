@@ -306,6 +306,7 @@ int32_t Dss_dctrlDrvInit(const Dss_DctrlDrvInitParams *drvInitParams)
         retVal = Dss_dctrlDrvInitDp(drvInitParams->dpInitParams.isHpdSupported, drvInitParams->dpInitParams.multilinkPhyType);
     }
 
+    /* Calling one time */
     if (UTRUE == drvInitParams->dsiInitParams.isAvailable)
     {
         Dss_dctrlDrvInitDSI();
@@ -620,17 +621,17 @@ Dss_DctrlDrvPipeInfo *Dss_dctrlDrvGetPipeInfo(DssDctrlDrvClientHandle handle)
     for(i = 0U; i < gDss_DctrlDrvInfo.numValidPipes; i++)
     {
         if((gDss_DctrlDrvInfo.pipeInfo[i].pipeId == pipeInfo->pipeId) &&
-           ((DSS_DCTRL_PIPE_OPENED == 
+           ((DSS_DCTRL_PIPE_OPENED ==
                             gDss_DctrlDrvInfo.pipeInfo[i].pipeState)   ||
-            (DSS_DCTRL_PIPE_STARTING == 
+            (DSS_DCTRL_PIPE_STARTING ==
                             gDss_DctrlDrvInfo.pipeInfo[i].pipeState)   ||
-            (DSS_DCTRL_PIPE_STARTED == 
+            (DSS_DCTRL_PIPE_STARTED ==
                             gDss_DctrlDrvInfo.pipeInfo[i].pipeState)   ||
-            (DSS_DCTRL_PIPE_RUNNING == 
+            (DSS_DCTRL_PIPE_RUNNING ==
                             gDss_DctrlDrvInfo.pipeInfo[i].pipeState)   ||
-            (DSS_DCTRL_PIPE_STOPPING == 
+            (DSS_DCTRL_PIPE_STOPPING ==
                             gDss_DctrlDrvInfo.pipeInfo[i].pipeState)   ||
-            (DSS_DCTRL_PIPE_STOPPED == 
+            (DSS_DCTRL_PIPE_STOPPED ==
                             gDss_DctrlDrvInfo.pipeInfo[i].pipeState)))
         {
             break;
@@ -1271,7 +1272,12 @@ static uint32_t Dss_dctrlDrvIsOutputDSI(uint32_t vpId)
     for(i = 0U; i < gDss_DctrlDrvGraphObj.dctrlEdgeList.numEdges; i++)
     {
         currEdge = &gDss_DctrlDrvGraphObj.dctrlEdgeList.list[i];
-        if((DSS_DCTRL_NODE_DSI_DPI2 == currEdge->endNode) &&
+        if(((DSS_DCTRL_NODE_DSI_DPI2 == currEdge->endNode) 
+#if defined (SOC_J721S2) || defined (SOC_J784S4) 
+            || (DSS_DCTRL_NODE_DSI_DPI1 == currEdge->endNode) || 
+            (DSS_DCTRL_NODE_DSI_DPI3 == currEdge->endNode)
+#endif
+            ) &&
                 (nodeId == currEdge->startNode))
         {
             vpFound = UTRUE;
@@ -2029,17 +2035,17 @@ static void Dss_dctrlFuncCbFxn(const uint32_t *event,
             {
                 if(gDss_DctrlDrvInfo.pipeInfo[j].vpId == vpId)
                 {
-                    if((DSS_DCTRL_PIPE_STARTING == 
+                    if((DSS_DCTRL_PIPE_STARTING ==
                                 gDss_DctrlDrvInfo.pipeInfo[j].pipeState)     ||
-                       (DSS_DCTRL_PIPE_STARTED == 
+                       (DSS_DCTRL_PIPE_STARTED ==
                                 gDss_DctrlDrvInfo.pipeInfo[j].pipeState)      ||
-                       (DSS_DCTRL_PIPE_RUNNING == 
+                       (DSS_DCTRL_PIPE_RUNNING ==
                                 gDss_DctrlDrvInfo.pipeInfo[j].pipeState)      ||
-                       (DSS_DCTRL_PIPE_STOPPING == 
+                       (DSS_DCTRL_PIPE_STOPPING ==
                                 gDss_DctrlDrvInfo.pipeInfo[j].pipeState))
                     {
                         activePipeNum++;
-                        if(DSS_DCTRL_PIPE_STARTING == 
+                        if(DSS_DCTRL_PIPE_STARTING ==
                                 gDss_DctrlDrvInfo.pipeInfo[j].pipeState)
                         {
                             /* This is the first VSync for dummy start i.e.
@@ -2048,7 +2054,7 @@ static void Dss_dctrlFuncCbFxn(const uint32_t *event,
                             gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
                                                         DSS_DCTRL_PIPE_STARTED;
                         }
-                        if(DSS_DCTRL_PIPE_STARTED == 
+                        if(DSS_DCTRL_PIPE_STARTED ==
                                 gDss_DctrlDrvInfo.pipeInfo[j].pipeState)
                         {
                             /* This is the first actual VSync where the buffer
@@ -2070,7 +2076,7 @@ static void Dss_dctrlFuncCbFxn(const uint32_t *event,
                         gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.cbFxn(
                             gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.arg);
                     }
-                    else if(DSS_DCTRL_PIPE_STOPPED == 
+                    else if(DSS_DCTRL_PIPE_STOPPED ==
                                   gDss_DctrlDrvInfo.pipeInfo[j].pipeState)
                     {
                         /* This is the actual stop */
@@ -2396,12 +2402,12 @@ static int32_t Dss_dctrlIsDPConnectedIoctl(uint32_t *isDpConnected)
         {
             *isDpConnected = UTRUE;
         }
-        else 
+        else
         {
             *isDpConnected = UFALSE;
         }
     }
-    
+
     return retVal;
 }
 #endif

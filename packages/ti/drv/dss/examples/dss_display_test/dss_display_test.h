@@ -127,7 +127,6 @@ extern "C" {
 /**< Enable DSI output, configures DSI for 720p resolution. */
 #define DISP_APP_TEST_DSI                 (0U)
 
-
 #if defined (SOC_AM65XX)
 #define DISP_APP_LCD_WIDTH              (1280U)
 #define DISP_APP_LCD_HEIGHT             (800U)

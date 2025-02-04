@@ -62,6 +62,8 @@ extern "C" {
 
 typedef struct
 {
+    uint32_t instId;
+    /**< DSI Instance ID */
     uint32_t isAvailable;
     /**< Flag to indicate whether DSI module is available */
     uint32_t isConnectedTo;

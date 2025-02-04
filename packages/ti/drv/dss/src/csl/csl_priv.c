@@ -13,13 +13,21 @@
 #define SAPB_SIZE                  (0x00100000)
 #define PHAPB_SIZE                 (0x00100000)
 
-#define DSI_TOP                    (CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE)
-#define DSI_TOP_SIZE               (DSI_TOP + CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_SIZE)
-#define DSI_WRAPPER                (CSL_DSS_DSI0_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_BASE)
-#define DSI_WRAPPER_SIZE           (DSI_WRAPPER + CSL_DSS_DSI0_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_SIZE)
-#define DSI_DPHY                   (CSL_DPHY_TX0_BASE)
-#define DSI_DPHY_SIZE              (DSI_DPHY + CSL_DPHY_TX0_SIZE)
+#define DSI_0_TOP                    (CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE)
+#define DSI_0_TOP_SIZE               (DSI_0_TOP + CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_SIZE)
+#define DSI_0_WRAPPER                (CSL_DSS_DSI0_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_BASE)
+#define DSI_0_WRAPPER_SIZE           (DSI_0_WRAPPER + CSL_DSS_DSI0_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_SIZE)
+#define DSI_0_DPHY                   (CSL_DPHY_TX0_BASE)
+#define DSI_0_DPHY_SIZE              (DSI_0_DPHY + CSL_DPHY_TX0_SIZE)
 
+#if defined (SOC_J721S2) || (SOC_J784S4)
+#define DSI_1_TOP                    (CSL_DSS_DSI1_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE)
+#define DSI_1_TOP_SIZE               (DSI_1_TOP + CSL_DSS_DSI1_DSI_TOP_VBUSP_CFG_DSI_0_DSI_SIZE)
+#define DSI_1_WRAPPER                (CSL_DSS_DSI1_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_BASE)
+#define DSI_1_WRAPPER_SIZE           (DSI_1_WRAPPER + CSL_DSS_DSI1_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_SIZE)
+#define DSI_1_DPHY                   (CSL_DPHY_TX1_BASE)
+#define DSI_1_DPHY_SIZE              (DSI_1_DPHY + CSL_DPHY_TX1_SIZE)
+#endif
 /*
  * CDNS PHY memory map is based on 16b halfword in 32-bit word address
  * TI wiz wrapper collapsed them into 16b word addresses.
@@ -108,9 +116,15 @@ uint32_t CPS_ReadReg32(volatile uint32_t* address)
     {
         data = cdn_phapb_read(address_int - PHAPB_BASE);
     }
-    else if (((address_int >= DSI_TOP) && (address_int < DSI_TOP_SIZE)) ||
-             ((address_int >= DSI_DPHY) && (address_int < DSI_DPHY_SIZE)) ||
-             ((address_int >= DSI_WRAPPER) && (address_int < DSI_WRAPPER_SIZE)))
+    else if (((address_int >= DSI_0_TOP) && (address_int < DSI_0_TOP_SIZE)) ||
+             ((address_int >= DSI_0_DPHY) && (address_int < DSI_0_DPHY_SIZE)) ||
+             ((address_int >= DSI_0_WRAPPER) && (address_int < DSI_0_WRAPPER_SIZE)) 
+#if defined (SOC_J721S2) || (SOC_J784S4)
+             || ((address_int >= DSI_1_TOP) && (address_int < DSI_1_TOP_SIZE)) ||
+             ((address_int >= DSI_1_DPHY) && (address_int < DSI_1_DPHY_SIZE)) ||
+             ((address_int >= DSI_1_WRAPPER) && (address_int < DSI_1_WRAPPER_SIZE))
+#endif
+             )
     {
         data = CSL_REG32_RD(address_int);
     }
@@ -145,9 +159,15 @@ void CPS_WriteReg32(volatile uint32_t* address, uint32_t value)
     {
         cdn_phapb_write(address_int - PHAPB_BASE, value);
     }
-    else if (((address_int >= DSI_TOP) && (address_int < DSI_TOP_SIZE)) ||
-             ((address_int >= DSI_DPHY) && (address_int < DSI_DPHY_SIZE)) ||
-             ((address_int >= DSI_WRAPPER) && (address_int < DSI_WRAPPER_SIZE)))
+    else if (((address_int >= DSI_0_TOP) && (address_int < DSI_0_TOP_SIZE)) ||
+             ((address_int >= DSI_0_DPHY) && (address_int < DSI_0_DPHY_SIZE)) ||
+             ((address_int >= DSI_0_WRAPPER) && (address_int < DSI_0_WRAPPER_SIZE))
+#if defined (SOC_J721S2) || (SOC_J784S4)
+             || ((address_int >= DSI_1_TOP) && (address_int < DSI_1_TOP_SIZE)) ||
+             ((address_int >= DSI_1_DPHY) && (address_int < DSI_1_DPHY_SIZE)) ||
+             ((address_int >= DSI_1_WRAPPER) && (address_int < DSI_1_WRAPPER_SIZE))
+#endif
+             )
     {
         CSL_REG32_WR(address_int, value);
     }

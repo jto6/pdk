@@ -157,20 +157,22 @@ typedef void (*Dss_DctrlDpHpdCbFxn)(uint32_t hpdState, void *appData);
 #define DSS_DCTRL_NODE_EDP_DPI1               (0x10U)
 #define DSS_DCTRL_NODE_EDP_DPI2               (0x11U)
 #define DSS_DCTRL_NODE_EDP_DPI3               (0x12U)
-#define DSS_DCTRL_NODE_DSI_DPI2               (0x13U)
-#define DSS_DCTRL_NODE_DISCSYNC0              (0x14U)
-#define DSS_DCTRL_NODE_DISCSYNC1              (0x15U)
-#define DSS_DCTRL_NODE_WB                     (0x16U)
+#define DSS_DCTRL_NODE_DSI_DPI1               (0x13U)
+#define DSS_DCTRL_NODE_DSI_DPI2               (0x14U)
+#define DSS_DCTRL_NODE_DSI_DPI3               (0x15U)
+#define DSS_DCTRL_NODE_DISCSYNC0              (0x16U)
+#define DSS_DCTRL_NODE_DISCSYNC1              (0x17U)
+#define DSS_DCTRL_NODE_WB                     (0x18U)
 /* @} */
 
 /** \brief Defines maximum number of nodes for allocation including invalid node
  */
-#define DSS_DCTRL_MAX_NODES                   (23U)
+#define DSS_DCTRL_MAX_NODES                   (25U)
 
 /** \brief Defines maximum number of edges for allocation. This is derived by
  *         looking at all possible DSS connections in the SoC.
  */
-#define DSS_DCTRL_MAX_EDGES                   (37U)
+#define DSS_DCTRL_MAX_EDGES                   (39U)
 
 /**< \brief DSS Functional Interrupt Number for R5 */
 #define DSS_FUNC_IRQ_DEFAULT_NUM              (52U)

@@ -90,7 +90,9 @@ static const Dss_DctrlNodeIdInfo gDss_DctrlNodeIdInfo[] = {
     {DSS_DCTRL_NODE_EDP_DPI1, CSL_DSS_DPI_ID_EDP_1,      DSS_DCTRL_NODE_TYPE_OUTPUT},  /* Virtual Node */
     {DSS_DCTRL_NODE_EDP_DPI2, CSL_DSS_DPI_ID_EDP_2,      DSS_DCTRL_NODE_TYPE_OUTPUT},  /* Virtual Node */
     {DSS_DCTRL_NODE_EDP_DPI3, CSL_DSS_DPI_ID_EDP_3,      DSS_DCTRL_NODE_TYPE_OUTPUT},  /* Virtual Node */
+    {DSS_DCTRL_NODE_DSI_DPI1, CSL_DSS_DPI_ID_DSI,        DSS_DCTRL_NODE_TYPE_OUTPUT},   /* Virtual Node */
     {DSS_DCTRL_NODE_DSI_DPI2, CSL_DSS_DPI_ID_DSI,        DSS_DCTRL_NODE_TYPE_OUTPUT},   /* Virtual Node */
+    {DSS_DCTRL_NODE_DSI_DPI3, CSL_DSS_DPI_ID_DSI,        DSS_DCTRL_NODE_TYPE_OUTPUT},   /* Virtual Node */
     {DSS_DCTRL_NODE_WB,       CSL_DSS_WB_PIPE_ID_1,      DSS_DCTRL_NODE_TYPE_OUTPUT}   /* Virtual Node */
 };
 
@@ -607,7 +609,9 @@ uint32_t Dss_dctrlIsVideoMuxNeeded(uint32_t vpNodeId,
     uint32_t isMuxNeeded = UFALSE;
 
     if(((DSS_DCTRL_NODE_DPI_DPI0 == outNodeId) ||
-        (DSS_DCTRL_NODE_DPI_DPI1 == outNodeId)) &&
+        (DSS_DCTRL_NODE_DPI_DPI1 == outNodeId) ||
+        (DSS_DCTRL_NODE_DSI_DPI1 == outNodeId) ||
+        (DSS_DCTRL_NODE_DSI_DPI3 == outNodeId)) &&
        ((DSS_DCTRL_NODE_VP2 == vpNodeId) ||
         (DSS_DCTRL_NODE_VP4 == vpNodeId)))
     {

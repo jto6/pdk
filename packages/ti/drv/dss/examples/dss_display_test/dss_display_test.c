@@ -80,11 +80,19 @@
     #define TEST_DCTRL_OUT_NODE_ID          (DSS_DCTRL_NODE_OLDI)
 #else
     #if(1U == DISP_APP_TEST_DSI)
+        #if ((!defined (SOC_J721S2)) && (!defined (SOC_J784S4))) || ((defined (SOC_J721S2) || defined (SOC_J784S4)) && (DSI_INSTANCE_0 == 1))
         #define TEST_VP_ID                      (CSL_DSS_VP_ID_3)
         #define TEST_OVERLAY_ID                 (CSL_DSS_OVERLAY_ID_3)
         #define TEST_DCTRL_OVERLAY_NODE_ID      (DSS_DCTRL_NODE_OVERLAY3)
         #define TEST_DCTRL_VP_NODE_ID           (DSS_DCTRL_NODE_VP3)
         #define TEST_DCTRL_OUT_NODE_ID          (DSS_DCTRL_NODE_DSI_DPI2)
+        #elif (defined (SOC_J721S2) || defined (SOC_J784S4)) && (DSI_INSTANCE_1 == 1)
+        #define TEST_VP_ID                      (CSL_DSS_VP_ID_2)
+        #define TEST_OVERLAY_ID                 (CSL_DSS_OVERLAY_ID_2)
+        #define TEST_DCTRL_OVERLAY_NODE_ID      (DSS_DCTRL_NODE_OVERLAY2)
+        #define TEST_DCTRL_VP_NODE_ID           (DSS_DCTRL_NODE_VP2)
+        #define TEST_DCTRL_OUT_NODE_ID          (DSS_DCTRL_NODE_DSI_DPI1)
+        #endif
     #elif(1U == DISP_APP_TEST_EDP)
         #define TEST_VP_ID                      (CSL_DSS_VP_ID_1)
         #define TEST_OVERLAY_ID                 (CSL_DSS_OVERLAY_ID_1)
@@ -161,6 +169,7 @@ int32_t Dss_displayTest(void)
 #endif
 
 #if (1U == DISP_APP_TEST_DSI)
+    gDispApp_Obj.dsiPrms.instId = 0;
     gDispApp_Obj.dsiPrms.numOfLanes = 2;
 #if defined (SOC_J721E)
     gDispApp_Obj.dsiPrms.laneSpeedInKbps = 891000;
@@ -257,7 +266,7 @@ static void DispApp_init(DispApp_Obj *appObj)
     appObj->initParams.socParams.irqParams.irqNum[DSS_EVT_MGR_INST_ID_SECURITY] = 57U;
 #endif
     appObj->initParams.socParams.dpInitParams.isHpdSupported                    = UFALSE;
-#if ((defined (SOC_J721S2)) && (1U == DO_MULTILINK))
+#if ((defined (SOC_J721S2)) && (1U == DO_MULTILINK) && (1U == DISP_APP_TEST_EDP))
     appObj->initParams.socParams.dpInitParams.multilinkPhyType                  = DSS_DP_MULTILINK_PHY_USB;
 #endif
     Dss_init(&appObj->initParams);
@@ -1060,7 +1069,7 @@ static int32_t DispApp_configDctrl(DispApp_Obj *appObj)
     if(FVID2_SOK == retVal)
     {
         Dss_DctrlDsiParams dsiPrms;
-
+        dsiPrms.instId = appObj->dsiPrms.instId;
         dsiPrms.numOfLanes = appObj->dsiPrms.numOfLanes;
         dsiPrms.laneSpeedInKbps = appObj->dsiPrms.laneSpeedInKbps;
 #if (1==DISP_APP_TEST_DSI)

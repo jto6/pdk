@@ -66,10 +66,16 @@
 #define PLL_LOCK_REPEAT_COUNT               (10000U)
 #define WAIT_FOR_LANES_ACTIVE_REPEAT_COUNT  (10000U)
 
-/* Base Address of PHY */
-#define DPHYTX0_CORE_BASE                   (CSL_DPHY_TX0_BASE)
-/* Base Address of DSI Wrapper */
-#define DSITX2_WRAP_REGS_BASE               (CSL_DSS_DSI0_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_BASE)
+#define DSI_INSTANCE_ID_0               ((uint32_t) 0x0U)
+#if defined (SOC_J721S2) || defined (SOC_J784S4)
+#define DSI_INSTANCE_ID_1               ((uint32_t) 0x1U)
+#endif
+
+#if defined (SOC_J721S2) || defined (SOC_J784S4)
+#define DSI_INSTANCE_ID_MAX             ((uint32_t)DSI_INSTANCE_ID_1 + 1U)
+#else
+#define DSI_INSTANCE_ID_MAX             ((uint32_t)DSI_INSTANCE_ID_0 + 1U)
+#endif
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -93,12 +99,21 @@ typedef struct
     uint32_t                    dphyTxOpDiv;
     uint32_t                    dphyTxFbDiv;
     uint32_t                    dphyTxRate;
+    uint32_t                    dphyCoreBase;
 
     CSL_wiz16b8m4cdtRegs_DPHYTX     *dphyRegs;
     CSL_wiz16b8m4cdtRegs_WIZ_CONFIG *dphyWizRegs;
     DSITX_Regs                 *topRegs;
 
 } Dss_DctrlDSIDrvObj;
+
+typedef struct
+{
+    uint32_t numInst;
+    /**< Number of valid instance. */
+    Dss_DctrlDSIDrvObj instObj[DSI_INSTANCE_ID_MAX];
+    /**< DSI instance objects pointer. */
+} Dss_DctrlDSICommonObj;
 
 /**
  *  struct Dsitx_DphyRangeData
@@ -157,7 +172,7 @@ extern "C" {
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-static Dss_DctrlDSIDrvObj gDssDctrlDsiDrvObj;
+static Dss_DctrlDSICommonObj gDssDctrlDsiCommonObj;
 
 /* This contains information of the PLL input divider value for DPHY
    rangeMin and rangeMax is in KHz */
@@ -401,14 +416,14 @@ static Dss_DctrlDsi2DpBridgeBlankingParams supportedBlanks[] =
             .vSyncLen = 8
         }
     },
-    
+
 };
 
 /* ========================================================================== */
 /*                  Internal/Private Function Declarations                    */
 /* ========================================================================== */
 
-static void dssDctrlSetDSIInCtrlMod(void);
+static void dssDctrlSetDSIInCtrlMod(uint32_t instId);
 static uint32_t dssDctrlInitPhyConfig(Dss_DctrlDSIDrvObj *drvObj,
     DSITX_PrivateData* pD, DSITX_Config* cfg);
 static uint32_t dssDctrlSetDphyConfiguration(Dss_DctrlDSIDrvObj *dsiObj,
@@ -438,49 +453,78 @@ static int32_t dssdctrlCalcDsiParams(Dss_DctrlDSIDrvObj *dsiObj, const Dss_Dctrl
 
 void Dss_dctrlDrvInitDSI(void)
 {
-    Dss_DctrlDSIDrvObj *dsiObj;
+    Dss_DctrlDSICommonObj *dsiCommonObj;
+    uint32_t instCnt;
 
-    dsiObj = &gDssDctrlDsiDrvObj;
+    dsiCommonObj = &gDssDctrlDsiCommonObj;
 
-    Fvid2Utils_memset(&dsiObj->cfgDsiTx, 0, sizeof(DSITX_Config));
-    Fvid2Utils_memset(&dsiObj->sysReqDsiTx, 0, sizeof(DSITX_SysReq));
-    Fvid2Utils_memset(&dsiObj->privDsiTx, 0, sizeof(DSITX_PrivateData));
+    for (instCnt = 0U; instCnt < DSI_INSTANCE_ID_MAX; instCnt++)
+    {
+        Fvid2Utils_memset(&dsiCommonObj->instObj[instCnt].cfgDsiTx, 0, sizeof(DSITX_Config));
+        Fvid2Utils_memset(&dsiCommonObj->instObj[instCnt].sysReqDsiTx, 0, sizeof(DSITX_SysReq));
+        Fvid2Utils_memset(&dsiCommonObj->instObj[instCnt].privDsiTx, 0, sizeof(DSITX_PrivateData));
+        if (instCnt == DSI_INSTANCE_ID_0)
+        {
+            dsiCommonObj->instObj[instCnt].cfgDsiTx.regBase = (DSITX_Regs*) CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
+            dsiCommonObj->instObj[instCnt].privDsiTx.regBase = (DSITX_Regs*) CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
+            dsiCommonObj->instObj[instCnt].topRegs = (DSITX_Regs*) CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
+            dsiCommonObj->instObj[instCnt].dphyRegs = (CSL_wiz16b8m4cdtRegs_DPHYTX *)CSL_DPHY_TX0_BASE;
+            dsiCommonObj->instObj[instCnt].dphyWizRegs = (CSL_wiz16b8m4cdtRegs_WIZ_CONFIG *)
+                (CSL_DPHY_TX0_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_MOD_VER);
+            dsiCommonObj->instObj[instCnt].dphyCoreBase = CSL_DPHY_TX0_BASE;
+        }
+#if defined (SOC_J721S2) || defined (SOC_J784S4)
+        else if (instCnt == DSI_INSTANCE_ID_1)
+        {
+            dsiCommonObj->instObj[instCnt].cfgDsiTx.regBase = (DSITX_Regs*) CSL_DSS_DSI1_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
+            dsiCommonObj->instObj[instCnt].privDsiTx.regBase = (DSITX_Regs*) CSL_DSS_DSI1_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
+            dsiCommonObj->instObj[instCnt].topRegs = (DSITX_Regs*) CSL_DSS_DSI1_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
+            dsiCommonObj->instObj[instCnt].dphyRegs = (CSL_wiz16b8m4cdtRegs_DPHYTX *)CSL_DPHY_TX1_BASE;
+            dsiCommonObj->instObj[instCnt].dphyWizRegs = (CSL_wiz16b8m4cdtRegs_WIZ_CONFIG *)
+                (CSL_DPHY_TX1_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_MOD_VER);
+            dsiCommonObj->instObj[instCnt].dphyCoreBase = CSL_DPHY_TX1_BASE;
+        }
+#endif
 
-    dsiObj->cfgDsiTx.regBase = (DSITX_Regs*) CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
-    dsiObj->privDsiTx.regBase = (DSITX_Regs*) CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
-    dsiObj->topRegs = (DSITX_Regs*) CSL_DSS_DSI0_DSI_TOP_VBUSP_CFG_DSI_0_DSI_BASE;
-    dsiObj->dphyRegs = (CSL_wiz16b8m4cdtRegs_DPHYTX *)DPHYTX0_CORE_BASE;
-    dsiObj->dphyWizRegs = (CSL_wiz16b8m4cdtRegs_WIZ_CONFIG *)
-        (DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_MOD_VER);
+        dsiCommonObj->instObj[instCnt].dphyTxIpDiv = 0x2U;
+        dsiCommonObj->instObj[instCnt].dphyTxOpDiv = 0x2U;
+        dsiCommonObj->instObj[instCnt].dphyTxFbDiv = 0x173U;
+        dsiCommonObj->instObj[instCnt].dphyTxRate = 0x1CEU;
+        dsiCommonObj->instObj[instCnt].cfgDsiTx.numOfLanes = 0x2U;
+        dsiCommonObj->instObj[instCnt].privDsiTx.numOfLanes = 0x2U;
+    }
 
-
-    dsiObj->dphyTxIpDiv = 0x2U;
-    dsiObj->dphyTxOpDiv = 0x2U;
-    dsiObj->dphyTxFbDiv = 0x173U;
-    dsiObj->dphyTxRate = 0x1CEU;
-    dsiObj->cfgDsiTx.numOfLanes = 0x2U;
-    dsiObj->privDsiTx.numOfLanes = 0x2U;
 }
 
 int32_t Dss_dctrlDrvSetDSIParams(Dss_DctrlDrvInfo *drvInfo,
     const Dss_DctrlDsiParams *dsiPrms)
 {
     int32_t status;
-    Dss_DctrlDSIDrvObj *dsiObj;
+    Dss_DctrlDSICommonObj *dsiCommonObj;
 
-    dsiObj = &gDssDctrlDsiDrvObj;
+    if (dsiPrms->instId < DSI_INSTANCE_ID_MAX)
+    {
+        drvInfo->dsiParams.instId = dsiPrms->instId;
+        dsiCommonObj = &gDssDctrlDsiCommonObj;
 
-    dsiObj->cfgDsiTx.numOfLanes = dsiPrms->numOfLanes;
-    dsiObj->privDsiTx.numOfLanes = dsiPrms->numOfLanes;
+        dsiCommonObj->instObj[dsiPrms->instId].cfgDsiTx.numOfLanes = dsiPrms->numOfLanes;
+        dsiCommonObj->instObj[dsiPrms->instId].privDsiTx.numOfLanes = dsiPrms->numOfLanes;
 
-    status = dssdctrlCalcDsiParams(dsiObj, dsiPrms);
-
+        status = dssdctrlCalcDsiParams(&dsiCommonObj->instObj[dsiPrms->instId], dsiPrms);
+    }
+    else
+    {
+        GT_0trace(DssTrace,
+                  GT_ERR,
+                  "Invalid DSI Instance\r\n");
+        status = FVID2_EINVALID_PARAMS;
+    }
     if(FVID2_SOK == status)
     {
         /* Checks to see if the configuration (num of lanes) is valid */
-        status = DSITX_Probe(&dsiObj->cfgDsiTx, &dsiObj->sysReqDsiTx);
+        status = DSITX_Probe(&dsiCommonObj->instObj[dsiPrms->instId].cfgDsiTx, &dsiCommonObj->instObj[dsiPrms->instId].sysReqDsiTx);
     }
-    
+
     if (CDN_EOK == (uint32_t)status)
     {
         /* Calculate lane parameters based on the input speed */
@@ -488,6 +532,9 @@ int32_t Dss_dctrlDrvSetDSIParams(Dss_DctrlDrvInfo *drvInfo,
     }
     else
     {
+        GT_0trace(DssTrace,
+                  GT_ERR,
+                  "Invalid DSI Params \r\n");
         status = FVID2_EINVALID_PARAMS;
     }
 
@@ -513,69 +560,71 @@ static int32_t dssDctrlValidateSupportedVpModes(const Fvid2_ModeInfo *mInfo, Fvi
 }
 
 
-int32_t Dss_dctrlDrvEnableVideoDSI(Dss_DctrlDrvInfo *drvInfo, const Fvid2_ModeInfo *mInfo, 
+int32_t Dss_dctrlDrvEnableVideoDSI(Dss_DctrlDrvInfo *drvInfo, const Fvid2_ModeInfo *mInfo,
                                 uint32_t hsyncPolarity, uint32_t vsyncPolarity, uint32_t connectedTo)
 {
     int32_t status;
-    Dss_DctrlDSIDrvObj *dsiObj;
+    Dss_DctrlDSICommonObj *dsiCommonObj;
+    /* filled in Dss_dctrlDrvSetDSIParams */
+    uint32_t instId = drvInfo->dsiParams.instId;
 
-    dsiObj = &gDssDctrlDsiDrvObj;
+    dsiCommonObj = &gDssDctrlDsiCommonObj;
 
-    dssDctrlSetDSIInCtrlMod();
+    dssDctrlSetDSIInCtrlMod(instId);
 
     /* Disables/clears interrupts, sets default status */
-    status = DSITX_Init(&dsiObj->privDsiTx, &dsiObj->cfgDsiTx);
+    status = DSITX_Init(&dsiCommonObj->instObj[instId].privDsiTx, &dsiCommonObj->instObj[instId].cfgDsiTx);
 
     if (CDN_EOK == status)
     {
         /* Initialize PHY configuration, number of lanes, continuous clock etc */
-        status = dssDctrlInitPhyConfig(dsiObj,
-            &dsiObj->privDsiTx, &dsiObj->cfgDsiTx);
+        status = dssDctrlInitPhyConfig(&dsiCommonObj->instObj[instId],
+            &dsiCommonObj->instObj[instId].privDsiTx, &dsiCommonObj->instObj[instId].cfgDsiTx);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlSetDphyConfiguration(dsiObj, &dsiObj->privDsiTx);
+        status = dssDctrlSetDphyConfiguration(&dsiCommonObj->instObj[instId], &dsiCommonObj->instObj[instId].privDsiTx);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlSetClockConfig(dsiObj);
+        status = dssDctrlSetClockConfig(&dsiCommonObj->instObj[instId]);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlWaitForLock(dsiObj);
+        status = dssDctrlWaitForLock(&dsiCommonObj->instObj[instId]);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlSetDphyPowerAndReset(dsiObj);
+        status = dssDctrlSetDphyPowerAndReset(&dsiCommonObj->instObj[instId]);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlInitDsiLinkConfig(dsiObj);
+        status = dssDctrlInitDsiLinkConfig(&dsiCommonObj->instObj[instId]);
     }
 
     if (CDN_EOK == status)
     {
-        DSITX_Start(&dsiObj->privDsiTx);
+        DSITX_Start(&dsiCommonObj->instObj[instId].privDsiTx);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlSetVideoConfig(dsiObj, mInfo, connectedTo);
+        status = dssDctrlSetVideoConfig(&dsiCommonObj->instObj[instId], mInfo, connectedTo);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlEnableDsiLinkAndPath(dsiObj);
+        status = dssDctrlEnableDsiLinkAndPath(&dsiCommonObj->instObj[instId]);
     }
 
     if (CDN_EOK == status)
     {
-        status = dssDctrlWaitForLaneReady(dsiObj);
+        status = dssDctrlWaitForLaneReady(&dsiCommonObj->instObj[instId]);
     }
 
     if (CDN_EOK == status)
@@ -599,7 +648,7 @@ static int32_t dssdctrlCalcDsiParams(Dss_DctrlDSIDrvObj *dsiObj, const Dss_Dctrl
     int32_t retVal = FVID2_SOK;
     uint32_t min, max;
     uint32_t idx = 0U;
-    uint64_t tempResult, refClkKHz;
+    uint64_t tempResult = 0, refClkKHz = 0;
 
     /* Get speed band for given lane speed */
     for (idx = 0U ;
@@ -622,15 +671,28 @@ static int32_t dssdctrlCalcDsiParams(Dss_DctrlDSIDrvObj *dsiObj, const Dss_Dctrl
     }
     else
     {
+        GT_0trace(DssTrace, GT_ERR, "Invalid dphy parameters \r\n");
         retVal = FVID2_EFAIL;
     }
 
     if (FVID2_SOK == retVal)
     {
-        Sciclient_pmGetModuleClkFreq(TISCI_DEV_DPHY_TX0,
-                                    TISCI_DEV_DPHY_TX0_DPHY_REF_CLK,
-                                    &refClkKHz,
-                                    SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (dsiPrms->instId == DSI_INSTANCE_ID_0)
+        {
+            Sciclient_pmGetModuleClkFreq(TISCI_DEV_DPHY_TX0,
+                                         TISCI_DEV_DPHY_TX0_DPHY_REF_CLK,
+                                         &refClkKHz,
+                                         SCICLIENT_SERVICE_WAIT_FOREVER);
+        }
+#if defined (SOC_J721S2) || defined (SOC_J784S4)
+        else if (dsiPrms->instId == DSI_INSTANCE_ID_1)
+        {
+            Sciclient_pmGetModuleClkFreq(TISCI_DEV_DPHY_TX1,
+                                         TISCI_DEV_DPHY_TX1_DPHY_REF_CLK,
+                                         &refClkKHz,
+                                         SCICLIENT_SERVICE_WAIT_FOREVER);
+        }
+#endif
         refClkKHz = refClkKHz/1000;
         /* Calculate DPHY ipdiv - PLL input divider */
         if (FVID2_SOK == retVal)
@@ -689,8 +751,8 @@ static int32_t dssdctrlCalcDsiParams(Dss_DctrlDSIDrvObj *dsiObj, const Dss_Dctrl
                           ((uint64_t)dsiObj->dphyTxOpDiv));
             if ((tempResult % refClkKHz) != 0U)
             {
-                GT_0trace(DssTrace, 
-                          GT_ERR, 
+                GT_0trace(DssTrace,
+                          GT_ERR,
                           "Invalid lane speed provided, FbDiv value should turn out integral\r\n");
                 retVal = FVID2_EINVALID_PARAMS;
             }
@@ -703,21 +765,37 @@ static int32_t dssdctrlCalcDsiParams(Dss_DctrlDSIDrvObj *dsiObj, const Dss_Dctrl
     return retVal;
 }
 
-static void dssDctrlSetDSIInCtrlMod(void)
+static void dssDctrlSetDSIInCtrlMod(uint32_t instId)
 {
     /*
      * XXX push this things to some CSL kind of functions
      */
+    if (instId == DSI_INSTANCE_ID_0)
+    {
+        /* Enable DPI0, no register overlays for Wrapper */
+        CSL_REG32_WR(CSL_DSS_DSI0_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_BASE +
+            CSL_DSI_WRAP_DPI_CONTROL, 1);
 
-    /* Enable DPI0, no register overlays for Wrapper */
-    CSL_REG32_WR(CSL_DSS_DSI0_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_BASE +
-        CSL_DSI_WRAP_DPI_CONTROL, 1);
+        /* Assumes the MMRs are unlocked for the 1st partition */
 
-    /* Assumes the MMRs are unlocked for the 1st partition */
+        /* Select DSITX as the source for DPHYTX */
+        CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE +
+            CSL_MAIN_CTRL_MMR_CFG0_DPHY_TX0_CTRL, 0x0);
+    }
+#if defined (SOC_J721S2) || defined (SOC_J784S4)
+    else if (instId == DSI_INSTANCE_ID_1)
+    {
+        /* Enable DPI0, no register overlays for Wrapper */
+        CSL_REG32_WR(CSL_DSS_DSI1_DSI_WRAP_MMR_VBUSP_CFG_DSI_WRAP_BASE +
+            CSL_DSI_WRAP_DPI_CONTROL, 1);
 
-    /* Select DSITX as the source for DPHYTX */
-    CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE +
-        CSL_MAIN_CTRL_MMR_CFG0_DPHY_TX0_CTRL, 0x0);
+        /* Assumes the MMRs are unlocked for the 1st partition */
+
+        /* Select DSITX as the source for DPHYTX */
+        CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE +
+            CSL_MAIN_CTRL_MMR_CFG0_DPHY_TX1_CTRL, 0x0);
+    }
+#endif
 }
 
 static uint32_t dssDctrlInitPhyConfig(Dss_DctrlDSIDrvObj *drvObj,
@@ -766,62 +844,62 @@ static int32_t dssDctrlSetClockConfig(Dss_DctrlDSIDrvObj *dsiObj)
     ** The signal must be driven with a value such that the internal psm frequency of the divided psm clock is 1 MHz.PSM clock is 20MHz, so dividing by 20 which is ** 14 in hex
     */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PSM_FREQ), 7, 0, 0x14);
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PSM_FREQ), 7, 0, 0x14);
 
     /* PWM control divider */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT10),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT10),
         9, 0, 0x00E /*0xE4*/);
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT10),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT10),
         19, 10, 0x1FF /*0xC*/);
 
     /* pllcnt start value */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT7),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT7),
         15, 0, 0xC8);
 
     /* pllcnt lock threshold value */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT7),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT7),
         31, 16, 0x4);
 
     /* Enable CMN startup state machine */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT2),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT2),
         0, 0, 0x1);
 
     /* TX mode enable */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT2),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_CMN0_CMN_DIG_TBIT2),
         9, 9, 0x1);
 
     /* Lane Reset */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_RST_CTRL),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_RST_CTRL),
         31, 31, 0x1);
 
     /* PLL Programming */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
         4, 0, dsiObj->dphyTxIpDiv);
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
         13, 8, dsiObj->dphyTxOpDiv);
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
         25, 16, dsiObj->dphyTxFbDiv);
 
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL),
         28, 28, 0x0);
 
     /* PHY Band ctrl - Data Rate */
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_PCS_TX_DIG_TBIT0),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_PCS_TX_DIG_TBIT0),
         4, 0, dsiObj->dphyTxRate);
     CSL_FINSR(*(volatile uint32_t *)(
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_PCS_TX_DIG_TBIT0),
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_PCS_TX_DIG_TBIT0),
         9, 5, dsiObj->dphyTxRate);
 
     return (CDN_EOK);
@@ -837,7 +915,7 @@ static int32_t dssDctrlWaitForLock(Dss_DctrlDSIDrvObj *dsiObj)
     do
     {
         value = *(volatile uint32_t *)(
-            DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL) &
+            dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_PLL_CTRL) &
             0x80000000U;
 
         if (PLL_LOCK_REPEAT_COUNT <= timeout)
@@ -855,7 +933,7 @@ static int32_t dssDctrlWaitForLock(Dss_DctrlDSIDrvObj *dsiObj)
     do
     {
         value = *(volatile uint32_t *)(
-            DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_WIZ_CONFIG_STATUS) &
+            dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_WIZ_CONFIG_STATUS) &
             0x80000000U;
         if (PLL_LOCK_REPEAT_COUNT <= timeout)
         {
@@ -1097,11 +1175,11 @@ static int32_t dssDctrlWaitForLaneReady(Dss_DctrlDSIDrvObj *dsiObj)
     uint32_t laneStatus, readData;
     bool done = BFALSE;
     uint32_t reg[] = {
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_ISO_PHY_ISO_CL_CNTRL_L,
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_ISO_PHY_ISO_DL_CTRL_L0,
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_ISO_PHY_ISO_DL_CTRL_L1,
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_ISO_LDD_PHY_ISO_DL_CTRL_L2,
-        DPHYTX0_CORE_BASE + CSL_WIZ16B8M4CDT_DPHYTX_ISO_LDD_PHY_ISO_DL_CTRL_L3
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_ISO_PHY_ISO_CL_CNTRL_L,
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_ISO_PHY_ISO_DL_CTRL_L0,
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_ISO_PHY_ISO_DL_CTRL_L1,
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_ISO_LDD_PHY_ISO_DL_CTRL_L2,
+        dsiObj->dphyCoreBase + CSL_WIZ16B8M4CDT_DPHYTX_ISO_LDD_PHY_ISO_DL_CTRL_L3
     };
     uint32_t mask[] = {
         CSL_WIZ16B8M4CDT_DPHYTX_ISO_PHY_ISO_CL_CNTRL_L_ISO_LANE_READY_CL_L_MASK,
