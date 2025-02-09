@@ -295,6 +295,11 @@ void rpmsg_responderFxn(void *arg0, void *arg1)
         OsalArch_clearInterrupt(loopCnt);
     }
     #endif
+    /* Clear all the mailbox interrupts */
+    for (cores = 0; cores < gNumRemoteProc; cores++)
+    {
+        Ipc_mailboxDisableNewMsgInt(selfProcId, pRemoteProcArray[cores]);
+    }
 
     HwiP_disable();
 

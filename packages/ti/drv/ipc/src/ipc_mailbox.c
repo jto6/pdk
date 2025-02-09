@@ -401,6 +401,15 @@ int32_t Ipc_mailboxRegister(uint16_t selfId, uint16_t remoteProcId,
                     }
                 }
 
+                /* Add the fifo data for the remoteProcId. */
+                mbox->fifoTable[mbox->fifoCnt].cfgNdx  = (int32_t)n;
+                mbox->fifoTable[mbox->fifoCnt].func    = func;
+                mbox->fifoTable[mbox->fifoCnt].arg     = arg;
+                mbox->fifoTable[mbox->fifoCnt].queueId = queueId;
+                gIpcRProcIdToMBoxDataMap[remoteProcId] = (uintptr_t)mbox;
+
+                mbox->fifoCnt++;
+
                 /* Register Mailbox interrupt now... */
                 if (retVal == IPC_SOK)
                 {
@@ -414,15 +423,17 @@ int32_t Ipc_mailboxRegister(uint16_t selfId, uint16_t remoteProcId,
 
             g_ipc_mBoxCnt++;
         }
+        else
+        {
+            /* Add the fifo data for the remoteProcId. */
+            mbox->fifoTable[mbox->fifoCnt].cfgNdx  = (int32_t)n;
+            mbox->fifoTable[mbox->fifoCnt].func    = func;
+            mbox->fifoTable[mbox->fifoCnt].arg     = arg;
+            mbox->fifoTable[mbox->fifoCnt].queueId = queueId;
+            gIpcRProcIdToMBoxDataMap[remoteProcId] = (uintptr_t)mbox;
 
-        /* Add the fifo data for the remoteProcId. */
-        mbox->fifoTable[mbox->fifoCnt].cfgNdx  = (int32_t)n;
-        mbox->fifoTable[mbox->fifoCnt].func    = func;
-        mbox->fifoTable[mbox->fifoCnt].arg     = arg;
-        mbox->fifoTable[mbox->fifoCnt].queueId = queueId;
-        gIpcRProcIdToMBoxDataMap[remoteProcId] = (uintptr_t)mbox;
-
-        mbox->fifoCnt++;
+            mbox->fifoCnt++;
+        }
 
 #ifdef DEBUG_PRINT
         SystemP_printf("Ipc_MB(%d): Self %d Remote %d (c%d,u%d,q%d) arg %d,total %d\n",
