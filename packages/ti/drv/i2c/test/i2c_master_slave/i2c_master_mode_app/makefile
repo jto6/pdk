@@ -17,7 +17,7 @@ SRCDIR = ../ . src
 INCDIR = ../ . src
 
 # Common source files across all platforms and cores
-SRCS_COMMON += main.c i2c_master_slave_cfg.c
+SRCS_COMMON += i2c_master_mode_app.c i2c_master_slave_cfg.c
 
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component

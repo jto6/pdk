@@ -189,6 +189,46 @@ export i2c_extended_testapp_$(SOC)_CORELIST
 i2c_EXAMPLE_LIST += i2c_extended_testapp
 export i2c_extended_testapp_SBL_APPIMAGEGEN = yes
 
+# I2C slave extended testapp
+i2c_slave_extended_testapp_COMP_LIST = i2c_slave_extended_testapp
+i2c_slave_extended_testapp_RELPATH = ti/drv/i2c/test/i2c_slave_extended_testapp
+i2c_slave_extended_testapp_PATH = $(PDK_I2C_COMP_PATH)/test/i2c_slave_extended_testapp
+i2c_slave_extended_testapp_BOARD_DEPENDENCY = yes
+i2c_slave_extended_testapp_CORE_DEPENDENCY = no
+i2c_slave_extended_testapp_MAKEFILE = -f makefile BUILD_OS_TYPE=baremetal
+export i2c_slave_extended_testapp_COMP_LIST
+export i2c_slave_extended_testapp_BOARD_DEPENDENCY
+export i2c_slave_extended_testapp_CORE_DEPENDENCY
+export i2c_slave_extended_testapp_MAKEFILE
+i2c_slave_extended_testapp_PKG_LIST = i2c_slave_extended_testapp
+i2c_slave_extended_testapp_INCLUDE = $(i2c_slave_extended_testapp_PATH)
+i2c_slave_extended_testapp_BOARDLIST = j721s2_evm
+export i2c_slave_extended_testapp_BOARDLIST
+i2c_slave_extended_testapp_$(SOC)_CORELIST = mcu1_0
+export i2c_slave_extended_testapp_$(SOC)_CORELIST
+i2c_EXAMPLE_LIST += i2c_slave_extended_testapp
+export i2c_slave_extended_testapp_SBL_APPIMAGEGEN = yes
+
+# I2C master extended testapp
+i2c_master_extended_testapp_COMP_LIST = i2c_master_extended_testapp
+i2c_master_extended_testapp_RELPATH = ti/drv/i2c/test/i2c_master_extended_testapp
+i2c_master_extended_testapp_PATH = $(PDK_I2C_COMP_PATH)/test/i2c_master_extended_testapp
+i2c_master_extended_testapp_BOARD_DEPENDENCY = yes
+i2c_master_extended_testapp_CORE_DEPENDENCY = no
+i2c_master_extended_testapp_MAKEFILE = -f makefile BUILD_OS_TYPE=baremetal
+export i2c_master_extended_testapp_COMP_LIST
+export i2c_master_extended_testapp_BOARD_DEPENDENCY
+export i2c_master_extended_testapp_CORE_DEPENDENCY
+export i2c_master_extended_testapp_MAKEFILE
+i2c_master_extended_testapp_PKG_LIST = i2c_master_extended_testapp
+i2c_master_extended_testapp_INCLUDE = $(i2c_master_extended_testapp_PATH)
+i2c_master_extended_testapp_BOARDLIST = j721s2_evm
+export i2c_master_extended_testapp_BOARDLIST
+i2c_master_extended_testapp_$(SOC)_CORELIST = mcu1_0
+export i2c_master_extended_testapp_$(SOC)_CORELIST
+i2c_EXAMPLE_LIST += i2c_master_extended_testapp
+export i2c_master_extended_testapp_SBL_APPIMAGEGEN = yes
+
 # I2C rtos EEPROM test
 define i2c_eeprom_testApp_RULE
 

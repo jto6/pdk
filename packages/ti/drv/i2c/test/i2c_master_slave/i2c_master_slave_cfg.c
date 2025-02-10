@@ -127,7 +127,7 @@ bool I2cApp_boardInit(void)
     
     I2C_init();
 
-    UART_printf("\nI2C Master Mode: Using Instance %d", I2C_INSTANCE_ID);
+    UART_printf("\nI2C : Using Instance %d", I2C_INSTANCE_ID);
     return retVal;
 }
 
