@@ -742,33 +742,39 @@ static Bool RPMessage_lookupName(uint32_t procId, const char* name, uint32_t *re
 static RPMessage_WaiterElem *RPMessage_getFreeTaskWaiter(void)
 {
     uint32_t i;
+    RPMessage_WaiterElem *foundTaskWaiter = NULL;
     for(i=0; i<MAXENDPOINTS; i++)
     {
         if(gRPMessageWaiterElemPool[i].occupied == 0U)
         {
             gRPMessageWaiterElemPool[i].occupied = 1U;
+            foundTaskWaiter = &gRPMessageWaiterElemPool[i];
             break;
         }
     }
 
-    return &gRPMessageWaiterElemPool[i];
+    return foundTaskWaiter;
 }
 
+#if 0 /* Disabled as function is unused. */
 static RPMessage_WaiterElem *RPMessage_lookupTaskWaiter(const char* name, uint32_t procId)
 {
     uint32_t i;
+    RPMessage_WaiterElem *foundTaskWaiter = NULL;
     for(i=0; i<MAXENDPOINTS; i++)
     {
         if((gRPMessageWaiterElemPool[i].occupied == 1U) &&
            (procId == gRPMessageWaiterElemPool[i].waiterElem.procId) &&
            (strncmp(name, gRPMessageWaiterElemPool[i].waiterElem.name, SERVICENAMELEN-1U) == 0))
         {
+            foundTaskWaiter = &gRPMessageWaiterElemPool[i]
             break;
         }
     }
 
-    return &gRPMessageWaiterElemPool[i];
+    return foundTaskWaiter;
 }
+#endif
 #endif
 
 /**
@@ -783,7 +789,6 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
 #ifndef IPC_EXCLUDE_CTRL_TASKS
     void              *semHandle;
     RPMessage_WaiterElem   *taskWaiter = RPMessage_getFreeTaskWaiter();
-    RPMessage_WaiterElem   *taskWaiterAnnounced;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
     size_t             namelen;
     Ipc_OsalPrms      *pOsalPrms = &gIpcObject.initPrms.osalPrms;
@@ -797,7 +802,8 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
 #ifndef IPC_EXCLUDE_CTRL_TASKS
     if ((NULL == pOsalPrms->createMutex) ||
         (NULL == pOsalPrms->lockMutex) ||
-        (NULL == pOsalPrms->deleteMutex))
+        (NULL == pOsalPrms->deleteMutex) ||
+        (NULL == taskWaiter))
     {
         rtnVal = IPC_EFAIL;
     }
@@ -816,7 +822,7 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
         strncpy(taskWaiter->waiterElem.name, name, SERVICENAMELEN-1U);
         taskWaiter->waiterElem.name[SERVICENAMELEN-1U] = '\0';
         taskWaiter->waiterElem.procId = currProcId;
-        taskWaiter->waiterElem.endPt  = 0;
+        taskWaiter->waiterElem.endPt  = MAXENDPOINTS+1;
         taskWaiter->waiterElem.token = token;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
 
@@ -831,6 +837,12 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
         {
 #ifndef IPC_EXCLUDE_CTRL_TASKS
             IpcUtils_Qput(&module.waitingTasks, &taskWaiter->waiterElem.elem);
+        }
+        else
+        {
+            /* If found in lookup task waiter can be returned to unoccupied pool */
+            taskWaiter->occupied = 0;
+            pOsalPrms->deleteMutex(taskWaiter->waiterElem.semHandle);
 #else
             rtnVal = IPC_E_NO_ENDPOINT;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
@@ -840,32 +852,31 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
 #ifndef IPC_EXCLUDE_CTRL_TASKS
         if(FALSE == lookupStatus)
         {
-            rtnVal = pOsalPrms->lockMutex(semHandle, timeout);
-            if(rtnVal == IPC_SOK)
+            rtnVal = pOsalPrms->lockMutex(taskWaiter->waiterElem.semHandle, timeout);
+
+            key = pOsalPrms->lockHIsrGate(module.gateSwi);
+            /* Additionally check for race condition which happens if
+             * preempted between lockMutex and lockHIsrGate by the
+             * ISR servicing our desired endpt announcement
+             */
+            if(rtnVal == IPC_SOK || taskWaiter->waiterElem.endPt != MAXENDPOINTS+1)
             {
-                /* Find the task waiter from pool when the task
-                 * is woken up
-                 */
-                taskWaiterAnnounced = RPMessage_lookupTaskWaiter(name, currProcId);
-                /* The endPt and procId in taskWaiter is assigned
-                 * by RPMessage_processAnnounceMsg() when it
-                 * wakes up this task.
-                 */
-                *remoteEndPt = taskWaiterAnnounced->waiterElem.endPt;
-                *remoteProcId = taskWaiterAnnounced->waiterElem.procId;
+                *remoteEndPt = taskWaiter->waiterElem.endPt;
+                *remoteProcId = taskWaiter->waiterElem.procId;
             }
             else
             {
-                /* Lock failed; hence announce has already happened */
-                taskWaiterAnnounced = taskWaiter;
+                /* Lock failed and we ruled out the race condition */
+                rtnVal = IPC_EFAIL;
             }
-            key = pOsalPrms->lockHIsrGate(module.gateSwi);
-            taskWaiterAnnounced->occupied = 0;
-            IpcUtils_Qremove((IpcUtils_QElem*)&taskWaiterAnnounced->waiterElem.elem);
+
+            /* While still under ISR lock release waiter and delete from waiter queue */
+            taskWaiter->occupied = 0;
+            pOsalPrms->deleteMutex(taskWaiter->waiterElem.semHandle);
+            IpcUtils_Qremove((IpcUtils_QElem*)&taskWaiter->waiterElem.elem);
             pOsalPrms->unLockHIsrGate(module.gateSwi, key);
         }
 
-        pOsalPrms->deleteMutex(semHandle);
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
     }
 

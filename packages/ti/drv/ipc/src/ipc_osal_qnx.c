@@ -113,10 +113,22 @@ static void* Ipc_qnxMutexCreate(void)
 
 static void Ipc_qnxMutexDestroy(Ipc_OsalHIsrGateHandle *handle)
 {
+    int status;
+
     if(handle != NULL)
     {
-        pthread_mutex_destroy((pthread_mutex_t*) handle);
+        status = pthread_mutex_destroy((pthread_mutex_t*) handle);
+        if( EOK == status )
+        {
+            free((void *)handle);
+        }
+        else
+        {
+            slogf(IPC_OSAL_TAG, _SLOG_ERROR, "%s: pthread_mutex_destroy returned with status %d",
+                  __func__, status);
+        }
     }
+
     return;
 }
 
