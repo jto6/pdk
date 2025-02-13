@@ -354,7 +354,7 @@ static struct phyRegVals *sd0801PhyGetTblVals(const struct phyRegValsTable* tbl,
     uint32_t key = DP_SD0801_KEY(refClk, link0, link1, ssc);
 /* parasoft-end-suppress MISRAC2012-RULE_12_2-a-2 */
 
-    static struct phyRegVals *tbl_vals = NULL;
+    struct phyRegVals *tbl_vals = NULL;
 
     for (i = 0U; i < tbl->numEntries; i++) {
         if (tbl->entries[i].key == key) {
