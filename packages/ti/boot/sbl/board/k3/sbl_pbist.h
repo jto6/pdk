@@ -49,9 +49,9 @@ extern "C" {
 /* ========================================================================== */
 
 #if defined(SOC_J784S4)
-#define NUM_BIST_TESTS                                 (12U)
+#define NUM_BIST_TESTS                                 (7U)
 #elif defined(SOC_J721S2)
-#define NUM_BIST_TESTS                                 (8U)
+#define NUM_BIST_TESTS                                 (6U)
 #endif
 
 #define KICK0_UNLOCK                                   (0x68EF3490U)
@@ -98,6 +98,22 @@ extern "C" {
 #define PLL28_LOCKKEY1                                 (0x0069C014U)
 #endif
 
+/* Main Domain Reset */
+#if defined (SOC_J721S2)
+#define J721S2_DEV_MAIN2WKUPMCU_VD                     (181U)
+#define J721S2_DEV_WKUPMCU2MAIN_VD                     (366U)
+#elif defined (SOC_J784S4)
+#define J784S4_DEV_MAIN2WKUPMCU_VD                     (244U)
+#define J784S4_DEV_WKUPMCU2MAIN_VD                     (408U)
+#endif
+#define RESET_DELAY_PER_ITERATION_US                   (1U)
+#define RESET_WAIT_TIMEOUT                             (10000U)
+#define CTRLMMR_WKUP_RST_STAT                          (0x18178U)
+#define CTRLMMR_WKUP_MAIN_WARM_RST_CTRL                (0x18174U)
+#define WARM_RST_CTRL_VAL                              (0x60000)
+#define MAIN_RST_DONE_MASK                             (0x1U << 0U)
+#define WKUP_CTRL_BASE                                 (0x43000000U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -142,6 +158,15 @@ int32_t SBL_swResetMainDomain(void);
 void SBL_mainDomainBootSetup(void);
 
 /**
+ * \brief  Function to perform BIST and reset Main Domain before TIFS Load
+ * 
+ * \param  None
+ * 
+ * \return None 
+ */
+void SBL_bistMainDomainReset(void);
+
+/**
  * \brief  Function to unlock PLL MMRs
  *
  * \param  None
@@ -149,6 +174,41 @@ void SBL_mainDomainBootSetup(void);
  * \return None
  */
 void SBL_unlockPllMmrs(void);
+
+/**
+ * \brief  Function to initialize the MAIN domain PLL clocks with default values
+ *
+ * \param  None
+ *
+ * \return Board_STATUS
+ */
+extern Board_STATUS Board_PLLInitMain(void);
+
+/**
+ * \brief clock Initialization function for MAIN domain
+ *
+ * Enables different power domains and peripheral clocks of the SoC.
+ * Enabling the power domains is mandatory before accessing using
+ * board interfaces connected to those peripherals.
+ *
+ * \param  None
+ *
+ * \return Board_STATUS
+ *
+ */
+extern Board_STATUS Board_moduleClockInitMain(void);
+
+/**
+ *  \brief  Sciclient Board Cfg PM
+ *
+ *
+ *  \param  devGroup     SoC defined SYSFW devgrp
+ *  \param  boardCfgInfo SYSFW board configurations
+ *
+ *  \return None
+ *
+ */
+extern void SBL_SciclientBoardCfgPm(uint32_t devGroup, Sciclient_DefaultBoardCfgInfo_t *boardCfgInfo);
 
 #ifdef __cplusplus
 }

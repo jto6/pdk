@@ -1136,9 +1136,16 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
 
             if (status != CSL_PASS)
             {
-                UART_printf("   PBIST Sciclient_pmSetModuleState 0x%x ...FAILED \n",
-                            PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId);
-                testResult = -1;
+                status = Sciclient_pmGetModuleState(PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId,
+                                                    &moduleState,
+                                                    &resetState,
+                                                    &contextLossState,
+                                                    SCICLIENT_SERVICE_WAIT_FOREVER);
+                if ((status != CSL_PASS) || (TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF != moduleState))
+                {
+                    UART_printf("   PBIST Sciclient_pmSetModuleState 0x%x ...FAILED \n",PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId);
+                    testResult = -1;
+                }
             }
         }
 #ifdef POWERUP_CORES_BEFORE_TEST
@@ -1270,10 +1277,17 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
                                                     SCICLIENT_SERVICE_WAIT_FOREVER);
                 if (status != CSL_PASS)
                 {
-                    UART_printf("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
-                                PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
-                    testResult = -1;
-                    break;
+                    status = Sciclient_pmGetModuleState(PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i],
+                                                        &moduleState,
+                                                        &resetState,
+                                                        &contextLossState,
+                                                        SCICLIENT_SERVICE_WAIT_FOREVER);
+                    if ((status != CSL_PASS) || (moduleState != TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF))
+                    {
+                        testResult = -1;
+                        UART_printf("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
+                        break;
+                    }
                 }
             }
         }

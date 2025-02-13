@@ -44,17 +44,17 @@
 #include <ti/csl/cslr_gtc.h>
 #include <sbl_err_trap.h>
 #if defined (SBL_ENABLE_BIST)
-#include <osal/sdl_osal.h>
-#include <sdl_pbist.h>
-#include <bist.h>
-#include <pbist_utils.h>
-#include <bist_core_defs.h>
 #include "sbl_pbist.h"
 #endif
 
 /**********************************************************************
  ************************** Macros ************************************
  **********************************************************************/
+
+#if defined (SBL_ENABLE_BIST) && !defined(BOOT_MMCSD)
+#undef SBL_LOG_LEVEL
+#define SBL_LOG_LEVEL 3
+#endif
 
 /**********************************************************************
  ************************** Internal functions ************************
@@ -280,36 +280,6 @@ int main()
         #define SBL_CLOCK_INIT              (BOARD_INIT_MODULE_CLOCK)
     #endif
 
-    #if defined(SBL_ENABLE_BIST)
-    #if defined(SOC_J784S4)
-    uint32_t PBIST_INSTANCES[NUM_BIST_TESTS]= {
-        PBIST_INSTANCE_CODEC,
-        PBIST_INSTANCE_MAININFRA_1,
-        PBIST_INSTANCE_DSS,
-        PBIST_INSTANCE_NAVSS,
-        PBIST_INSTANCE_MAININFRA_0,
-        PBIST_INSTANCE_HC,
-        PBIST_INSTANCE_CODEC_1,
-        PBIST_INSTANCE_A72_0_0,
-        PBIST_INSTANCE_A72_0_1,
-        PBIST_INSTANCE_A72_1_0,
-        PBIST_INSTANCE_A72_1_1,
-        PBIST_INSTANCE_MSMC 
-        };
-    #elif defined(SOC_J721S2)
-    uint32_t PBIST_INSTANCES[NUM_BIST_TESTS]= {
-        PBIST_INSTANCE_MAININFRA_1, 
-        PBIST_INSTANCE_MAININFRA_0,
-        PBIST_INSTANCE_HC,
-        PBIST_INSTANCE_NAVSS,
-        PBIST_INSTANCE_CODEC_1,
-        PBIST_INSTANCE_A72_0,
-        PBIST_INSTANCE_MSMC,
-        PBIST_INSTANCE_DSS
-        };    
-    #endif
-    #endif
-
     /* Any SoC specific Init. */
     SBL_SocEarlyInit();
 
@@ -386,12 +356,24 @@ int main()
     SBL_enableEmmcBoot0();
 #endif
 
+/* Run BISTs and Reset Main Domain before loading TIFS */
+#if defined (SBL_ENABLE_BIST)
+    SBL_bistMainDomainReset();
+#endif
+
 #if defined(SBL_COMBINED_BOOT)
     /* SciClient init for ROM combined boot image */
     SBL_SciClientCombinedBootInit(devGroup);
 #else
     /* Load SYSFW. */
     SBL_SciClientInit(devGroup);
+#endif
+
+#if defined (SBL_ENABLE_BIST)
+    /* Recover Main Domain */
+    SBL_log(SBL_LOG_MAX, "Recovering Main Domain ...");
+    SBL_mainDomainBootSetup();
+    SBL_log(SBL_LOG_MAX, "done.\n");
 #endif
 
 #if !defined(SBL_SKIP_PINMUX_ENABLE)
@@ -475,32 +457,6 @@ int main()
         retVal = CSL_EFAIL;
 	    SBL_log(SBL_LOG_ERR, "\n Failed to initialize clocks !! \n");
     }
-    SBL_log(SBL_LOG_MAX, "done.\n");
-#endif
-
-#if defined (SBL_ENABLE_BIST)
-
-    /* Initialize SDL Osal Layer */
-    int32_t ret = BootApp_osalWrapper();
-    if (ret != SDL_PASS)    {
-        SBL_log(SBL_LOG_MAX,"SDL OSAL Init Failed\n");
-    }
-
-    /* Run PBIST tests */
-    for(uint32_t i = 0; i<NUM_BIST_TESTS; i++)
-    {
-        SBL_runPBIST(PBIST_INSTANCES[i]);
-	}
-    
-    /* Reset Main Domain */
-    SBL_log(SBL_LOG_MAX, "Resetting Main Domain ...");
-    SBL_swResetMainDomain();
-    SBL_log(SBL_LOG_MAX, "done.\n");
-
-    /* Recover Main Domain */
-    SBL_log(SBL_LOG_MAX, "Recovering Main Domain ...");
-    SBL_mainDomainBootSetup();
- 
     SBL_log(SBL_LOG_MAX, "done.\n");
 #endif
     /*Profile point after Board init Clocks and before DDR init*/

@@ -245,6 +245,22 @@ ifeq ($(SBL_ENABLE_BIST), yes)
   INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
   INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
 
+  # RM_PM Include File Paths
+ifeq ($(SOC), j721s2)
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/soc/V4/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/soc/j721s2/include/soc/j721s2/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/include/soc/j721s2/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/soc/j721s2/include/
+else ifeq ($(SOC), j784s4)
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/soc/V6/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/soc/j784s4/include/soc/j784s4/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/include/soc/j784s4/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/soc/j784s4/include/
+endif
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/include/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/include/
+  INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/
+
   # SDL Source File Paths
   SRCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
   SRCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
