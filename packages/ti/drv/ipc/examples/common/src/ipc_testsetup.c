@@ -617,6 +617,7 @@ int32_t Ipc_echo_test(void)
     cntrlParam.bufSize     = rpmsgDataSize;
     cntrlParam.stackBuffer = &pTaskBuf[index++ * IPC_TASK_STACKSIZE];
     cntrlParam.stackSize   = IPC_TASK_STACKSIZE;
+    cntrlParam.ctrlTaskPriority   = IPC_CTRL_TASK_PRIORITY;
     RPMessage_init(&cntrlParam);
 
     /* Respond to messages coming in to endPt ENDPT_PING */

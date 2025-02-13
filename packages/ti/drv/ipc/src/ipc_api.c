@@ -285,6 +285,7 @@ int32_t RPMessageParams_init(RPMessage_Params *params)
         params->numBufs        = RPMessage_Buffer_Count_Default;
         params->stackBuffer    = NULL;
         params->stackSize      = 0U;
+        params->ctrlTaskPriority = IPC_CTRL_TASK_PRIORITY;
     }
 
     return (retVal);
@@ -1058,7 +1059,7 @@ static int32_t RPMessage_startCtrlMsgTask(RPMessage_Params *params)
     if(NULL != obj)
     {
         TaskP_Params_init(&tparams);
-        tparams.priority  = 10;
+        tparams.priority  = params->ctrlTaskPriority;
         tparams.arg0      = (uint32_t*)obj;
         tparams.stacksize = params->stackSize;
         tparams.stack     = params->stackBuffer;

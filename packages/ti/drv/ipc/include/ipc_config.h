@@ -89,6 +89,11 @@ extern "C" {
 #define  IPC_TASK_STACKSIZE  0x2000U
 #endif
 
+/**
+ * \brief Control Message Task Priority
+ */
+#define IPC_CTRL_TASK_PRIORITY          (10U)
+
 /** \brief SCICLIENT API timeout */
 #define IPC_SCICLIENT_TIMEOUT              (SCICLIENT_SERVICE_WAIT_FOREVER)
 

@@ -168,6 +168,9 @@ typedef struct RPMessage_Params_s
 
     uint32_t  stackSize;
     /**< StackSize used for the task */
+
+    uint32_t ctrlTaskPriority;
+    /* Priority of ctrl Task */
 } RPMessage_Params;
 
 /* ========================================================================== */
