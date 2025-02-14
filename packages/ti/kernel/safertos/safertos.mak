@@ -91,8 +91,8 @@ SRCS_ASM_COMMON := \
 endif
 
 ifeq ($(ISA),$(filter $(ISA), r5f))
-SRCS_ASM_COMMON := \
-    portasm.asm
+SRCS_S_COMMON := \
+	portasm.S
 endif
 
 ifeq ($(ISA),$(filter $(ISA), c7x))

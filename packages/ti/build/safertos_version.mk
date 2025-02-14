@@ -8,7 +8,7 @@
 #   Make sure the paths specified below DO NOT have any spaces in them.
 
 SAFERTOS_VERSION_c7x=009-004-230-005-219-004
-SAFERTOS_VERSION_r5f=009-004-199-024-219-005
+SAFERTOS_VERSION_r5f=009-005-199-024-219-003
 SAFERTOS_VERSION_c66=009-002-201-005-219-002
 
 ifeq ($(BOARD),$(filter $(BOARD), j721e_evm ))
