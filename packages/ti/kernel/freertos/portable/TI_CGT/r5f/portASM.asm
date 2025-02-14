@@ -288,7 +288,11 @@ switch_before_exit:
     ; and for thumb mode to execute the next instruction, subtract 6 from lr. 
     ; Since the size of instruction which caused the data abort is of 2 bytes in 
     ; thumb mode and 4 bytes in arm mode
-HwiP_data_abort_handler: 
+HwiP_data_abort_handler:
+
+    ; Push used registers.
+    PUSH	{r0-r4, r12}
+
     ; Return to the instruction following the interrupted.
     ; SPSR has the snapshot of CPSR before data abort. Compare thumb state bit in SPSR
     MRS r0, SPSR
@@ -306,9 +310,6 @@ ARM_STATE:
     PUSH	{lr}
     MRS	lr, SPSR
     PUSH	{lr}
-
-    ; Push used registers.
-    PUSH	{r0-r4, r12}
 
     ; Push R12, as we will use this to index into FaultyGPR
     PUSH {r12}
