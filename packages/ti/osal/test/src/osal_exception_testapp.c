@@ -174,9 +174,9 @@ static Board_STATUS OsalApp_boardInit(void)
 
 static void OsalApp_generateException(void)
 {
-    volatile uint32_t *myBadAddr;
+    volatile uint64_t *myBadAddr;
 #if defined (BUILD_MCU)
-    myBadAddr = (uint32_t *)(0xFFFFF001);
+    myBadAddr = (uint64_t *)(0xFFFFFF003);
 #elif defined (BUILD_C7X)
     myBadAddr = (uint32_t*)(0xC000B000);
 #endif

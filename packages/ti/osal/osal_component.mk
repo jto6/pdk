@@ -284,14 +284,18 @@ export osal_exception_testapp_$(1)_PKG_LIST = osal_exception_testapp_$(1)
 export osal_exception_testapp_$(1)_INCLUDE = $(osal_exception_testapp_$(1)_PATH)
 export osal_exception_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(libosal_$(1)_BOARDLIST))
 export osal_exception_testapp_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1 c7x_1 c7x_2 c7x_3 c7x_4)
-ifeq ($(1),$(filter $(1), freertos))
+ifneq ($(1),$(filter $(1), safertos))
 osal_EXAMPLE_LIST += osal_exception_testapp_$(1)
+else
+ifneq ($(wildcard $(SAFERTOS_KERNEL_INSTALL_PATH)),)
+osal_EXAMPLE_LIST += osal_exception_testapp_$(1)
+endif
 endif
 export osal_exception_testapp_$(1)_SBL_APPIMAGEGEN = yes
 
 endef
 
-osal_exception_testapp_MACRO_LIST := $(foreach curos,$(libosal_RTOS_LIST) ,$(call osal_exception_testapp_RULE,$(curos)))
+osal_exception_testapp_MACRO_LIST := $(foreach curos,$(libosal_RTOS_LIST) safertos,$(call osal_exception_testapp_RULE,$(curos)))
 
 $(eval ${osal_exception_testapp_MACRO_LIST})
 
@@ -313,7 +317,6 @@ ifeq ($(SOC),$(filter $(SOC), j7200))
  osal_testapp_freertos_$(SOC)_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1
  osal_baremetal_extended_testapp_$(SOC)_CORELIST= mcu1_0 mcu2_0
  osal_extended_testapp_freertos_$(SOC)_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1
- osal_extended_testapp_safertos_$(SOC)_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1
 endif
 
 ifeq ($(SOC),$(filter $(SOC), j721s2))
