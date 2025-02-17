@@ -2158,14 +2158,40 @@ void hostEmulation_triggerDMA(struct Udma_DrvObj * udmaDrvHandle, uint32_t utcId
             break;
           }
         }
-        /*For compression/decompression type 9 transfer currently we assume that icnt0 = dicnt0 and icnt1 = dicnt1*/
 
         if ( nextTransferRecord->icnt1 == 0)
         {
           loopCnt1Reset = 1;
           nextTransferRecord->icnt2--;
           nextTransferRecord->icnt1 = origTransferRecord->icnt1;
-	  if( DFMT != DMAUTILSAUTOINC3D_DFMT_COMP && DFMT != DMAUTILSAUTOINC3D_DFMT_DECOMP)
+		      switch( DFMT )
+          {
+            case DMAUTILSAUTOINC3D_DFMT_COMP :
+            {
+              /*move source pointer*/
+              nextTransferRecord->addr   = hostEmulation_addressUpdate(nextTransferRecord1->addr  , nextTransferRecord->dim2,   srcAM2);
+              nextTransferRecord1->addr  = nextTransferRecord->addr;
+              break;
+            }
+            case DMAUTILSAUTOINC3D_DFMT_DECOMP : /*decompression*/
+            {
+              /*update CDB table address*/
+              nextTransferRecord->addr   = hostEmulation_addressUpdate(nextTransferRecord1->addr  , nextTransferRecord->dim2, 0);
+              nextTransferRecord1->addr  = nextTransferRecord->addr;
+              break;
+            }
+            default :
+            {
+              nextTransferRecord->addr   = hostEmulation_addressUpdate(nextTransferRecord1->addr  , nextTransferRecord->dim2,   srcAM2);
+              nextTransferRecord1->addr  = nextTransferRecord->addr;
+              break;
+            }
+          }
+        }
+
+        if ( nextTransferRecord->dicnt1 == 0)
+        {
+	        if( DFMT != DMAUTILSAUTOINC3D_DFMT_COMP && DFMT != DMAUTILSAUTOINC3D_DFMT_DECOMP)
           {
          	 #if !USE_INTERIMBUFFER_FOR_NONCOMPRESSED_TR
             	nextTransferRecord->dicnt2--;
@@ -2184,16 +2210,10 @@ void hostEmulation_triggerDMA(struct Udma_DrvObj * udmaDrvHandle, uint32_t utcId
               /*update CDB table address*/
               nextTransferRecord->daddr  = hostEmulation_addressUpdate(nextTransferRecord1->daddr , nextTransferRecord->ddim2, 0);
               nextTransferRecord1->daddr = nextTransferRecord->daddr;
-              /*move source pointer*/
-              nextTransferRecord->addr   = hostEmulation_addressUpdate(nextTransferRecord1->addr  , nextTransferRecord->dim2,   srcAM2);
-              nextTransferRecord1->addr  = nextTransferRecord->addr;
               break;
             }
             case DMAUTILSAUTOINC3D_DFMT_DECOMP : /*decompression*/
             {
-              /*update CDB table address*/
-              nextTransferRecord->addr   = hostEmulation_addressUpdate(nextTransferRecord1->addr  , nextTransferRecord->dim2, 0);
-              nextTransferRecord1->addr  = nextTransferRecord->addr;
               /*move destination pointer*/
               nextTransferRecord->daddr  = hostEmulation_addressUpdate(nextTransferRecord1->daddr , nextTransferRecord->ddim2,   dstAM2);
               nextTransferRecord1->daddr = nextTransferRecord->daddr;
@@ -2201,8 +2221,6 @@ void hostEmulation_triggerDMA(struct Udma_DrvObj * udmaDrvHandle, uint32_t utcId
             }
             default :
             {
-              nextTransferRecord->addr   = hostEmulation_addressUpdate(nextTransferRecord1->addr  , nextTransferRecord->dim2,   srcAM2);
-              nextTransferRecord1->addr  = nextTransferRecord->addr;
               #if !USE_INTERIMBUFFER_FOR_NONCOMPRESSED_TR
                 nextTransferRecord->daddr  = hostEmulation_addressUpdate(nextTransferRecord1->daddr , nextTransferRecord->ddim2,   dstAM2);
                 nextTransferRecord1->daddr = nextTransferRecord->daddr;
