@@ -39,6 +39,9 @@
         .ref vDataAbort_c
         .ref vPrefetchAbort_c
         .ref vUndefAbort_c
+        .ref FaultySP
+        .ref FaultyLR
+        .ref FaultyGPR
         .sect ".KERNEL_FUNCTION"
 
 ;------------------------------------------------------------------------------
@@ -58,6 +61,7 @@ FALSE                                   .equ ( 0 )
     .global ulGetInstructionFaultStatusRegister
     .global ulGetInstructionFaultAddressRegister
     .global Osal_getSP
+    .global ulGetCPSR
 
 ;-------------------------------------------------------------------------------
 ; portUInt32Type ulGetDataFaultStatusRegister( void )
@@ -88,6 +92,13 @@ ulGetInstructionFaultAddressRegister:
         BX      LR
 
 ;-------------------------------------------------------------------------------
+; portUInt32Type ulGetCPSR( void )
+;-------------------------------------------------------------------------------
+ulGetCPSR:
+        MRS     R0, CPSR
+        BX      LR
+
+;-------------------------------------------------------------------------------
 ; void vApplicationDataAbortHook( void )
 ;-------------------------------------------------------------------------------
         .global vApplicationDataAbortHook
@@ -105,6 +116,39 @@ vApplicationDataAbortHook:
     ;  Push used registers.
     PUSH    {r0-r4, r12}
 
+    ; Push R12, as we will use this to index into FaultyGPR
+    PUSH {r12}
+    ; Push r0 to r11 to FaultyGPR
+    LDR r12, faultyGPRConst
+    STR r0, [r12], #4
+    STR r1, [r12], #4
+    STR r2, [r12], #4
+    STR r3, [r12], #4
+    STR r4, [r12], #4
+    STR r5, [r12], #4
+    STR r6, [r12], #4
+    STR r7, [r12], #4
+    STR r8, [r12], #4
+    STR r9, [r12], #4
+    STR r10, [r12], #4
+    STR r11, [r12], #4
+    MOV r0, r12
+    ; Pop r12 to push it to the FaultyGPR
+    POP {r12}
+    STR r12, [r0]
+
+    ; Capture the faulty SP
+    MOVW r0, faultySPConst
+    MOVT r0, faultySPConst
+    LDR r0, [r0]
+    STR SP, [r0]
+
+    ; Capture the faulty LR
+    MOVW r0, faultyLRConst
+    MOVT r0, faultyLRConst
+    LDR r0, [r0]
+    STR LR, [r0]
+
     ;  Call the interrupt handler.
     LDR    r1, vApplicationDataAbortHandlerConst
     BLX    r1
@@ -118,6 +162,9 @@ vApplicationDataAbortHook:
 
 
 vApplicationDataAbortHandlerConst: .word vDataAbort_c
+faultySPConst: .word FaultySP
+faultyLRConst: .word FaultyLR
+faultyGPRConst: .word FaultyGPR
 
 ;-------------------------------------------------------------------------------
 ; void vApplicationPrefetchAbortHook( void )

@@ -43,6 +43,7 @@
 
 #include <ti/csl/arch/csl_arch.h>
 #include <ti/osal/osal.h>
+#include <ti/osal/DebugP.h>
 
 #include "SafeRTOS_API.h"
 #include "Safertos_Aborts.h"
@@ -62,12 +63,22 @@ portUInt32Type ulGetDataFaultStatusRegister( void );
 portUInt32Type ulGetDataFaultAddressRegister( void );
 portUInt32Type ulGetInstructionFaultStatusRegister( void );
 portUInt32Type ulGetInstructionFaultAddressRegister( void );
+portUInt32Type ulGetCPSR( void );
 void vUndefAbort_c(void);
 void vPrefetchAbort_c(void);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+/* Faulty Stack Pointer at Data Abort. */
+uint32_t FaultySP;
+
+/* Faulty Link Register at Data Abort. */
+uint32_t FaultyLR;
+
+/* Faulty General Purpose Registers at Data Abort. */
+uint32_t FaultyGPR[13];
 
 extern CSL_R5ExptnHandlers gExptnHandlers;
 extern volatile uint32_t gCurrentProcessorState;
@@ -76,6 +87,27 @@ extern volatile uint32_t gCurrentProcessorState;
 /*                          Function Defintions                               */
 /* ========================================================================== */
 
+void vDumpExceptionState( void )
+{
+    volatile uint32_t DFSR, DFAR, IFSR, IFAR, CPSR;
+    DFSR = ulGetDataFaultStatusRegister();
+    DFAR = ulGetDataFaultAddressRegister();
+    IFSR = ulGetInstructionFaultStatusRegister();
+    IFAR = ulGetInstructionFaultAddressRegister();
+    CPSR = ulGetCPSR();
+    DebugP_exceptionLog("[FATAL]: Core has Aborted!!!\nDFAR =0x%x DFSR =0x%x\n", (uintptr_t)DFAR, (uintptr_t)DFSR);
+    DebugP_exceptionLog("IFAR =0x%x IFSR =0x%x\n", (uintptr_t)IFAR, (uintptr_t)IFSR);
+    DebugP_exceptionLog("CPSR =0x%x SP =0x%x\n", (uintptr_t)CPSR, (uintptr_t)FaultySP);
+    DebugP_exceptionLog("LR =0x%x R0 =0x%x\n", (uintptr_t)FaultyLR, (uintptr_t)FaultyGPR[0]);
+    DebugP_exceptionLog("R1 =0x%x R2 =0x%x\n", (uintptr_t)FaultyGPR[1], (uintptr_t)FaultyGPR[2]);
+    DebugP_exceptionLog("R3 =0x%x R4 =0x%x\n", (uintptr_t)FaultyGPR[3], (uintptr_t)FaultyGPR[4]);
+    DebugP_exceptionLog("R5 =0x%x R6 =0x%x\n", (uintptr_t)FaultyGPR[5], (uintptr_t)FaultyGPR[6]);
+    DebugP_exceptionLog("R7 =0x%x R8 =0x%x\n", (uintptr_t)FaultyGPR[7], (uintptr_t)FaultyGPR[8]);
+    DebugP_exceptionLog("R9 =0x%x R10 =0x%x\n", (uintptr_t)FaultyGPR[9], (uintptr_t)FaultyGPR[10]);
+    DebugP_exceptionLog("R11 =0x%x R12 =0x%x\n", (uintptr_t)FaultyGPR[11], (uintptr_t)FaultyGPR[12]);
+}
+
+/*---------------------------------------------------------------------------*/
 void vUndefAbort_c(void)
 {
     gCurrentProcessorState = CSL_ARM_R5_ABORT_MODE;
@@ -126,6 +158,7 @@ void vPrefetchAbort_c(void)
 void vDataAbort_c(void)
 {
     gCurrentProcessorState = CSL_ARM_R5_ABORT_MODE;
+    vDumpExceptionState();
     /* Call registered call back */
     if((exptnHandlerPtr)NULL != gExptnHandlers.dabtExptnHandler)
     {
