@@ -178,7 +178,7 @@ static void OsalApp_generateException(void)
 #if defined (BUILD_MCU)
     myBadAddr = (uint64_t *)(0xFFFFFF003);
 #elif defined (BUILD_C7X)
-    myBadAddr = (uint32_t*)(0xC000B000);
+    myBadAddr = (uint64_t*)(0xC000B000);
 #endif
     *myBadAddr = (0xDEADFADE);
 }
