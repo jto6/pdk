@@ -173,6 +173,7 @@ void Lpm_ipcExitResponseTask()
     RPMessage_deInit();
     Ipc_deinit();
     memcpy(pOcmcShadowRscTable, (const void*)0xa0100000, 0x8c);
+    ((Ipc_ResourceTable *)pOcmcShadowRscTable)->rpmsg_vdev.status = 0x00;
 #ifdef DEBUG_PRINT
     UART_printf("Ipc de inits done!\n");
 #endif

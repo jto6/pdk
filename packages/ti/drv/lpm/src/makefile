@@ -20,7 +20,7 @@ INCDIR += $(PDK_INSTALL_PATH)/ti/build/unit-test/config
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component
 INCLUDE_EXTERNAL_INTERFACES = pdk
-INCLUDE_INTERNAL_INTERFACES = board sbl_lib_cust spi pmic ipc
+INCLUDE_INTERNAL_INTERFACES = board sbl_lib_cust spi_dma pmic ipc
 COMP_LIST_COMMON = 
 
 PACKAGE_SRCS_COMMON = lpm.h lpm_component.mk makefile .gitignore docs $(SRCDIR)
