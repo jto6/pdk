@@ -157,7 +157,7 @@ uint32_t gFlowInstShare[UDMA_NUM_CORE] =
 {
     0U,                            /* MPU1_0  - Reserved in BoardCfg*/
     UDMA_RM_SHARED_RES_CNT_REST,   /* MCU2_0 */
-    8U,                            /* MCU2_1 */
+    10U,                           /* MCU2_1 */
     8U,                            /* MCU3_0 */
     0U,                            /* MCU3_1 */
     0U,                            /* MCU4_0 */
