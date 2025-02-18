@@ -426,6 +426,38 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
 
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
+    },
+    {
+        /** enableTest **/
+        SCI_APP_TEST_ENABLE,
+
+        /** testCaseId **/
+        12U,
+
+        /** *reqId **/
+        "PDK-16929",
+
+        /** *testCaseName **/
+        "SCICLIENT mcu1_1 set state message forwarding to TIFS test",
+
+        /** *userInfo **/
+        "None",
+
+        /** *disableReason **/
+        "None",
+
+        /** *passFailCriteria **/
+        "Sciclient gets ACK from TIFS for mcu1_1 set state message\
+        forwarded to TIFS without any error.",
+
+        /** cpuID **/
+        SCI_APP_CORE_TYPE_R5F,
+
+        /** printEnable **/
+        SCI_APP_PRINT_ENABLE,
+
+        /** testType **/
+        (SCI_APP_TEST_TYPE_SANITY)
     }
 };
 

@@ -66,6 +66,7 @@
 #include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
 #include <ti/drv/sciclient/examples/common/sci_app_common.h>
 #include <ti/drv/sciclient/examples/sciclient_unit_testapp/sciclient_ut_tests.h>
+#include <ti/drv/sciclient/include/sciclient_pm.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -134,6 +135,7 @@ static int32_t SciclientApp_pvu2GICIntrTest(void);
 static int32_t SciclientApp_mainUart2MCUR5IntrTest(void);
 #endif
 static int32_t SciclientApp_getDMVersion(void);
+static int32_t SciclientApp_mcuR5SetStateMsgForwarding2TifsTest(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -216,6 +218,9 @@ int32_t SciApp_testMain(SciApp_TestParams_t *testParams)
 #endif
         case 11:
             testParams->testResult = SciclientApp_getDMVersion();
+            break;
+        case 12:
+            testParams->testResult = SciclientApp_mcuR5SetStateMsgForwarding2TifsTest();
             break;
         default:
             break;
@@ -1151,3 +1156,70 @@ void InitMmu(void)
 }
 #endif
 
+static int32_t SciclientApp_mcuR5SetStateMsgForwarding2TifsTest(void)
+{
+    uint32_t moduleId = TISCI_DEV_MCU_R5FSS0_CORE1;
+    uint32_t moduleState = 0;
+    uint32_t resetState = 0;
+    uint32_t contextLossState;
+    int32_t ret = CSL_EFAIL;
+
+    Sciclient_ConfigPrms_t config   =
+    {
+        SCICLIENT_SERVICE_OPERATION_MODE_POLLED,
+        NULL,
+        0 /* isSecure = 0 un secured for all cores */
+    };
+
+    SciApp_printf(" Starting mcu1_1 set state msg forwarding to TIFS test \n");
+
+    while (gSciclientHandle.initCount != 0)
+    {
+        ret = Sciclient_deinit();
+    }
+
+    ret = Sciclient_init(&config);
+
+    if (ret == CSL_PASS)
+    {
+        int32_t status = CSL_EFAIL;
+        
+        status = Sciclient_pmSetModuleState(moduleId, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+
+        if (status == CSL_PASS)
+        {
+            status = Sciclient_pmGetModuleState(moduleId, &moduleState, &resetState, &contextLossState, SCICLIENT_SERVICE_WAIT_FOREVER);
+        }
+        if ((status == CSL_PASS) && (moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_ON))
+        {
+            SciApp_printf(" Set device state test: Pass\n");
+        }
+        else
+        {
+            SciApp_printf(" Set device state test: Fail\n");
+            ret = status;
+        }
+        
+        status = Sciclient_pmSetModuleRst(moduleId, 0, SCICLIENT_SERVICE_WAIT_FOREVER);
+
+        if (status == CSL_PASS)
+        {
+            status = Sciclient_pmGetModuleState(moduleId, &moduleState, &resetState, &contextLossState, SCICLIENT_SERVICE_WAIT_FOREVER);
+        }
+        if ((status == CSL_PASS) && (resetState == 0))
+        {
+            SciApp_printf(" Set device reset test: Pass\n");
+        }
+        else
+        {
+            SciApp_printf(" Set device reset test: Fail\n");
+            ret = status;
+        }
+
+    }
+    if (ret == CSL_PASS)
+    {
+        ret = Sciclient_deinit();
+    }
+    return ret;
+}
