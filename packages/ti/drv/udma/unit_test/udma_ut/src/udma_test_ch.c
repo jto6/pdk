@@ -1484,3 +1484,315 @@ int32_t UdmaChConfigRx(UdmaTestTaskObj *taskObj)
 
     return retVal;
 }
+
+/**
+ * Test Case Description: Verfies UDMA Channel Disable Polling
+ * 1. Instance Type UDMA - Channel Type UTC
+ * 2. Instance Type UDMA - Channel Type Rx
+ * 3. Instance Type BCDMA - Channel Type Rx
+ * 4. Instance Type UDMA - Channel Type Tx
+ * 5. Instance Type BCDMA - Channel Type Tx
+*/
+int32_t UdmaTestChDisablePolling(UdmaTestTaskObj *taskObj)
+{
+    int32_t                retVal = UDMA_SOK;
+    uint32_t               instID;
+    Udma_DrvHandle         drvHandle;
+    struct Udma_ChObj      chObj;
+    Udma_ChHandle          chHandle;
+    Udma_ChPrms            chPrms;
+    uint32_t               chType;
+    uint32_t               heapIdSrc = UTILS_MEM_HEAP_ID_MSMC;
+    uint32_t               elemCnt = 50U;
+    uint32_t               timeOut = 0xFFFFU;
+    Udma_ChRxPrms          rxChPrms;
+    Udma_ChTxPrms          txChPrms;
+
+#if (UDMA_SOC_CFG_UDMAP_PRESENT == 1)
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    if(UDMA_SOK == retVal)
+    {
+        /* 1. Instance Type UDMA - Channel Type UTC */
+        Udma_ChUtcPrms         utcPrms;
+        GT_0trace(taskObj->traceMask, GT_INFO, "Test Udma_chDisablePolling: Instance Type UDMA - Channel Type UTC \n");
+        chHandle                      = &chObj;
+        chType                        = UDMA_CH_TYPE_UTC;
+        instID                        = UDMA_INST_ID_MAIN_0;
+        drvHandle                     = &taskObj->testObj->drvObj[instID];
+        /* Init channel parameters */
+        chType = UDMA_CH_TYPE_UTC;
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.utcId                = UDMA_UTC_ID_MSMC_DRU0;
+        /* Ring not used in direct TR submission via DRU */
+        chPrms.fqRingPrms.ringMem   = NULL;
+        chPrms.cqRingPrms.ringMem   = NULL;
+        chPrms.tdCqRingPrms.ringMem = NULL;
+        chPrms.fqRingPrms.elemCnt   = 0U;
+        chPrms.cqRingPrms.elemCnt   = 0U;
+        chPrms.tdCqRingPrms.elemCnt = 0U;
+        retVal                        = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        if(UDMA_SOK == retVal)
+        {
+            /* Config UTC channel */
+            UdmaChUtcPrms_init(&utcPrms);
+            utcPrms.druOwner    = CSL_DRU_OWNER_DIRECT_TR;
+            utcPrms.druQueueId  = CSL_DRU_QUEUE_ID_3;
+            retVal = Udma_chConfigUtc(chHandle, &utcPrms);
+            if(UDMA_SOK != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR, "[Error] UDMA UTC channel config failed!!\n");
+            }
+            else
+            {
+                retVal = Udma_chEnable(chHandle);
+
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chEnable failed!!\n");
+                }
+                else
+                {
+                    retVal = Udma_chDisablePolling(chHandle, timeOut);
+                }
+
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chDisablePolling failed!!\n");
+                }
+            }
+            Udma_chClose(chHandle);
+        }
+    }
+#endif
+#endif
+
+#if (UDMA_SOC_CFG_UDMAP_PRESENT == 1)
+    if(UDMA_SOK == retVal)
+    {
+        /* 2. Instance Type UDMA - Channel Type Rx */
+        GT_0trace(taskObj->traceMask, GT_INFO, "Test Udma_chDisablePolling: Instance Type UDMA - Channel Type Rx \n");
+        chHandle                      = &chObj;
+        chType                        = UDMA_CH_TYPE_RX;
+        instID                        = UDMA_TEST_DEFAULT_UDMA_INST;
+        drvHandle                     = &taskObj->testObj->drvObj[instID];
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.fqRingPrms.elemCnt     = elemCnt;
+        chPrms.fqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.fqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.fqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.cqRingPrms.elemCnt     = elemCnt;
+        chPrms.cqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.cqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.cqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.peerChNum              = UDMA_PSIL_CH_MCU_CPSW0_RX;
+        retVal                        = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        UdmaChRxPrms_init(&rxChPrms, chType);
+        if(UDMA_SOK == retVal)
+        {
+            retVal = Udma_chConfigRx(chHandle, &rxChPrms);
+            if(UDMA_SOK != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chConfigRx failed!!\n");
+            }
+            else
+            {
+                retVal = Udma_chEnable(chHandle);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chEnable failed!!\n");
+                }
+                else
+                {
+                    retVal = Udma_chDisablePolling(chHandle, timeOut);
+                }
+
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chDisablePolling failed!!\n");
+                }
+            }
+            Udma_chClose(chHandle);
+        }
+            if(NULL != chPrms.cqRingPrms.ringMem)
+            {
+                retVal += Utils_memFree(heapIdSrc, chPrms.fqRingPrms.ringMem, chPrms.fqRingPrms.ringMemSize);
+                retVal += Utils_memFree(heapIdSrc, chPrms.cqRingPrms.ringMem, chPrms.cqRingPrms.ringMemSize);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Ring free failed!!\n");
+                }
+            }
+    }
+#endif
+
+#if (UDMA_SOC_CFG_BCDMA_PRESENT == 1) && defined (BUILD_MCU2_0)
+    if(UDMA_SOK == retVal)
+    {
+        /* 3. Instance Type BCDMA - Channel Type Rx */
+        GT_0trace(taskObj->traceMask, GT_INFO, "Test Udma_chDisablePolling: Instance Type BCDMA - Channel Type Rx \n");
+        chHandle                      = &chObj;
+        chType                        = UDMA_CH_TYPE_RX;
+        instID                        = UDMA_INST_ID_BCDMA_0;
+        drvHandle                     = &taskObj->testObj->drvObj[instID];
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.fqRingPrms.elemCnt     = elemCnt;
+        chPrms.fqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.fqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.fqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.cqRingPrms.elemCnt     = elemCnt;
+        chPrms.cqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.cqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.cqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.peerChNum              = CSL_PSIL_CSI_RX0_CH0;
+        retVal                        = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        if(UDMA_SOK == retVal)
+        {
+            UdmaChRxPrms_init(&rxChPrms, chType);
+            retVal = Udma_chConfigRx(chHandle, &rxChPrms);
+            if(UDMA_SOK != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chConfigRx failed!!\n");
+            }
+            else
+            {
+                retVal = Udma_chEnable(chHandle);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chEnable failed!!\n");
+                }
+                else
+                {
+                    retVal = Udma_chDisablePolling(chHandle, timeOut);
+                }
+
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chDisablePolling failed!!\n");
+                }
+            }
+            Udma_chClose(chHandle);
+        }
+        if(NULL != chPrms.cqRingPrms.ringMem)
+        {
+            retVal += Utils_memFree(heapIdSrc, chPrms.fqRingPrms.ringMem, chPrms.fqRingPrms.ringMemSize);
+            retVal += Utils_memFree(heapIdSrc, chPrms.cqRingPrms.ringMem, chPrms.cqRingPrms.ringMemSize);
+            if(UDMA_SOK != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR, " Ring free failed!!\n");
+            }
+        }
+    }
+#endif
+
+#if (UDMA_SOC_CFG_UDMAP_PRESENT == 1)
+    if(UDMA_SOK == retVal)
+    {
+        /* 4. Instance Type UDMA - Channel Type Tx */
+        GT_0trace(taskObj->traceMask, GT_INFO, "Test Udma_chDisablePolling: Instance Type UDMA - Channel Type Tx \n");
+        chHandle                      = &chObj;
+        chType                        = UDMA_CH_TYPE_TX;
+        instID                        = UDMA_TEST_DEFAULT_UDMA_INST;
+        drvHandle                     = &taskObj->testObj->drvObj[instID];
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.fqRingPrms.elemCnt     = elemCnt;
+        chPrms.fqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.fqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.fqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.cqRingPrms.elemCnt     = elemCnt;
+        chPrms.cqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.cqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.cqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.peerChNum              = UDMA_PSIL_CH_MCU_CPSW0_TX;
+        retVal                        = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        UdmaChTxPrms_init(&txChPrms, chType);
+        if(UDMA_SOK == retVal)
+        {
+            retVal = Udma_chConfigTx(chHandle, &txChPrms);
+            if(UDMA_SOK != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chConfigRx failed!!\n");
+            }
+            else
+            {
+                retVal = Udma_chEnable(chHandle);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chEnable failed!!\n");
+                }
+                else
+                {
+                    retVal = Udma_chDisablePolling(chHandle, timeOut);
+                }
+
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chDisablePolling failed!!\n");
+                }
+            }
+            Udma_chClose(chHandle);
+        }
+            if(NULL != chPrms.cqRingPrms.ringMem)
+            {
+                retVal += Utils_memFree(heapIdSrc, chPrms.fqRingPrms.ringMem, chPrms.fqRingPrms.ringMemSize);
+                retVal += Utils_memFree(heapIdSrc, chPrms.cqRingPrms.ringMem, chPrms.cqRingPrms.ringMemSize);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Ring free failed!!\n");
+                }
+            }
+    }
+#endif
+
+#if (UDMA_SOC_CFG_BCDMA_PRESENT == 1) && defined (BUILD_MCU2_0)
+    if(UDMA_SOK == retVal)
+    {
+        /* 5. Instance Type BCDMA - Channel Type Tx */
+        GT_0trace(taskObj->traceMask, GT_INFO, "Test Udma_chDisablePolling: Instance Type BCDMA - Channel Type Tx \n");
+        chHandle                      = &chObj;
+        chType                        = UDMA_CH_TYPE_TX;
+        instID                        = UDMA_INST_ID_BCDMA_0;
+        drvHandle                     = &taskObj->testObj->drvObj[instID];
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.fqRingPrms.elemCnt     = elemCnt;
+        chPrms.fqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.fqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.fqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.cqRingPrms.elemCnt     = elemCnt;
+        chPrms.cqRingPrms.ringMemSize = elemCnt * sizeof(uint64_t);
+        chPrms.cqRingPrms.ringMem     = Utils_memAlloc(heapIdSrc, chPrms.cqRingPrms.ringMemSize, UDMA_CACHELINE_ALIGNMENT);
+        chPrms.peerChNum              = UDMA_PSIL_CH_MAIN_CSI_TX;
+        retVal                        = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        UdmaChTxPrms_init(&txChPrms, chType);
+        if(UDMA_SOK == retVal)
+        {
+            retVal = Udma_chConfigTx(chHandle, &txChPrms);
+            if(UDMA_SOK != retVal)
+            {
+                GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chConfigRx failed!!\n");
+            }
+            else
+            {
+                retVal = Udma_chEnable(chHandle);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chEnable failed!!\n");
+                }
+                else
+                {
+                    retVal = Udma_chDisablePolling(chHandle, timeOut);
+                }
+
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Udma_chDisablePolling failed!!\n");
+                }
+            }
+            Udma_chClose(chHandle);
+        }
+            if(NULL != chPrms.cqRingPrms.ringMem)
+            {
+                retVal += Utils_memFree(heapIdSrc, chPrms.fqRingPrms.ringMem, chPrms.fqRingPrms.ringMemSize);
+                retVal += Utils_memFree(heapIdSrc, chPrms.cqRingPrms.ringMem, chPrms.cqRingPrms.ringMemSize);
+                if(UDMA_SOK != retVal)
+                {
+                    GT_0trace(taskObj->traceMask, GT_ERR, " Ring free failed!!\n");
+                }
+            }
+    }
+#endif
+
+    return retVal;
+}

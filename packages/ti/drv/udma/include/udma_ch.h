@@ -723,6 +723,26 @@ int32_t Udma_chEnable(Udma_ChHandle chHandle);
 int32_t Udma_chDisable(Udma_ChHandle chHandle, uint32_t timeout);
 
 /**
+ *  \brief UDMA channel teardown and disable API with BusyWait.
+ *
+ *  This function will perform the channel teardown and eventually disables
+ *  the UDMA channel.
+ *  This initiates the teardown sequence based on the channel type and
+ *  wait for teardown to complete gracefully.
+ *
+ *  Caution: This is polling based API and may keep CPU busy until timeout.
+ *
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param timeout      [IN] Timeout in milli secs.
+ *                           Use #UDMA_WAIT_FOREVER to wait forever.
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout);
+
+/**
  *  \brief UDMA channel pause API.
  *
  *  This function will pause the UDMA channel by setting the pause bit of the

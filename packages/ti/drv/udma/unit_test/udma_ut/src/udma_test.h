@@ -719,6 +719,7 @@ int32_t UdmaTestChSetSwTriggerRegister(UdmaTestTaskObj *taskObj);
 int32_t UdmaChGetStatsTest(UdmaTestTaskObj *taskObj);
 int32_t UdmaChGetTriggerEventTest(UdmaTestTaskObj *taskObj);
 int32_t UdmaChConfigRx(UdmaTestTaskObj *taskObj);
+int32_t UdmaTestChDisablePolling(UdmaTestTaskObj *taskObj);
 
 /*
  * UDMA Driver Negative test functions
