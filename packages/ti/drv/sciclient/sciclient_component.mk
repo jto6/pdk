@@ -414,6 +414,29 @@ SCISERVER_TESTAPP_MACRO_LIST := $(foreach curos, $(drvsciclient_RTOS_LIST) safer
 
 $(eval ${SCISERVER_TESTAPP_MACRO_LIST})
 
+# DM_UNIT TEST
+define DM_UNIT_TESTAPP_RULE
+
+export dm_unit_testapp_$(1)_COMP_LIST = dm_unit_testapp_$(1)
+export dm_unit_testapp_$(1)_RELPATH = ti/drv/sciclient/examples/dm_unit_testapp
+export dm_unit_testapp_$(1)_PATH = $(PDK_SCICLIENT_COMP_PATH)/examples/dm_unit_testapp
+export dm_unit_testapp_$(1)_BOARD_DEPENDENCY = yes
+export dm_unit_testapp_$(1)_CORE_DEPENDENCY = yes
+export dm_unit_testapp_$(1)_PKG_LIST = dm_unit_testapp_$(1)
+export dm_unit_testapp_$(1)_INCLUDE = $(dm_unit_testapp_$(1)_PATH)
+export dm_unit_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)),j784s4_evm)
+export dm_unit_testapp_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), mcu1_0)
+export dm_unit_testapp_$(1)_SBL_APPIMAGEGEN = yes
+export dm_unit_testapp_$(1)_SBL_IMAGEGEN = no
+export dm_unit_testapp_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
+export dm_unit_testapp_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)), yes, no)
+sciclient_EXAMPLE_LIST += dm_unit_testapp_$(1)
+endef
+
+DM_UNIT_TESTAPP_MACRO_LIST := $(foreach curos, $(drvsciclient_RTOS_LIST), $(call DM_UNIT_TESTAPP_RULE,$(curos)))
+
+$(eval ${DM_UNIT_TESTAPP_MACRO_LIST})
+
 # SCISERVER_UNIT TEST
 define SCISERVER_UNIT_TESTAPP_RULE
 
