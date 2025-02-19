@@ -392,8 +392,41 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
 
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
-    }
+    },
 #endif
+    {
+        /** enableTest **/
+        SCI_APP_TEST_ENABLE,
+
+        /** testCaseId **/
+        11U,
+
+        /** *reqId **/
+        "PDK-16928",
+
+        /** *testCaseName **/
+        "SCICLIENT DM version api Test",
+
+        /** *userInfo **/
+        "None",
+
+        /** *disableReason **/
+        "None",
+
+        /** *passFailCriteria **/
+        "DM version api should Pass when called \
+         with valid parameters and fail when called with invalid \
+         parameters",
+
+        /** cpuID **/
+        SCI_APP_CORE_TYPE_R5F,
+
+        /** printEnable **/
+        SCI_APP_PRINT_ENABLE,
+
+        /** testType **/
+        (SCI_APP_TEST_TYPE_SANITY)
+    }
 };
 
 /* ========================================================================== */

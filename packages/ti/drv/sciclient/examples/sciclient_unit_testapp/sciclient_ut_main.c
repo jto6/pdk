@@ -133,6 +133,7 @@ static int32_t SciclientApp_pvu2GICIntrTest(void);
 #if ((defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined(SOC_J742S2) || defined (j784s4_evm) || defined(j742s2_evm)) && defined (BUILD_MCU1_0))
 static int32_t SciclientApp_mainUart2MCUR5IntrTest(void);
 #endif
+static int32_t SciclientApp_getDMVersion(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -213,6 +214,9 @@ int32_t SciApp_testMain(SciApp_TestParams_t *testParams)
             testParams->testResult = SciclientApp_mainUart2MCUR5IntrTest();
             break;
 #endif
+        case 11:
+            testParams->testResult = SciclientApp_getDMVersion();
+            break;
         default:
             break;
     }
@@ -1101,6 +1105,43 @@ static int32_t SciclientApp_mainUart2MCUR5IntrTest(void)
     return uartWriteStatus;
 }
 #endif
+
+static int32_t SciclientApp_getDMVersion(void)
+{
+    int32_t status                  = CSL_EFAIL;
+
+    struct tisci_msg_dm_version_req request;
+    const Sciclient_ReqPrm_t reqPrm =
+    {
+        TISCI_MSG_DM_VERSION,
+        TISCI_MSG_FLAG_AOP,
+        (uint8_t *) &request,
+        sizeof(request),
+        SCICLIENT_SERVICE_WAIT_FOREVER
+    };
+
+    struct tisci_msg_dm_version_resp response;
+    Sciclient_RespPrm_t     respPrm =
+    {
+        0,
+        (uint8_t *) &response,
+        sizeof (response)
+    };
+
+    status = Sciclient_service(&reqPrm, &respPrm);
+    if (CSL_PASS == status)
+    {
+        SciApp_printf(" Sciserver Version %s\n", (char *) response.sciserver_version);
+        SciApp_printf(" rm_pm_hal Version %s\n", (char *) response.rm_pm_hal_version);
+        SciApp_printf(" ABI revision %d.%d\n", response.abi_major, response.abi_minor);
+    }
+    else
+    {
+        SciApp_printf(" DM Firmware Get Version failed \n");
+    }
+
+    return status;
+}
 
 #if defined(BUILD_MPU) || defined (BUILD_C7X)
 extern void Osal_initMmuDefault(void);
