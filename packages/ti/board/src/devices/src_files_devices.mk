@@ -12,15 +12,15 @@ SRCS_COMMON += common.c pcm3168A.c ds90ub925.c ds90ub926.c ds90ub92x_afe8310.c
 endif
 
 ifeq ($(BOARD),$(filter $(BOARD), j721s2_evm))
-SRCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors
-INCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors
-SRCS_COMMON += common.c pcm3168A.c ds90ub953.c ds90ub960.c imx390.c ds90ub9702.c
+SRCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors src/devices/pmic
+INCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors src/devices/pmic
+SRCS_COMMON += common.c pcm3168A.c ds90ub953.c ds90ub960.c imx390.c ds90ub9702.c tps65941.c
 endif
 
 ifeq ($(BOARD),$(filter $(BOARD), j784s4_evm))
-SRCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors
-INCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors
-SRCS_COMMON += common.c pcm3168A.c ds90ub953.c ds90ub960.c imx390.c ds90ub9702.c
+SRCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors src/devices/pmic
+INCDIR += src/devices/audio src/devices/common src/devices/fpd src/devices/sensors src/devices/pmic
+SRCS_COMMON += common.c pcm3168A.c ds90ub953.c ds90ub960.c imx390.c ds90ub9702.c tps6287.c
 endif
 
 ifeq ($(BOARD),$(filter $(BOARD), j742s2_evm))

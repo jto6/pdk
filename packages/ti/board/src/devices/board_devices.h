@@ -149,6 +149,8 @@
 #include <ti/board/src/devices/fpd/ds90ub953.h>
 #include <ti/board/src/devices/fpd/ds90ub960.h>
 #include <ti/board/src/devices/fpd/ds90ub9702.h>
+
+#include <ti/board/src/devices/pmic/tps65941.h>
 #endif
 
 #if defined(j784s4_evm)
@@ -158,6 +160,8 @@
 #include <ti/board/src/devices/fpd/ds90ub953.h>
 #include <ti/board/src/devices/fpd/ds90ub960.h>
 #include <ti/board/src/devices/fpd/ds90ub9702.h>
+
+#include <ti/board/src/devices/pmic/tps6287.h>
 #endif
 
 #if defined(j742s2_evm)

@@ -149,6 +149,8 @@ extern "C" {
 #define BOARD_I2C_LEO_PMIC_A_WDT_ADDR                   (0x12U)
 #define BOARD_I2C_LEO_PMIC_B_WDT_ADDR                   (0x13U)
 
+#define BOARD_I2C_6287_PMIC_ADDR                        (0x40U)
+
 /* OSPI instance number */
 #define BOARD_OSPI_INSTANCE                             (0U)
 

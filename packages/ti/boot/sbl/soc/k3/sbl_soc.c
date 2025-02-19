@@ -843,6 +843,55 @@ void SBL_SocLateInit(void)
 #if defined(SOC_J721S2)
 #include <ti/board/src/j721s2_evm/include/board_internal.h>
 
+static sblCfgPmic_t pmicAvsVoltCfg[] =
+{
+    {0, 0, 0},
+    {0, 0, 0},
+    {BOARD_I2C_LEO_PMIC_A_ADDR, BOARD_TPS65941_BUCK1_RESOURCE, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0}
+};
+
+void J721S2_SetLeoPmicVoltages(void *handle, sblCfgPmic_t *pmicVoltCfg)
+{
+    int32_t retStatus = 0;
+    uint32_t pmicVoltCfgSz = SBL_MAX_VTM_VDS;
+
+    while (pmicVoltCfgSz--)
+    {
+        if(pmicVoltCfg->millivolts)
+        {
+            retStatus = Board_tps65941SetVoltage(handle, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource, pmicVoltCfg->millivolts);
+            if(retStatus != BOARD_SOK)
+            {
+                SBL_log(SBL_LOG_MAX,"Failed to set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource);
+            }
+            else
+            {
+                SBL_log(SBL_LOG_MAX,"Successfully set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource)
+            }
+        }
+        pmicVoltCfg++;
+    }
+}
+
+static void J721S2_SetupLeoPmicAvs(uint32_t opp)
+{
+    I2C_Handle handle = NULL;
+
+    handle = Board_getI2CHandle(BOARD_SOC_DOMAIN_WKUP, BOARD_I2C_PMIC_INSTANCE);
+    if(handle == NULL)
+    {
+        SBL_log(SBL_LOG_MAX,"I2C Open Failed\n\r");
+        SblErrLoop(__FILE__, __LINE__);
+    }
+    SBL_SetupPmicCfg(pmicAvsVoltCfg, opp);
+    J721S2_SetLeoPmicVoltages(handle, pmicAvsVoltCfg);
+}
+
 static void J721S2_UART_InitPwrClk(void)
 {
     HW_WR_REG32(SBL_UART_PLL_BASE + SBL_UART_PLL_KICK0_OFFSET, SBL_UART_PLL_KICK0_UNLOCK_VAL);
@@ -857,6 +906,8 @@ static void J721S2_UART_InitPwrClk(void)
 void SBL_SocEarlyInit()
 {
     J721S2_UART_InitPwrClk();
+
+    J721S2_SetupLeoPmicAvs(SBL_OPP_NOM);
 }
 
 void SBL_SocLateInit(void)
@@ -869,6 +920,56 @@ void SBL_SocLateInit(void)
 
 #if defined(SOC_J784S4)
 #include <ti/board/src/j784s4_evm/include/board_internal.h>
+
+static sblCfgPmic_t pmicAvsVoltCfg[] =
+{
+    {0, 0, 0},
+    {0, 0, 0},
+    {BOARD_I2C_6287_PMIC_ADDR, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0},
+    {0, 0, 0}
+};
+
+void J784S4_SetLeoPmicVoltages(void *handle, sblCfgPmic_t *pmicVoltCfg)
+{
+    int32_t retStatus = 0;
+    uint32_t pmicVoltCfgSz = SBL_MAX_VTM_VDS;
+
+    while (pmicVoltCfgSz--)
+    {
+        if(pmicVoltCfg->millivolts)
+        {
+            retStatus = Board_TPS6287SetVoltage(handle, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource, pmicVoltCfg->millivolts);
+            if(retStatus != BOARD_SOK)
+            {
+                SBL_log(SBL_LOG_NONE,"Failed to set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource);
+                SblErrLoop(__FILE__, __LINE__);
+            }
+            else
+            {
+                SBL_log(SBL_LOG_NONE,"Successfully set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource)
+            }
+        }
+        pmicVoltCfg++;
+    }
+}
+
+static void J784S4_SetupPmicAvs(uint32_t opp)
+{
+    I2C_Handle handle = NULL;
+
+    handle = Board_getI2CHandle(BOARD_SOC_DOMAIN_WKUP, BOARD_I2C_PMIC_INSTANCE);
+    if(handle == NULL)
+    {
+        SBL_log(SBL_LOG_MAX,"I2C Open Failed\n\r");
+        SblErrLoop(__FILE__, __LINE__);
+    }
+    SBL_SetupPmicCfg(pmicAvsVoltCfg, opp);
+    J784S4_SetLeoPmicVoltages(handle, pmicAvsVoltCfg);
+}
 
 static void J784S4_UART_InitPwrClk(void)
 {
@@ -884,6 +985,8 @@ static void J784S4_UART_InitPwrClk(void)
 void SBL_SocEarlyInit()
 {
     J784S4_UART_InitPwrClk();
+
+    J784S4_SetupPmicAvs(SBL_OPP_NOM);
 }
 
 void SBL_SocLateInit(void)
