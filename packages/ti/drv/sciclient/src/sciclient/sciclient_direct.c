@@ -56,6 +56,8 @@
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
 #include <ti/drv/sciclient/sciserver.h>
+#include <ti/drv/sciclient/src/version/sciserver_version.h>
+#include <ti/drv/sciclient/src/version/rmpmhal_version.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -384,6 +386,16 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_QUERY_FW_CAPS:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 ret = Sciclient_queryFwCapsHandler(pReqPrm->flags,message);
+                if (pRespPrm->pRespPayload != NULL)
+                {
+                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                }
+                hdr = (struct tisci_header *) &message;
+                pRespPrm->flags = hdr->flags;
+                break;
+            case TISCI_MSG_DM_VERSION:
+                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                ret = Sciclient_processDMVersionMessage(message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
                     memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -899,6 +911,51 @@ int32_t Sciclient_ProcessRmMessage(void *tx_msg)
     }
 
     return r;
+}
+
+int32_t Sciclient_processDMVersionMessage(void *tx_msg)
+{
+    int32_t ret = CSL_PASS;
+
+    if (tx_msg == NULL)
+    {
+        ret = CSL_EBADARGS;
+    }
+
+    if (ret == CSL_PASS)
+    {
+        struct tisci_msg_dm_version_resp *resp_prms = ((struct tisci_msg_dm_version_resp *)(tx_msg));
+        const char rm_pm_hal_version[] = RMPMHAL_SCMVERSION;
+        const char sciserver_version[] = SCISERVER_DMVERSION;
+        resp_prms->version = RMPMHAL_MAJORVERSION;
+        resp_prms->sub_version = RMPMHAL_SUBVERSION;
+        resp_prms->patch_version = RMPMHAL_PATCHVERSION;
+        resp_prms->abi_major = RMPMHAL_ABIMAJOR;
+        resp_prms->abi_minor = RMPMHAL_ABIMINOR;
+
+        memcpy(resp_prms->rm_pm_hal_version, rm_pm_hal_version, strlen(rm_pm_hal_version));
+        resp_prms->rm_pm_hal_version[11] = 0;
+        if (strcmp(resp_prms->rm_pm_hal_version, rm_pm_hal_version))
+            ret = CSL_EFAIL;
+
+        if (ret == CSL_PASS)
+        {
+            memcpy(resp_prms->sciserver_version, sciserver_version, strlen(sciserver_version));
+            resp_prms->sciserver_version[25] = 0;
+            if (strcmp(resp_prms->sciserver_version, sciserver_version))
+                ret = CSL_EFAIL;
+        }
+    }
+    
+    if ((((struct tisci_header *) tx_msg)->flags & TISCI_MSG_FLAG_AOP) != 0U) {
+        if (ret != CSL_PASS) {
+            Sciclient_TisciMsgSetNakResp((struct tisci_header *)tx_msg);
+        } else {
+            Sciclient_TisciMsgSetAckResp((struct tisci_header *)tx_msg);
+        }
+    }
+
+    return ret;
 }
 
 int32_t Sciclient_boardCfgPrepHeader (

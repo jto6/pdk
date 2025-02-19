@@ -13,6 +13,7 @@
 
 year=$(date +%Y)
 month=$(date +%m)
+dm_ver=""
 
 # Specify major version name if an explicit non-empty VERSION is specified
 VERSION=${3}
@@ -43,6 +44,11 @@ if "$git_cmd" rev-parse --is-inside-work-tree 2>/dev/null >/dev/null; then
 	if [ -n "$git_ver" ]; then
 		git_ver="-${git_ver}"
 	fi
+
+	# Included dm_ver required for DM version api call. implementing for ease of debug
+	# eg: PSDK.xx.xx.xx.xx-NN+ PSDK explains DM build on which repo, xx.xx.xx.xx explains
+	# the latest tag, NN represents delta between tag and commit, Abbreviate dirty as +.
+	dm_ver="$("$git_cmd" describe --match "REL.PSDK.*" --abbrev=5 --dirty | sed -e 's/-g.....//g' -e 's/-dirty$/+/g' | cut -c 5-)"
 else
 	git_ver=""
 fi
@@ -57,11 +63,16 @@ fi
 S1=$(printf %d $(echo $1 | sed 's/^0*//g'))
 S2=$(printf %d $(echo $2 | sed 's/^0*//g'))
 
+if [ ${#dm_ver} -gt 25 ]
+then
+	dm_ver=""
+fi
+
 cat << EOF
 /**
  * SCISERVER Version Info
  *
- * Copyright (C) $year Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2024-$year Texas Instruments Incorporated - http://www.ti.com/
  *
  * This software is licensed under the  standard terms and conditions in the
  * Texas Instruments  Incorporated Technology and Software Publicly Available
@@ -79,6 +90,7 @@ cat << EOF
 #define SCISERVER_SUBVERSION	$S1
 #define SCISERVER_PATCHVERSION	$S2
 #define SCISERVER_SCMVERSION	"$git_ver"
+#define SCISERVER_DMVERSION     "$dm_ver"
 
 #endif /* INCLUDE_SCISERVER_VERSION_H */
 

@@ -397,6 +397,7 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
 
 int32_t Sciclient_ProcessRmMessage(void *tx_msg);
 int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg);
+int32_t Sciclient_processDMVersionMessage(void *tx_msg);
 
 #ifdef __cplusplus
 }

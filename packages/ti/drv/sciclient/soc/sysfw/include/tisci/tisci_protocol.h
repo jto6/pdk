@@ -121,6 +121,7 @@ struct tisci_sec_header {
 
 /* TISCI Message IDs */
 #define TISCI_MSG_VERSION                       (0x0002U)
+#define TISCI_MSG_DM_VERSION                    (0x000FU)
 #define TISCI_MSG_BOOT_NOTIFICATION             (0x000AU)
 #define TISCI_MSG_BOARD_CONFIG                  (0x000BU)
 #define TISCI_MSG_BOARD_CONFIG_RM               (0x000CU)

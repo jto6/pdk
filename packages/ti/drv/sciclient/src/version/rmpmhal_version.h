@@ -1,7 +1,7 @@
 /**
  * RM_PM_HAL Version Info
  *
- * Copyright (C) 2024 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2024-2025 Texas Instruments Incorporated - http://www.ti.com/
  *
  * This software is licensed under the  standard terms and conditions in the
  * Texas Instruments  Incorporated Technology and Software Publicly Available
@@ -15,7 +15,12 @@
 #ifndef INCLUDE_RMPMHAL_VERSION_H
 #define INCLUDE_RMPMHAL_VERSION_H
 
-#define RMPMHAL_SCMVERSION	"v10.01.08a"
+#define RMPMHAL_SCMVERSION		"v10.00.09"
+#define RMPMHAL_MAJORVERSION	10
+#define RMPMHAL_SUBVERSION		0
+#define RMPMHAL_PATCHVERSION	9
+#define RMPMHAL_ABIMAJOR		3
+#define RMPMHAL_ABIMINOR		0
 
 #endif /* INCLUDE_RMPMHAL_VERSION_H */
 
