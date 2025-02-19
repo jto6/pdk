@@ -92,7 +92,7 @@ endif
 
 # Internal CFLAGS - normally doesn't change
 ifeq ($(CGT_ISA),$(filter $(CGT_ISA),M4 R5 M3))
-  CFLAGS_INTERNAL = -c -Wall $(SUPRESS_WARNINGS_FLAG) -fno-strict-aliasing -$(RTSLIB_ENDIAN) -eo.$(OBJEXT) -ea.$(ASMEXT) -g -mfloat-abi=hard
+  CFLAGS_INTERNAL = -c -Wall $(SUPRESS_WARNINGS_FLAG) -fno-strict-aliasing -$(RTSLIB_ENDIAN) -g -mfloat-abi=hard
   ifeq ($(CGT_ISA),$(filter $(CGT_ISA), R5))
     CFLAGS_INTERNAL += -mfpu=vfpv3-d16 -mcpu=cortex-r5
     ifeq ($(COMPILE_MODE), thumb)
