@@ -258,7 +258,9 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_SET_FREQ:
             case TISCI_MSG_QUERY_FREQ:
             case TISCI_MSG_GET_FREQ:
+            case TISCI_MSG_SET_DEVICE:
             case TISCI_MSG_GET_DEVICE:
+            case TISCI_MSG_SET_DEVICE_RESETS:
             case TISCI_MSG_SYS_RESET:
             case TISCI_MSG_PREPARE_SLEEP:
             case TISCI_MSG_ENTER_SLEEP:
@@ -270,43 +272,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
-                break;
-            /*
-             * MCU_R5's device state request message needs to be processed by TIFS
-             * All other device state request messages will be processed by DM.
-             */
-            case TISCI_MSG_SET_DEVICE:
-            case TISCI_MSG_SET_DEVICE_RESETS:
-                {
-                    /*
-                     * For TISCI_MSG_SET_DEVICE and TISCI_MSG_SET_DEVICE_RESETS request messages
-                     * have id value at the same memory location in pReqPrm->pReqPayload.
-                     * typecasting pReqPrm->pReqPayload to anyone of its request structure 
-                     * can gives us the correct id value.
-                     */
-                    struct tisci_msg_set_device_req *req = 
-                        (struct tisci_msg_set_device_req *) pReqPrm->pReqPayload;
-                    uint32_t id = req->id;
-                    if ((id == SCICLIENT_DEV_MCU_R5FSS0_CORE0) || (id == SCICLIENT_DEV_MCU_R5FSS0_CORE1))
-                    {
-                        uint32_t bkupMode;
-                        bkupMode = gSciclientHandle.isSecureMode;
-                        gSciclientHandle.isSecureMode = 1U;
-                        ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
-                        gSciclientHandle.isSecureMode = bkupMode;
-                    }
-                    else
-                    {
-                        memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
-                        ret = Sciclient_ProcessPmMessage(pReqPrm->flags, message);
-                        if (pRespPrm->pRespPayload != NULL)
-                        {
-                            memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
-                        }
-                        hdr = (struct tisci_header *) &message;
-                        pRespPrm->flags = hdr->flags;
-                    }
-                }
                 break;
             /* RM messages processed solely by RM within DM on MCU R5F */
             case TISCI_MSG_RM_GET_RESOURCE_RANGE:
@@ -647,36 +612,66 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
                     (struct tisci_msg_set_device_req *) tx_msg;
                 uint32_t id = req->id;
                 uint8_t state = req->state;
-                if (id == TISCI_DEV_BOARD0)
+                switch (id)
                 {
-                    if (state == (uint8_t)TISCI_MSG_VALUE_DEVICE_SW_STATE_ON) {
-                        coreRefCnt++;
-                    }
-                    else if (state == (uint8_t)TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF) {
-                        coreRefCnt--;
-                        /*
-                         * When no core is active, shutdown PMIC.
-                         * The <= catches call to shutdown before powering up a core.
-                         */
-                        if (coreRefCnt <= 0) {
-                            Osal_delay(1000U); /* time for ATF go in WFI */
-                            Sciclient_pmicShutdown();
+                    case SCICLIENT_DEV_MCU_R5FSS0_CORE0:
+                        ret = Sciclient_pmSetMsgProxy((uint32_t*)tx_msg,
+                                reqFlags,
+                                SCICLIENT_DEV_MCU_R5FSS0_CORE0_PROCID);
+                    break;
+                    case SCICLIENT_DEV_MCU_R5FSS0_CORE1:
+                        ret = Sciclient_pmSetMsgProxy((uint32_t*)tx_msg,
+                                reqFlags,
+                                SCICLIENT_DEV_MCU_R5FSS0_CORE1_PROCID);
+                    break;
+                    case TISCI_DEV_BOARD0:
+                        if (state == (uint8_t)TISCI_MSG_VALUE_DEVICE_SW_STATE_ON) {
+                            coreRefCnt++;
                         }
-                    }
-                    else {
-                        ret = CSL_EFAIL;
-                    }
-                }
-                else
-                {
-                    ret = set_device_handler((uint32_t*)tx_msg);
+                        else if (state == (uint8_t)TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF) {
+                            coreRefCnt--;
+                            /*
+                             * When no core is active, shutdown PMIC.
+                             * The <= catches call to shutdown before powering up a core.
+                             */
+                            if (coreRefCnt <= 0) {
+                                Osal_delay(1000U); /* time for ATF go in WFI */
+                                Sciclient_pmicShutdown();
+                            }
+                        }
+                        else {
+                          ret = CSL_EFAIL;
+                        }
+                    break;
+                    default:
+                        ret = set_device_handler((uint32_t*)tx_msg);
+                    break;
                 }
             }
             break;
         case TISCI_MSG_GET_DEVICE              :
             ret = get_device_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_SET_DEVICE_RESETS       :
-            ret = set_device_resets_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_set_device_resets_req *req =
+                    (struct tisci_msg_set_device_resets_req *) tx_msg;
+                uint32_t id = req->id;
+                switch (id)
+                {
+                    case SCICLIENT_DEV_MCU_R5FSS0_CORE0:
+                        ret = Sciclient_pmSetCpuResetMsgProxy((uint32_t*)tx_msg,
+                                SCICLIENT_DEV_MCU_R5FSS0_CORE0_PROCID);
+                    break;
+                    case SCICLIENT_DEV_MCU_R5FSS0_CORE1:
+                        ret = Sciclient_pmSetCpuResetMsgProxy((uint32_t*)tx_msg,
+                                SCICLIENT_DEV_MCU_R5FSS0_CORE1_PROCID);
+                    break;
+                    default:
+                        ret = set_device_resets_handler((uint32_t*)tx_msg);
+                    break;
+                }
+            }
+            break;
         case TISCI_MSG_SYS_RESET               :
             ret = sys_reset_handler((uint32_t*)tx_msg);
             break;
