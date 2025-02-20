@@ -187,6 +187,9 @@ typedef struct OSPI_Tests_s
 #define OSPI_NAND_TEST_ID_WR_TUNING        19   /* OSPI flash test in Direct Acess Controller legacy SPI mode to write tuning data */
 #define OSPI_NAND_TEST_ID_DAC_1_8_8_50M     20   /* OSPI flash test in Direct Acess Controller legacy SPI mode at 50MHz RCLK */
 #define OSPI_NAND_TEST_ID_DAC_1_8_8_166M    21   /* OSPI flash test in Direct Acess Controller legacy SPI mode at 166MHz RCLK */
+#if defined(SOC_J721E)
+#define OSPI_TEST_ID_WR_PROTECT             22   /* OSPI Write Protect Test */
+#endif
 
 /* OSPI NOR flash offset address for read/write test */
 #define TEST_ADDR_OFFSET   (0U)
@@ -260,41 +263,8 @@ static uint8_t  gAppTskStackMain[APP_TSK_STACK_MAIN] __attribute__((aligned(32))
 #endif
 #endif
 
-/* Buffer containing the known data that needs to be written to flash */
-#if defined(SOC_AM65XX) || defined(SOC_AM64X)
-#ifdef SPI_DMA_ENABLE
-uint8_t txBuf[TEST_BUF_LEN]  __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT))) __attribute__((section(".benchmark_buffer")));
-#else
-uint8_t txBuf[TEST_BUF_LEN]  __attribute__((aligned(128))) __attribute__((section(".benchmark_buffer")));
-#endif
-#endif
-
-#if defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
-#ifdef SPI_DMA_ENABLE
-uint8_t txBuf[TEST_BUF_LEN]  __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT))) __attribute__((section(".benchmark_buffer")));
-#else
-uint8_t txBuf[TEST_BUF_LEN]  __attribute__((aligned(128))) __attribute__((section(".benchmark_buffer")));
-#endif
-#endif
-
-/* Buffer containing the received data */
-#if defined(SOC_AM65XX) || defined(SOC_AM64X)
-#ifdef SPI_DMA_ENABLE
-uint8_t rxBuf[TEST_BUF_LEN]  __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT))) __attribute__((section(".benchmark_buffer")));
-#else
-uint8_t rxBuf[TEST_BUF_LEN]  __attribute__((aligned(128))) __attribute__((section(".benchmark_buffer")));
-#endif
-#endif
-
-#if defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
-#ifdef SPI_DMA_ENABLE
-uint8_t rxBuf[TEST_BUF_LEN]  __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT))) __attribute__((section(".benchmark_buffer")));
-#else
-uint8_t rxBuf[TEST_BUF_LEN]  __attribute__((aligned(128))) __attribute__((section(".benchmark_buffer")));
-#endif
-#endif
-
-#if defined(SOC_AM65XX) || defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_AM64X) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
+uint8_t txBuf[TEST_BUF_LEN]  __attribute__((aligned(128U))) __attribute__((section(".benchmark_buffer")));
+uint8_t rxBuf[TEST_BUF_LEN]  __attribute__((aligned(128U))) __attribute__((section(".benchmark_buffer")));
 
 #ifdef SPI_DMA_ENABLE
 /*
@@ -353,16 +323,11 @@ int32_t Ospi_udma_init(OSPI_v0_HwAttrs *cfg)
     if (NULL == gDrvHandle)
     {
         /* UDMA driver init */
-#if defined (SOC_AM64X)
-        /* Use Block Copy DMA instance for AM64x */
-        instId = UDMA_INST_ID_BCDMA_0;
-#else
         /* Use MCU NAVSS for MCU domain cores. Rest cores all uses Main NAVSS */
 #if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1)
         instId = UDMA_INST_ID_MCU_0;
 #else
         instId = UDMA_INST_ID_MAIN_0;
-#endif
 #endif
 
         UdmaInitPrms_init(instId, &initPrms);
@@ -403,214 +368,6 @@ int32_t Ospi_udma_deinit(void)
     }
 
     return (retVal);
-}
-#endif
-
-#if defined(OSPI_TESTAPP_RTOS)
-
-#if defined(BUILD_MPU) || defined (BUILD_C7X)
-extern void Osal_initMmuDefault(void);
-void InitMmu(void)
-{
-    Osal_initMmuDefault();
-}
-#endif
-
-#endif
-#endif
-
-#if defined(SOC_AM65XX)
-/* define the unlock and lock values */
-#define KICK0_UNLOCK_VAL 0x68EF3490
-#define KICK1_UNLOCK_VAL 0xD172BC5A
-#define KICK_LOCK_VAL    0x00000000
-
-//
-#define MAIN_MMR_BASE_ADDRESS   CSL_CTRL_MMR0_CFG0_BASE
-#define MCU_MMR_BASE_ADDRESS    CSL_MCU_CTRL_MMR0_CFG0_BASE
-#define WKUP_MMR_BASE_ADDRESS   CSL_WKUP_CTRL_MMR0_CFG0_BASE
-
-#define CSL2PTR (uint32_t *)(uintptr_t)
-
-uint32_t MMR_unlock_one(uint32_t * kick0, uint32_t * kick1)
-{
-    // initialize the status variable
-    uint32_t status = UTRUE;
-
-    // if either of the kick lock registers are locked
-    if (!(*kick0 & 0x1) | !(*kick1 & 0x1))
-    {
-        // unlock the partition by writing the unlock values to the kick lock registers
-        *kick0 = KICK0_UNLOCK_VAL;
-        *kick1 = KICK1_UNLOCK_VAL;
-    }
-
-    // check to see if either of the kick registers are unlocked.
-    if (!(*kick0 & 0x1))
-    {
-        status = UFALSE;
-    }
-
-    // return the status to the calling program
-    return status;
-
-}
-
-uint32_t MMR_lock_one(uint32_t * kick0, uint32_t * kick1)
-{
-    // create status return variable
-    uint32_t status = UTRUE;
-
-    // check to see if either of the kick registers are unlocked.
-    if ((*kick0 & 0x1))
-    {
-        // write the kick lock value to the kick lock registers to lock the partition
-        *kick0 = KICK_LOCK_VAL;
-        *kick1 = KICK_LOCK_VAL;
-    }
-
-    // check to see if either of the kick registers are still unlocked.
-    if ((*kick0 & 0x1))
-    {
-        status = UFALSE;
-    }
-    // return success or failure
-    return status;
-}
-
-uint32_t MCU_CTRL_MMR_unlock_all()
-{
-
-    // initialize the status variable
-    uint32_t status = UTRUE;
-
-    // Unlock the 0th partition
-    status &= MMR_unlock_one(
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK0_KICK0),
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK0_KICK1));
-
-    // Unlock the 1st partition
-    status &= MMR_unlock_one(
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK1_KICK0),
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK1_KICK1));
-
-    // Unlock the 2nd partition
-    status &= MMR_unlock_one(
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK2_KICK0),
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK2_KICK1));
-
-    // Unlock the 3rd partition
-    status &= MMR_unlock_one(
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK3_KICK0),
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK3_KICK1));
-
-    // Unlock the 4th partition
-    status &= MMR_unlock_one(
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK4_KICK0),
-            CSL2PTR ( MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK4_KICK1));
-    return status;
-}
-
-uint32_t MCU_CTRL_MMR_lock_all()
-{
-
-    // initialize the status variable
-    uint32_t status = UTRUE;
-
-    // lock the 0th partition
-    status &= MMR_lock_one(
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK0_KICK0),
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK0_KICK1));
-
-    // lock the 1st partition
-    status &= MMR_lock_one(
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK1_KICK0),
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK1_KICK1));
-    // lock the 2nd partition
-    status &= MMR_lock_one(
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK2_KICK0),
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK2_KICK1));
-    // lock the 3rd partition
-    status &= MMR_lock_one(
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK3_KICK0),
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK3_KICK1));
-    // lock the 4th partition
-    status &= MMR_lock_one(
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK4_KICK0),
-            CSL2PTR (MCU_MMR_BASE_ADDRESS
-                    + CSL_MCU_CTRL_MMR_CFG0_LOCK4_KICK1));
-    return status;
-}
-
-void OSPI_configClk(uint32_t freq, bool usePHY)
-{
-	uint32_t divider = 0x12;
-
-    MCU_CTRL_MMR_unlock_all();
-
-
-    if(OSPI_MODULE_CLK_166M == freq)
-    {
-        /* Select CPSWHSDIV4 */
-        *(uint32_t *)(CSL_MCU_CTRL_MMR0_CFG0_BASE + CSL_MCU_CTRL_MMR_CFG0_MCU_OSPI0_CLKSEL) = 1;
-
-        if (usePHY)
-            divider = 0xC;   /* 2000/12 = 166 */
-        else
-            divider = 0x6;
-
-        *(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL1_HSDIV_CLKDIV) = \
-                (*(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL1_HSDIV_CLKDIV) & 0x00FFFFFF) | ((divider-1) << 24);
-
-        /* Load new values on 0->1 transition of bit 31 of tenabldiv */
-        *(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL1_HSDIV_CTRL) &= 0x7FFFFFFF;
-        Osal_delay(1);
-        *(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL1_HSDIV_CTRL) |= 0x80000000;
-    }
-    else
-    {
-        /* Select MCUPLL0HSDIV4 */
-        *(uint32_t *)(CSL_MCU_CTRL_MMR0_CFG0_BASE + CSL_MCU_CTRL_MMR_CFG0_MCU_OSPI0_CLKSEL) = 0;
-
-        if(OSPI_MODULE_CLK_133M == freq)
-            divider = 18;    /* 2400/18 = 133 */
-        if(OSPI_MODULE_CLK_160M == freq)
-            divider = 15;    /* 2400/15 = 160 */
-        if(OSPI_MODULE_CLK_200M == freq)
-            divider = 12;    /* 2400/12 = 200 */
-
-        *(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL0_HSDIV_CLKDIV) = \
-                (*(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL0_HSDIV_CLKDIV) & 0x00FFFFFF) | ((divider-1) << 24);
-
-        /* Load new values on 0->1 transition of bit 31 of tenabldiv */
-        *(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL0_HSDIV_CTRL) &= 0x7FFFFFFF;
-        Osal_delay(1);
-        *(uint32_t*)(CSL_MCU_PLL0_CFG_BASE+CSL_MCU_PLL_MMR_CFG_PLL0_HSDIV_CTRL) |= 0x80000000;
-    }
-    MCU_CTRL_MMR_lock_all();
-
-    SPI_log("\n OSPI RCLK running at %d MHz. \n", freq);
-    return;
-
 }
 #endif
 
@@ -662,21 +419,34 @@ static void OSPI_flashMux(uint32_t flashType)
 }
 #endif
 
-#if defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_AM64X) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
+static uint32_t OSPI_getDeviceId(OSPI_Tests *test)
+{
+    uint32_t deviceId;
+#if defined(SOC_J7200) || defined(SOC_AM64X)
+    deviceId = BOARD_FLASH_ID_S28HS512T;
+#elif defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
+    if(test->norFlash)
+    {
+        deviceId = BOARD_FLASH_ID_S28HS512T;
+        OSPI_flashMux(OSPI_FLASH_SEL_NOR);
+    }
+    else
+    {
+        deviceId = BOARD_FLASH_ID_W35N01JWTBAG;
+        OSPI_flashMux(OSPI_FLASH_SEL_NAND);
+    }
+#else
+    deviceId = BOARD_FLASH_ID_MT35XU512ABA1G12;
+#endif
+    return deviceId;
+}
+
 void OSPI_configClk(uint32_t freq, bool usePHY)
 {
     OSPI_v0_HwAttrs ospi_cfg;
 	int32_t retVal;
     uint64_t ospi_rclk_freq;
     uint32_t parClk;
-#if defined (SOC_AM64X)
-    uint32_t clkID[] = {
-                           TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK,
-    };
-    uint32_t devID[] = {
-                           TISCI_DEV_FSS0_OSPI_0,
-    };
-#else
     uint32_t clkID[] = {
                            TISCI_DEV_MCU_FSS0_OSPI_0_OSPI_RCLK_CLK,
                            TISCI_DEV_MCU_FSS0_OSPI_1_OSPI_RCLK_CLK
@@ -685,7 +455,6 @@ void OSPI_configClk(uint32_t freq, bool usePHY)
                            TISCI_DEV_MCU_FSS0_OSPI_0,
 	                       TISCI_DEV_MCU_FSS0_OSPI_1
     };
-#endif
 
     /* Get the default SPI init configurations */
     OSPI_socGetInitCfg(BOARD_OSPI_DOMAIN, BOARD_OSPI_NOR_INSTANCE, &ospi_cfg);
@@ -698,18 +467,13 @@ void OSPI_configClk(uint32_t freq, bool usePHY)
     if (CSL_PASS != retVal)
     {
         SPI_log("\n Sciclient_pmModuleClkRequest failed");
-	    goto clk_cfg_exit;
+	    return;
     }
 
     /* Max clocks */
     if (OSPI_MODULE_CLK_166M == freq)
     {
-#if defined (SOC_AM64X)
-        parClk = TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK_PARENT_HSDIV4_16FFT_MAIN_0_HSDIVOUT1_CLK;
-#else
         parClk = TISCI_DEV_MCU_FSS0_OSPI_0_OSPI_RCLK_CLK_PARENT_HSDIV4_16FFT_MCU_2_HSDIVOUT4_CLK;
-#endif
-
         retVal = Sciclient_pmSetModuleClkParent(devID[BOARD_OSPI_NOR_INSTANCE],
                                                 clkID[BOARD_OSPI_NOR_INSTANCE],
                                                 parClk,
@@ -717,11 +481,7 @@ void OSPI_configClk(uint32_t freq, bool usePHY)
     }
     else
     {
-#if defined (SOC_AM64X)
-        parClk = TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK_PARENT_HSDIV4_16FFT_MAIN_0_HSDIVOUT1_CLK;
-#else
         parClk = TISCI_DEV_MCU_FSS0_OSPI_0_OSPI_RCLK_CLK_PARENT_HSDIV4_16FFT_MCU_1_HSDIVOUT4_CLK;
-#endif
         retVal = Sciclient_pmSetModuleClkParent(devID[BOARD_OSPI_NOR_INSTANCE],
                                                 clkID[BOARD_OSPI_NOR_INSTANCE],
                                                 parClk,
@@ -731,7 +491,7 @@ void OSPI_configClk(uint32_t freq, bool usePHY)
     if (CSL_PASS != retVal)
     {
         SPI_log("\n Sciclient_pmSetModuleClkParent failed");
-        goto clk_cfg_exit;
+        return;
     }
 
 	ospi_cfg.funcClk = freq;
@@ -747,7 +507,7 @@ void OSPI_configClk(uint32_t freq, bool usePHY)
     if (CSL_PASS != retVal)
     {
         SPI_log("\n Sciclient_pmSetModuleClkFreq failed");
-	    goto clk_cfg_exit;
+	    return;
     }
 
 	ospi_rclk_freq = 0;
@@ -758,15 +518,12 @@ void OSPI_configClk(uint32_t freq, bool usePHY)
     if (CSL_PASS != retVal)
     {
         SPI_log("\n Sciclient_pmGetModuleClkFreq failed");
-	    goto clk_cfg_exit;
+	    return;
     }
 
     SPI_log("\n OSPI RCLK running at %d MHz. \n", (uint32_t)ospi_rclk_freq);
 
-clk_cfg_exit:
-      return;
 }
-#endif
 
 void OSPI_initConfig(OSPI_Tests *test)
 {
@@ -1043,6 +800,144 @@ static bool OSPI_phyConfigTest(void *arg)
     }
     return retVal;
 }
+
+#if defined(OSPI_TEST_ID_WR_PROTECT)
+static bool OSPI_wrProtectTest(void *arg)
+{
+    bool            retVal = BTRUE;
+    int32_t         status = SPI_STATUS_SUCCESS;
+    OSPI_Tests      *test = (OSPI_Tests *)arg;
+    Board_flashHandle boardHandle;
+    uint32_t        deviceId = OSPI_getDeviceId(test);
+    uint32_t        tuneEnable = UTRUE;
+    uint32_t        readMode = OSPI_FLASH_OCTAL_READ;
+    uint32_t        writeMode = OSPI_FLASH_OCTAL_PAGE_PROG;
+    const CSL_ospi_flash_cfgRegs  *pRegs = (const CSL_ospi_flash_cfgRegs *)CSL_MCU_FSS0_OSPI0_CTRL_BASE;
+    uint32_t        offset = 0U;
+    uint32_t        blockNum = offset / NOR_BLOCK_SIZE;
+
+#if defined (BUILD_MCU)
+    /* Change interrupt number based on core */
+    status = OSPI_socInit();
+    if(SPI_STATUS_SUCCESS != status)
+    {
+        SPI_log("\nOSPI_socInit failed!!\n");
+        retVal = BFALSE;
+    }
+    else
+#endif
+    {   
+        OSPI_initConfig(test);
+
+        /* Open the Board OSPI NOR device with OSPI port 0
+        and use default OSPI configurations */
+        boardHandle = Board_flashOpen(deviceId,
+                                    BOARD_OSPI_NOR_INSTANCE, (void *)(&tuneEnable));
+        
+        if(!boardHandle)
+        {
+            SPI_log("\n Board_flashOpen failed. \n");
+            retVal = BFALSE;
+        }
+
+
+        if(BTRUE == retVal)
+        {
+            for(int32_t i=0 ; i < NOR_BLOCK_SIZE ; i++)
+            {
+                txBuf[i] = 0xAAU;
+            }
+
+            /* Erase block, to which data has to be written */
+            if (Board_flashEraseBlk(boardHandle, blockNum))
+            {
+                SPI_log("\n Board_flashEraseBlk failed. \n");
+                retVal = BFALSE;
+            }
+            if(BTRUE == retVal)
+            {
+                if (Board_flashWrite(boardHandle, 0U, &txBuf[0],
+                                    NOR_BLOCK_SIZE, (void *)(&writeMode)))
+                {
+                    SPI_log("\n Board_flashWrite failed. \n");
+                    retVal = BFALSE;
+                }
+            }
+            if(BTRUE == retVal)
+            {                      
+                if (Board_flashRead(boardHandle, offset, &rxBuf[0],
+                                    NOR_BLOCK_SIZE, (void *)(&readMode)))
+                {
+                    SPI_log("\n Board_flashRead failed. \n");
+                    retVal = BFALSE;
+                }
+            }
+
+            if(BTRUE == retVal)
+            {
+                if(VerifyData(&txBuf[0], &rxBuf[0], NOR_BLOCK_SIZE) == BFALSE)
+                {
+                    retVal = BFALSE;
+                }
+            }
+        }
+
+        if(BTRUE == retVal)
+        {
+            retVal = CSL_ospiCfgWrProtectReg(pRegs, blockNum, blockNum + 1U, CSL_OSPI_CFG_INV_WR_PRTCT_DEFAULT);
+            if(CSL_PASS == retVal)
+            {
+                retVal = CSL_ospiEnableWrProtectReg(pRegs, true);
+                if(CSL_PASS == retVal)
+                {
+                    retVal = BTRUE;
+                }
+            }
+
+            for(int32_t i=0 ; i < NOR_BLOCK_SIZE ; i++)
+            {
+                txBuf[i] = 0xBBU;
+            }
+
+            /* Erase block, to which data has to be written */
+            if (Board_flashEraseBlk(boardHandle, blockNum))
+            {
+                SPI_log("\n Board_flashEraseBlk failed. \n");
+                retVal = BFALSE;
+            }
+            if(BTRUE == retVal)
+            {
+                if (Board_flashWrite(boardHandle, offset, &txBuf[0],
+                                    NOR_BLOCK_SIZE, (void *)(&writeMode)))
+                {
+                    SPI_log("\n Board_flashWrite failed. \n");
+                    retVal = BFALSE;
+                }
+            }
+            if(BTRUE == retVal)
+            {                      
+                if (Board_flashRead(boardHandle, offset, &rxBuf[0],
+                                    NOR_BLOCK_SIZE, (void *)(&readMode)))
+                {
+                    SPI_log("\n Board_flashRead failed. \n");
+                    retVal = BFALSE;
+                }
+            }
+
+            if(BTRUE == retVal)
+            {
+                SPI_log("\n::Data should mismatch as programming of flash is disabled::\r\n\n");
+                if(VerifyData(&txBuf[0], &rxBuf[0], NOR_BLOCK_SIZE) == BTRUE)
+                {
+                    retVal = BFALSE;
+                }
+            }   
+        }
+    }
+    return retVal;
+}
+#endif
+
 static bool OSPI_flash_test(void *arg)
 {
     Board_flashHandle boardHandle;
@@ -1111,22 +1006,7 @@ static bool OSPI_flash_test(void *arg)
 
     OSPI_socGetInitCfg(BOARD_OSPI_DOMAIN, BOARD_OSPI_NOR_INSTANCE, &ospi_cfg);
 
-#if defined(SOC_J7200) || defined(SOC_AM64X)
-    deviceId = BOARD_FLASH_ID_S28HS512T;
-#elif defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
-    if(test->norFlash)
-    {
-        deviceId = BOARD_FLASH_ID_S28HS512T;
-        OSPI_flashMux(OSPI_FLASH_SEL_NOR);
-    }
-    else
-    {
-        deviceId = BOARD_FLASH_ID_W35N01JWTBAG;
-        OSPI_flashMux(OSPI_FLASH_SEL_NAND);
-    }
-#else
-    deviceId = BOARD_FLASH_ID_MT35XU512ABA1G12;
-#endif
+    deviceId = OSPI_getDeviceId(test);
 
 #if defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2)
     if(test->norFlash)
@@ -1493,6 +1373,9 @@ OSPI_Tests Ospi_tests[] =
 #endif
     {OSPI_phyConfigTest,    OSPI_TEST_ID_PHY_CFG_MASTER,      BTRUE,  BFALSE,  BTRUE,       CSL_OSPI_CFG_PHY_OP_MODE_MASTER,   OSPI_MODULE_CLK_133M, "\r\n OSPI Phy Config Master mode test"},
     {OSPI_phyConfigTest,    OSPI_TEST_ID_PHY_CFG_BYPASS,      BTRUE,  BFALSE,  BTRUE,       CSL_OSPI_CFG_PHY_OP_MODE_BYPASS,   OSPI_MODULE_CLK_133M, "\r\n OSPI Phy Config bypass mode test"},
+#if defined(OSPI_TEST_ID_WR_PROTECT)
+    {OSPI_wrProtectTest,    OSPI_TEST_ID_WR_PROTECT,      BTRUE,  BFALSE,  BTRUE,       CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_133M, "\r\n OSPI WR protect test"},
+#endif
     {NULL, }
 };
 
