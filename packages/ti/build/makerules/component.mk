@@ -551,6 +551,18 @@ ifneq ($(gpio_EXAMPLE_LIST),)
 endif
 
 # - used to ignore include if component not present
+-include $(PDK_GTC_COMP_PATH)/gtc_component.mk
+ifneq ($(gtc_LIB_LIST),)
+  pdk_LIB_LIST += $(gtc_LIB_LIST)
+endif
+ifneq ($(gtc_APP_LIB_LIST),)
+  pdk_APP_LIB_LIST += $(gtc_APP_LIB_LIST)
+endif
+ifneq ($(gtc_EXAMPLE_LIST),)
+  pdk_EXAMPLE_LIST += $(gtc_EXAMPLE_LIST)
+endif
+
+# - used to ignore include if component not present
 -include $(PDK_PROFILING_COMP_PATH)/profiling_component.mk
 ifneq ($(profiling_LIB_LIST),)
   pdk_LIB_LIST += $(profiling_LIB_LIST)
@@ -927,7 +939,7 @@ export PDK_CFLAGS
 export PDK_LNKFLAGS
 
 ifeq ($(SOC),$(filter $(SOC), j721e))
-  PDK_COMMON_COMP = csl uart i2c udma gpio pmic pm_lib
+  PDK_COMMON_COMP = csl uart i2c udma gpio pmic pm_lib gtc
   ifneq ($(CORE),$(filter $(CORE), c7x-hostemu))
     PDK_COMMON_COMP += board
   endif
@@ -939,7 +951,7 @@ ifeq ($(SOC),$(filter $(SOC), j721e))
 endif
 
 ifeq ($(SOC),$(filter $(SOC), j7200))
-  PDK_COMMON_COMP = csl uart i2c board udma gpio pmic pm_lib
+  PDK_COMMON_COMP = csl uart i2c board udma gpio pmic pm_lib gtc
   ifeq ($(CORE),mcu1_0)
     PDK_COMMON_COMP += sciclient_direct rm_pm_hal
   else
@@ -948,7 +960,7 @@ ifeq ($(SOC),$(filter $(SOC), j7200))
 endif
 
 ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j742s2))
-  PDK_COMMON_COMP = csl uart board udma i2c gpio pm_lib
+  PDK_COMMON_COMP = csl uart board udma i2c gpio pm_lib gtc
   ifeq ($(CORE),mcu1_0)
     PDK_COMMON_COMP += sciclient_direct rm_pm_hal
   else
