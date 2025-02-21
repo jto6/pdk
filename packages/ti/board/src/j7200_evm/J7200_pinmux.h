@@ -91,6 +91,7 @@ enum pinMainOffsets
 	PIN_MMC1_DAT2		 = 0xF0,
 	PIN_MMC1_DAT3		 = 0xEC,
 	PIN_TIMER_IO0		 = 0xE4,
+	PIN_TIMER_IO1		 = 0xE8,
 	PIN_MCAN11_RX		 = 0x7C,
 	PIN_MCAN12_TX		 = 0x80,
 	PIN_MCAN12_RX		 = 0x84,

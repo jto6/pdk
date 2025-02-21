@@ -225,11 +225,11 @@ void TimerP_updateDefaultInfoTbl(void)
         for (i = 0U; i < TimerP_numTimerDevices; i++)
         {
             gDmTimerPInfoTbl[i].baseAddr = (uintptr_t)CSL_TIMER0_CFG_BASE + (i * 0x10000U);
-            gDmTimerPInfoTbl[i].intNum   = (int32_t)intBase + (int32_t)i;
             gDmTimerPInfoTbl[i].eventId  = TIMERP_EVENT_NOT_AVAILABLE;
 
             if ((uintptr_t)CSL_TIMER12_CFG_BASE == gDmTimerPInfoTbl[i].baseAddr)
             {
+                /* Interrupt number from Timer12 is a separate group */
                 intBase = CSLR_R5FSS0_CORE0_INTR_TIMER12_INTR_PEND_0;
             }
             gDmTimerPInfoTbl[i].intNum   = (int32_t)intBase;
