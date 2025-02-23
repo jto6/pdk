@@ -61,6 +61,7 @@ int32_t Sciclient_osalAcquireSecureProxyAcess(uintptr_t* key, uint32_t timeout)
         else
         {
             status = CSL_ETIMEOUT;
+            (*key) = HwiP_disable();
             break;
         }
         Osal_delay(10);
