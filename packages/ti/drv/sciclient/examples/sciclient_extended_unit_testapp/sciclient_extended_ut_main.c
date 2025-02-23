@@ -87,6 +87,7 @@
 extern Sciclient_ServiceHandle_t gSciclientHandle;
 extern CSL_SecProxyCfg *pSciclient_secProxyCfg;
 extern const char gcSciclientDirectExtBootX509MagicWord[8];
+extern uint32_t gSciclient_writeInProgress;
 
 /* For SafeRTOS on R5F with FFI Support, task stack should be aligned to the stack size */
 /* IMPORTANT NOTE: For C7x,
@@ -168,6 +169,7 @@ static int32_t SciclientApp_directTest(void);
 #endif
 static int32_t SciclientApp_romTest(void);
 static int32_t SciclientApp_secureproxyTest(void);
+static int32_t SciclientApp_osalTest(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -248,6 +250,9 @@ int32_t SciApp_testMain(SciApp_TestParams_t *testParams)
             break;
 #endif
         case 12:
+            testParams->testResult = SciclientApp_osalTest();
+            break;
+        case 13:
             testParams->testResult = SciclientApp_romTest();
             break;
         default:
@@ -6207,6 +6212,59 @@ static int32_t SciclientApp_directTest(void)
     return sciclientDirectTestStatus;
 }
 #endif
+
+static int32_t SciclientApp_osalTest(void)
+{
+    int32_t  status                     = CSL_PASS;
+    int32_t  sciclientInitStatus        = CSL_PASS;
+    int32_t  sciclientOsalTestStatus    = CSL_PASS;
+    uintptr_t key                       = 0U;                                                              
+    Sciclient_ConfigPrms_t config       =
+    {
+       SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT,
+       NULL,
+       0 /* isSecure = 0 un secured for all cores */
+    };
+    
+    while (gSciclientHandle.initCount != 0)
+    {
+       status = Sciclient_deinit();
+    }
+    status = Sciclient_init(&config);
+    sciclientInitStatus = status;
+
+    gSciclient_writeInProgress = 1;
+    status    = Sciclient_osalAcquireSecureProxyAcess(&key,1);
+    Sciclient_osalReleaseSecureProxyAcess(&key);
+
+    if(status == CSL_PASS)
+    {
+        SciApp_printf("Sciclient_osalAcquireSecureProxyAcess() failed\n");
+        sciclientOsalTestStatus += CSL_EFAIL;
+    }
+    else
+    {
+        SciApp_printf("Sciclient_osalAcquireSecureProxyAcess() passed\n");
+        sciclientOsalTestStatus += CSL_PASS;
+    }
+
+    if(sciclientInitStatus == CSL_PASS)
+    {
+       status = Sciclient_deinit();
+       if(status == CSL_PASS)
+       {
+           sciclientOsalTestStatus += CSL_PASS;
+           SciApp_printf("Sciclient_deinit PASSED.\n");
+       }
+       else
+       {
+           sciclientOsalTestStatus += CSL_EFAIL;
+           SciApp_printf("Sciclient_deinit FAILED.\n");
+       }
+    }
+
+    return sciclientOsalTestStatus;
+}
 
 #if defined(BUILD_MPU) || defined (BUILD_C7X)
 extern void Osal_initMmuDefault(void);
