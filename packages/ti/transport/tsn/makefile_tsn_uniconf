@@ -105,7 +105,6 @@ PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j742s2_evm.r5f.
 
 CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"$(TSNPKGVERSION)\" \
     -DUB_LOGCAT=2 -DUB_LOGTSTYPE=UB_CLOCK_REALTIME\
-    -D__STDC_LIBC_EXT1__ \
     -D__STDC_WANT_LIB_EXT1__=1 \
     -include $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_buildconf/jacinto_buildconf.h
 
