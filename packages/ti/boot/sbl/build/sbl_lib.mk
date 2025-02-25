@@ -80,9 +80,15 @@ else
 CFLAGS_LOCAL_COMMON += -DSBL_USE_DMA=1
 endif
 
-PACKAGE_SRCS_COMMON  = ./build ./src ./tools ./board/src ./board/sbl_common_osal.c
+PACKAGE_SRCS_COMMON  = ./build ./src ./board/src ./board/sbl_common_osal.c
 PACKAGE_SRCS_COMMON += ./soc/sbl_soc.h
 PACKAGE_SRCS_COMMON += ./soc/k3 ./board/k3
+# # Package sbl tools intelligently
+PACKAGE_SRCS_COMMON += ./tools/btoccs ./tools/ccsutil ./tools/byteswap
+PACKAGE_SRCS_COMMON += ./tools/BootApp_binaries/linux/$(BOARD) ./tools/BootApp_binaries/linux/$(BOARD)_hs ./tools/BootApp_binaries/linux/$(BOARD)_hs_fs
+PACKAGE_SRCS_COMMON += ./tools/combined_appimage/bin/$(BOARD) ./tools/combined_appimage/bin/$(BOARD)_hs ./tools/combined_appimage/bin/$(BOARD)_hs_fs
+PACKAGE_SRCS_COMMON += ./tools/combined_appimage/config.mk ./tools/combined_appimage/makefile ./tools/combined_appimage/README
+PACKAGE_SRCS_COMMON += ./tools/emmc_flash ./tools/hsm_bin ./tools/multicoreImageGen ./tools/out2rprc ./tools/scripts ./tools/tiImageGen ./tools/xipGen
 
 PACKAGE_SRCS_COMMON += ./.gitignore ./sbl_component.mk ./makefile ./sbl_ver.h
 
