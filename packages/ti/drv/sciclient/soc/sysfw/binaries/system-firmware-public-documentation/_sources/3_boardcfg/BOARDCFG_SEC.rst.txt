@@ -291,7 +291,7 @@ The below entry controls the SAUL configuration on the SOC.
 |                                       |                            |                                                      |
 |                                       |                            | This feature is not currently supported              |
 +---------------------------------------+----------------------------+------------------------------------------------------+
-| enable_saul_psil_global_config_writes | ftbool                     | Flag for allowing pairing requests from PSIL.        |
+| enable_saul_psil_global_config_writes | u8                         | Flag for allowing pairing requests from PSIL.        |
 |                                       |                            | Set to 0x5A to enable                                |
 +---------------------------------------+----------------------------+------------------------------------------------------+
 | rsvd                                  | u8[2]                      | Reserved for future use. Set to 0                    |

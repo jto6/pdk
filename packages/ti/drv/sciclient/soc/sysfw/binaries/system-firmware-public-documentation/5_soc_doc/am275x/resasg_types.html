@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AM275X Board Configuration Resource Assignment Type Descriptions &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../../index.html"/>
+        <link rel="up" title="Chapter 5: SoC Family Specific Documentation" href="../index.html"/>
+        <link rel="next" title="AM275X Interrupt Management Device Descriptions" href="interrupt_cfg.html"/>
+        <link rel="prev" title="AM275X PLL Defaults" href="pll_data.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.00.04
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_tisci_msgs/index.html">Chapter 2: TISCI Message Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Chapter 5: SoC Family Specific Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr1">AM65x SR1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr2">AM65x SR2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am64x">AM64x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62x">AM62x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62ax">AM62Ax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62px">AM62Px</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#am275x">AM275x</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hosts.html">AM275X Host Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">AM275X Devices Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clocks.html">AM275X Clock Identifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pll_data.html">AM275X PLL Defaults</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AM275X Board Configuration Resource Assignment Type Descriptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="interrupt_cfg.html">AM275X Interrupt Management Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ra_cfg.html">AM275X Ring Accelerator Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dma_cfg.html">AM275X DMA Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="psil_cfg.html">AM275X PSI-L Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_proxy.html">AM275X Secure Proxy Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="processors.html">AM275X Processor Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="firewalls.html">AM275X Firewall Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soc_devgrps.html">AM275X Device Group descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62lx">AM62Lx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721e">J721E</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j7200">J7200</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721s2">J721S2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j722s">J722S</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j784s4">J784S4</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_topic_user_guides/index.html">Chapter 6: Topic User Guides</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Chapter 5: SoC Family Specific Documentation</a> &raquo;</li>
+      
+    <li>AM275X Board Configuration Resource Assignment Type Descriptions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="am275x-board-configuration-resource-assignment-type-descriptions">
+<h1>AM275X Board Configuration Resource Assignment Type Descriptions<a class="headerlink" href="#am275x-board-configuration-resource-assignment-type-descriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This chapter provides information of Board Configuration resource assignment
+type IDs that are permitted in the AM275X SoC.  The resource type IDs represent
+AM275X resources ranges assignable to SoC processing entities (or PEs).</p>
+<p><strong>WARNING</strong>: System Firmware RM currently supports a maximum of 290 RM board
+configuration resource assignment ranges on the AM275X SoC.  Sending more
+entries than the maximum will result in the RM board configuration being NACK’d</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="7%" />
+<col width="28%" />
+<col width="8%" />
+<col width="10%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Device Name</th>
+<th class="head">Device ID
+(10-bits)</th>
+<th class="head">Subtype Name</th>
+<th class="head">Subtype ID
+(6-bits)</th>
+<th class="head">Unique Type ID
+(16-bits)</th>
+<th class="head">Resource Range Start</th>
+<th class="head">Resource Range Number</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>0x003</td>
+<td>RESASG_SUBTYPE_IR_OUTPUT</td>
+<td>0x00</td>
+<td>0x00C0</td>
+<td>0</td>
+<td>80</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>0x005</td>
+<td>RESASG_SUBTYPE_IR_OUTPUT</td>
+<td>0x00</td>
+<td>0x0140</td>
+<td>0</td>
+<td>32</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>0x006</td>
+<td>RESASG_SUBTYPE_IR_OUTPUT</td>
+<td>0x00</td>
+<td>0x0180</td>
+<td>0</td>
+<td>32</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_BCDMA_0</td>
+<td>0x01A</td>
+<td>RESASG_SUBTYPE_GLOBAL_EVENT_TRIGGER</td>
+<td>0x02</td>
+<td>0x0682</td>
+<td>50176</td>
+<td>244</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_UDMAP_GLOBAL_CONFIG</td>
+<td>0x03</td>
+<td>0x0683</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_RING_BLOCK_COPY_CHAN</td>
+<td>0x0D</td>
+<td>0x068D</td>
+<td>0</td>
+<td>24</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_RX_CHAN</td>
+<td>0x0E</td>
+<td>0x068E</td>
+<td>72</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_TX_CHAN</td>
+<td>0x0F</td>
+<td>0x068F</td>
+<td>24</td>
+<td>48</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_BLOCK_COPY_CHAN</td>
+<td>0x20</td>
+<td>0x06A0</td>
+<td>0</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_SPLIT_TR_RX_CHAN</td>
+<td>0x21</td>
+<td>0x06A1</td>
+<td>0</td>
+<td>50</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_SPLIT_TR_TX_CHAN</td>
+<td>0x22</td>
+<td>0x06A2</td>
+<td>0</td>
+<td>48</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>0x01C</td>
+<td>RESASG_SUBTYPE_IA_VINT</td>
+<td>0x0A</td>
+<td>0x070A</td>
+<td>4</td>
+<td>28</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>34</td>
+<td>6</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>45</td>
+<td>91</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>140</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>156</td>
+<td>28</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_GLOBAL_EVENT_SEVT</td>
+<td>0x0D</td>
+<td>0x070D</td>
+<td>19</td>
+<td>1517</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_PKTDMA_TX_CHAN_ERROR_OES</td>
+<td>0x0F</td>
+<td>0x070F</td>
+<td>4096</td>
+<td>37</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_PKTDMA_TX_FLOW_COMPLETION_OES</td>
+<td>0x10</td>
+<td>0x0710</td>
+<td>4608</td>
+<td>107</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_PKTDMA_RX_CHAN_ERROR_OES</td>
+<td>0x11</td>
+<td>0x0711</td>
+<td>5120</td>
+<td>32</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_PKTDMA_RX_FLOW_COMPLETION_OES</td>
+<td>0x12</td>
+<td>0x0712</td>
+<td>5632</td>
+<td>59</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_PKTDMA_RX_FLOW_STARVATION_OES</td>
+<td>0x13</td>
+<td>0x0713</td>
+<td>6144</td>
+<td>59</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_CHAN_ERROR_OES</td>
+<td>0x14</td>
+<td>0x0714</td>
+<td>8192</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_CHAN_DATA_COMPLETION_OES</td>
+<td>0x15</td>
+<td>0x0715</td>
+<td>8704</td>
+<td>24</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_CHAN_RING_COMPLETION_OES</td>
+<td>0x16</td>
+<td>0x0716</td>
+<td>9216</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_TX_CHAN_ERROR_OES</td>
+<td>0x17</td>
+<td>0x0717</td>
+<td>9728</td>
+<td>48</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_TX_CHAN_DATA_COMPLETION_OES</td>
+<td>0x18</td>
+<td>0x0718</td>
+<td>10240</td>
+<td>48</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_TX_CHAN_RING_COMPLETION_OES</td>
+<td>0x19</td>
+<td>0x0719</td>
+<td>10752</td>
+<td>48</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_RX_CHAN_ERROR_OES</td>
+<td>0x1A</td>
+<td>0x071A</td>
+<td>11264</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_RX_CHAN_DATA_COMPLETION_OES</td>
+<td>0x1B</td>
+<td>0x071B</td>
+<td>11776</td>
+<td>50</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_IA_BCDMA_RX_CHAN_RING_COMPLETION_OES</td>
+<td>0x1C</td>
+<td>0x071C</td>
+<td>12288</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_PKTDMA_0</td>
+<td>0x01E</td>
+<td>RESASG_SUBTYPE_UDMAP_GLOBAL_CONFIG</td>
+<td>0x03</td>
+<td>0x0783</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_UNMAPPED_TX_CHAN</td>
+<td>0x10</td>
+<td>0x0790</td>
+<td>0</td>
+<td>27</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_CPSW_TX_CHAN</td>
+<td>0x11</td>
+<td>0x0791</td>
+<td>27</td>
+<td>64</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_SAUL_TX_0_CHAN</td>
+<td>0x12</td>
+<td>0x0792</td>
+<td>91</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_SAUL_TX_1_CHAN</td>
+<td>0x13</td>
+<td>0x0793</td>
+<td>99</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_UNMAPPED_RX_CHAN</td>
+<td>0x16</td>
+<td>0x0796</td>
+<td>107</td>
+<td>27</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_CPSW_RX_CHAN</td>
+<td>0x17</td>
+<td>0x0797</td>
+<td>134</td>
+<td>16</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_SAUL_RX_0_CHAN</td>
+<td>0x18</td>
+<td>0x0798</td>
+<td>150</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_SAUL_RX_1_CHAN</td>
+<td>0x19</td>
+<td>0x0799</td>
+<td>150</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_SAUL_RX_2_CHAN</td>
+<td>0x1A</td>
+<td>0x079A</td>
+<td>158</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_RING_SAUL_RX_3_CHAN</td>
+<td>0x1B</td>
+<td>0x079B</td>
+<td>158</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_UNMAPPED_TX_CHAN</td>
+<td>0x23</td>
+<td>0x07A3</td>
+<td>0</td>
+<td>27</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_CPSW_TX_CHAN</td>
+<td>0x24</td>
+<td>0x07A4</td>
+<td>27</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_SAUL_TX_0_CHAN</td>
+<td>0x25</td>
+<td>0x07A5</td>
+<td>35</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_SAUL_TX_1_CHAN</td>
+<td>0x26</td>
+<td>0x07A6</td>
+<td>36</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_UNMAPPED_RX_CHAN</td>
+<td>0x29</td>
+<td>0x07A9</td>
+<td>0</td>
+<td>27</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_FLOW_UNMAPPED_RX_CHAN</td>
+<td>0x2A</td>
+<td>0x07AA</td>
+<td>0</td>
+<td>27</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_CPSW_RX_CHAN</td>
+<td>0x2B</td>
+<td>0x07AB</td>
+<td>27</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_FLOW_CPSW_RX_CHAN</td>
+<td>0x2C</td>
+<td>0x07AC</td>
+<td>27</td>
+<td>16</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_SAUL_RX_0_CHAN</td>
+<td>0x2D</td>
+<td>0x07AD</td>
+<td>28</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_FLOW_SAUL_RX_0_CHAN</td>
+<td>0x2E</td>
+<td>0x07AE</td>
+<td>43</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_SAUL_RX_1_CHAN</td>
+<td>0x2F</td>
+<td>0x07AF</td>
+<td>29</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_FLOW_SAUL_RX_1_CHAN</td>
+<td>0x30</td>
+<td>0x07B0</td>
+<td>43</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_SAUL_RX_2_CHAN</td>
+<td>0x31</td>
+<td>0x07B1</td>
+<td>30</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_FLOW_SAUL_RX_2_CHAN</td>
+<td>0x32</td>
+<td>0x07B2</td>
+<td>51</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_SAUL_RX_3_CHAN</td>
+<td>0x33</td>
+<td>0x07B3</td>
+<td>31</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_PKTDMA_FLOW_SAUL_RX_3_CHAN</td>
+<td>0x34</td>
+<td>0x07B4</td>
+<td>51</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_RINGACC_0</td>
+<td>0x021</td>
+<td>RESASG_SUBTYPE_RA_ERROR_OES</td>
+<td>0x00</td>
+<td>0x0840</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_RA_VIRTID</td>
+<td>0x0A</td>
+<td>0x084A</td>
+<td>0</td>
+<td>4096</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="interrupt_cfg.html" class="btn btn-neutral float-right" title="AM275X Interrupt Management Device Descriptions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pll_data.html" class="btn btn-neutral" title="AM275X PLL Defaults" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'11.00.04',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

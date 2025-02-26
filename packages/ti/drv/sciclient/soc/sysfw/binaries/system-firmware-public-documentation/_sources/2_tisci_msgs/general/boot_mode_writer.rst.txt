@@ -1,0 +1,48 @@
+=======================================
+Boot Mode Fuse Writer TISCI Description
+=======================================
+
+.. note::
+
+  This document is only applicable to AM62L devices.
+
+.. _bm_writer_tisci_desc:
+
+This chapter provides information on  |sysfw| API for Boot Mode Writer Service. The available APIs are listed below.
+
++------------------+-------------------------------------------------+--------------------+--------------------+
+| TISCI Message ID |                        Message Name             | Available in HS-FS | Available in HS-SE |
++==================+=================================================+====================+====================+
+| 0x9044           | :ref:`TISCI_MSG_SET_OTP_BOOT_MODE <bm_set_bm>`  | YES                | YES                |
++------------------+-------------------------------------------------+--------------------+--------------------+
+
+
+API Description
+===============
+
+.. _bm_set_bm:
+
+TISCI_MSG_SET_OTP_BOOT_MODE - Program a boot mode efuse
+-------------------------------------------------------
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+TISCI Message ID
+----------------
+
+.. sysfwapimacro:: TISCI_MSG_SET_OTP_BOOT_MODE
+
+.. sysfwapistruct:: tisci_msg_set_otp_boot_mode_req
+
+.. sysfwapistruct:: tisci_msg_set_otp_boot_mode_resp
+
+
+.. note::
+
+  For more information refer to :ref:`boot mode writer user guide <dref_boot_mode_writer_intro>`

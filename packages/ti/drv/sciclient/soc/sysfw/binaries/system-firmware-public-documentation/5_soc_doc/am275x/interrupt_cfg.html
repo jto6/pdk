@@ -1,0 +1,6308 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AM275X Interrupt Management Device Descriptions &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../../index.html"/>
+        <link rel="up" title="Chapter 5: SoC Family Specific Documentation" href="../index.html"/>
+        <link rel="next" title="AM275X Ring Accelerator Device Descriptions" href="ra_cfg.html"/>
+        <link rel="prev" title="AM275X Board Configuration Resource Assignment Type Descriptions" href="resasg_types.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.00.04
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_tisci_msgs/index.html">Chapter 2: TISCI Message Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Chapter 5: SoC Family Specific Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr1">AM65x SR1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr2">AM65x SR2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am64x">AM64x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62x">AM62x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62ax">AM62Ax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62px">AM62Px</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#am275x">AM275x</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hosts.html">AM275X Host Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">AM275X Devices Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clocks.html">AM275X Clock Identifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pll_data.html">AM275X PLL Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resasg_types.html">AM275X Board Configuration Resource Assignment Type Descriptions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AM275X Interrupt Management Device Descriptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interrupt-router-device-ids">Interrupt Router Device IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main-gpiomux-introuter0-interrupt-router-input-sources">MAIN_GPIOMUX_INTROUTER0 Interrupt Router Input Sources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main-gpiomux-introuter0-interrupt-router-output-destinations">MAIN_GPIOMUX_INTROUTER0 Interrupt Router Output Destinations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcu-mcu-gpiomux-introuter0-interrupt-router-input-sources">MCU_MCU_GPIOMUX_INTROUTER0 Interrupt Router Input Sources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcu-mcu-gpiomux-introuter0-interrupt-router-output-destinations">MCU_MCU_GPIOMUX_INTROUTER0 Interrupt Router Output Destinations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#timesync-event-introuter0-interrupt-router-input-sources">TIMESYNC_EVENT_INTROUTER0 Interrupt Router Input Sources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#timesync-event-introuter0-interrupt-router-output-destinations">TIMESYNC_EVENT_INTROUTER0 Interrupt Router Output Destinations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interrupt-aggregator-device-ids">Interrupt Aggregator Device IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interrupt-aggregator-virtual-interrupts">Interrupt Aggregator Virtual Interrupts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dmass0-intaggr-0-interrupt-aggregator-virtual-interrupt-destinations">DMASS0_INTAGGR_0 Interrupt Aggregator Virtual Interrupt Destinations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#global-events">Global Events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#event-based-interrupt-source-ids">Event-Based Interrupt Source IDs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ra_cfg.html">AM275X Ring Accelerator Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dma_cfg.html">AM275X DMA Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="psil_cfg.html">AM275X PSI-L Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_proxy.html">AM275X Secure Proxy Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="processors.html">AM275X Processor Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="firewalls.html">AM275X Firewall Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soc_devgrps.html">AM275X Device Group descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62lx">AM62Lx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721e">J721E</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j7200">J7200</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721s2">J721S2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j722s">J722S</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j784s4">J784S4</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_topic_user_guides/index.html">Chapter 6: Topic User Guides</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Chapter 5: SoC Family Specific Documentation</a> &raquo;</li>
+      
+    <li>AM275X Interrupt Management Device Descriptions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="am275x-interrupt-management-device-descriptions">
+<h1>AM275X Interrupt Management Device Descriptions<a class="headerlink" href="#am275x-interrupt-management-device-descriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This chapter provides information on the Interrupt Management devices in the
+AM275X SoC.  Some System Firmware TISCI messages take device specific inputs.
+This chapter provides information on the valid values for Interrupt Management
+TISCI message parameters.</p>
+</div>
+<div class="section" id="interrupt-router-device-ids">
+<span id="pub-soc-am275x-ir-device-ids"></span><h2>Interrupt Router Device IDs<a class="headerlink" href="#interrupt-router-device-ids" title="Permalink to this headline">¶</a></h2>
+<p>Some System Firmware TISCI message APIs require the Interrupt Router device ID
+be provided as part of the request. Based on <a class="reference internal" href="devices.html"><span class="doc">AM275X Device IDs</span></a>
+these are the valid Interrupt Router device IDs.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Interrupt Router Device Name</th>
+<th class="head">Interrupt Router Device ID</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="main-gpiomux-introuter0-interrupt-router-input-sources">
+<span id="pub-soc-am275x-main-gpiomux-introuter0-input-src-list"></span><h2>MAIN_GPIOMUX_INTROUTER0 Interrupt Router Input Sources<a class="headerlink" href="#main-gpiomux-introuter0-interrupt-router-input-sources" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="12%" />
+<col width="13%" />
+<col width="23%" />
+<col width="14%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">IR Name</th>
+<th class="head">IR Device ID</th>
+<th class="head">IR Input Index</th>
+<th class="head">Source Name</th>
+<th class="head">Source Interface</th>
+<th class="head">Source Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>0</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>1</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>2</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>3</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>4</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>5</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>5</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>6</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>6</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>7</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>7</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>8</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>9</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>9</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>10</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>11</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>12</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>13</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>13</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>14</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>14</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>15</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>16</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>16</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>17</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>17</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>18</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>18</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>19</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>19</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>20</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>21</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>21</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>22</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>22</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>23</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>23</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>24</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>25</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>25</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>26</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>26</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>27</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>27</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>28</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>28</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>29</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>29</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>30</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>30</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>31</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>31</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>32</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>32</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>33</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>33</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>34</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>34</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>35</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>35</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>36</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>36</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>37</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>37</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>38</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>38</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>39</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>39</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>40</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>40</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>41</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>41</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>42</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>42</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>43</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>43</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>44</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>44</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>45</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>45</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>46</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>46</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>47</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>47</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>48</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>48</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>49</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>49</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>50</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>51</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>51</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>52</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>52</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>53</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>54</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>55</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>55</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>56</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>56</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>57</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>57</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>58</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>58</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>59</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>59</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>60</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>61</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>62</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>62</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>63</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>63</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>64</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>64</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>65</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>65</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>66</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>66</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>67</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>67</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>68</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>68</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>69</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>69</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>70</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>70</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>71</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>71</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>72</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>72</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>73</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>73</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>74</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>74</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>75</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>75</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>76</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>76</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>77</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>77</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>78</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>78</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>79</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>79</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>80</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>80</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>81</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>81</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>82</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>82</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>83</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>83</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>84</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>84</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>85</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>85</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>86</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>86</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>87</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>87</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>88</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>88</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>89</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>89</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>90</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>90</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>91</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>91</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>92</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio</td>
+<td>92</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>93</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>94</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>95</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>96</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>97</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>98</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>99</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>100</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>101</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>5</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>102</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>6</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>103</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>7</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>104</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>105</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>9</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>106</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>107</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>108</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>109</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>13</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>110</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>14</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>111</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>112</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>16</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>113</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>17</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>114</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>18</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>115</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>19</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>116</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>117</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>21</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>118</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>22</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>119</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>23</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>120</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>121</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>25</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>122</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>26</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>123</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>27</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>124</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>28</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>125</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>29</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>126</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>30</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>127</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>31</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>128</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>32</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>129</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>33</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>130</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>34</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>131</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>35</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>132</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>36</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>133</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>37</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>134</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>38</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>135</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>39</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>136</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>40</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>137</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>41</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>138</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>42</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>139</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>43</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>140</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>44</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>141</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>45</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>142</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>46</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>143</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>47</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>144</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>48</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>145</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>49</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>146</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>147</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>148</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>149</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>150</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>151</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>152</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>153</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>154</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>155</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>156</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>157</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>158</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>159</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>160</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>161</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>162</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>163</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>164</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>165</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>166</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>167</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>168</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>72</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>169</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>170</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>74</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>171</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>75</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>172</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>76</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>173</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>77</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>174</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>78</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>175</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>79</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>176</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>80</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>177</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>81</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>178</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>82</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>179</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>83</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>180</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>84</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>181</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio</td>
+<td>85</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>182</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>183</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>184</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>185</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>186</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>187</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>188</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>189</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>190</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>191</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>192</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio_bank</td>
+<td>93</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>193</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio_bank</td>
+<td>94</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>194</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio_bank</td>
+<td>95</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>195</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio_bank</td>
+<td>96</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>196</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio_bank</td>
+<td>97</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>197</td>
+<td>AM275X_DEV_GPIO0</td>
+<td>gpio_bank</td>
+<td>98</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>198</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>199</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>200</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio_bank</td>
+<td>86</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>201</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio_bank</td>
+<td>87</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>202</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio_bank</td>
+<td>88</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>203</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio_bank</td>
+<td>89</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>204</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio_bank</td>
+<td>90</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>205</td>
+<td>AM275X_DEV_GPIO1</td>
+<td>gpio_bank</td>
+<td>91</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>206</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>207</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>208</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>209</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>210</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>211</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>212</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>213</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>214</td>
+<td>AM275X_DEV_WKUP_TIMER0</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>215</td>
+<td>AM275X_DEV_WKUP_TIMER1</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>216</td>
+<td>AM275X_DEV_TIMER0</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>217</td>
+<td>AM275X_DEV_TIMER1</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>218</td>
+<td>AM275X_DEV_TIMER2</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>219</td>
+<td>AM275X_DEV_TIMER3</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>220</td>
+<td>AM275X_DEV_TIMER4</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>221</td>
+<td>AM275X_DEV_TIMER5</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>222</td>
+<td>AM275X_DEV_TIMER6</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>223</td>
+<td>AM275X_DEV_TIMER7</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>224</td>
+<td>AM275X_DEV_TIMER8</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>225</td>
+<td>AM275X_DEV_TIMER9</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>226</td>
+<td>AM275X_DEV_TIMER10</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>227</td>
+<td>AM275X_DEV_TIMER11</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>228</td>
+<td>AM275X_DEV_TIMER12</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>229</td>
+<td>AM275X_DEV_TIMER13</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>230</td>
+<td>AM275X_DEV_TIMER14</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>231</td>
+<td>AM275X_DEV_TIMER15</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="main-gpiomux-introuter0-interrupt-router-output-destinations">
+<span id="pub-soc-am275x-main-gpiomux-introuter0-output-src-list"></span><h2>MAIN_GPIOMUX_INTROUTER0 Interrupt Router Output Destinations<a class="headerlink" href="#main-gpiomux-introuter0-interrupt-router-output-destinations" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="11%" />
+<col width="13%" />
+<col width="21%" />
+<col width="17%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">IR Name</th>
+<th class="head">IR Device ID</th>
+<th class="head">IR Output Index</th>
+<th class="head">Destination Name</th>
+<th class="head">Destination Interface</th>
+<th class="head">Destination Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>0</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>32</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>32</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>0</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>32</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>1</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>33</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>33</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>1</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>33</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>2</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>34</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>34</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>2</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>34</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>3</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>35</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>35</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>3</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>35</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>4</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>36</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>36</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>4</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>36</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>5</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>37</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>37</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>5</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>37</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>6</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>38</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>38</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>6</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>38</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>7</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>39</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>39</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>7</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>39</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>8</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>40</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>40</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>8</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>40</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>9</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>41</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>41</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>9</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>41</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>10</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>42</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>42</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>10</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>42</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>11</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>43</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>43</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>11</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>43</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>12</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>44</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>44</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>12</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>44</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>13</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>45</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>45</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>13</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>45</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>14</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>46</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>46</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>14</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>46</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>15</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>47</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>47</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>15</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>47</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>16</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>32</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>32</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>17</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>33</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>33</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>18</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>34</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>34</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>19</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>35</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>35</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>20</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>36</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>36</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>21</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>37</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>37</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>22</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>38</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>38</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>23</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>39</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>39</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>24</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>40</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>40</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>25</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>41</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>41</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>26</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>42</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>42</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>27</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>43</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>43</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>28</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>44</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>44</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>29</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>45</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>45</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>30</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>46</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>46</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>31</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>47</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>47</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>32</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>32</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>32</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>33</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>33</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>33</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>34</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>34</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>34</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>35</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>35</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>35</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>36</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>36</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>36</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>37</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>37</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>37</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>38</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>38</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>38</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>39</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>39</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>39</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>40</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>40</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>40</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>41</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>41</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>41</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>42</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>42</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>42</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>43</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>43</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>43</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>44</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>44</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>44</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>45</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>45</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>45</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>46</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>46</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>46</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>47</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>47</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>47</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>48</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>16</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>49</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>17</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>50</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>18</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>51</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>19</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>52</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>53</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>21</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>54</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>22</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>55</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>23</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>56</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>57</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>25</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>58</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>59</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>60</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>61</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>62</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>63</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>64</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>65</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>66</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>67</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>68</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>69</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>70</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>71</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>72</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>73</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>74</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>75</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>76</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>77</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>78</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+<td>3</td>
+<td>79</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mcu-mcu-gpiomux-introuter0-interrupt-router-input-sources">
+<span id="pub-soc-am275x-mcu-mcu-gpiomux-introuter0-input-src-list"></span><h2>MCU_MCU_GPIOMUX_INTROUTER0 Interrupt Router Input Sources<a class="headerlink" href="#mcu-mcu-gpiomux-introuter0-interrupt-router-input-sources" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="11%" />
+<col width="13%" />
+<col width="23%" />
+<col width="14%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">IR Name</th>
+<th class="head">IR Device ID</th>
+<th class="head">IR Input Index</th>
+<th class="head">Source Name</th>
+<th class="head">Source Interface</th>
+<th class="head">Source Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>0</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>1</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>2</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>3</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>4</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>5</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>5</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>6</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>6</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>7</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>7</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>8</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>9</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>9</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>10</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>11</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>12</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>13</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>13</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>14</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>14</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>15</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>16</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>16</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>17</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>18</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>19</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>19</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>20</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>21</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>21</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>22</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>22</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>23</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>23</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>24</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>25</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio</td>
+<td>25</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>26</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>27</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>28</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>29</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>30</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio_bank</td>
+<td>26</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>31</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+<td>gpio_bank</td>
+<td>27</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="mcu-mcu-gpiomux-introuter0-interrupt-router-output-destinations">
+<span id="pub-soc-am275x-mcu-mcu-gpiomux-introuter0-output-src-list"></span><h2>MCU_MCU_GPIOMUX_INTROUTER0 Interrupt Router Output Destinations<a class="headerlink" href="#mcu-mcu-gpiomux-introuter0-interrupt-router-output-destinations" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="11%" />
+<col width="13%" />
+<col width="21%" />
+<col width="16%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">IR Name</th>
+<th class="head">IR Device ID</th>
+<th class="head">IR Output Index</th>
+<th class="head">Destination Name</th>
+<th class="head">Destination Interface</th>
+<th class="head">Destination Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>0</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>104</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>104</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>0</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>104</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>1</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>105</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>105</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>1</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>105</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>2</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>106</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>106</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>2</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>106</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>3</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>107</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>107</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>3</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>107</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>4</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>5</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>6</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>7</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>8</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event0</td>
+<td>88</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event1</td>
+<td>92</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>8</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event2</td>
+<td>96</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>9</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event0</td>
+<td>89</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event1</td>
+<td>93</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>9</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event2</td>
+<td>97</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>10</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event0</td>
+<td>90</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event1</td>
+<td>94</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>10</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event2</td>
+<td>98</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>11</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event0</td>
+<td>91</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event1</td>
+<td>95</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>11</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+<td>esm_pls_event2</td>
+<td>99</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>12</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>50</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>13</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>51</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>14</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>52</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>15</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>53</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>16</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>100</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>100</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>17</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>101</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>101</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>18</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>102</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>102</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>19</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>103</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>103</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>20</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>104</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>104</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>21</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>105</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>105</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>22</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>106</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>106</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>23</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>107</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>107</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>24</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>100</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>100</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>25</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>101</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>101</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>26</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>102</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>102</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>27</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>103</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>103</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>28</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>104</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>104</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>29</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>105</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>105</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>30</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>106</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>106</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+<td>5</td>
+<td>31</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>107</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>107</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="timesync-event-introuter0-interrupt-router-input-sources">
+<span id="pub-soc-am275x-timesync-event-introuter0-input-src-list"></span><h2>TIMESYNC_EVENT_INTROUTER0 Interrupt Router Input Sources<a class="headerlink" href="#timesync-event-introuter0-interrupt-router-input-sources" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="11%" />
+<col width="13%" />
+<col width="23%" />
+<col width="14%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">IR Name</th>
+<th class="head">IR Device ID</th>
+<th class="head">IR Input Index</th>
+<th class="head">Source Name</th>
+<th class="head">Source Interface</th>
+<th class="head">Source Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>0</td>
+<td>AM275X_DEV_TIMER0</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>1</td>
+<td>AM275X_DEV_TIMER1</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>2</td>
+<td>AM275X_DEV_TIMER2</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>3</td>
+<td>AM275X_DEV_TIMER3</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>4</td>
+<td>AM275X_DEV_TIMER4</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>5</td>
+<td>AM275X_DEV_TIMER5</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>6</td>
+<td>AM275X_DEV_TIMER6</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>7</td>
+<td>AM275X_DEV_TIMER7</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>8</td>
+<td>AM275X_DEV_TIMER8</td>
+<td>timer_pwm</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>9</td>
+<td>AM275X_DEV_EPWM0</td>
+<td>epwm_synco_o</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>10</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>11</td>
+<td>AM275X_DEV_WKUP_GTC0</td>
+<td>gtc_push_event</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>12</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>13</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>14</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>15</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>16</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_genf0</td>
+<td>1</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>17</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_genf1</td>
+<td>2</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>18</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_sync</td>
+<td>3</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>19</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>20</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>21</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>22</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>23</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="timesync-event-introuter0-interrupt-router-output-destinations">
+<span id="pub-soc-am275x-timesync-event-introuter0-output-src-list"></span><h2>TIMESYNC_EVENT_INTROUTER0 Interrupt Router Output Destinations<a class="headerlink" href="#timesync-event-introuter0-interrupt-router-output-destinations" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="11%" />
+<col width="13%" />
+<col width="21%" />
+<col width="17%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">IR Name</th>
+<th class="head">IR Device ID</th>
+<th class="head">IR Output Index</th>
+<th class="head">Destination Name</th>
+<th class="head">Destination Interface</th>
+<th class="head">Destination Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>0</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>1</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>9</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>2</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>3</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>4</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>5</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>13</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>6</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>14</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>7</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>intaggr_levi_pend</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>8</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw1_push</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>9</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw2_push</td>
+<td>1</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>10</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw3_push</td>
+<td>2</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>11</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw4_push</td>
+<td>3</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>12</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw5_push</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>13</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw6_push</td>
+<td>5</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>14</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw7_push</td>
+<td>6</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>15</td>
+<td>AM275X_DEV_CPSW0</td>
+<td>cpts_hw8_push</td>
+<td>7</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>16</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>17</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>18</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>19</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>20</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>21</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>22</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>23</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>24</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>25</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>26</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>27</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>28</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>29</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>30</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+<td>6</td>
+<td>31</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="interrupt-aggregator-device-ids">
+<span id="pub-soc-am275x-ia-device-ids"></span><h2>Interrupt Aggregator Device IDs<a class="headerlink" href="#interrupt-aggregator-device-ids" title="Permalink to this headline">¶</a></h2>
+<p>Some System Firmware TISCI message APIs require the Interrupt Aggregator device
+ID be provided as part of the request. Based on <a class="reference internal" href="devices.html"><span class="doc">AM275X Device IDs</span></a> these are the valid Interrupt Aggregator device IDs.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Interrupt Aggregator Device Name</th>
+<th class="head">Interrupt Aggregator Device ID</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="interrupt-aggregator-virtual-interrupts">
+<span id="pub-soc-am275x-ia-vints"></span><h2>Interrupt Aggregator Virtual Interrupts<a class="headerlink" href="#interrupt-aggregator-virtual-interrupts" title="Permalink to this headline">¶</a></h2>
+<p>This section describes Interrupt Aggregator virtual interrupts.  The virtual
+interrupts are used in interrupt management based TISCI messages.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="56%" />
+<col width="44%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Interrupt Aggregator Name</th>
+<th class="head">Virtual Interrupt Range</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>0 to 3</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>4 to 31</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>32 to 33</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>34 to 39</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>40 to 41</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>42 to 42</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>43 to 43</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>44 to 44</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>45 to 135</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>136 to 139</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>140 to 151</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>152 to 155</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>156 to 183</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dmass0-intaggr-0-interrupt-aggregator-virtual-interrupt-destinations">
+<span id="pub-soc-am275x-dmass0-intaggr-0-vint-output-dst-list"></span><h2>DMASS0_INTAGGR_0 Interrupt Aggregator Virtual Interrupt Destinations<a class="headerlink" href="#dmass0-intaggr-0-interrupt-aggregator-virtual-interrupt-destinations" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="11%" />
+<col width="12%" />
+<col width="22%" />
+<col width="17%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">IA Name</th>
+<th class="head">IA Device ID</th>
+<th class="head">IA VINT Index</th>
+<th class="head">Destination Name</th>
+<th class="head">Destination Interface</th>
+<th class="head">Destination Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>0</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>64</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>64</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>1</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>65</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>65</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>2</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>66</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>66</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>3</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>67</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>67</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>4</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>68</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>68</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>5</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>69</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>69</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>6</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>70</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>70</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>7</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>71</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>71</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>8</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>72</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>72</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>9</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>73</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>73</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>10</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>74</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>74</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>11</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>75</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>75</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>12</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>76</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>76</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>13</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>77</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>77</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>14</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>78</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>78</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>15</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>79</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>79</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>16</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>17</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>9</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>9</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>18</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>19</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>11</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>20</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>12</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>21</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>13</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>13</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>22</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>14</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>14</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>23</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>15</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>24</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>153</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>153</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>25</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>154</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>154</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>26</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>155</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>155</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>27</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>156</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>156</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>28</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>157</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>157</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>29</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>158</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>158</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>30</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>159</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>159</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>31</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+<td>intr</td>
+<td>160</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+<td>intr</td>
+<td>160</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>32</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>96</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>96</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>33</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>97</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>97</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>34</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>98</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>98</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>35</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>99</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>99</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>36</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>100</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>100</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>37</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>101</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>101</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>38</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>102</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>102</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>39</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>gic_spi</td>
+<td>103</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>gic_spi</td>
+<td>103</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>40</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>64</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>41</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>65</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>42</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>66</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>43</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>67</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>44</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>68</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>45</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>69</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>46</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>70</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>47</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>71</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>48</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>72</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>49</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>73</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>50</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>74</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>51</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>75</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>52</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>76</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>53</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>77</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>54</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>78</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>55</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>79</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>56</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>80</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>57</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>81</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>58</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>82</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>59</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>83</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>60</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>84</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>61</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>85</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>62</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>86</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>63</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>87</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>64</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>88</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>65</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>89</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>66</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>90</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>67</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>91</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>68</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>92</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>69</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>93</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>70</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>94</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>71</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>95</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>72</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>73</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>9</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>74</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>75</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>76</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>77</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>13</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>78</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>14</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>79</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>80</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>81</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>82</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>83</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>84</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>16</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>85</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>17</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>86</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>18</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>87</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>19</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>88</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>89</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>21</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>90</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>22</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>91</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>23</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>92</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>93</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>25</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>94</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>26</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>95</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>27</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>96</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>28</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>97</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>29</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>98</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>30</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>99</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+<td>soc_events_in</td>
+<td>31</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>100</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>16</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>101</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>17</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>102</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>18</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>103</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>19</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>104</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>20</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>105</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>21</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>106</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>22</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>107</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>23</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>108</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>24</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>109</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>25</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>110</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>26</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>111</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>27</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>112</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>28</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>113</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>29</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>114</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>30</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>115</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+<td>soc_events_in</td>
+<td>31</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>116</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>117</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>118</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>119</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>120</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>121</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>122</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>123</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>124</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>125</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>126</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>127</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>128</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>129</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>130</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>131</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>132</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>133</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>134</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>135</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>136</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>137</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>138</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>139</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>140</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>141</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>142</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>143</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>144</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>145</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>146</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>147</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>148</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>149</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>150</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>151</td>
+<td>Use TRM - Not managed by TISCI</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>152</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>64</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>64</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>153</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>65</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>65</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>154</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>66</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>66</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0
+(<strong>Reserved by System Firmware</strong>)</td>
+<td>28</td>
+<td>155</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>67</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>67</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>156</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>68</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>68</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>157</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>69</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>69</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>158</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>70</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>70</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>159</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>71</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>71</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>160</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>72</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>72</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>161</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>73</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>73</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>162</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>74</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>74</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>163</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>75</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>75</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>164</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>76</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>76</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>165</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>77</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>77</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>166</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>78</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>78</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>167</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>79</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>79</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>168</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>8</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>169</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>9</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>9</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>170</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>10</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>10</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>171</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>11</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>11</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>172</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>12</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>12</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>173</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>13</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>13</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>174</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>14</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>14</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>175</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>15</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>176</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>153</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>153</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>177</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>154</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>154</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>178</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>155</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>155</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>179</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>156</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>156</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>180</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>157</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>157</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>181</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>158</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>158</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>182</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>159</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>159</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>183</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+<td>intr</td>
+<td>160</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+<td>intr</td>
+<td>160</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="global-events">
+<span id="pub-soc-am275x-global-events"></span><h2>Global Events<a class="headerlink" href="#global-events" title="Permalink to this headline">¶</a></h2>
+<p>This section describes AM275X global events.  The global events are used in
+interrupt management based TISCI messages.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Resources marked as reserved for use by TIFS <strong>cannot</strong> be assigned to a
+host within the RM Board Configuration resource assignment array.  The RM
+Board Configuration is rejected if an overlap with a reserved resource is
+detected.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="61%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Global Event Name</th>
+<th class="head">Global Event Range</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DMASS0_INTAGGR_0 SEVT
+(<strong>RESERVED BY SYSTEM FIRMWARE</strong>)</td>
+<td>0 to 18</td>
+</tr>
+<tr class="row-odd"><td>DMASS0_INTAGGR_0 SEVT</td>
+<td>19 to 1535</td>
+</tr>
+<tr class="row-even"><td>DMASS0_INTAGGR_0 MEVT</td>
+<td>8192 to 8319</td>
+</tr>
+<tr class="row-odd"><td>DMASS0_INTAGGR_0 GEVT</td>
+<td>10240 to 10495</td>
+</tr>
+<tr class="row-even"><td>DMASS0_INTAGGR_0 LEVT</td>
+<td>32768 to 32799</td>
+</tr>
+<tr class="row-odd"><td>DMASS0_BCDMA_0 TRIGGER</td>
+<td>50176 to 50419</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="event-based-interrupt-source-ids">
+<span id="pub-soc-am275x-event-int-src-list"></span><h2>Event-Based Interrupt Source IDs<a class="headerlink" href="#event-based-interrupt-source-ids" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="10%" />
+<col width="48%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Device Name</th>
+<th class="head">Device ID</th>
+<th class="head">Interrupt Source Name</th>
+<th class="head">Interrupt Source Index</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_DMASS0_RINGACC_0</td>
+<td>33</td>
+<td>Ring events</td>
+<td>N/A to N/A</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_RINGACC_0</td>
+<td>33</td>
+<td>Ring global error event</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped pktdma_tx_chan_error events</td>
+<td>4096 to 4132</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped pktdma_tx_flow_completion events</td>
+<td>4608 to 4714</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped pktdma_rx_chan_error events</td>
+<td>5120 to 5151</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped pktdma_rx_flow_completion events</td>
+<td>5632 to 5690</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped pktdma_rx_flow_starvation events</td>
+<td>6144 to 6202</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_chan_error events</td>
+<td>8192 to 8215</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_chan_data_completion events</td>
+<td>8704 to 8727</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_chan_ring_completion events</td>
+<td>9216 to 9239</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_tx_chan_error events</td>
+<td>9728 to 9775</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_tx_chan_data_completion events</td>
+<td>10240 to 10287</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_tx_chan_ring_completion events</td>
+<td>10752 to 10799</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_rx_chan_error events</td>
+<td>11264 to 11313</td>
+</tr>
+<tr class="row-even"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_rx_chan_data_completion events</td>
+<td>11776 to 11825</td>
+</tr>
+<tr class="row-odd"><td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+<td>28</td>
+<td>DMASS0_INTAGGR_0 mapped bcdma_rx_chan_ring_completion events</td>
+<td>12288 to 12337</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ra_cfg.html" class="btn btn-neutral float-right" title="AM275X Ring Accelerator Device Descriptions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="resasg_types.html" class="btn btn-neutral" title="AM275X Board Configuration Resource Assignment Type Descriptions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'11.00.04',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

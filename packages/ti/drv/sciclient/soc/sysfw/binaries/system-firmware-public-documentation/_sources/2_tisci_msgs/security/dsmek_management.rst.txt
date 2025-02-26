@@ -11,17 +11,18 @@ Derived SMEK TISCI Description
 This chapter provides information on  |sysfw| API for Derived Symmetric Encryption
 key (dsmek) management. The available API are listed below.
 
-+------------------+-----------------------------------------------------------------------+-----------------+--------------------+
-| TISCI Message ID |                        Message Name                                   | Available in GP | Available in HS-FS |
-+==================+=======================================================================+=================+====================+
-| 0x9036           | :ref:`TISCI_MSG_SA2UL_GET_DSMEK <sec-api-sa2ul-get-dsmek>`            | Yes*            | Yes*               |
-+------------------+-----------------------------------------------------------------------+-----------------+--------------------+
-| 0x9037           | :ref:`TISCI_MSG_SA2UL_SET_DSMEK <sec-api-sa2ul-set-dsmek>`            | Yes*            | Yes*               |
-+------------------+-----------------------------------------------------------------------+-----------------+--------------------+
-| 0x9038           | :ref:`TISCI_MSG_SA2UL_RELEASE_DSMEK <sec-api-sa2ul-release-dsmek>`    | Yes*            | Yes*               |
-+------------------+-----------------------------------------------------------------------+-----------------+--------------------+
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------------------+
+| TISCI Message ID |                        Message Name                                   | Available in GP | Available in HS-FS | Previous Message Name          |
++==================+=======================================================================+=================+====================+================================+
+| 0x9036           | :ref:`TISCI_MSG_CRYPTO_GET_DSMEK <sec-api-sa2ul-get-dsmek>`           | Yes*            | Yes*               | TISCI_MSG_SA2UL_GET_DSMEK      |
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------------------+
+| 0x9037           | :ref:`TISCI_MSG_CRYPTO_SET_DSMEK <sec-api-sa2ul-set-dsmek>`           | Yes*            | Yes*               | TISCI_MSG_SA2UL_SET_DSMEK      |
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------------------+
+| 0x9038           | :ref:`TISCI_MSG_CRYPTO_RELEASE_DSMEK <sec-api-sa2ul-release-dsmek>`   | Yes*            | Yes*               | TISCI_MSG_SA2UL_RELEASE_DSMEK  |
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------------------+
 
 .. note::
+  The TISCI Message ID macros have been renamed. Please update your code to use the new names.
 
    On GP and HS-FS devices, DSMEK APIs return unconditional success but do not actually
    involve any step to derive or program the dsmek values
@@ -31,8 +32,8 @@ API Description
 
 .. _sec-api-sa2ul-set-dsmek:
 
-TISCI_MSG_SA2UL_SET_DSMEK - Set DSMEK
--------------------------------------
+TISCI_MSG_CRYPTO_SET_DSMEK - Set DSMEK
+--------------------------------------
 
 **Usage**:
 
@@ -45,21 +46,24 @@ TISCI_MSG_SA2UL_SET_DSMEK - Set DSMEK
 TISCI Message ID
 ----------------
 
-.. sysfwapimacro:: TISCI_MSG_SA2UL_SET_DSMEK
+.. sysfwapimacro:: TISCI_MSG_CRYPTO_SET_DSMEK
 
-.. sysfwapistruct:: tisci_msg_sa2ul_set_dsmek_req
+.. sysfwapistruct:: tisci_msg_crypto_set_dsmek_req
 
-.. sysfwapistruct:: tisci_msg_sa2ul_set_dsmek_resp
+.. sysfwapistruct:: tisci_msg_crypto_set_dsmek_resp
 
 .. sysfwapimacro:: KDF_LABEL_AND_CONTEXT_LEN_MAX
 
+.. note::
+  The structures ``tisci_msg_sa2ul_set_dsmek_req`` and ``tisci_msg_sa2ul_set_dsmek_resp`` have been renamed to ``tisci_msg_crypto_set_dsmek_req`` and ``tisci_msg_crypto_set_dsmek_resp`` respectively.
+  Please update your code to use the new names.
 
 See :ref:`pub_tisci_dsmek_notes` below.
 
 .. _sec-api-sa2ul-release-dsmek:
 
-TISCI_MSG_SA2UL_RELEASE_DSMEK - Release DSMEK
----------------------------------------------
+TISCI_MSG_CRYPTO_RELEASE_DSMEK - Release DSMEK
+----------------------------------------------
 
 **Usage**:
 
@@ -72,18 +76,22 @@ TISCI_MSG_SA2UL_RELEASE_DSMEK - Release DSMEK
 TISCI Message ID
 ----------------
 
-.. sysfwapimacro:: TISCI_MSG_SA2UL_RELEASE_DSMEK
+.. sysfwapimacro:: TISCI_MSG_CRYPTO_RELEASE_DSMEK
 
-.. sysfwapistruct:: tisci_msg_sa2ul_release_dsmek_req
+.. sysfwapistruct:: tisci_msg_crypto_release_dsmek_req
 
-.. sysfwapistruct:: tisci_msg_sa2ul_release_dsmek_resp
+.. sysfwapistruct:: tisci_msg_crypto_release_dsmek_resp
+
+.. note::
+  The structures ``tisci_msg_sa2ul_release_dsmek_req`` and ``tisci_msg_sa2ul_release_dsmek_resp`` have been renamed to ``tisci_msg_crypto_release_dsmek_req`` and ``tisci_msg_crypto_release_dsmek_resp`` respectively.
+  Please update your code to use the new names.
 
 See :ref:`pub_tisci_dsmek_notes` below.
 
 .. _sec-api-sa2ul-get-dsmek:
 
-TISCI_MSG_SA2UL_GET_DSMEK - Get DSMEK
--------------------------------------
+TISCI_MSG_CRYPTO_GET_DSMEK - Get DSMEK
+--------------------------------------
 
 **Usage**:
 
@@ -96,14 +104,18 @@ TISCI_MSG_SA2UL_GET_DSMEK - Get DSMEK
 TISCI Message ID
 ----------------
 
-.. sysfwapimacro:: TISCI_MSG_SA2UL_GET_DSMEK
+.. sysfwapimacro:: TISCI_MSG_CRYPTO_GET_DSMEK
 
-.. sysfwapimacro:: SA2UL_DSMEK_KEY_LEN
+.. sysfwapimacro:: CRYPTO_DKEK_KEY_LEN
 
-.. sysfwapistruct:: tisci_msg_sa2ul_get_dsmek_req
+.. sysfwapistruct:: tisci_msg_crypto_get_dsmek_req
 
-.. sysfwapistruct:: tisci_msg_sa2ul_get_dsmek_resp
+.. sysfwapistruct:: tisci_msg_crypto_get_dsmek_resp
 
+.. note::
+  The structures ``tisci_msg_sa2ul_get_dsmek_req`` and ``tisci_msg_sa2ul_get_dsmek_resp`` have been renamed to ``tisci_msg_crypto_get_dsmek_req`` and ``tisci_msg_crypto_get_dsmek_resp`` respectively.
+  Also, the MACRO ``SA2UL_DKEK_KEY_LEN`` has been renamed to ``CRYPTO_DKEK_KEY_LEN``.
+  Please update your code to use the new names.
 
 See :ref:`pub_tisci_dsmek_notes` below.
 
@@ -115,4 +127,4 @@ API Notes
 - The total length of the Label and Context fields below is limited by the size
   of the TISCI messages(see :ref:`pub_secure_msg_header`) to 41 bytes.
 
-- |sysfw| only support ``sa2ul_instance`` value of 0 in the API below.
+- |sysfw| only support ``instance`` value of 0 in the API below.

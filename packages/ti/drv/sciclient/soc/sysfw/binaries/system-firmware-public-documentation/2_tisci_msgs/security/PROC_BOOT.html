@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -225,10 +225,10 @@ scenario of processors.</li>
 <p>Processor Control APIs:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="62%" />
-<col width="12%" />
-<col width="14%" />
+<col width="10%" />
+<col width="70%" />
+<col width="9%" />
+<col width="11%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">TISCI Message ID</th>
@@ -253,12 +253,27 @@ scenario of processors.</li>
 <td>No</td>
 <td>Yes*</td>
 </tr>
-<tr class="row-odd"><td>0xC400</td>
+<tr class="row-odd"><td>0xC122</td>
+<td><a class="reference internal" href="#proc-boot-authenticate-mcelf-x509-cert"><span class="std std-ref">TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT</span></a></td>
+<td>No</td>
+<td>Yes*</td>
+</tr>
+<tr class="row-even"><td>0xC123</td>
+<td><a class="reference internal" href="#proc-boot-streaming-authentication-service"><span class="std std-ref">TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE</span></a></td>
+<td>No</td>
+<td>Yes*</td>
+</tr>
+<tr class="row-odd"><td>0xC124</td>
+<td><a class="reference internal" href="#proc-boot-validate-streaming-authentication-and-optional-streaming-decryption"><span class="std std-ref">TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH</span></a></td>
+<td>No</td>
+<td>Yes*</td>
+</tr>
+<tr class="row-even"><td>0xC400</td>
 <td><a class="reference internal" href="#proc-boot-get-processor-status"><span class="std std-ref">TISCI_MSG_PROC_GET_STATUS</span></a></td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
-<tr class="row-even"><td>0xC401</td>
+<tr class="row-odd"><td>0xC401</td>
 <td><a class="reference internal" href="#proc-boot-wait-processor-status"><span class="std std-ref">TISCI_MSG_PROC_WAIT_STATUS</span></a></td>
 <td>Yes</td>
 <td>Yes</td>
@@ -950,6 +965,340 @@ scan. If permitted, System firmware logs shall provide relevant failure
 information.</p>
 </div>
 </div>
+<div class="section" id="tisci-msg-mcelf-proc-auth-boot-init-authenticate-x509-certificate-prior-to-streaming-authentication-service">
+<span id="proc-boot-authenticate-mcelf-x509-cert"></span><h4>TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT - Authenticate x509 certificate prior to streaming authentication service<a class="headerlink" href="#tisci-msg-mcelf-proc-auth-boot-init-authenticate-x509-certificate-prior-to-streaming-authentication-service" title="Permalink to this headline">¶</a></h4>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT API is currently supported by am275x.</p>
+</div>
+<p><strong>Purpose</strong>: Provides a means for the host with current control to do the following:</p>
+<ul class="simple">
+<li>Validate the x509 certificate by verifying the digital signature and public key hash</li>
+<li>Use certificate information also to check if the current host can boot the core specified</li>
+<li>Use certificate information also to configure firewalls. This feature can be used
+to protect the binary being authenticated.</li>
+</ul>
+<p><strong>Usage</strong>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TISCI Message ID</strong></p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0xC122U)</span></code></p>
+<p>Message to authenticate x509 certificate prior to streaming authentication</p>
+</p>
+<p><p><strong>struct tisci_security_mesg_mcelf_init_req</strong></p>
+<p>Request to validate the certificate prior to streaming authentication</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="23%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Generic TISCI message header.</td>
+</tr>
+<tr class="row-odd"><td>certificate_address_lo</td>
+<td>u32</td>
+<td>Lower 32bit (Little Endian) of certificate</td>
+</tr>
+<tr class="row-even"><td>certificate_address_hi</td>
+<td>u32</td>
+<td>Higher 32bit (Little Endian) of certificate</td>
+</tr>
+</tbody>
+</table>
+</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<ul class="last simple">
+<li>The certificate itself shall contain relevant information about the
+processor flags and configuration information.</li>
+<li>See Hosts description for the corresponding SoC to identify which hosts
+are secure and which are not.</li>
+<li>On HS-FS device type, only image integrity check is done. The root of
+trust key comparison check is skipped.</li>
+<li>Only the unowned firewalls/regions or those owned by the requesting host
+would be configurable through the certificate.</li>
+<li>The user must specify the host which would own the firewall/regions being
+configured. Ownership would be transfered to this host. It is mandatory
+to specify a host in the certificate to configure firewalls. Skipping this
+would result in the API failure.</li>
+</ul>
+</div>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">Please see <a class="reference internal" href="sec_cert_format.html"><span class="doc">Security X509 Certificate Documentation</span></a> for certificate format.</p>
+</div>
+<p><p><strong>struct tisci_security_mesg_mcelf_init_resp</strong></p>
+<p>Response to validation of the x509 certificate</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="32%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Generic TISCI message header.</td>
+</tr>
+</tbody>
+</table>
+<p>ACK Response: Requested certificate authentication is successful.
+ NAK Response: Certificate authentication was unsuccessful or the operation failed.
+ IMPORTANT: Reason for failure is NOT provided to prevent security attacks
+ by scan. If permitted, System firmware logs shall provide relevant failure
+ information.</p>
+</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">Reason for failure is NOT provided to prevent security attacks by
+scan. If permitted, System firmware logs shall provide relevant failure
+information.</p>
+</div>
+</div>
+<div class="section" id="tisci-msg-mcelf-proc-auth-boot-update-streaming-authentication-service">
+<span id="proc-boot-streaming-authentication-service"></span><h4>TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE - Streaming authentication service<a class="headerlink" href="#tisci-msg-mcelf-proc-auth-boot-update-streaming-authentication-service" title="Permalink to this headline">¶</a></h4>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE API is currently supported by am275x.</p>
+</div>
+<p><strong>Purpose</strong>: Provides a means for the host with current control to do the following:</p>
+<ul class="simple">
+<li>Streaming authentication service</li>
+</ul>
+<p><strong>Usage</strong>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TISCI Message ID</strong></p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0xC123U)</span></code></p>
+<p>Message to do streaming hash authentication operation</p>
+</p>
+<p><p><strong>struct tisci_security_mesg_mcelf_update_req</strong></p>
+<p>Request to streaming hash authentication operation</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="27%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Generic TISCI message header.</td>
+</tr>
+<tr class="row-odd"><td>address_lo</td>
+<td>u32</td>
+<td><ul class="first last simple">
+<li>Lower 32bit (Little Endian)</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>address_hi</td>
+<td>u32</td>
+<td><ul class="first last simple">
+<li>Higher 32bit (Little Endian)</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>segment_size</td>
+<td>u32</td>
+<td><ul class="first last simple">
+<li>Size of the segment in bytes</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td>final_pkt</td>
+<td>u8</td>
+<td><ul class="first last simple">
+<li>Boolean value to denote final packet</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>dest_address</td>
+<td>u64</td>
+<td><ul class="first last simple">
+<li>Destination address to write the segment</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p><p><strong>struct tisci_security_mesg_mcelf_update_resp</strong></p>
+<p>Response to streaming hash authentication service</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="32%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Generic TISCI message header.</td>
+</tr>
+</tbody>
+</table>
+<p>ACK Response: Requested streaming hash operation is successful.
+ NAK Response: Streaming hash operation was unsuccessful or the operation failed.
+ IMPORTANT: Reason for failure is NOT provided to prevent security attacks
+ by scan. If permitted, System firmware logs shall provide relevant failure
+ information.</p>
+</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<ul class="last simple">
+<li>On HS-FS device type, only image integrity check is done. The root of
+trust key comparison check is skipped.</li>
+<li>Reason for failure is NOT provided to prevent security attacks by
+scan. If permitted, System firmware logs shall provide relevant failure
+information.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="tisci-msg-mcelf-proc-auth-boot-finish-validate-streaming-authentication-optional-streaming-decryption-and-configure-processor">
+<span id="proc-boot-validate-streaming-authentication-and-optional-streaming-decryption"></span><h4>TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH - validate streaming authentication, optional streaming decryption and configure processor<a class="headerlink" href="#tisci-msg-mcelf-proc-auth-boot-finish-validate-streaming-authentication-optional-streaming-decryption-and-configure-processor" title="Permalink to this headline">¶</a></h4>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH API is currently supported by am275x.</p>
+</div>
+<p><strong>Purpose</strong>: Provides a means for the host with current control to do the following:</p>
+<ul class="simple">
+<li>Validate streaming hash authentication operation</li>
+<li>Optional streaming decryption</li>
+<li>Use certificate information to setup critical processor specific flags</li>
+<li>Configure processor</li>
+</ul>
+<p><strong>Usage</strong>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><strong>TISCI Message ID</strong></p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0xC124U)</span></code></p>
+<p>Message to validate streaming authentication, optional streaming decryption
+ and authenticated boot configuration of a processor</p>
+</p>
+<p><p><strong>struct tisci_security_mesg_mcelf_finish_req</strong></p>
+<p>Request to streaming authentication validation and optional streaming decryption</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="38%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Common TI-SCI header</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p><p><strong>struct tisci_security_mesg_mcelf_finish_resp</strong></p>
+<p>Response to mcelf hash validation and optional streaming decryptionn</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="32%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Generic TISCI message header.</td>
+</tr>
+</tbody>
+</table>
+<p>ACK Response: Requested streaming authentication validation operation and optional streaming decryption is successful.
+ NAK Response: Streaming authentication validation operation or optional streaming decryption was unsuccessful or the operation failed.
+ IMPORTANT: Reason for failure is NOT provided to prevent security attacks
+ by scan. If permitted, System firmware logs shall provide relevant failure
+ information.</p>
+</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<ul class="last simple">
+<li>On HS-FS device type, only image integrity check is done. The root of
+trust key comparison check is skipped.</li>
+<li>Reason for failure is NOT provided to prevent security attacks by
+scan. If permitted, System firmware logs shall provide relevant failure
+information.</li>
+</ul>
+</div>
+</div>
 <div class="section" id="tisci-msg-proc-get-status-get-processor-status">
 <span id="proc-boot-get-processor-status"></span><h4>TISCI_MSG_PROC_GET_STATUS - Get Processor Status<a class="headerlink" href="#tisci-msg-proc-get-status-get-processor-status" title="Permalink to this headline">¶</a></h4>
 <p><strong>Purpose</strong>: Provides a means for hosts in the permitted list to get the status
@@ -1470,7 +1819,7 @@ Reads will always return 0. You are expected to read the PM status via the PM me
 </table>
 <p>The usage of R5_LPSC and R5_RESET is only for below mentioned devices,
 - MCU R5F on the J721E, J7200, J721S2 and J784S2 family of devices where the RM and PM functions run on the MCU R5F.
-- DM R5F on the AM62x, AM62Ax, AM62Px and J722S family of devices where the RM and PM functions run on the DM R5F.</p>
+- DM R5F on the AM62x, AM62Ax, AM62Px, J722S and AM275x family of devices where the RM and PM functions run on the DM R5F.</p>
 <p>The MCU R5F and DM R5F (where the RM and PM functions run) cannot turn off/on by itself during a re-boot sequence which
 requires the following fundamental sequence of steps:</p>
 <ol class="arabic simple">
@@ -1748,7 +2097,7 @@ gatekeeper for HSM reset control. This is not appicable to general purpose M4 pr
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -1770,7 +2119,7 @@ gatekeeper for HSM reset control. This is not appicable to general purpose M4 pr
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

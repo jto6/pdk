@@ -138,6 +138,36 @@ AM62Px
    am62px/firewalls
    am62px/soc_devgrps
 
+======
+AM275x
+======
+
+.. toctree::
+   :maxdepth: 1
+
+   am275x/hosts
+   am275x/devices
+   am275x/clocks
+   am275x/pll_data
+   am275x/resasg_types
+   am275x/interrupt_cfg
+   am275x/ra_cfg
+   am275x/dma_cfg
+   am275x/psil_cfg
+   am275x/sec_proxy
+   am275x/processors
+   am275x/firewalls
+   am275x/soc_devgrps
+
+======
+AM62Lx
+======
+
+.. toctree::
+   :maxdepth: 1
+
+   am62lx/boot_mode_efuse
+
 =====
 J721E
 =====

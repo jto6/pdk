@@ -24,6 +24,8 @@ Supported low power modes
 
 .. sysfwapimacro:: TISCI_MSG_VALUE_SLEEP_MODE_STANDBY
 
+.. sysfwapimacro:: TISCI_MSG_VALUE_SLEEP_MODE_SOC_OFF
+
 +------------------+-----------------------+
 | Low power mode   |  Supported by         | 
 +==================+=======================+
@@ -36,6 +38,8 @@ Supported low power modes
 | PARTIAL_IO       | am62x, am62ax, am62px | 
 +------------------+-----------------------+
 | STANDBY          | None                  | 
++------------------+-----------------------+
+| SOC_OFF          | j7200, j784s4         | 
 +------------------+-----------------------+
 
 Intermediate mode values
@@ -74,6 +78,8 @@ Device configuration and control APIs
 | 0x030D           | :ref:`pm_lpm_msg_get_next_sys_mode`        |
 +------------------+--------------------------------------------+
 | 0x030E           | :ref:`pm_lpm_msg_get_next_host_state`      |
++------------------+--------------------------------------------+
+| 0x0311           | :ref:`pm_lpm_msg_lpm_abort`                |
 +------------------+--------------------------------------------+
 
 Macros Used in this Document
@@ -552,3 +558,34 @@ Message Data Structures
 .. sysfwapistruct:: tisci_msg_lpm_get_next_host_state_req
 
 .. sysfwapistruct:: tisci_msg_lpm_get_next_host_state_resp
+
+.. _pm_lpm_msg_lpm_abort:
+
+TISCI_MSG_LPM_ABORT
+===================
+
+Objective
+----------
+
+Abort the current low power mode entry if any error occurs.
+
+Usage
+-----
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+TISCI Message ID
+----------------
+
+.. sysfwapimacro:: TISCI_MSG_LPM_ABORT
+
+Message Data Structures
+-----------------------
+
+.. sysfwapistruct:: tisci_msg_lpm_abort_req
+
+.. sysfwapistruct:: tisci_msg_lpm_abort_resp

@@ -212,7 +212,7 @@ Firmware based on usecase.
 +=======================+=====================================================+===============================================================================================================================+
 | subhdr                | :ref:`struct boardcfg_subhdr <pub_boardcfg_subhdr>` | Magic and size for integrity check                                                                                            |
 +-----------------------+-----------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
-| main_isolation_enable | ftbool                                              | Enable/disable support for System Firmware main isolation. If disabled, main isolation SCI message will be rejected with NAK. |
+| main_isolation_enable | u8                                                  | Enable/disable support for System Firmware main isolation. If disabled, main isolation SCI message will be rejected with NAK. |
 +-----------------------+-----------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+
 | main_isolation_hostid | u16                                                 | Host-ID allowed to send SCI-message for main isolation. If mismatch, SCI message will be rejected with NAK.                   |
 +-----------------------+-----------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------+

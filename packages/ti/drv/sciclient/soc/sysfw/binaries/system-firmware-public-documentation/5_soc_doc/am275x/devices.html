@@ -1,0 +1,883 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AM275X Devices Descriptions &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../../index.html"/>
+        <link rel="up" title="Chapter 5: SoC Family Specific Documentation" href="../index.html"/>
+        <link rel="next" title="AM275X Clock Identifiers" href="clocks.html"/>
+        <link rel="prev" title="AM275X Host Descriptions" href="hosts.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.00.04
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_tisci_msgs/index.html">Chapter 2: TISCI Message Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Chapter 5: SoC Family Specific Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr1">AM65x SR1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr2">AM65x SR2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am64x">AM64x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62x">AM62x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62ax">AM62Ax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62px">AM62Px</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#am275x">AM275x</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hosts.html">AM275X Host Descriptions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AM275X Devices Descriptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enumeration-of-device-ids">Enumeration of Device IDs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="clocks.html">AM275X Clock Identifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pll_data.html">AM275X PLL Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resasg_types.html">AM275X Board Configuration Resource Assignment Type Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interrupt_cfg.html">AM275X Interrupt Management Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ra_cfg.html">AM275X Ring Accelerator Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dma_cfg.html">AM275X DMA Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="psil_cfg.html">AM275X PSI-L Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_proxy.html">AM275X Secure Proxy Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="processors.html">AM275X Processor Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="firewalls.html">AM275X Firewall Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soc_devgrps.html">AM275X Device Group descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62lx">AM62Lx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721e">J721E</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j7200">J7200</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721s2">J721S2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j722s">J722S</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j784s4">J784S4</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_topic_user_guides/index.html">Chapter 6: Topic User Guides</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Chapter 5: SoC Family Specific Documentation</a> &raquo;</li>
+      
+    <li>AM275X Devices Descriptions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="am275x-devices-descriptions">
+<h1>AM275X Devices Descriptions<a class="headerlink" href="#am275x-devices-descriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="soc-doc-am275x-public-devices-desc-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This chapter provides information on Device IDs that are permitted in the am275x
+SoC.  The device IDs represent SoC subsystems that can be modified via DMSC
+TISCI message APIs.  Some Secure, Power, and Resource Management DMSC subsystem
+TISCI message APIs define a device ID as a parameter allowing a user to specify
+management of a particular SoC subsystem.</p>
+</div>
+<div class="section" id="enumeration-of-device-ids">
+<span id="soc-doc-am275x-public-devices-desc-device-list"></span><h2>Enumeration of Device IDs<a class="headerlink" href="#enumeration-of-device-ids" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Device ID</th>
+<th class="head">Device Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>AM275X_DEV_ADC0</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>AM275X_DEV_DBG_INTROUTER0</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>AM275X_DEV_MAIN_GPIOMUX_INTROUTER0</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+<td>AM275X_DEV_MCU_MCU_GPIOMUX_INTROUTER0</td>
+</tr>
+<tr class="row-even"><td>6</td>
+<td>AM275X_DEV_TIMESYNC_EVENT_INTROUTER0</td>
+</tr>
+<tr class="row-odd"><td>13</td>
+<td>AM275X_DEV_CPSW0</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td>AM275X_DEV_STM0</td>
+</tr>
+<tr class="row-odd"><td>16</td>
+<td>AM275X_DEV_DCC0</td>
+</tr>
+<tr class="row-even"><td>17</td>
+<td>AM275X_DEV_DCC1</td>
+</tr>
+<tr class="row-odd"><td>18</td>
+<td>AM275X_DEV_DCC2</td>
+</tr>
+<tr class="row-even"><td>19</td>
+<td>AM275X_DEV_DCC3</td>
+</tr>
+<tr class="row-odd"><td>20</td>
+<td>AM275X_DEV_DCC4</td>
+</tr>
+<tr class="row-even"><td>21</td>
+<td>AM275X_DEV_DCC5</td>
+</tr>
+<tr class="row-odd"><td>22</td>
+<td>AM275X_DEV_SMS0</td>
+</tr>
+<tr class="row-even"><td>23</td>
+<td>AM275X_DEV_MCU_DCC0</td>
+</tr>
+<tr class="row-odd"><td>24</td>
+<td>AM275X_DEV_DEBUGSS_WRAP0</td>
+</tr>
+<tr class="row-even"><td>25</td>
+<td>AM275X_DEV_DMASS0</td>
+</tr>
+<tr class="row-odd"><td>26</td>
+<td>AM275X_DEV_DMASS0_BCDMA_0</td>
+</tr>
+<tr class="row-even"><td>27</td>
+<td>AM275X_DEV_DMASS0_CBASS_0</td>
+</tr>
+<tr class="row-odd"><td>28</td>
+<td>AM275X_DEV_DMASS0_INTAGGR_0</td>
+</tr>
+<tr class="row-even"><td>29</td>
+<td>AM275X_DEV_DMASS0_IPCSS_0</td>
+</tr>
+<tr class="row-odd"><td>30</td>
+<td>AM275X_DEV_DMASS0_PKTDMA_0</td>
+</tr>
+<tr class="row-even"><td>33</td>
+<td>AM275X_DEV_DMASS0_RINGACC_0</td>
+</tr>
+<tr class="row-odd"><td>36</td>
+<td>AM275X_DEV_TIMER0</td>
+</tr>
+<tr class="row-even"><td>37</td>
+<td>AM275X_DEV_TIMER1</td>
+</tr>
+<tr class="row-odd"><td>38</td>
+<td>AM275X_DEV_TIMER2</td>
+</tr>
+<tr class="row-even"><td>39</td>
+<td>AM275X_DEV_TIMER3</td>
+</tr>
+<tr class="row-odd"><td>40</td>
+<td>AM275X_DEV_TIMER4</td>
+</tr>
+<tr class="row-even"><td>41</td>
+<td>AM275X_DEV_TIMER5</td>
+</tr>
+<tr class="row-odd"><td>42</td>
+<td>AM275X_DEV_TIMER6</td>
+</tr>
+<tr class="row-even"><td>43</td>
+<td>AM275X_DEV_TIMER7</td>
+</tr>
+<tr class="row-odd"><td>44</td>
+<td>AM275X_DEV_TIMER8</td>
+</tr>
+<tr class="row-even"><td>45</td>
+<td>AM275X_DEV_TIMER9</td>
+</tr>
+<tr class="row-odd"><td>46</td>
+<td>AM275X_DEV_TIMER10</td>
+</tr>
+<tr class="row-even"><td>47</td>
+<td>AM275X_DEV_TIMER11</td>
+</tr>
+<tr class="row-odd"><td>51</td>
+<td>AM275X_DEV_ECAP0</td>
+</tr>
+<tr class="row-even"><td>52</td>
+<td>AM275X_DEV_ECAP1</td>
+</tr>
+<tr class="row-odd"><td>53</td>
+<td>AM275X_DEV_ECAP2</td>
+</tr>
+<tr class="row-even"><td>58</td>
+<td>AM275X_DEV_MMCSD0</td>
+</tr>
+<tr class="row-odd"><td>61</td>
+<td>AM275X_DEV_WKUP_GTC0</td>
+</tr>
+<tr class="row-even"><td>63</td>
+<td>AM275X_DEV_ESM0</td>
+</tr>
+<tr class="row-odd"><td>64</td>
+<td>AM275X_DEV_WKUP_ESM0</td>
+</tr>
+<tr class="row-even"><td>73</td>
+<td>AM275X_DEV_FSS1</td>
+</tr>
+<tr class="row-odd"><td>74</td>
+<td>AM275X_DEV_FSS1_FSAS_0</td>
+</tr>
+<tr class="row-even"><td>75</td>
+<td>AM275X_DEV_FSS1_OSPI_0</td>
+</tr>
+<tr class="row-odd"><td>77</td>
+<td>AM275X_DEV_GPIO0</td>
+</tr>
+<tr class="row-even"><td>78</td>
+<td>AM275X_DEV_GPIO1</td>
+</tr>
+<tr class="row-odd"><td>79</td>
+<td>AM275X_DEV_MCU_GPIO0</td>
+</tr>
+<tr class="row-even"><td>83</td>
+<td>AM275X_DEV_LED0</td>
+</tr>
+<tr class="row-odd"><td>85</td>
+<td>AM275X_DEV_DDPA0</td>
+</tr>
+<tr class="row-even"><td>86</td>
+<td>AM275X_DEV_EPWM0</td>
+</tr>
+<tr class="row-odd"><td>87</td>
+<td>AM275X_DEV_EPWM1</td>
+</tr>
+<tr class="row-even"><td>88</td>
+<td>AM275X_DEV_EPWM2</td>
+</tr>
+<tr class="row-odd"><td>95</td>
+<td>AM275X_DEV_WKUP_VTM0</td>
+</tr>
+<tr class="row-even"><td>96</td>
+<td>AM275X_DEV_MAILBOX0</td>
+</tr>
+<tr class="row-odd"><td>98</td>
+<td>AM275X_DEV_MCAN0</td>
+</tr>
+<tr class="row-even"><td>99</td>
+<td>AM275X_DEV_MCAN1</td>
+</tr>
+<tr class="row-odd"><td>102</td>
+<td>AM275X_DEV_I2C0</td>
+</tr>
+<tr class="row-even"><td>103</td>
+<td>AM275X_DEV_I2C1</td>
+</tr>
+<tr class="row-odd"><td>104</td>
+<td>AM275X_DEV_I2C2</td>
+</tr>
+<tr class="row-even"><td>105</td>
+<td>AM275X_DEV_I2C3</td>
+</tr>
+<tr class="row-odd"><td>107</td>
+<td>AM275X_DEV_WKUP_I2C0</td>
+</tr>
+<tr class="row-even"><td>110</td>
+<td>AM275X_DEV_WKUP_TIMER0</td>
+</tr>
+<tr class="row-odd"><td>111</td>
+<td>AM275X_DEV_WKUP_TIMER1</td>
+</tr>
+<tr class="row-even"><td>114</td>
+<td>AM275X_DEV_WKUP_UART0</td>
+</tr>
+<tr class="row-odd"><td>116</td>
+<td>AM275X_DEV_MCRC64_0</td>
+</tr>
+<tr class="row-even"><td>117</td>
+<td>AM275X_DEV_WKUP_RTCSS0</td>
+</tr>
+<tr class="row-odd"><td>118</td>
+<td>AM275X_DEV_WKUP_R5FSS0_SS0</td>
+</tr>
+<tr class="row-even"><td>119</td>
+<td>AM275X_DEV_WKUP_R5FSS0</td>
+</tr>
+<tr class="row-odd"><td>121</td>
+<td>AM275X_DEV_WKUP_R5FSS0_CORE0</td>
+</tr>
+<tr class="row-even"><td>127</td>
+<td>AM275X_DEV_RTI0</td>
+</tr>
+<tr class="row-odd"><td>128</td>
+<td>AM275X_DEV_RTI1</td>
+</tr>
+<tr class="row-even"><td>130</td>
+<td>AM275X_DEV_RTI2</td>
+</tr>
+<tr class="row-odd"><td>131</td>
+<td>AM275X_DEV_RTI3</td>
+</tr>
+<tr class="row-even"><td>132</td>
+<td>AM275X_DEV_WKUP_RTI0</td>
+</tr>
+<tr class="row-odd"><td>139</td>
+<td>AM275X_DEV_PSCSS0</td>
+</tr>
+<tr class="row-even"><td>140</td>
+<td>AM275X_DEV_WKUP_PSC0</td>
+</tr>
+<tr class="row-odd"><td>141</td>
+<td>AM275X_DEV_MCSPI0</td>
+</tr>
+<tr class="row-even"><td>142</td>
+<td>AM275X_DEV_MCSPI1</td>
+</tr>
+<tr class="row-odd"><td>143</td>
+<td>AM275X_DEV_MCSPI2</td>
+</tr>
+<tr class="row-even"><td>144</td>
+<td>AM275X_DEV_MCSPI3</td>
+</tr>
+<tr class="row-odd"><td>145</td>
+<td>AM275X_DEV_MCSPI4</td>
+</tr>
+<tr class="row-even"><td>146</td>
+<td>AM275X_DEV_UART0</td>
+</tr>
+<tr class="row-odd"><td>150</td>
+<td>AM275X_DEV_SPINLOCK0</td>
+</tr>
+<tr class="row-even"><td>152</td>
+<td>AM275X_DEV_UART1</td>
+</tr>
+<tr class="row-odd"><td>153</td>
+<td>AM275X_DEV_UART2</td>
+</tr>
+<tr class="row-even"><td>154</td>
+<td>AM275X_DEV_UART3</td>
+</tr>
+<tr class="row-odd"><td>155</td>
+<td>AM275X_DEV_UART4</td>
+</tr>
+<tr class="row-even"><td>156</td>
+<td>AM275X_DEV_UART5</td>
+</tr>
+<tr class="row-odd"><td>157</td>
+<td>AM275X_DEV_BOARD0</td>
+</tr>
+<tr class="row-even"><td>158</td>
+<td>AM275X_DEV_UART6</td>
+</tr>
+<tr class="row-odd"><td>161</td>
+<td>AM275X_DEV_USB0</td>
+</tr>
+<tr class="row-even"><td>165</td>
+<td>AM275X_DEV_WKUP_PBIST0</td>
+</tr>
+<tr class="row-odd"><td>171</td>
+<td>AM275X_DEV_DEBUGSS0</td>
+</tr>
+<tr class="row-even"><td>176</td>
+<td>AM275X_DEV_WKUP_DEEPSLEEP_SOURCES0</td>
+</tr>
+<tr class="row-odd"><td>178</td>
+<td>AM275X_DEV_MAIN_USB0_ISO_VD</td>
+</tr>
+<tr class="row-even"><td>180</td>
+<td>AM275X_DEV_MCU_MCU_16FF0</td>
+</tr>
+<tr class="row-odd"><td>183</td>
+<td>AM275X_DEV_DCC6</td>
+</tr>
+<tr class="row-even"><td>190</td>
+<td>AM275X_DEV_MCASP0</td>
+</tr>
+<tr class="row-odd"><td>191</td>
+<td>AM275X_DEV_MCASP1</td>
+</tr>
+<tr class="row-even"><td>192</td>
+<td>AM275X_DEV_MCASP2</td>
+</tr>
+<tr class="row-odd"><td>193</td>
+<td>AM275X_DEV_CLK_32K_RC_SEL_DEV_VD</td>
+</tr>
+<tr class="row-even"><td>194</td>
+<td>AM275X_DEV_CPT2_AGGR1</td>
+</tr>
+<tr class="row-odd"><td>195</td>
+<td>AM275X_DEV_CPT2_AGGR0</td>
+</tr>
+<tr class="row-even"><td>196</td>
+<td>AM275X_DEV_CPT2_AGGR2</td>
+</tr>
+<tr class="row-odd"><td>197</td>
+<td>AM275X_DEV_MCU_DCC1</td>
+</tr>
+<tr class="row-even"><td>205</td>
+<td>AM275X_DEV_RTI4</td>
+</tr>
+<tr class="row-odd"><td>207</td>
+<td>AM275X_DEV_C7X256V0</td>
+</tr>
+<tr class="row-even"><td>208</td>
+<td>AM275X_DEV_C7X256V0_C7XV_CORE_0</td>
+</tr>
+<tr class="row-odd"><td>209</td>
+<td>AM275X_DEV_C7X256V0_CORE0</td>
+</tr>
+<tr class="row-even"><td>210</td>
+<td>AM275X_DEV_C7X256V0_CLEC</td>
+</tr>
+<tr class="row-odd"><td>211</td>
+<td>AM275X_DEV_C7X256V0_CLK</td>
+</tr>
+<tr class="row-even"><td>212</td>
+<td>AM275X_DEV_C7X256V0_DEBUG</td>
+</tr>
+<tr class="row-odd"><td>213</td>
+<td>AM275X_DEV_C7X256V0_GICSS</td>
+</tr>
+<tr class="row-even"><td>214</td>
+<td>AM275X_DEV_C7X256V0_PBIST</td>
+</tr>
+<tr class="row-odd"><td>226</td>
+<td>AM275X_DEV_WKUP_CLKOUT_SEL_DEV_VD</td>
+</tr>
+<tr class="row-even"><td>227</td>
+<td>AM275X_DEV_MCU_OBSCLK_MUX_SEL_DEV_VD</td>
+</tr>
+<tr class="row-odd"><td>228</td>
+<td>AM275X_DEV_OBSCLK0_MUX_SEL_DEV_VD</td>
+</tr>
+<tr class="row-even"><td>229</td>
+<td>AM275X_DEV_DCC7</td>
+</tr>
+<tr class="row-odd"><td>230</td>
+<td>AM275X_DEV_DCC8</td>
+</tr>
+<tr class="row-even"><td>246</td>
+<td>AM275X_DEV_ATL0</td>
+</tr>
+<tr class="row-odd"><td>254</td>
+<td>AM275X_DEV_PBIST1</td>
+</tr>
+<tr class="row-even"><td>255</td>
+<td>AM275X_DEV_MCASP3</td>
+</tr>
+<tr class="row-odd"><td>256</td>
+<td>AM275X_DEV_MCASP4</td>
+</tr>
+<tr class="row-even"><td>257</td>
+<td>AM275X_DEV_I2C4</td>
+</tr>
+<tr class="row-odd"><td>263</td>
+<td>AM275X_DEV_RTI5</td>
+</tr>
+<tr class="row-even"><td>267</td>
+<td>AM275X_DEV_C7X256V1</td>
+</tr>
+<tr class="row-odd"><td>268</td>
+<td>AM275X_DEV_C7X256V1_C7XV_CORE_0</td>
+</tr>
+<tr class="row-even"><td>269</td>
+<td>AM275X_DEV_C7X256V1_CORE0</td>
+</tr>
+<tr class="row-odd"><td>270</td>
+<td>AM275X_DEV_C7X256V1_CLEC</td>
+</tr>
+<tr class="row-even"><td>271</td>
+<td>AM275X_DEV_C7X256V1_CLK</td>
+</tr>
+<tr class="row-odd"><td>272</td>
+<td>AM275X_DEV_C7X256V1_DEBUG</td>
+</tr>
+<tr class="row-even"><td>273</td>
+<td>AM275X_DEV_C7X256V1_GICSS</td>
+</tr>
+<tr class="row-odd"><td>274</td>
+<td>AM275X_DEV_C7X256V1_PBIST</td>
+</tr>
+<tr class="row-even"><td>288</td>
+<td>AM275X_DEV_TIMER12</td>
+</tr>
+<tr class="row-odd"><td>289</td>
+<td>AM275X_DEV_TIMER13</td>
+</tr>
+<tr class="row-even"><td>290</td>
+<td>AM275X_DEV_TIMER14</td>
+</tr>
+<tr class="row-odd"><td>291</td>
+<td>AM275X_DEV_TIMER15</td>
+</tr>
+<tr class="row-even"><td>292</td>
+<td>AM275X_DEV_ECAP3</td>
+</tr>
+<tr class="row-odd"><td>293</td>
+<td>AM275X_DEV_ECAP4</td>
+</tr>
+<tr class="row-even"><td>294</td>
+<td>AM275X_DEV_ECAP5</td>
+</tr>
+<tr class="row-odd"><td>295</td>
+<td>AM275X_DEV_FSS1_HYPERBUS1P0_0</td>
+</tr>
+<tr class="row-even"><td>296</td>
+<td>AM275X_DEV_FSS1_MISC_0</td>
+</tr>
+<tr class="row-odd"><td>297</td>
+<td>AM275X_DEV_FSS1_OSPI_1</td>
+</tr>
+<tr class="row-even"><td>298</td>
+<td>AM275X_DEV_FSS0</td>
+</tr>
+<tr class="row-odd"><td>299</td>
+<td>AM275X_DEV_AASRC0</td>
+</tr>
+<tr class="row-even"><td>300</td>
+<td>AM275X_DEV_AASRC1</td>
+</tr>
+<tr class="row-odd"><td>301</td>
+<td>AM275X_DEV_PBIST0</td>
+</tr>
+<tr class="row-even"><td>302</td>
+<td>AM275X_DEV_PBIST2</td>
+</tr>
+<tr class="row-odd"><td>303</td>
+<td>AM275X_DEV_PBIST3</td>
+</tr>
+<tr class="row-even"><td>304</td>
+<td>AM275X_DEV_PBIST4</td>
+</tr>
+<tr class="row-odd"><td>305</td>
+<td>AM275X_DEV_PBIST5</td>
+</tr>
+<tr class="row-even"><td>306</td>
+<td>AM275X_DEV_PBIST6</td>
+</tr>
+<tr class="row-odd"><td>307</td>
+<td>AM275X_DEV_PBIST7</td>
+</tr>
+<tr class="row-even"><td>308</td>
+<td>AM275X_DEV_PBIST8</td>
+</tr>
+<tr class="row-odd"><td>309</td>
+<td>AM275X_DEV_WKUP_PBIST1</td>
+</tr>
+<tr class="row-even"><td>310</td>
+<td>AM275X_DEV_MCAN2</td>
+</tr>
+<tr class="row-odd"><td>311</td>
+<td>AM275X_DEV_MCAN3</td>
+</tr>
+<tr class="row-even"><td>312</td>
+<td>AM275X_DEV_MCAN4</td>
+</tr>
+<tr class="row-odd"><td>313</td>
+<td>AM275X_DEV_MLB0</td>
+</tr>
+<tr class="row-even"><td>314</td>
+<td>AM275X_DEV_I2C5</td>
+</tr>
+<tr class="row-odd"><td>315</td>
+<td>AM275X_DEV_I2C6</td>
+</tr>
+<tr class="row-even"><td>316</td>
+<td>AM275X_DEV_R5FSS0</td>
+</tr>
+<tr class="row-odd"><td>317</td>
+<td>AM275X_DEV_R5FSS1</td>
+</tr>
+<tr class="row-even"><td>318</td>
+<td>AM275X_DEV_R5FSS0_CORE0</td>
+</tr>
+<tr class="row-odd"><td>319</td>
+<td>AM275X_DEV_R5FSS0_CORE1</td>
+</tr>
+<tr class="row-even"><td>320</td>
+<td>AM275X_DEV_R5FSS1_CORE0</td>
+</tr>
+<tr class="row-odd"><td>321</td>
+<td>AM275X_DEV_R5FSS1_CORE1</td>
+</tr>
+<tr class="row-even"><td>322</td>
+<td>AM275X_DEV_RL2_OF_CBA4_0</td>
+</tr>
+<tr class="row-odd"><td>323</td>
+<td>AM275X_DEV_RL2_OF_CBA4_1</td>
+</tr>
+<tr class="row-even"><td>324</td>
+<td>AM275X_DEV_RL2_OF_CBA4_2</td>
+</tr>
+<tr class="row-odd"><td>325</td>
+<td>AM275X_DEV_RL2_OF_CBA4_3</td>
+</tr>
+<tr class="row-even"><td>326</td>
+<td>AM275X_DEV_RL2_CORE0_CFG0</td>
+</tr>
+<tr class="row-odd"><td>327</td>
+<td>AM275X_DEV_RL2_CORE0_CFG1</td>
+</tr>
+<tr class="row-even"><td>328</td>
+<td>AM275X_DEV_RL2_CORE1_CFG0</td>
+</tr>
+<tr class="row-odd"><td>329</td>
+<td>AM275X_DEV_RL2_CORE1_CFG1</td>
+</tr>
+<tr class="row-even"><td>330</td>
+<td>AM275X_DEV_MCASP0_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-odd"><td>331</td>
+<td>AM275X_DEV_MCASP1_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-even"><td>332</td>
+<td>AM275X_DEV_MCASP2_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-odd"><td>333</td>
+<td>AM275X_DEV_MCASP3_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-even"><td>334</td>
+<td>AM275X_DEV_MCASP4_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-odd"><td>335</td>
+<td>AM275X_DEV_MCASP0_LOCAL_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-even"><td>336</td>
+<td>AM275X_DEV_MCASP1_LOCAL_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-odd"><td>337</td>
+<td>AM275X_DEV_MCASP2_LOCAL_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-even"><td>338</td>
+<td>AM275X_DEV_MCASP3_LOCAL_AUXCLK_SEL_DEV_VD</td>
+</tr>
+<tr class="row-odd"><td>339</td>
+<td>AM275X_DEV_MCASP4_LOCAL_AUXCLK_SEL_DEV_VD</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="clocks.html" class="btn btn-neutral float-right" title="AM275X Clock Identifiers" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hosts.html" class="btn btn-neutral" title="AM275X Host Descriptions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'11.00.04',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

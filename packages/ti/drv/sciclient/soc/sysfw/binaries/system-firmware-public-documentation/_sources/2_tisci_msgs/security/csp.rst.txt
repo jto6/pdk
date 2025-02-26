@@ -6,13 +6,16 @@ Cryto Service TISCI Description
 
 This chapter provides information on  |sysfw| API for Cryptographic Services. The available API are listed below.
 
-+------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+
-| TISCI Message ID |                        Message Name                                   | Available in GP | Available in HS-FS | Available in HS-SE |
-+==================+=======================================================================+=================+====================+====================+
-| 0x9040           | :ref:`TISCI_MSG_SA2UL_AES_ENCRYPT <csp-encrypt>`                      | NO              | YES                | YES                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-+------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+
-| 0x9041           | :ref:`TISCI_MSG_SA2UL_AES_DECRYPT <csp-decrypt>`                      | NO              | YES                | YES                |
-+------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+-------------------------------+
+| TISCI Message ID |                        Message Name                                   | Available in GP | Available in HS-FS | Available in HS-SE | Previous Message Name         |
++==================+=======================================================================+=================+====================+====================+===============================+
+| 0x9040           | :ref:`TISCI_MSG_CRYPTO_AES_ENCRYPT <csp-encrypt>`                      | NO              | YES                | YES               | TISCI_MSG_SA2UL_AES_ENCRYPT   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+-------------------------------+
+| 0x9041           | :ref:`TISCI_MSG_CRYPTO_AES_DECRYPT <csp-decrypt>`                      | NO              | YES                | YES               | TISCI_MSG_SA2UL_AES_DECRYPT   |
++------------------+-----------------------------------------------------------------------+-----------------+--------------------+--------------------+-------------------------------+
+
+.. note::
+  The TISCI Message ID macros have been renamed. Please update your code to use the new names.
 
 API Description
 ===============
@@ -33,8 +36,8 @@ Request and Response structures
 
 .. _csp-encrypt:
 
-TISCI_MSG_SA2UL_AES_ENCRYPT - Encrypt a blob
---------------------------------------------
+TISCI_MSG_CRYPTO_AES_ENCRYPT - Encrypt a blob
+---------------------------------------------
 
 **Usage**:
 
@@ -47,7 +50,7 @@ TISCI_MSG_SA2UL_AES_ENCRYPT - Encrypt a blob
 TISCI Message ID
 ----------------
 
-.. sysfwapimacro:: TISCI_MSG_SA2UL_AES_ENCRYPT
+.. sysfwapimacro:: TISCI_MSG_CRYPTO_AES_ENCRYPT
 
 .. sysfwapistruct:: tisci_csp_aes_req
 
@@ -55,8 +58,8 @@ TISCI Message ID
 
 .. _csp-decrypt:
 
-TISCI_MSG_SA2UL_AES_DECRYPT - Decrypt a blob
---------------------------------------------
+TISCI_MSG_CRYPTO_AES_DECRYPT - Decrypt a blob
+---------------------------------------------
 
 **Usage**:
 
@@ -69,7 +72,7 @@ TISCI_MSG_SA2UL_AES_DECRYPT - Decrypt a blob
 TISCI Message ID
 ----------------
 
-.. sysfwapimacro:: TISCI_MSG_SA2UL_AES_DECRYPT
+.. sysfwapimacro:: TISCI_MSG_CRYPTO_AES_DECRYPT
 
 .. sysfwapistruct:: tisci_csp_aes_req
 

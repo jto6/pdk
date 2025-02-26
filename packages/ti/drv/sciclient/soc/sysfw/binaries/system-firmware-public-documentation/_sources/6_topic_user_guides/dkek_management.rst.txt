@@ -95,7 +95,7 @@ Approach 1 - DKEK programmed into SA2UL
 ---------------------------------------
 
 In this approach, host requests |sysfw| to derive a DKEK and program it into the
-SA2UL DKEK registers using the :ref:`TISCI_MSG_SA2UL_SET_DKEK
+SA2UL DKEK registers using the :ref:`TISCI_MSG_CRYPTO_SET_DKEK
 <sec-api-sa2ul-set-dkek>` API.
 
 .. figure:: ../img/sec/dkek/dkek_approach1_set_dkek.svg
@@ -107,7 +107,7 @@ context.
 .. figure:: ../img/sec/dkek/dkek_approach1_use_dkek.svg
 
 When the host is done with the use of DKEK, it can release the DKEK registers
-by using the :ref:`TISCI_MSG_SA2UL_RELEASE_DKEK <sec-api-sa2ul-release-dkek>`
+by using the :ref:`TISCI_MSG_CRYPTO_RELEASE_DKEK <sec-api-sa2ul-release-dkek>`
 API.
 
 .. figure:: ../img/sec/dkek/dkek_approach1_release_dkek.svg
@@ -133,7 +133,7 @@ Approach 2 - DKEK supplied via TISCI
 ------------------------------------
 
 In this approach, host requests |sysfw| to derive a DKEK and supply it in the
-response using the :ref:`TISCI_MSG_SA2UL_GET_DKEK <sec-api-sa2ul-get-dkek>` API.
+response using the :ref:`TISCI_MSG_CRYPTO_GET_DKEK <sec-api-sa2ul-get-dkek>` API.
 The host is responsible for maintaining the secrecy of the DKEK supplied by |sysfw|.
 
 .. figure:: ../img/sec/dkek/dkek_approach2_get_dkek.svg
@@ -179,19 +179,19 @@ Comparing the two approaches
        Access to these registers for encryption/decryption is controlled by DKEK
        privid register.
        |sysfw| programs the DKEK privid register with the privid of the host who
-       has invoked the :ref:`TISCI_MSG_SA2UL_SET_DKEK <sec-api-sa2ul-set-dkek>`
+       has invoked the :ref:`TISCI_MSG_CRYPTO_SET_DKEK <sec-api-sa2ul-set-dkek>`
        API.
        Only this host can use DKEK via the SA2UL DKEK registers until DKEK
-       is released via :ref:`TISCI_MSG_SA2UL_RELEASE_DKEK <sec-api-sa2ul-release-dkek>`
+       is released via :ref:`TISCI_MSG_CRYPTO_RELEASE_DKEK <sec-api-sa2ul-release-dkek>`
 
      - Multiple hosts can use DKEK at the same time using this approach.
        Each host manages its own DKEK.
 
-   * - :ref:`TISCI_MSG_SA2UL_SET_DKEK <sec-api-sa2ul-set-dkek>` and
-       :ref:`TISCI_MSG_SA2UL_RELEASE_DKEK <sec-api-sa2ul-release-dkek>`
+   * - :ref:`TISCI_MSG_CRYPTO_SET_DKEK <sec-api-sa2ul-set-dkek>` and
+       :ref:`TISCI_MSG_CRYPTO_RELEASE_DKEK <sec-api-sa2ul-release-dkek>`
        API are used in this approach.
 
-     - :ref:`TISCI_MSG_SA2UL_GET_DKEK <sec-api-sa2ul-get-dkek>` is used
+     - :ref:`TISCI_MSG_CRYPTO_GET_DKEK <sec-api-sa2ul-get-dkek>` is used
        in this approach.
 
 We recommend using Approach 1 wherever possible to maintain the secrecy of DKEK.

@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -133,6 +133,8 @@
 <li class="toctree-l2"><a class="reference internal" href="keyring.html">Keyring Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="csp.html">Cryptographic Services</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fwl_safety_core.html">Firewall Data Access to Safety Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boot_mode_writer.html">Boot Mode Writer Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boot_mode_writer_encoding.html">Boot Mode Writer Encoding table</a></li>
 </ul>
 </li>
 </ul>
@@ -259,7 +261,7 @@ performing encryption/decryption.</p>
 <div class="section" id="approach-1-dkek-programmed-into-sa2ul">
 <h3>Approach 1 - DKEK programmed into SA2UL<a class="headerlink" href="#approach-1-dkek-programmed-into-sa2ul" title="Permalink to this headline">¶</a></h3>
 <p>In this approach, host requests System Firmware to derive a DKEK and program it into the
-SA2UL DKEK registers using the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_SET_DKEK</span></a> API.</p>
+SA2UL DKEK registers using the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_SET_DKEK</span></a> API.</p>
 <div class="figure">
 <img alt="../_images/dkek_approach1_set_dkek.svg" src="../_images/dkek_approach1_set_dkek.svg" /></div>
 <p>DKEK is not directly made available to the host. The host can use DKEK for
@@ -268,7 +270,7 @@ context.</p>
 <div class="figure">
 <img alt="../_images/dkek_approach1_use_dkek.svg" src="../_images/dkek_approach1_use_dkek.svg" /></div>
 <p>When the host is done with the use of DKEK, it can release the DKEK registers
-by using the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_RELEASE_DKEK</span></a>
+by using the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_RELEASE_DKEK</span></a>
 API.</p>
 <div class="figure">
 <img alt="../_images/dkek_approach1_release_dkek.svg" src="../_images/dkek_approach1_release_dkek.svg" /></div>
@@ -290,7 +292,7 @@ Alternatively approach 2 described below can be used.</p>
 <div class="section" id="approach-2-dkek-supplied-via-tisci">
 <h3>Approach 2 - DKEK supplied via TISCI<a class="headerlink" href="#approach-2-dkek-supplied-via-tisci" title="Permalink to this headline">¶</a></h3>
 <p>In this approach, host requests System Firmware to derive a DKEK and supply it in the
-response using the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-get-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_GET_DKEK</span></a> API.
+response using the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-get-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_GET_DKEK</span></a> API.
 The host is responsible for maintaining the secrecy of the DKEK supplied by System Firmware.</p>
 <div class="figure">
 <img alt="../_images/dkek_approach2_get_dkek.svg" src="../_images/dkek_approach2_get_dkek.svg" /></div>
@@ -339,17 +341,17 @@ SA2UL DKEK registers.
 Access to these registers for encryption/decryption is controlled by DKEK
 privid register.
 System Firmware programs the DKEK privid register with the privid of the host who
-has invoked the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_SET_DKEK</span></a>
+has invoked the <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_SET_DKEK</span></a>
 API.
 Only this host can use DKEK via the SA2UL DKEK registers until DKEK
-is released via <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_RELEASE_DKEK</span></a></td>
+is released via <a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_RELEASE_DKEK</span></a></td>
 <td>Multiple hosts can use DKEK at the same time using this approach.
 Each host manages its own DKEK.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_SET_DKEK</span></a> and
-<a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_RELEASE_DKEK</span></a>
+<tr class="row-even"><td><a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_SET_DKEK</span></a> and
+<a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_RELEASE_DKEK</span></a>
 API are used in this approach.</td>
-<td><a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-get-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_GET_DKEK</span></a> is used
+<td><a class="reference internal" href="../2_tisci_msgs/security/dkek_management.html#sec-api-sa2ul-get-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_GET_DKEK</span></a> is used
 in this approach.</td>
 </tr>
 </tbody>
@@ -378,7 +380,7 @@ in this approach.</td>
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -400,7 +402,7 @@ in this approach.</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

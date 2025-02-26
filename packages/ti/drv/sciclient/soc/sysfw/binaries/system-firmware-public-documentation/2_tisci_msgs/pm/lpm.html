@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -122,6 +122,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-get-latency-constraint">TISCI_MSG_LPM_GET_LATENCY_CONSTRAINT</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-get-next-sys-mode">TISCI_MSG_LPM_GET_NEXT_SYS_MODE</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-get-next-host-state">TISCI_MSG_LPM_GET_NEXT_HOST_STATE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-abort">TISCI_MSG_LPM_ABORT</a></li>
 </ul>
 </li>
 </ul>
@@ -205,6 +206,9 @@ supported by the SOC.</p>
 <p><p><code class="docutils literal"><span class="pre">TISCI_MSG_VALUE_SLEEP_MODE_STANDBY</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0x4U</span></code></p>
 <p>Sleep mode in which software is in low power mode but the hardware remains on.</p>
 </p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_VALUE_SLEEP_MODE_SOC_OFF</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0x5U</span></code></p>
+<p>Sleep mode in which the complete SOC except the DDR is turned off.</p>
+</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="44%" />
@@ -230,6 +234,9 @@ supported by the SOC.</p>
 </tr>
 <tr class="row-even"><td>STANDBY</td>
 <td>None</td>
+</tr>
+<tr class="row-odd"><td>SOC_OFF</td>
+<td>j7200, j784s4</td>
 </tr>
 </tbody>
 </table>
@@ -291,6 +298,9 @@ supported by the SOC.</p>
 </tr>
 <tr class="row-even"><td>0x030E</td>
 <td><a class="reference internal" href="#pm-lpm-msg-get-next-host-state"><span class="std std-ref">TISCI_MSG_LPM_GET_NEXT_HOST_STATE</span></a></td>
+</tr>
+<tr class="row-odd"><td>0x0311</td>
+<td><a class="reference internal" href="#pm-lpm-msg-lpm-abort"><span class="std std-ref">TISCI_MSG_LPM_ABORT</span></a></td>
 </tr>
 </tbody>
 </table>
@@ -848,9 +858,9 @@ exit is detected from MMR read.</p>
 </tr>
 </tbody>
 </table>
-<p>This message is sent from R5 SPL to TIFS to indicate that DDR is active and
+<p>This message is sent from bootloader to TIFS to indicate that DDR is active and
  TIFS can restore the minimal context from the address provided in the ctx_lo and
- ctx_hi parameters. This response assumes DDR has been fully restored by R5 SPL before
+ ctx_hi parameters. This response assumes DDR has been fully restored by bootloader before
  it is sent.</p>
 </p>
 <p><p><strong>struct tisci_msg_min_context_restore_resp</strong></p>
@@ -1519,6 +1529,85 @@ one of the following system modes.</p>
 </p>
 </div>
 </div>
+<div class="section" id="tisci-msg-lpm-abort">
+<span id="pm-lpm-msg-lpm-abort"></span><h2>TISCI_MSG_LPM_ABORT<a class="headerlink" href="#tisci-msg-lpm-abort" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id41">
+<h3>Objective<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
+<p>Abort the current low power mode entry if any error occurs.</p>
+</div>
+<div class="section" id="id42">
+<h3>Usage<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id43">
+<h3>TISCI Message ID<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">TISCI_MSG_LPM_ABORT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x0311U)</span></code></p>
+</div>
+<div class="section" id="id44">
+<h3>Message Data Structures<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h3>
+<p><p><strong>struct tisci_msg_lpm_abort_req</strong></p>
+<p>Request for TISCI_MSG_LPM_ABORT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="24%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header to provide ACK/NAK flags to the host.</td>
+</tr>
+</tbody>
+</table>
+<p>This message is used by linux to notify the firmware to abort the current low
+ power mode entry by clearing the current mode selection.
+ Note: This message should be sent after prepare sleep message in case of failure
+ to suspend the system.</p>
+</p>
+<p><p><strong>struct tisci_msg_lpm_abort_resp</strong></p>
+<p>Response for TISCI_MSG_LPM_ABORT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="24%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header to provide ACK/NAK flags to the host.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+</div>
 </div>
 
 
@@ -1540,7 +1629,7 @@ one of the following system modes.</p>
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -1562,7 +1651,7 @@ one of the following system modes.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

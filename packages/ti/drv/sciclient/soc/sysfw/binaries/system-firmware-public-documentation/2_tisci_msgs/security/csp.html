@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -182,11 +182,12 @@
 <p id="csp-tisci-desc">This chapter provides information on  System Firmware API for Cryptographic Services. The available API are listed below.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="49%" />
-<col width="12%" />
-<col width="14%" />
-<col width="14%" />
+<col width="10%" />
+<col width="40%" />
+<col width="10%" />
+<col width="11%" />
+<col width="11%" />
+<col width="18%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">TISCI Message ID</th>
@@ -194,23 +195,24 @@
 <th class="head">Available in GP</th>
 <th class="head">Available in HS-FS</th>
 <th class="head">Available in HS-SE</th>
+<th class="head">Previous Message Name</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>0x9040</td>
-<td><a class="reference internal" href="#csp-encrypt"><span class="std std-ref">TISCI_MSG_SA2UL_AES_ENCRYPT</span></a></td>
-<td>NO</td>
-<td>YES</td>
-<td>YES</td>
+<td colspan="4"><a class="reference internal" href="#csp-encrypt"><span class="std std-ref">TISCI_MSG_CRYPTO_AES_ENCRYPT</span></a>                      | NO              | YES                | YES</td>
+<td>TISCI_MSG_SA2UL_AES_ENCRYPT</td>
 </tr>
 <tr class="row-odd"><td>0x9041</td>
-<td><a class="reference internal" href="#csp-decrypt"><span class="std std-ref">TISCI_MSG_SA2UL_AES_DECRYPT</span></a></td>
-<td>NO</td>
-<td>YES</td>
-<td>YES</td>
+<td colspan="4"><a class="reference internal" href="#csp-decrypt"><span class="std std-ref">TISCI_MSG_CRYPTO_AES_DECRYPT</span></a>                      | NO              | YES                | YES</td>
+<td>TISCI_MSG_SA2UL_AES_DECRYPT</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The TISCI Message ID macros have been renamed. Please update your code to use the new names.</p>
+</div>
 <div class="section" id="api-description">
 <h2>API Description<a class="headerlink" href="#api-description" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="request-and-response-structures">
@@ -226,8 +228,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="tisci-msg-sa2ul-aes-encrypt-encrypt-a-blob">
-<span id="csp-encrypt"></span><h3>TISCI_MSG_SA2UL_AES_ENCRYPT - Encrypt a blob<a class="headerlink" href="#tisci-msg-sa2ul-aes-encrypt-encrypt-a-blob" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tisci-msg-crypto-aes-encrypt-encrypt-a-blob">
+<span id="csp-encrypt"></span><h3>TISCI_MSG_CRYPTO_AES_ENCRYPT - Encrypt a blob<a class="headerlink" href="#tisci-msg-crypto-aes-encrypt-encrypt-a-blob" title="Permalink to this headline">¶</a></h3>
 <p><strong>Usage</strong>:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -246,7 +248,7 @@
 </div>
 <div class="section" id="tisci-message-id">
 <h3>TISCI Message ID<a class="headerlink" href="#tisci-message-id" title="Permalink to this headline">¶</a></h3>
-<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_SA2UL_AES_ENCRYPT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9040U)</span></code></p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_CRYPTO_AES_ENCRYPT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9040U)</span></code></p>
 <p>Message to encrypt a blob</p>
 </p>
 <p><p><strong>struct tisci_csp_aes_req</strong></p>
@@ -302,8 +304,8 @@
 </table>
 </p>
 </div>
-<div class="section" id="tisci-msg-sa2ul-aes-decrypt-decrypt-a-blob">
-<span id="csp-decrypt"></span><h3>TISCI_MSG_SA2UL_AES_DECRYPT - Decrypt a blob<a class="headerlink" href="#tisci-msg-sa2ul-aes-decrypt-decrypt-a-blob" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tisci-msg-crypto-aes-decrypt-decrypt-a-blob">
+<span id="csp-decrypt"></span><h3>TISCI_MSG_CRYPTO_AES_DECRYPT - Decrypt a blob<a class="headerlink" href="#tisci-msg-crypto-aes-decrypt-decrypt-a-blob" title="Permalink to this headline">¶</a></h3>
 <p><strong>Usage</strong>:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -322,7 +324,7 @@
 </div>
 <div class="section" id="id1">
 <h3>TISCI Message ID<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_SA2UL_AES_DECRYPT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9041U)</span></code></p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_CRYPTO_AES_DECRYPT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9041U)</span></code></p>
 <p>Message to decrypt a blob</p>
 </p>
 <p><p><strong>struct tisci_csp_aes_req</strong></p>
@@ -400,7 +402,7 @@
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -422,7 +424,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

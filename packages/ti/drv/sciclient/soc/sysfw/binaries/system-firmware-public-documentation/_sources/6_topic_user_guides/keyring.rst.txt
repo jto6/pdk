@@ -170,19 +170,17 @@ User flow
 
 RSA key generation:
 
-* The RSA key par can be generated using openssl
-* For example, Generate a 4096 bit RSA Key
+* The RSA key pair can be generated using openssl
+* For example, Generate a 4096 bit RSA Key:
   openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 \
   -out rsa_privkey.pem -outform pem
-* Extract the public key
+* Extract the public key:
   openssl rsa -inform pem -in rsa_privkey.pem -pubout -outform der > rsa_pubkey.der
 
 Keyring blob generation:
 
 * Create an array of keyring_asymm structure instances.
-* Fill in the key metadata and the public key hash.
-* The gen_keyring.py given as reference takes the keyring.json file as input and 
-  generates keyring_data.c as output. 
+* Fill in the key metadata and the public key hash for all the keys in the keyring. 
 
 Sign the generated keyring blob:
 

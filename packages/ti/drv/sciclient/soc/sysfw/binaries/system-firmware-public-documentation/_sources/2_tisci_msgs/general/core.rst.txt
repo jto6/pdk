@@ -254,7 +254,9 @@ Each bit in the response indicating a certain functionality is present or not.
 +----------------------------------+-------------------+
 | IO Isolation capability          | 7                 |
 +----------------------------------+-------------------+
-| Reserved                         | 8-63              |
+| DM split mode                    | 8                 |
++----------------------------------+-------------------+
+| Reserved                         | 9-63              |
 +----------------------------------+-------------------+
 
 TISCI Message ID
@@ -268,3 +270,42 @@ Message Data Structures
 .. sysfwapistruct:: tisci_query_fw_caps_req
 
 .. sysfwapistruct:: tisci_query_fw_caps_resp
+
+TISCI_MSG_DM_VERSION
+====================
+
+Objective
+----------
+
+Retrieve the version of the currently running DM firmware.
+
+Usage
+-----
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+This retrieves several pieces of information about the version of
+DM firmware that is loaded and running.
+
+.. note::
+
+  This message is only supported for devices having DM as a seperate entity. This can 
+  be checked by querying firmware capabilities using TISCI_MSG_QUERY_FW_CAPS to confirm 
+  whether **DM split mode** capability is present or not.
+
+
+TISCI Message ID
+----------------
+
+.. sysfwapimacro:: TISCI_MSG_DM_VERSION
+
+Message Data Structures
+-----------------------
+
+.. sysfwapistruct:: tisci_msg_dm_version_req
+
+.. sysfwapistruct:: tisci_msg_dm_version_resp

@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -183,38 +183,44 @@
 Key(DKEK) management. The available API are listed below.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="14%" />
-<col width="56%" />
+<col width="12%" />
+<col width="46%" />
+<col width="11%" />
 <col width="13%" />
-<col width="16%" />
+<col width="19%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">TISCI Message ID</th>
 <th class="head">Message Name</th>
 <th class="head">Available in GP</th>
 <th class="head">Avialable in HS-FS</th>
+<th class="head">Previous Message Name</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>0x9003</td>
-<td><a class="reference internal" href="#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_SET_DKEK</span></a></td>
+<td><a class="reference internal" href="#sec-api-sa2ul-set-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_SET_DKEK</span></a></td>
 <td>Yes*</td>
 <td>Yes</td>
+<td>TISCI_MSG_SA2UL_SET_DKEK</td>
 </tr>
 <tr class="row-odd"><td>0x9004</td>
-<td><a class="reference internal" href="#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_RELEASE_DKEK</span></a></td>
+<td><a class="reference internal" href="#sec-api-sa2ul-release-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_RELEASE_DKEK</span></a></td>
 <td>Yes*</td>
 <td>Yes</td>
+<td>TISCI_MSG_SA2UL_RELEASE_DKEK</td>
 </tr>
 <tr class="row-even"><td>0x9029</td>
-<td><a class="reference internal" href="#sec-api-sa2ul-get-dkek"><span class="std std-ref">TISCI_MSG_SA2UL_GET_DKEK</span></a></td>
+<td><a class="reference internal" href="#sec-api-sa2ul-get-dkek"><span class="std std-ref">TISCI_MSG_CRYPTO_GET_DKEK</span></a></td>
 <td>Yes*</td>
 <td>Yes</td>
+<td>TISCI_MSG_SA2UL_GET_DKEK</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
+<p>The TISCI Message ID macros have been renamed. Please update your code to use the new names.</p>
 <p class="last">On GP devices, DKEK APIs return unconditional success but do not actually
 involve any step to derive or program the DKEK values</p>
 </div>
@@ -225,8 +231,8 @@ involve any step to derive or program the DKEK values</p>
 </ol>
 <div class="section" id="api-description">
 <h2>API Description<a class="headerlink" href="#api-description" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="tisci-msg-sa2ul-set-dkek-set-dkek">
-<span id="sec-api-sa2ul-set-dkek"></span><h3>TISCI_MSG_SA2UL_SET_DKEK - Set DKEK<a class="headerlink" href="#tisci-msg-sa2ul-set-dkek-set-dkek" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tisci-msg-crypto-set-dkek-set-dkek">
+<span id="sec-api-sa2ul-set-dkek"></span><h3>TISCI_MSG_CRYPTO_SET_DKEK - Set DKEK<a class="headerlink" href="#tisci-msg-crypto-set-dkek-set-dkek" title="Permalink to this headline">¶</a></h3>
 <p><strong>Usage</strong>:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -245,11 +251,11 @@ involve any step to derive or program the DKEK values</p>
 </div>
 <div class="section" id="tisci-message-id">
 <h3>TISCI Message ID<a class="headerlink" href="#tisci-message-id" title="Permalink to this headline">¶</a></h3>
-<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_SA2UL_SET_DKEK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9003U)</span></code></p>
-<p>Message to derive a KEK and set SA2UL DKEK register</p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_CRYPTO_SET_DKEK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9003U)</span></code></p>
+<p>Message to derive a KEK and set DKEK register</p>
 </p>
-<p><p><strong>struct tisci_msg_sa2ul_set_dkek_req</strong></p>
-<p>TISCI Request for setting DKEK in SA2UL registers</p>
+<p><p><strong>struct tisci_msg_crypto_set_dkek_req</strong></p>
+<p>TISCI Request for setting DKEK in crypto engine registers</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
@@ -267,9 +273,9 @@ involve any step to derive or program the DKEK values</p>
 <td>struct tisci_header</td>
 <td>Generic TISCI message header.</td>
 </tr>
-<tr class="row-odd"><td>sa2ul_instance</td>
+<tr class="row-odd"><td>instance</td>
 <td>u8</td>
-<td>SA2UL instance number - set to 0</td>
+<td>crypto engine instance number - set to 0</td>
 </tr>
 <tr class="row-even"><td>kdf_label_len</td>
 <td>u8</td>
@@ -286,8 +292,8 @@ involve any step to derive or program the DKEK values</p>
 </tbody>
 </table>
 </p>
-<p><p><strong>struct tisci_msg_sa2ul_set_dkek_resp</strong></p>
-<p>TISCI Response for setting DKEK in SA2UL registers</p>
+<p><p><strong>struct tisci_msg_crypto_set_dkek_resp</strong></p>
+<p>TISCI Response for setting DKEK in crypto engine registers</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="20%" />
@@ -309,10 +315,15 @@ involve any step to derive or program the DKEK values</p>
 </table>
 </p>
 <p><code class="docutils literal"><span class="pre">KDF_LABEL_AND_CONTEXT_LEN_MAX</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">41U</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The structures <code class="docutils literal"><span class="pre">tisci_msg_sa2ul_set_dkek_req</span></code> and <code class="docutils literal"><span class="pre">tisci_msg_sa2ul_set_dkek_resp</span></code> have been renamed to <code class="docutils literal"><span class="pre">tisci_msg_crypto_set_dkek_req</span></code> and <code class="docutils literal"><span class="pre">tisci_msg_crypto_set_dkek_resp</span></code> respectively.
+Please update your code to use the new names.</p>
+</div>
 <p>See <a class="reference internal" href="#pub-tisci-dkek-notes"><span class="std std-ref">API Notes</span></a> below.</p>
 </div>
-<div class="section" id="tisci-msg-sa2ul-release-dkek-release-dkek">
-<span id="sec-api-sa2ul-release-dkek"></span><h3>TISCI_MSG_SA2UL_RELEASE_DKEK - Release DKEK<a class="headerlink" href="#tisci-msg-sa2ul-release-dkek-release-dkek" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tisci-msg-crypto-release-dkek-release-dkek">
+<span id="sec-api-sa2ul-release-dkek"></span><h3>TISCI_MSG_CRYPTO_RELEASE_DKEK - Release DKEK<a class="headerlink" href="#tisci-msg-crypto-release-dkek-release-dkek" title="Permalink to this headline">¶</a></h3>
 <p><strong>Usage</strong>:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -331,16 +342,16 @@ involve any step to derive or program the DKEK values</p>
 </div>
 <div class="section" id="id1">
 <h3>TISCI Message ID<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_SA2UL_RELEASE_DKEK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9004U)</span></code></p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_CRYPTO_RELEASE_DKEK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9004U)</span></code></p>
 <p>Message to erase the DKEK register</p>
 </p>
-<p><p><strong>struct tisci_msg_sa2ul_release_dkek_req</strong></p>
+<p><p><strong>struct tisci_msg_crypto_release_dkek_req</strong></p>
 <p>TISCI Request for releasing DKEK</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="23%" />
+<col width="19%" />
 <col width="30%" />
-<col width="48%" />
+<col width="51%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Parameter</th>
@@ -353,14 +364,14 @@ involve any step to derive or program the DKEK values</p>
 <td>struct tisci_header</td>
 <td>Generic TISCI message header.</td>
 </tr>
-<tr class="row-odd"><td>sa2ul_instance</td>
+<tr class="row-odd"><td>instance</td>
 <td>u8</td>
-<td>SA2UL instance number - set to 0</td>
+<td>Crypto instance number - set to 0</td>
 </tr>
 </tbody>
 </table>
 </p>
-<p><p><strong>struct tisci_msg_sa2ul_release_dkek_resp</strong></p>
+<p><p><strong>struct tisci_msg_crypto_release_dkek_resp</strong></p>
 <p>TISCI Response for Releasing DKEK</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -382,10 +393,15 @@ involve any step to derive or program the DKEK values</p>
 </tbody>
 </table>
 </p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The structures <code class="docutils literal"><span class="pre">tisci_msg_sa2ul_release_dkek_req</span></code> and <code class="docutils literal"><span class="pre">tisci_msg_sa2ul_release_dkek_resp</span></code> have been renamed to <code class="docutils literal"><span class="pre">tisci_msg_crypto_release_dkek_req</span></code> and <code class="docutils literal"><span class="pre">tisci_msg_crypto_release_dkek_resp</span></code> respectively.
+Please update your code to use the new names.</p>
+</div>
 <p>See <a class="reference internal" href="#pub-tisci-dkek-notes"><span class="std std-ref">API Notes</span></a> below.</p>
 </div>
-<div class="section" id="tisci-msg-sa2ul-get-dkek-get-dkek">
-<span id="sec-api-sa2ul-get-dkek"></span><h3>TISCI_MSG_SA2UL_GET_DKEK - Get DKEK<a class="headerlink" href="#tisci-msg-sa2ul-get-dkek-get-dkek" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tisci-msg-crypto-get-dkek-get-dkek">
+<span id="sec-api-sa2ul-get-dkek"></span><h3>TISCI_MSG_CRYPTO_GET_DKEK - Get DKEK<a class="headerlink" href="#tisci-msg-crypto-get-dkek-get-dkek" title="Permalink to this headline">¶</a></h3>
 <p><strong>Usage</strong>:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -404,11 +420,11 @@ involve any step to derive or program the DKEK values</p>
 </div>
 <div class="section" id="id2">
 <h3>TISCI Message ID<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_SA2UL_GET_DKEK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9029U)</span></code></p>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_CRYPTO_GET_DKEK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9029U)</span></code></p>
 <p>Message to derive a KEK and return it via TISCI</p>
 </p>
-<p><code class="docutils literal"><span class="pre">SA2UL_DKEK_KEY_LEN</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(32U)</span></code></p>
-<p><p><strong>struct tisci_msg_sa2ul_get_dkek_req</strong></p>
+<p><code class="docutils literal"><span class="pre">CRYPTO_DKEK_KEY_LEN</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(32U)</span></code></p>
+<p><p><strong>struct tisci_msg_crypto_get_dkek_req</strong></p>
 <p>TISCI Request for getting DKEK via TISCI</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -427,9 +443,9 @@ involve any step to derive or program the DKEK values</p>
 <td>struct tisci_header</td>
 <td>Generic TISCI message header.</td>
 </tr>
-<tr class="row-odd"><td>sa2ul_instance</td>
+<tr class="row-odd"><td>instance</td>
 <td>u8</td>
-<td>SA2UL instance number - set to 0</td>
+<td>Crypto engine instance number - set to 0</td>
 </tr>
 <tr class="row-even"><td>kdf_label_len</td>
 <td>u8</td>
@@ -446,7 +462,7 @@ involve any step to derive or program the DKEK values</p>
 </tbody>
 </table>
 </p>
-<p><p><strong>struct tisci_msg_sa2ul_get_dkek_resp</strong></p>
+<p><p><strong>struct tisci_msg_crypto_get_dkek_resp</strong></p>
 <p>TISCI Response for requesting DKEK</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -472,6 +488,12 @@ involve any step to derive or program the DKEK values</p>
 </tbody>
 </table>
 </p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The structures <code class="docutils literal"><span class="pre">tisci_msg_sa2ul_get_dkek_req</span></code> and <code class="docutils literal"><span class="pre">tisci_msg_sa2ul_get_dkek_resp</span></code> have been renamed to <code class="docutils literal"><span class="pre">tisci_msg_crypto_get_dkek_req</span></code> and <code class="docutils literal"><span class="pre">tisci_msg_crypto_get_dkek_resp</span></code> respectively.
+Also, the MACRO <code class="docutils literal"><span class="pre">SA2UL_DKEK_KEY_LEN</span></code> has been renamed to <code class="docutils literal"><span class="pre">CRYPTO_DKEK_KEY_LEN</span></code>.
+Please update your code to use the new names.</p>
+</div>
 <p>See <a class="reference internal" href="#pub-tisci-dkek-notes"><span class="std std-ref">API Notes</span></a> below.</p>
 </div>
 <div class="section" id="api-notes">
@@ -479,7 +501,7 @@ involve any step to derive or program the DKEK values</p>
 <ul class="simple">
 <li>The total length of the Label and Context fields below is limited by the size
 of the TISCI messages(see <a class="reference internal" href="../general/TISCI_header.html#pub-secure-msg-header"><span class="std std-ref">Secure Messaging Header</span></a>) to 41 bytes.</li>
-<li>System Firmware only support <code class="docutils literal"><span class="pre">sa2ul_instance</span></code> value of 0 in the API below.</li>
+<li>System Firmware only support <code class="docutils literal"><span class="pre">instance</span></code> value of 0 in the API below.</li>
 </ul>
 </div>
 </div>
@@ -504,7 +526,7 @@ of the TISCI messages(see <a class="reference internal" href="../general/TISCI_h
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -526,7 +548,7 @@ of the TISCI messages(see <a class="reference internal" href="../general/TISCI_h
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

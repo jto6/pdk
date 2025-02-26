@@ -49,6 +49,8 @@ Please refer to the table below for SOC specific details of hardware rows:
 +---------+------------------+---------------+----------+----------+------------+
 | J722S   | 1024             | 25            | 42       | 32       | 2          |
 +---------+------------------+---------------+----------+----------+------------+
+| AM275x  | 1024             | 25            | 42       | 32       | 2          |
++---------+------------------+---------------+----------+----------+------------+
 
 On device boot, the data in the OTP area is read into a set of 32 bit memory
 mapped registers(MMRs). There are 32 such registers to accommodate the maximum

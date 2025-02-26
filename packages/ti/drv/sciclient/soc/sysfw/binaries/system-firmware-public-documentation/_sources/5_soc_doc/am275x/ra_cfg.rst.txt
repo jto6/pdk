@@ -1,0 +1,96 @@
+===========================================
+AM275X Ring Accelerator Device Descriptions
+===========================================
+
+Introduction
+============
+
+This chapter provides information on the Ring Accelerator devices in the AM275X
+SoC.  Some System Firmware TISCI messages take device specific inputs. This
+chapter provides information on the valid values for Ring Accelerator TISCI
+message parameters.
+
+.. _pub_soc_am275x_ra_device_ids:
+
+Ring Accelerator Device IDs
+===========================
+
+Some System Firmware TISCI message APIs require the Ring Accelerator device ID
+be provided as part of the request. Based on :doc:`AM275X Device IDs <devices>`
+these are the valid Ring Accelerator device IDs.
+
++--------------------------------+------------------------------+
+| Ring Accelerator Device Name   |   Ring Accelerator Device ID |
++================================+==============================+
+| AM275X_DEV_DMASS0_BCDMA_0      |                           26 |
++--------------------------------+------------------------------+
+| AM275X_DEV_DMASS0_PKTDMA_0     |                           30 |
++--------------------------------+------------------------------+
+| AM275X_DEV_DMASS0_RINGACC_0    |                           33 |
++--------------------------------+------------------------------+
+
+.. _pub_soc_am275x_ra_rings:
+
+Ring Accelerator Ring Indices
+=============================
+
+This section describes valid Ring Accelerator ring indices for each ring type.
+The ring index and type ID are used in some Ring Accelerator based TISCI
+messages.
+
+
+.. warning::
+
+    Resources marked as reserved for use by TIFS **cannot** be assigned to a
+    host within the RM Board Configuration resource assignment array.  The RM
+    Board Configuration is rejected if an overlap with a reserved resource is
+    detected.
+
+
+**DMASS0_BCDMA_0**
+
++------------------+--------------------+
+| Ring Type        | Ring Index Range   |
++==================+====================+
+| BLOCK_COPY_CHAN  | 0 to 23            |
++------------------+--------------------+
+| SPLIT_TR_TX_CHAN | 24 to 71           |
++------------------+--------------------+
+| SPLIT_TR_RX_CHAN | 72 to 121          |
++------------------+--------------------+
+
+
+**DMASS0_PKTDMA_0**
+
++------------------+--------------------+
+| Ring Type        | Ring Index Range   |
++==================+====================+
+| UNMAPPED_TX_CHAN | 0 to 26            |
++------------------+--------------------+
+| CPSW_TX_CHAN     | 27 to 90           |
++------------------+--------------------+
+| SAUL_TX_0_CHAN   | 91 to 98           |
++------------------+--------------------+
+| SAUL_TX_1_CHAN   | 99 to 106          |
++------------------+--------------------+
+| UNMAPPED_RX_CHAN | 107 to 133         |
++------------------+--------------------+
+| CPSW_RX_CHAN     | 134 to 149         |
++------------------+--------------------+
+| SAUL_RX_0_CHAN   | 150 to 157         |
++------------------+--------------------+
+| SAUL_RX_1_CHAN   | 150 to 157         |
++------------------+--------------------+
+| SAUL_RX_2_CHAN   | 158 to 165         |
++------------------+--------------------+
+| SAUL_RX_3_CHAN   | 158 to 165         |
++------------------+--------------------+
+
+
+**DMASS0_RINGACC_0**
+
++-------------+--------------------+
+| Ring Type   | Ring Index Range   |
++=============+====================+
++-------------+--------------------+
+

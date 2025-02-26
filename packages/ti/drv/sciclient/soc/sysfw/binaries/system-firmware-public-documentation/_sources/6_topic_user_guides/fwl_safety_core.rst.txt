@@ -52,7 +52,7 @@ This entry controls the SAUL / Safety configuration on the SOC.
    |                                  |                                | currently supported                               |
    +----------------------------------+--------------------------------+---------------------------------------------------+
    | Magic and size for               |                                | Flag for allowing pairing requests from PSIL.     |
-   | integrity check                  | ftbool                         | Set to 0x5A to enable                             |
+   | integrity check                  | u8                             | Set to 0x5A to enable                             |
    +----------------------------------+--------------------------------+---------------------------------------------------+
    | safety_host_info                 | u8[2]                          | {0x5AU, host id of Safety core}. For ex:          |
    |                                  |                                | Host ID of R5 (pulsar_0) in J784S4 = 0x4          |

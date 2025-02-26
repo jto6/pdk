@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -131,6 +131,8 @@
 <li class="toctree-l3"><a class="reference internal" href="soc_devgrps.html">AM62PX Device Group descriptions</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am275x">AM275x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62lx">AM62Lx</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#j721e">J721E</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#j7200">J7200</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#j721s2">J721S2</a></li>
@@ -190,7 +192,7 @@
 <p>This chapter provides information of Board Configuration resource assignment
 type IDs that are permitted in the AM62PX SoC.  The resource type IDs represent
 AM62PX resources ranges assignable to SoC processing entities (or PEs).</p>
-<p><strong>WARNING</strong>: System Firmware RM currently supports a maximum of 340 RM board
+<p><strong>WARNING</strong>: System Firmware RM currently supports a maximum of 350 RM board
 configuration resource assignment ranges on the AM62PX SoC.  Sending more
 entries than the maximum will result in the RM board configuration being NACK’d</p>
 <table border="1" class="docutils">
@@ -259,13 +261,21 @@ entries than the maximum will result in the RM board configuration being NACK’
 </tr>
 <tr class="row-odd"><td>&#160;</td>
 <td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_RING_BLOCK_COPY_HCCHAN</td>
+<td>0x0C</td>
+<td>0x068C</td>
+<td>0</td>
+<td>4</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
 <td>RESASG_SUBTYPE_BCDMA_RING_BLOCK_COPY_CHAN</td>
 <td>0x0D</td>
 <td>0x068D</td>
-<td>0</td>
-<td>32</td>
+<td>4</td>
+<td>28</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td>&#160;</td>
 <td>RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_RX_CHAN</td>
 <td>0x0E</td>
@@ -273,7 +283,7 @@ entries than the maximum will result in the RM board configuration being NACK’
 <td>57</td>
 <td>25</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td>&#160;</td>
 <td>RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_TX_CHAN</td>
 <td>0x0F</td>
@@ -281,13 +291,21 @@ entries than the maximum will result in the RM board configuration being NACK’
 <td>32</td>
 <td>25</td>
 </tr>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>RESASG_SUBTYPE_BCDMA_BLOCK_COPY_HCCHAN</td>
+<td>0x1F</td>
+<td>0x069F</td>
+<td>0</td>
+<td>4</td>
+</tr>
 <tr class="row-even"><td>&#160;</td>
 <td>&#160;</td>
 <td>RESASG_SUBTYPE_BCDMA_BLOCK_COPY_CHAN</td>
 <td>0x20</td>
 <td>0x06A0</td>
-<td>0</td>
-<td>32</td>
+<td>4</td>
+<td>28</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
 <td>&#160;</td>
@@ -785,7 +803,7 @@ entries than the maximum will result in the RM board configuration being NACK’
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -807,7 +825,7 @@ entries than the maximum will result in the RM board configuration being NACK’
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

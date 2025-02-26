@@ -1,0 +1,87 @@
+========================
+AM275X Host Descriptions
+========================
+
+.. _soc_doc_am275x_public_host_desc_intro:
+
+Introduction
+============
+
+This chapter provides information on the set of HostIDs permitted
+in this AM275X SoC. HostIDs uniquely identify each logically distinct high level
+software entity. A software entity identification number (HostID) can be
+assigned to an OS either native or virtualized, or a firmware/native
+application. The HostID is used to select the set of Secure Proxy channels for
+which this software entity should use to communicate with the System Firmware.
+
+As an example with an R5 core, then there could be 0, 1, or n number of
+R5 related hosts. The only limit is the number of available Secure Proxy
+Channels. Typically though, an R5 core will be assigned one secure host as well as one non
+secure host, but may be assigned additional hosts for certain usecases. As for other
+cores, some will only use secure hosts, and others will only use non secure hosts.
+Since the hosts are tied to Secure Proxy Channels, hosts are just a way of sectioning
+off data for a designated purpose.
+
+System Firmware also checks that the used HostID comes from software running
+on the correct core (as implied by Host Name in the below table) and with the
+correct security level (Security Status column).
+
+Additionally, one of the key reasons why HostID is tied in with Secure Proxy
+channels is because it prevents spoofing. When a message is received by
+System Firmware, the Secure Proxy channel tied to the HostID in the message is
+verified against the Secure Proxy channel on which the message was received.
+Specifically, only the HostID listed in the "Host Name" column can use the Secure
+Proxy channel associated with it.
+
+.. _soc_doc_am275x_public_host_desc_host_list:
+
+Enumeration of Host IDs
+=======================
+
++-----------+-------------+-------------------+---------------------------------------------+
+|   Host ID | Host Name   | Security Status   | Description                                 |
++===========+=============+===================+=============================================+
+|         0 | TIFS        | Secure            | TI Foundational Security                    |
++-----------+-------------+-------------------+---------------------------------------------+
+|        20 | C7X_0_0     | Non Secure        | C7x_0 context 0 on MAIN domain              |
++-----------+-------------+-------------------+---------------------------------------------+
+|        22 | C7X_1_0     | Non Secure        | C7x_1 context 0 on MAIN domain              |
++-----------+-------------+-------------------+---------------------------------------------+
+|        35 | WKUP_0_R5_0 | Secure            | Cortex R5_0 context 0 on WKUP domain (BOOT) |
++-----------+-------------+-------------------+---------------------------------------------+
+|        36 | WKUP_0_R5_1 | Non Secure        | Cortex R5_0 context 1 on WKUP domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        40 | MAIN_0_R5_0 | Secure            | Cortex R5_0 context 0 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        41 | MAIN_0_R5_1 | Non Secure        | Cortex R5_0 context 1 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        42 | MAIN_0_R5_2 | Secure            | Cortex R5_0 context 2 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        43 | MAIN_0_R5_3 | Non Secure        | Cortex R5_0 context 3 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        45 | MAIN_1_R5_0 | Secure            | Cortex R5_1 context 0 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        46 | MAIN_1_R5_1 | Non Secure        | Cortex R5_1 context 1 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        47 | MAIN_1_R5_2 | Secure            | Cortex R5_1 context 2 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|        48 | MAIN_1_R5_3 | Non Secure        | Cortex R5_1 context 3 on MAIN domain        |
++-----------+-------------+-------------------+---------------------------------------------+
+|       250 | DM2TIFS     | Secure            | DM to TIFS communication                    |
++-----------+-------------+-------------------+---------------------------------------------+
+|       251 | TIFS2DM     | Non Secure        | TIFS to DM communication                    |
++-----------+-------------+-------------------+---------------------------------------------+
+|       253 | HSM         | Secure            | HSM Controller                              |
++-----------+-------------+-------------------+---------------------------------------------+
+|       254 | DM          | Non Secure        | Device Management                           |
++-----------+-------------+-------------------+---------------------------------------------+
+
+.. note::
+
+   * Description provides an intended purpose
+     of the host ID, though on some systems,
+     this might be used differently, backing memory and
+     link allocations are made with the specified purpose
+     in mind
+   * Security Status provides an intended purpose for the
+     Host context

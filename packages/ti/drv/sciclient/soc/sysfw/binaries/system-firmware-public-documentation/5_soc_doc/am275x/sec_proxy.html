@@ -1,0 +1,714 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AM275X Secure Proxy Descriptions &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../../index.html"/>
+        <link rel="up" title="Chapter 5: SoC Family Specific Documentation" href="../index.html"/>
+        <link rel="next" title="AM275X Processor Descriptions" href="processors.html"/>
+        <link rel="prev" title="AM275X PSI-L Device Descriptions" href="psil_cfg.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.00.04
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_tisci_msgs/index.html">Chapter 2: TISCI Message Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Chapter 5: SoC Family Specific Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr1">AM65x SR1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr2">AM65x SR2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am64x">AM64x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62x">AM62x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62ax">AM62Ax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62px">AM62Px</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#am275x">AM275x</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hosts.html">AM275X Host Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">AM275X Devices Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clocks.html">AM275X Clock Identifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pll_data.html">AM275X PLL Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resasg_types.html">AM275X Board Configuration Resource Assignment Type Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interrupt_cfg.html">AM275X Interrupt Management Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ra_cfg.html">AM275X Ring Accelerator Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dma_cfg.html">AM275X DMA Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="psil_cfg.html">AM275X PSI-L Device Descriptions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AM275X Secure Proxy Descriptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enumeration-of-secure-proxies">Enumeration of Secure Proxies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#thread-allocation-per-secure-proxy">Thread Allocation per Secure Proxy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="processors.html">AM275X Processor Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="firewalls.html">AM275X Firewall Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soc_devgrps.html">AM275X Device Group descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62lx">AM62Lx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721e">J721E</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j7200">J7200</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721s2">J721S2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j722s">J722S</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j784s4">J784S4</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_topic_user_guides/index.html">Chapter 6: Topic User Guides</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Chapter 5: SoC Family Specific Documentation</a> &raquo;</li>
+      
+    <li>AM275X Secure Proxy Descriptions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="am275x-secure-proxy-descriptions">
+<h1>AM275X Secure Proxy Descriptions<a class="headerlink" href="#am275x-secure-proxy-descriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="soc-doc-am275x-public-sproxy-desc-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This chapter provides information of Secure Proxies and communication paths
+that are permitted in the AM275X SoC. These host IDs represent processing entities
+(or PEs) which is mandatory identification of a Host in a processor. See
+PE/Host documentation for further information</p>
+</div>
+<div class="section" id="enumeration-of-secure-proxies">
+<span id="soc-doc-am275x-public-sproxy-desc-sproxy-list"></span><h2>Enumeration of Secure Proxies<a class="headerlink" href="#enumeration-of-secure-proxies" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Sproxy ID</th>
+<th class="head">Sproxy Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>DMASS0_SEC_PROXY_0</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>SA3_SS0_SEC_PROXY_0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="thread-allocation-per-secure-proxy">
+<span id="soc-doc-am275x-public-sproxy-desc-sproxy-per-list"></span><h2>Thread Allocation per Secure Proxy<a class="headerlink" href="#thread-allocation-per-secure-proxy" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="secure-proxy-thread-allocation-for-dmass0-sec-proxy-0">
+<span id="soc-doc-am275x-public-sproxy-desc-sproxy-per-list-dmass0-sec-proxy-0"></span><h3>Secure Proxy thread allocation for DMASS0_SEC_PROXY_0<a class="headerlink" href="#secure-proxy-thread-allocation-for-dmass0-sec-proxy-0" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="16%" />
+<col width="13%" />
+<col width="7%" />
+<col width="18%" />
+<col width="15%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Secure Proxy Thread ID</th>
+<th class="head">Direction (write or read)</th>
+<th class="head">Number of Messages</th>
+<th class="head">Host</th>
+<th class="head">Host Function</th>
+<th class="head">IRQ (threshold)</th>
+<th class="head">IRQ (error)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>68</td>
+<td>read</td>
+<td>34</td>
+<td>DM</td>
+<td>nonsec_low_priority_rx</td>
+<td>WKUP_R5FSS0_CORE0/INTR_68</td>
+<td>WKUP_R5FSS0_CORE0/INTR_68</td>
+</tr>
+<tr class="row-odd"><td>67</td>
+<td>write</td>
+<td>11</td>
+<td>DM</td>
+<td>nonsec_WKUP_0_R5_1_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>66</td>
+<td>write</td>
+<td>5</td>
+<td>DM</td>
+<td>nonsec_MAIN_0_R5_1_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>65</td>
+<td>write</td>
+<td>5</td>
+<td>DM</td>
+<td>nonsec_MAIN_0_R5_3_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>64</td>
+<td>write</td>
+<td>5</td>
+<td>DM</td>
+<td>nonsec_MAIN_1_R5_1_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>63</td>
+<td>write</td>
+<td>5</td>
+<td>DM</td>
+<td>nonsec_MAIN_1_R5_3_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>62</td>
+<td>write</td>
+<td>4</td>
+<td>DM</td>
+<td>nonsec_C7X_0_0_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>61</td>
+<td>write</td>
+<td>4</td>
+<td>DM</td>
+<td>nonsec_C7X_1_0_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>60</td>
+<td>write</td>
+<td>4</td>
+<td>DM</td>
+<td>nonsec_TIFS2DM_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>read</td>
+<td>11</td>
+<td>WKUP_0_R5_0</td>
+<td>response</td>
+<td>WKUP_R5FSS0_CORE0/INTR_64</td>
+<td>WKUP_R5FSS0_CORE0/INTR_64</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>write</td>
+<td>10</td>
+<td>WKUP_0_R5_0</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>read</td>
+<td>11</td>
+<td>WKUP_0_R5_1</td>
+<td>response</td>
+<td>WKUP_R5FSS0_CORE0/INTR_65</td>
+<td>WKUP_R5FSS0_CORE0/INTR_65</td>
+</tr>
+<tr class="row-even"><td>3</td>
+<td>write</td>
+<td>10</td>
+<td>WKUP_0_R5_1</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_0_R5_0</td>
+<td>response</td>
+<td>R5FSS0_CORE0/INTR_64</td>
+<td>R5FSS0_CORE0/INTR_64</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_0_R5_0</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>6</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_0_R5_1</td>
+<td>response</td>
+<td>R5FSS0_CORE0/INTR_65</td>
+<td>R5FSS0_CORE0/INTR_65</td>
+</tr>
+<tr class="row-even"><td>7</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_0_R5_1</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>8</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_0_R5_2</td>
+<td>response</td>
+<td>R5FSS0_CORE1/INTR_66</td>
+<td>R5FSS0_CORE1/INTR_66</td>
+</tr>
+<tr class="row-even"><td>9</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_0_R5_2</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_0_R5_3</td>
+<td>response</td>
+<td>R5FSS0_CORE1/INTR_67</td>
+<td>R5FSS0_CORE1/INTR_67</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_0_R5_3</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>12</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_1_R5_0</td>
+<td>response</td>
+<td>R5FSS1_CORE0/INTR_64</td>
+<td>R5FSS1_CORE0/INTR_64</td>
+</tr>
+<tr class="row-even"><td>13</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_1_R5_0</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_1_R5_1</td>
+<td>response</td>
+<td>R5FSS1_CORE0/INTR_65</td>
+<td>R5FSS1_CORE0/INTR_65</td>
+</tr>
+<tr class="row-even"><td>15</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_1_R5_1</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>16</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_1_R5_2</td>
+<td>response</td>
+<td>R5FSS1_CORE1/INTR_66</td>
+<td>R5FSS1_CORE1/INTR_66</td>
+</tr>
+<tr class="row-even"><td>17</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_1_R5_2</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>18</td>
+<td>read</td>
+<td>5</td>
+<td>MAIN_1_R5_3</td>
+<td>response</td>
+<td>R5FSS1_CORE1/INTR_67</td>
+<td>R5FSS1_CORE1/INTR_67</td>
+</tr>
+<tr class="row-even"><td>19</td>
+<td>write</td>
+<td>4</td>
+<td>MAIN_1_R5_3</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>20</td>
+<td>read</td>
+<td>4</td>
+<td>C7X_0_0</td>
+<td>response</td>
+<td>C7X256V0_CLEC/GIC_SPI_96</td>
+<td>C7X256V0_CLEC/GIC_SPI_96</td>
+</tr>
+<tr class="row-even"><td>21</td>
+<td>write</td>
+<td>3</td>
+<td>C7X_0_0</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>22</td>
+<td>read</td>
+<td>4</td>
+<td>C7X_1_0</td>
+<td>response</td>
+<td>C7X256V1_CLEC/GIC_SPI_97</td>
+<td>C7X256V1_CLEC/GIC_SPI_97</td>
+</tr>
+<tr class="row-even"><td>23</td>
+<td>write</td>
+<td>3</td>
+<td>C7X_1_0</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>24</td>
+<td>read</td>
+<td>4</td>
+<td>DM2TIFS</td>
+<td>response</td>
+<td>WKUP_R5FSS0_CORE0/INTR_66</td>
+<td>WKUP_R5FSS0_CORE0/INTR_66</td>
+</tr>
+<tr class="row-even"><td>25</td>
+<td>write</td>
+<td>2</td>
+<td>DM2TIFS</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>26</td>
+<td>read</td>
+<td>4</td>
+<td>TIFS2DM</td>
+<td>response</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>27</td>
+<td>write</td>
+<td>2</td>
+<td>TIFS2DM</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="secure-proxy-thread-allocation-for-sa3-ss0-sec-proxy-0">
+<span id="soc-doc-am275x-public-sproxy-desc-sproxy-per-list-sa3-ss0-sec-proxy-0"></span><h3>Secure Proxy thread allocation for SA3_SS0_SEC_PROXY_0<a class="headerlink" href="#secure-proxy-thread-allocation-for-sa3-ss0-sec-proxy-0" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="20%" />
+<col width="15%" />
+<col width="7%" />
+<col width="15%" />
+<col width="13%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Secure Proxy Thread ID</th>
+<th class="head">Direction (write or read)</th>
+<th class="head">Number of Messages</th>
+<th class="head">Host</th>
+<th class="head">Host Function</th>
+<th class="head">IRQ (threshold)</th>
+<th class="head">IRQ (error)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>15</td>
+<td>read</td>
+<td>8</td>
+<td>TIFS_HSM</td>
+<td>sec_low_priority_rx</td>
+<td>TIFS0/NVIC_217</td>
+<td>TIFS0/NVIC_217</td>
+</tr>
+<tr class="row-odd"><td>14</td>
+<td>write</td>
+<td>8</td>
+<td>TIFS_HSM</td>
+<td>sec_HSM_response_tx</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>0</td>
+<td>read</td>
+<td>8</td>
+<td>HSM</td>
+<td>response</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>write</td>
+<td>8</td>
+<td>HSM</td>
+<td>low_priority</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="processors.html" class="btn btn-neutral float-right" title="AM275X Processor Descriptions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="psil_cfg.html" class="btn btn-neutral" title="AM275X PSI-L Device Descriptions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'11.00.04',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

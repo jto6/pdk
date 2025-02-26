@@ -39,6 +39,7 @@
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="TISCI User Guide" href="../index.html"/>
         <link rel="up" title="Chapter 6: Topic User Guides" href="index.html"/>
+        <link rel="next" title="Boot Mode Writer Service" href="boot_mode_writer.html"/>
         <link rel="prev" title="Cryptographic Services" href="csp.html"/> 
 
   
@@ -78,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -134,6 +135,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#reading-the-firewall-and-isc-data-in-the-safety-core">Reading the firewall and isc data in the Safety core</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="boot_mode_writer.html">Boot Mode Writer Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boot_mode_writer_encoding.html">Boot Mode Writer Encoding table</a></li>
 </ul>
 </li>
 </ul>
@@ -245,7 +248,7 @@ currently supported</td>
 </tr>
 <tr class="row-even"><td>Magic and size for
 integrity check</td>
-<td>ftbool</td>
+<td>u8</td>
 <td>Flag for allowing pairing requests from PSIL.
 Set to 0x5A to enable</td>
 </tr>
@@ -295,6 +298,8 @@ Firewall data of a given ID and contains 32 bytes for each region.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="boot_mode_writer.html" class="btn btn-neutral float-right" title="Boot Mode Writer Service" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
       
         <a href="csp.html" class="btn btn-neutral" title="Cryptographic Services" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -305,7 +310,7 @@ Firewall data of a given ID and contains 32 bytes for each region.</p>
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -327,7 +332,7 @@ Firewall data of a given ID and contains 32 bytes for each region.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

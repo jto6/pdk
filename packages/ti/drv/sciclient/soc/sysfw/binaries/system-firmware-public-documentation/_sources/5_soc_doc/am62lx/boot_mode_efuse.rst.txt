@@ -1,0 +1,24 @@
+=======================
+AM62LX Boot Mode Efuses
+=======================
+
+.. _soc_doc_am62lx_public_boot_mode_efuses_intro:
+
+Introduction
+============
+
+This chapter provides the tisci index and 25-bit bitmask for every boot mode efuse present on the device.
+These values are needed for using the boot mode writer service.
+
+.. _soc_doc_am62lx_public_boot_mode_efuses_table:
+
+Boot Mode Efuses
+================
+
++-------------------+-------------+-------------------+
+| Efuse index       | TISCI index | 25-bit bitmask    |
++===================+=============+===================+
+| boot mode efuse 1 | 1           | 0x012007B         |
++-------------------+-------------+-------------------+
+| boot mode efuse 2 | 2           | 0x02F0D53         |
++-------------------+-------------+-------------------+

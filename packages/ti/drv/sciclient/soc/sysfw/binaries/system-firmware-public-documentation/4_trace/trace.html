@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -290,6 +290,40 @@ about the location and size can be found below.</p>
 <td>0x4405F000</td>
 <td>0x1000</td>
 </tr>
+<tr class="row-even"><td>AM275x</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Low Power Mode Trace Memory Buffer</strong>:</p>
+<p>The location and size of trace buffer used for DM firmware stub (the minimal
+DM firmware that gets executed in low power mode) logs can be found below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="46%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">SoC</th>
+<th class="head">Base Address</th>
+<th class="head">Size</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM62x</td>
+<td>0x41017800</td>
+<td>0x800</td>
+</tr>
+<tr class="row-odd"><td>AM62Ax</td>
+<td>0x41880000</td>
+<td>0x800</td>
+</tr>
+<tr class="row-even"><td>AM62Px</td>
+<td>0x41880000</td>
+<td>0x800</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -337,6 +371,34 @@ over the UART.</p>
 </tr>
 <tr class="row-odd"><td>J722S</td>
 <td>MAIN UART5</td>
+</tr>
+<tr class="row-even"><td>AM275x</td>
+<td>MAIN UART3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Low Power Mode Trace UART Allocation</strong>:</p>
+<p>The table below shows the UART instance used for routing DM stub (the minimal
+DM firmware that gets executed in low power mode) trace messages over the UART.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">SoC</th>
+<th class="head">UART Instance</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM62x</td>
+<td>WKUP UART0</td>
+</tr>
+<tr class="row-odd"><td>AM62Ax</td>
+<td>WKUP UART0</td>
+</tr>
+<tr class="row-even"><td>AM62Px</td>
+<td>WKUP UART0</td>
 </tr>
 </tbody>
 </table>
@@ -1783,10 +1845,10 @@ action bit set</td>
 <span id="pub-trace-debug-data-format-action-id-power"></span><h4>Power Management Action IDs<a class="headerlink" href="#power-management-action-ids" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="19%" />
-<col width="6%" />
-<col width="37%" />
-<col width="37%" />
+<col width="15%" />
+<col width="5%" />
+<col width="29%" />
+<col width="51%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Action ID</th>
@@ -1798,7 +1860,7 @@ action bit set</td>
 <tbody valign="top">
 <tr class="row-even"><td>DEVICE_ON</td>
 <td>0</td>
-<td>Device has been turned on           .</td>
+<td>Device has been turned on.</td>
 <td>Device ID</td>
 </tr>
 <tr class="row-odd"><td>DEVICE_OFF</td>
@@ -1971,7 +2033,7 @@ action bit set</td>
 <tr class="row-even"><td>LPM_SEQ</td>
 <td>48</td>
 <td>Low power mode sequence</td>
-<td>[21:8]   - Sequence number
+<td>[21:8]   - <a class="reference internal" href="#pub-trace-debug-data-format-lpm-seq"><span class="std std-ref">Sequence number</span></a>
 [7:0]    - Value</td>
 </tr>
 <tr class="row-odd"><td>EXCLUSIVE_BUSY</td>
@@ -2008,6 +2070,252 @@ to the requested device</td>
 </tbody>
 </table>
 </div>
+<div class="section" id="low-power-mode-sequence-ids">
+<span id="pub-trace-debug-data-format-lpm-seq"></span><h4>Low Power Mode Sequence IDs<a class="headerlink" href="#low-power-mode-sequence-ids" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="9%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Sequence ID</th>
+<th class="head">Value</th>
+<th class="head">Use</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DM_STUB_START</td>
+<td>1</td>
+<td>DM stub started</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_MMR_UNLOCK</td>
+<td>2</td>
+<td>Unlocked MMRs</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_DDR_SR_ENTER</td>
+<td>3</td>
+<td>Kept DDR in self refresh</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DDR_RST_ISO</td>
+<td>4</td>
+<td>DDR in reset isolation</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_USB_RST_ISO</td>
+<td>5</td>
+<td>Enabled USB reset isolation</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_MAIN_LPSC</td>
+<td>6</td>
+<td>Disabled main LPSC</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_BYPASS_MAIN_PLL</td>
+<td>7</td>
+<td>Bypassed main PLL</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_CONFIG_WAKE_SRC</td>
+<td>8</td>
+<td>Configured wake-up sources</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_EN_MAIN_IO_ISO</td>
+<td>9</td>
+<td>Enabled Main IO isolation</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_MAIN_LPSC2</td>
+<td>10</td>
+<td>Disabled second set of main LPSC</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_WKUP_CLKSEL_MCU</td>
+<td>11</td>
+<td>Switched from MAIN PLL to MCU PLL</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_CONF_CLK_MUXES</td>
+<td>12</td>
+<td>Configured clock muxes</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_DIS_MAIN_PLLS</td>
+<td>13</td>
+<td>Disabled Main PLL</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_EN_DS_RST_MASK</td>
+<td>14</td>
+<td>Enabled DM reset mask</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_DS_MAIN_OFF</td>
+<td>15</td>
+<td>Kept main domain in reset</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_MCU_DOM</td>
+<td>16</td>
+<td>Disabled MCU domain</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_EN_RST_ISO_DONE</td>
+<td>17</td>
+<td>Masked main domain reset</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_MSK_WWD0_CTRL</td>
+<td>18</td>
+<td>Gated WWD clock</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_BYPASS_MCU_PLL</td>
+<td>19</td>
+<td>Bypassed MCU PLL</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_CLR_CLKLOSS_EN</td>
+<td>20</td>
+<td>Disabled clock switch on clock loss</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_EN_HFOSC_PD_C</td>
+<td>21</td>
+<td>Powered off HFOSC</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_EN_OSC_CG_WFI</td>
+<td>22</td>
+<td>Enabled gating of clock on WFI</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_PRE_WFI</td>
+<td>23</td>
+<td>DM in WFI</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_WAKE_EVENT</td>
+<td>24</td>
+<td>LPM wake event</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_POST_WFI</td>
+<td>25</td>
+<td>DM exited WFI</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_CLR_OSC_CG_WFI</td>
+<td>26</td>
+<td>Disabled gating of clock on WFI</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_CLR_HFOSC_PD_C</td>
+<td>27</td>
+<td>Powered on HFOSC</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_SET_CLKLOSS_EN</td>
+<td>28</td>
+<td>Enabled clock switch on clock loss</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_RESTORE_MCU_PLL</td>
+<td>29</td>
+<td>Restored MCU PLL</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_UNMSK_WWD0_CTRL</td>
+<td>30</td>
+<td>Unmasked WWD clock</td>
+</tr>
+<tr class="row-even"><td>DIS_MCU_IO_ISO</td>
+<td>31</td>
+<td>Disabled MCU IO isolation</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_SET_MGC_WRD</td>
+<td>32</td>
+<td>Wrote stub magic word</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_DS_MAIN_ON</td>
+<td>33</td>
+<td>Powered on main domain</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_WAIT_MAIN_RST</td>
+<td>34</td>
+<td>Released main reset</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_WKUP_CLKSEL_MAIN</td>
+<td>35</td>
+<td>Switched to SMS PLL from MCU PLL</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_EN_MCU_PLLS</td>
+<td>36</td>
+<td>Enabled remaining MCU PLL</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_WAIT_TIFS</td>
+<td>37</td>
+<td>TIFS core is ready</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_FS_STUB_LD</td>
+<td>38</td>
+<td>Loaded FS stub</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_TISCI_CONT_RES</td>
+<td>39</td>
+<td>Received continue resume</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_MAIN_IO_ISO</td>
+<td>40</td>
+<td>Disabled main IO isolation</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_EN_MAIN_PLLS</td>
+<td>41</td>
+<td>Enabled remaining PLL</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_DDR_RST_ISO</td>
+<td>42</td>
+<td>Removed DDR reset isolation</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_DDR_SR_EXIT</td>
+<td>43</td>
+<td>Exited DDR self reset</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_USB_RST_ISO</td>
+<td>44</td>
+<td>Disabled USB reset isolation</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_RESP_CONT_RES</td>
+<td>45</td>
+<td>Sent continue resume to TFS</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_TISCI_SYNC_RES</td>
+<td>46</td>
+<td>Received sync resume message</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_MMR_LOCK</td>
+<td>47</td>
+<td>Locked MCU CTRL MMR</td>
+</tr>
+<tr class="row-odd"><td>FS_STUB_START</td>
+<td>48</td>
+<td>FS stub started</td>
+</tr>
+<tr class="row-even"><td>FS_STUB_TISCI_CONT_RES</td>
+<td>49</td>
+<td>Received continue resume from DM stub</td>
+</tr>
+<tr class="row-odd"><td>FS_STUB_CTX_RESTORE</td>
+<td>50</td>
+<td>TIFS context restored</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_DS_RST_UNMASK</td>
+<td>51</td>
+<td>Removed DM reset mask</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_RST_ISO_DONE</td>
+<td>52</td>
+<td>Removed main domain reset isolation</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_EN_CLK_GATE</td>
+<td>53</td>
+<td>Gated clock of legacy peripherals</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_DIS_CLK_GATE</td>
+<td>54</td>
+<td>Ungated clock of legacy peripherals</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_UNLOAD_MAGIC_WORDS</td>
+<td>55</td>
+<td>Unloaded CAN magic words in MMR</td>
+</tr>
+<tr class="row-odd"><td>DM_STUB_LOAD_MAGIC_WORDS</td>
+<td>56</td>
+<td>Loaded CAN magic words in MMR</td>
+</tr>
+<tr class="row-even"><td>DM_STUB_MAIN_DM_LPSC_EN</td>
+<td>81</td>
+<td>Enabled main LPSC</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -2031,7 +2339,7 @@ to the requested device</td>
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -2053,7 +2361,7 @@ to the requested device</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

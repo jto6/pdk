@@ -24,3 +24,5 @@
    ./keyring
    ./csp
    ./fwl_safety_core
+   ./boot_mode_writer
+   ./boot_mode_writer_encoding

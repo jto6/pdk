@@ -1,0 +1,527 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AM275X PSI-L Device Descriptions &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../../index.html"/>
+        <link rel="up" title="Chapter 5: SoC Family Specific Documentation" href="../index.html"/>
+        <link rel="next" title="AM275X Secure Proxy Descriptions" href="sec_proxy.html"/>
+        <link rel="prev" title="AM275X DMA Device Descriptions" href="dma_cfg.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.00.04
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_tisci_msgs/index.html">Chapter 2: TISCI Message Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Chapter 5: SoC Family Specific Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr1">AM65x SR1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr2">AM65x SR2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am64x">AM64x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62x">AM62x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62ax">AM62Ax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62px">AM62Px</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#am275x">AM275x</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hosts.html">AM275X Host Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">AM275X Devices Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clocks.html">AM275X Clock Identifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pll_data.html">AM275X PLL Defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="resasg_types.html">AM275X Board Configuration Resource Assignment Type Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interrupt_cfg.html">AM275X Interrupt Management Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ra_cfg.html">AM275X Ring Accelerator Device Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dma_cfg.html">AM275X DMA Device Descriptions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AM275X PSI-L Device Descriptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#psi-l-proxy-device-ids">PSI-L Proxy Device IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#psi-l-source-and-destination-thread-ids">PSI-L Source and Destination Thread IDs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sec_proxy.html">AM275X Secure Proxy Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="processors.html">AM275X Processor Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="firewalls.html">AM275X Firewall Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="soc_devgrps.html">AM275X Device Group descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62lx">AM62Lx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721e">J721E</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j7200">J7200</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721s2">J721S2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j722s">J722S</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j784s4">J784S4</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_topic_user_guides/index.html">Chapter 6: Topic User Guides</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Chapter 5: SoC Family Specific Documentation</a> &raquo;</li>
+      
+    <li>AM275X PSI-L Device Descriptions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="am275x-psi-l-device-descriptions">
+<h1>AM275X PSI-L Device Descriptions<a class="headerlink" href="#am275x-psi-l-device-descriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This chapter provides information on the PSI-L devices in the AM275X SoC.  Some
+System Firmware TISCI messages take device specific inputs. This chapter
+provides information on the valid values for PSI-L TISCI message parameters.</p>
+</div>
+<div class="section" id="psi-l-proxy-device-ids">
+<span id="pub-soc-am275x-psil-proxy-device-ids"></span><h2>PSI-L Proxy Device IDs<a class="headerlink" href="#psi-l-proxy-device-ids" title="Permalink to this headline">¶</a></h2>
+<p>Some System Firmware TISCI message APIs require the PSI-L Proxy device ID be
+provided as part of the request. Based on <a class="reference internal" href="devices.html"><span class="doc">AM275X Device IDs</span></a>
+these are the valid PSI-L Proxy device IDs.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PSI-L Proxy Device Name</th>
+<th class="head">PSI-L Proxy Device ID</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM275X_DEV_DMASS0</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="psi-l-source-and-destination-thread-ids">
+<span id="pub-soc-am275x-psil-thread-ids"></span><h2>PSI-L Source and Destination Thread IDs<a class="headerlink" href="#psi-l-source-and-destination-thread-ids" title="Permalink to this headline">¶</a></h2>
+<p>This section describes valid PSI-L source and destination thread IDs for each
+thread type. The thread IDs are used in the PSI-L based TISCI messages.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">PSI-L threads marked as reserved for use by TIFS <strong>cannot</strong> be linked to
+another thread.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="56%" />
+<col width="44%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Thread Type</th>
+<th class="head">Thread Range</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>bcdma_cfg</td>
+<td>0x21 to 0x21</td>
+</tr>
+<tr class="row-odd"><td>pktdma_tx</td>
+<td>0x1000 to 0x1024</td>
+</tr>
+<tr class="row-even"><td>bcdma_tx</td>
+<td>0x2000 to 0x202f</td>
+</tr>
+<tr class="row-odd"><td>pdma_adc_adc0_rx</td>
+<td>0x4000 to 0x4003</td>
+</tr>
+<tr class="row-even"><td>pdma_asrc0_asrc0_rx</td>
+<td>0x4100 to 0x411f</td>
+</tr>
+<tr class="row-odd"><td>pdma_asrc1_asrc1_rx</td>
+<td>0x4180 to 0x419f</td>
+</tr>
+<tr class="row-even"><td>pdma_main0_mcspi0_rx</td>
+<td>0x4300 to 0x4303</td>
+</tr>
+<tr class="row-odd"><td>pdma_main0_mcspi1_rx</td>
+<td>0x4304 to 0x4307</td>
+</tr>
+<tr class="row-even"><td>pdma_main0_mcspi2_rx</td>
+<td>0x4308 to 0x430b</td>
+</tr>
+<tr class="row-odd"><td>pdma_main0_mcan0_rx</td>
+<td>0x430c to 0x430e</td>
+</tr>
+<tr class="row-even"><td>pdma_main0_mcan1_rx</td>
+<td>0x430f to 0x4311</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart0_rx</td>
+<td>0x4400 to 0x4400</td>
+</tr>
+<tr class="row-even"><td>pdma_main1_uart1_rx</td>
+<td>0x4401 to 0x4401</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart2_rx</td>
+<td>0x4402 to 0x4402</td>
+</tr>
+<tr class="row-even"><td>pdma_main1_uart3_rx</td>
+<td>0x4403 to 0x4403</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart4_rx</td>
+<td>0x4404 to 0x4404</td>
+</tr>
+<tr class="row-even"><td>pdma_main1_uart5_rx</td>
+<td>0x4405 to 0x4405</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart6_rx</td>
+<td>0x4406 to 0x4406</td>
+</tr>
+<tr class="row-even"><td>pdma_main2_mcspi3_rx</td>
+<td>0x4480 to 0x4483</td>
+</tr>
+<tr class="row-odd"><td>pdma_main2_mcspi4_rx</td>
+<td>0x4484 to 0x4487</td>
+</tr>
+<tr class="row-even"><td>pdma_main2_mcan2_rx</td>
+<td>0x4488 to 0x448a</td>
+</tr>
+<tr class="row-odd"><td>pdma_main2_mcan3_rx</td>
+<td>0x448b to 0x448d</td>
+</tr>
+<tr class="row-even"><td>pdma_main2_mcan4_rx</td>
+<td>0x448e to 0x4490</td>
+</tr>
+<tr class="row-odd"><td>pdma_mcasp_mcasp0_rx</td>
+<td>0x4500 to 0x4500</td>
+</tr>
+<tr class="row-even"><td>pdma_mcasp_mcasp1_rx</td>
+<td>0x4501 to 0x4501</td>
+</tr>
+<tr class="row-odd"><td>pdma_mcasp_mcasp2_rx</td>
+<td>0x4502 to 0x4502</td>
+</tr>
+<tr class="row-even"><td>pdma_mcasp1_mcasp3_rx</td>
+<td>0x4580 to 0x4580</td>
+</tr>
+<tr class="row-odd"><td>pdma_mcasp1_mcasp4_rx</td>
+<td>0x4581 to 0x4581</td>
+</tr>
+<tr class="row-even"><td>cpsw2_rx</td>
+<td>0x4600 to 0x4600</td>
+</tr>
+<tr class="row-odd"><td>saul0_rx</td>
+<td>0x7504 to 0x750b</td>
+</tr>
+<tr class="row-even"><td>pktdma_rx</td>
+<td>0x9000 to 0x901f</td>
+</tr>
+<tr class="row-odd"><td>bcdma_rx</td>
+<td>0xa000 to 0xa031</td>
+</tr>
+<tr class="row-even"><td>pdma_asrc0_asrc0_tx</td>
+<td>0xc100 to 0xc11f</td>
+</tr>
+<tr class="row-odd"><td>pdma_asrc1_asrc1_tx</td>
+<td>0xc180 to 0xc19f</td>
+</tr>
+<tr class="row-even"><td>pdma_main0_mcspi0_tx</td>
+<td>0xc300 to 0xc303</td>
+</tr>
+<tr class="row-odd"><td>pdma_main0_mcspi1_tx</td>
+<td>0xc304 to 0xc307</td>
+</tr>
+<tr class="row-even"><td>pdma_main0_mcspi2_tx</td>
+<td>0xc308 to 0xc30b</td>
+</tr>
+<tr class="row-odd"><td>pdma_main0_mcan0_tx</td>
+<td>0xc30c to 0xc30e</td>
+</tr>
+<tr class="row-even"><td>pdma_main0_mcan1_tx</td>
+<td>0xc30f to 0xc311</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart0_tx</td>
+<td>0xc400 to 0xc400</td>
+</tr>
+<tr class="row-even"><td>pdma_main1_uart1_tx</td>
+<td>0xc401 to 0xc401</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart2_tx</td>
+<td>0xc402 to 0xc402</td>
+</tr>
+<tr class="row-even"><td>pdma_main1_uart3_tx</td>
+<td>0xc403 to 0xc403</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart4_tx</td>
+<td>0xc404 to 0xc404</td>
+</tr>
+<tr class="row-even"><td>pdma_main1_uart5_tx</td>
+<td>0xc405 to 0xc405</td>
+</tr>
+<tr class="row-odd"><td>pdma_main1_uart6_tx</td>
+<td>0xc406 to 0xc406</td>
+</tr>
+<tr class="row-even"><td>pdma_main2_mcspi3_tx</td>
+<td>0xc480 to 0xc483</td>
+</tr>
+<tr class="row-odd"><td>pdma_main2_mcspi4_tx</td>
+<td>0xc484 to 0xc487</td>
+</tr>
+<tr class="row-even"><td>pdma_main2_mcan2_tx</td>
+<td>0xc488 to 0xc48a</td>
+</tr>
+<tr class="row-odd"><td>pdma_main2_mcan3_tx</td>
+<td>0xc48b to 0xc48d</td>
+</tr>
+<tr class="row-even"><td>pdma_main2_mcan4_tx</td>
+<td>0xc48e to 0xc490</td>
+</tr>
+<tr class="row-odd"><td>pdma_mcasp_mcasp0_tx</td>
+<td>0xc500 to 0xc500</td>
+</tr>
+<tr class="row-even"><td>pdma_mcasp_mcasp1_tx</td>
+<td>0xc501 to 0xc501</td>
+</tr>
+<tr class="row-odd"><td>pdma_mcasp_mcasp2_tx</td>
+<td>0xc502 to 0xc502</td>
+</tr>
+<tr class="row-even"><td>pdma_mcasp1_mcasp3_tx</td>
+<td>0xc580 to 0xc580</td>
+</tr>
+<tr class="row-odd"><td>pdma_mcasp1_mcasp4_tx</td>
+<td>0xc581 to 0xc581</td>
+</tr>
+<tr class="row-even"><td>cpsw2_tx</td>
+<td>0xc600 to 0xc607</td>
+</tr>
+<tr class="row-odd"><td>saul0_tx</td>
+<td>0xf500 to 0xf503</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sec_proxy.html" class="btn btn-neutral float-right" title="AM275X Secure Proxy Descriptions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dma_cfg.html" class="btn btn-neutral" title="AM275X DMA Device Descriptions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'11.00.04',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

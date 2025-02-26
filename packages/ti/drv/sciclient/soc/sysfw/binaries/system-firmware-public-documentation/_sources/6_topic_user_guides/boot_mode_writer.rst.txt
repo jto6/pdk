@@ -1,0 +1,48 @@
+========================
+Boot Mode Writer Service
+========================
+
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+
+.. _dref_boot_mode_writer_intro:
+
+Introduction
+============
+
+The boot mode writer service can be used to program boot mode efuses present on devices to support reduced boot pin mode feature.
+The service accepts the boot mode efuse index and the 32-bit raw fuse value as inputs.
+
+.. note::
+
+  The value of a boot mode efuse cannot be modified after programming.
+
+.. _dref_boot_mode_writer_how_to_derive_value:
+
+How to derive to-be programmed value?
+=====================================
+
+One needs the following data items:
+#. Raw boot mode value for the boot mode of interest. This value is fixed for every boot mode on a device.
+#. The 25-bit bitmask for the efuse which has to be programmed.
+
+The following figure demonstrates the procedure to derive the value to be sent over tisci message.
+
+.. figure:: ../img/boot_mode_value_calc.png
+  :width: 100%
+
+.. _dref_boot_mode_reference:
+
+How to encode the 16-bit raw value?
+===================================
+
+Use the :ref:`boot_mode_writer_encoding_table`.
+
+How to get the values?
+======================
+
+You need the following data items to derive the boot mode value (to send over tisci) for a boot mode of interest:
+
+1. Raw boot mode value. (Refer the Boot Mode Pins Section of the TRM)
+2. The efuse bitmask. (Refer the boot mode efuse soc document)

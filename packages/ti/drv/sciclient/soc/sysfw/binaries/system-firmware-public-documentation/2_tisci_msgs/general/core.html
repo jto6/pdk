@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="../../search.html"/>
     <link rel="top" title="TISCI User Guide" href="../../index.html"/>
         <link rel="up" title="Chapter 2: TISCI Message Documentation" href="../index.html"/>
-        <link rel="next" title="TISCI PM Device API Documentation" href="../pm/devices.html"/>
+        <link rel="next" title="Boot Mode Fuse Writer TISCI Description" href="boot_mode_writer.html"/>
         <link rel="prev" title="Texas Instruments System Controller Interface (TISCI)" href="TISCI_header.html"/> 
 
   
@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                10.01.06
+                11.00.04
               </div>
             
           
@@ -115,8 +115,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-query-msmc">TISCI_MSG_QUERY_MSMC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-get-trace-config">TISCI_MSG_GET_TRACE_CONFIG</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-query-fw-caps">TISCI_MSG_QUERY_FW_CAPS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tisci-msg-dm-version">TISCI_MSG_DM_VERSION</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="boot_mode_writer.html">Boot Mode Fuse Writer TISCI Description</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#power-management-pm">Power Management (PM)</a></li>
@@ -671,8 +673,11 @@ query TIFS for debug trace configuration.</p>
 <tr class="row-odd"><td>IO Isolation capability</td>
 <td>7</td>
 </tr>
-<tr class="row-even"><td>Reserved</td>
-<td>8-63</td>
+<tr class="row-even"><td>DM split mode</td>
+<td>8</td>
+</tr>
+<tr class="row-odd"><td>Reserved</td>
+<td>9-63</td>
 </tr>
 </tbody>
 </table>
@@ -735,6 +740,119 @@ query TIFS for debug trace configuration.</p>
 </p>
 </div>
 </div>
+<div class="section" id="tisci-msg-dm-version">
+<h2>TISCI_MSG_DM_VERSION<a class="headerlink" href="#tisci-msg-dm-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id16">
+<h3>Objective<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve the version of the currently running DM firmware.</p>
+</div>
+<div class="section" id="id17">
+<h3>Usage<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>This retrieves several pieces of information about the version of
+DM firmware that is loaded and running.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This message is only supported for devices having DM as a seperate entity. This can
+be checked by querying firmware capabilities using TISCI_MSG_QUERY_FW_CAPS to confirm
+whether <strong>DM split mode</strong> capability is present or not.</p>
+</div>
+</div>
+<div class="section" id="id18">
+<h3>TISCI Message ID<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">TISCI_MSG_DM_VERSION</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x000FU)</span></code></p>
+</div>
+<div class="section" id="id19">
+<h3>Message Data Structures<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<p><p><strong>struct tisci_msg_dm_version_req</strong></p>
+<p>Notification message to get DM version.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="43%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header</td>
+</tr>
+</tbody>
+</table>
+<p>Although this message is essentially empty and contains only a header
+ a full data structure is created for consistency in implementation.</p>
+</p>
+<p><p><strong>struct tisci_msg_dm_version_resp</strong></p>
+<p>TISCI_MSG_DM_VERSION response struct to provide version info about currently running DM firmware.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="24%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header.</td>
+</tr>
+<tr class="row-odd"><td>version</td>
+<td>u16</td>
+<td>Version number of the firmware.</td>
+</tr>
+<tr class="row-even"><td>sub_version</td>
+<td>u8</td>
+<td>Sub-version number of the firmware.</td>
+</tr>
+<tr class="row-odd"><td>patch_version</td>
+<td>u8</td>
+<td>Patch-version number of the firmware.</td>
+</tr>
+<tr class="row-even"><td>abi_major</td>
+<td>u8</td>
+<td>Major version number of ABI in use by firmware.</td>
+</tr>
+<tr class="row-odd"><td>abi_minor</td>
+<td>u8</td>
+<td>Minor version number of ABI in use by firmware.</td>
+</tr>
+<tr class="row-even"><td>rm_pm_hal_version</td>
+<td>char</td>
+<td>Human readable rm_pm_hal version string.</td>
+</tr>
+<tr class="row-odd"><td>sciserver_version</td>
+<td>char</td>
+<td>Human readable Sciserver version string.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+</div>
 </div>
 
 
@@ -744,7 +862,7 @@ query TIFS for debug trace configuration.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../pm/devices.html" class="btn btn-neutral float-right" title="TISCI PM Device API Documentation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="boot_mode_writer.html" class="btn btn-neutral float-right" title="Boot Mode Fuse Writer TISCI Description" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="TISCI_header.html" class="btn btn-neutral" title="Texas Instruments System Controller Interface (TISCI)" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -756,7 +874,7 @@ query TIFS for debug trace configuration.</p>
 
   <div role="contentinfo">
     <p>
-      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2024</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
       <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
 
     </p>
@@ -778,7 +896,7 @@ query TIFS for debug trace configuration.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'10.01.06',
+            VERSION:'11.00.04',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -1,0 +1,131 @@
+==============================
+AM275X DMA Device Descriptions
+==============================
+
+Introduction
+============
+
+This chapter provides information on the DMA devices in the AM275X SoC.  Some
+System Firmware TISCI messages take device specific inputs. This chapter
+provides information on the valid values for DMA TISCI message parameters.
+
+.. _pub_soc_am275x_dma_device_ids:
+
+DMA Device IDs
+==============
+
+Some System Firmware TISCI message APIs require the DMA device ID be provided as
+part of the request. Based on :doc:`AM275X Device IDs <devices>` these are the
+valid DMA device IDs.
+
++----------------------------+-----------------+
+| DMA Device Name            |   DMA Device ID |
++============================+=================+
+| AM275X_DEV_DMASS0_BCDMA_0  |              26 |
++----------------------------+-----------------+
+| AM275X_DEV_DMASS0_PKTDMA_0 |              30 |
++----------------------------+-----------------+
+
+.. _pub_soc_am275x_dma_channels_and_flows:
+
+DMA Channel and Flow Indices
+============================
+
+This section describes valid DMA channel indexes for each DMA channel type.
+Receive flow index range type information is also described if applicable to the
+DMA being described.
+
+
+.. warning::
+
+    Resources marked as reserved for use by TIFS **cannot** be assigned to a
+    host within the RM Board Configuration resource assignment array.  The RM
+    Board Configuration is rejected if an overlap with a reserved resource is
+    detected.
+
+
+**DMASS0_BCDMA_0**
+
++-------------------+--------------------------+
+| Tx Channel Type   | Tx Channel Index Range   |
++===================+==========================+
+| SPLIT_TR_TX_CHAN  | 0 to 47                  |
++-------------------+--------------------------+
+
++-------------------+--------------------------+
+| Rx Channel Type   | Rx Channel Index Range   |
++===================+==========================+
+| SPLIT_TR_RX_CHAN  | 0 to 49                  |
++-------------------+--------------------------+
+
++---------------------------+---------------------------------------------+
+| Block Copy Channel Type   | Block Copy Channel (Offset) + Index Range   |
++===========================+=============================================+
+| BLOCK_COPY_CHAN           | 0 to 23                                     |
++---------------------------+---------------------------------------------+
+
++------------------+-----------------------+
+| Rx Flow Type     | Rx Flow Index Range   |
++==================+=======================+
+| BLOCK_COPY_CHAN  | 0 to 23               |
++------------------+-----------------------+
+| SPLIT_TR_TX_CHAN | 24 to 71              |
++------------------+-----------------------+
+| SPLIT_TR_RX_CHAN | 72 to 121             |
++------------------+-----------------------+
+
+
+**DMASS0_PKTDMA_0**
+
++-------------------+--------------------------+
+| Tx Channel Type   | Tx Channel Index Range   |
++===================+==========================+
+| UNMAPPED_TX_CHAN  | 0 to 26                  |
++-------------------+--------------------------+
+| CPSW_TX_CHAN      | 27 to 34                 |
++-------------------+--------------------------+
+| SAUL_TX_0_CHAN    | 35 to 35                 |
++-------------------+--------------------------+
+| SAUL_TX_1_CHAN    | 36 to 36                 |
++-------------------+--------------------------+
+
++-------------------+--------------------------+
+| Rx Channel Type   | Rx Channel Index Range   |
++===================+==========================+
+| UNMAPPED_RX_CHAN  | 0 to 26                  |
++-------------------+--------------------------+
+| CPSW_RX_CHAN      | 27 to 27                 |
++-------------------+--------------------------+
+| SAUL_RX_0_CHAN    | 28 to 28                 |
++-------------------+--------------------------+
+| SAUL_RX_1_CHAN    | 29 to 29                 |
++-------------------+--------------------------+
+| SAUL_RX_2_CHAN    | 30 to 30                 |
++-------------------+--------------------------+
+| SAUL_RX_3_CHAN    | 31 to 31                 |
++-------------------+--------------------------+
+
++------------------+-----------------------+
+| Rx Flow Type     | Rx Flow Index Range   |
++==================+=======================+
+| UNMAPPED_TX_CHAN | 0 to 26               |
++------------------+-----------------------+
+| CPSW_TX_CHAN     | 27 to 90              |
++------------------+-----------------------+
+| SAUL_TX_0_CHAN   | 91 to 98              |
++------------------+-----------------------+
+| SAUL_TX_1_CHAN   | 99 to 106             |
++------------------+-----------------------+
+| UNMAPPED_RX_CHAN | 107 to 133            |
++------------------+-----------------------+
+| CPSW_RX_CHAN     | 134 to 149            |
++------------------+-----------------------+
+| SAUL_RX_0_CHAN   | 150 to 157            |
++------------------+-----------------------+
+| SAUL_RX_1_CHAN   | 150 to 157            |
++------------------+-----------------------+
+| SAUL_RX_2_CHAN   | 158 to 165            |
++------------------+-----------------------+
+| SAUL_RX_3_CHAN   | 158 to 165            |
++------------------+-----------------------+
+

@@ -19,6 +19,7 @@ General
    :maxdepth: 1
 
    general/core
+   general/boot_mode_writer
 
 
 .. _pm_messages:

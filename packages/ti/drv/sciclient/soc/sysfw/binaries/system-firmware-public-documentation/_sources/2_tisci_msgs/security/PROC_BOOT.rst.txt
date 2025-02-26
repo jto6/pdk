@@ -26,19 +26,25 @@ Book Keeping APIs:
 
 Processor Control APIs:
 
-+------------------+----------------------------------------------------------------------------------------+-----------------+--------------------+
-| TISCI Message ID |                                      Message Name                                      | Available in GP | Avialable in HS-FS |
-+==================+========================================================================================+=================+====================+
-| 0xC100           | :ref:`TISCI_MSG_PROC_SET_CONFIG <proc-boot-set-processor-configuration>`               | Yes             | Yes                |
-+------------------+----------------------------------------------------------------------------------------+-----------------+--------------------+
-| 0xC101           | :ref:`TISCI_MSG_PROC_SET_CONTROL <proc-boot-set-processor-control>`                    | Yes             | Yes                |
-+------------------+----------------------------------------------------------------------------------------+-----------------+--------------------+
-| 0xC120           | :ref:`TISCI_MSG_PROC_AUTH_BOOT <proc-boot-authenticate-image-and-configure-processor>` | No              | Yes*               |
-+------------------+----------------------------------------------------------------------------------------+-----------------+--------------------+
-| 0xC400           | :ref:`TISCI_MSG_PROC_GET_STATUS <proc_boot_get_processor_status>`                      | Yes             | Yes                |
-+------------------+----------------------------------------------------------------------------------------+-----------------+--------------------+
-| 0xC401           | :ref:`TISCI_MSG_PROC_WAIT_STATUS <proc_boot_wait_processor_status>`                    | Yes             | Yes                |
-+------------------+----------------------------------------------------------------------------------------+-----------------+--------------------+
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| TISCI Message ID |                                      Message Name                                                                            | Available in GP | Avialable in HS-FS |
++==================+==============================================================================================================================+=================+====================+
+| 0xC100           | :ref:`TISCI_MSG_PROC_SET_CONFIG <proc-boot-set-processor-configuration>`                                                     | Yes             | Yes                |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| 0xC101           | :ref:`TISCI_MSG_PROC_SET_CONTROL <proc-boot-set-processor-control>`                                                          | Yes             | Yes                |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| 0xC120           | :ref:`TISCI_MSG_PROC_AUTH_BOOT <proc-boot-authenticate-image-and-configure-processor>`                                       | No              | Yes*               |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| 0xC122           | :ref:`TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT <proc-boot-authenticate-mcelf-x509-cert>`                                          | No              | Yes*               |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| 0xC123           | :ref:`TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE <proc-boot-streaming-authentication-service>`                                    | No              | Yes*               |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| 0xC124           | :ref:`TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH <proc-boot-validate-streaming-authentication-and-optional-streaming-decryption>` | No              | Yes*               |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| 0xC400           | :ref:`TISCI_MSG_PROC_GET_STATUS <proc_boot_get_processor_status>`                                                            | Yes             | Yes                |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
+| 0xC401           | :ref:`TISCI_MSG_PROC_WAIT_STATUS <proc_boot_wait_processor_status>`                                                          | Yes             | Yes                |
++------------------+------------------------------------------------------------------------------------------------------------------------------+-----------------+--------------------+
 
 The APIs use the overall concepts explained in the following sections.
 
@@ -351,6 +357,136 @@ TISCI_MSG_PROC_AUTH_BOOT - Authenticate Image and Configure Processor
    scan. If permitted, System firmware logs shall provide relevant failure
    information.
 
+.. _proc-boot-authenticate-mcelf-x509-cert:
+
+TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT - Authenticate x509 certificate prior to streaming authentication service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. attention::
+   TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT API is currently supported by am275x.
+
+**Purpose**: Provides a means for the host with current control to do the following:
+
+-  Validate the x509 certificate by verifying the digital signature and public key hash
+-  Use certificate information also to check if the current host can boot the core specified
+-  Use certificate information also to configure firewalls. This feature can be used
+   to protect the binary being authenticated.
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+**TISCI Message ID**
+
+.. sysfwapimacro:: TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT
+
+.. sysfwapistruct:: tisci_security_mesg_mcelf_init_req
+
+.. attention::
+
+    * The certificate itself shall contain relevant information about the
+      processor flags and configuration information.
+    * See Hosts description for the corresponding SoC to identify which hosts
+      are secure and which are not.
+    * On HS-FS device type, only image integrity check is done. The root of
+      trust key comparison check is skipped.
+    * Only the unowned firewalls/regions or those owned by the requesting host
+      would be configurable through the certificate. 
+    * The user must specify the host which would own the firewall/regions being
+      configured. Ownership would be transfered to this host. It is mandatory 
+      to specify a host in the certificate to configure firewalls. Skipping this
+      would result in the API failure.
+
+.. attention::
+
+   Please see :doc:`sec_cert_format` for certificate format.
+
+.. sysfwapistruct:: tisci_security_mesg_mcelf_init_resp
+
+.. attention::
+   Reason for failure is NOT provided to prevent security attacks by
+   scan. If permitted, System firmware logs shall provide relevant failure
+   information.
+
+.. _proc-boot-streaming-authentication-service:
+
+TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE - Streaming authentication service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. attention::
+   TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE API is currently supported by am275x.
+
+**Purpose**: Provides a means for the host with current control to do the following:
+
+-  Streaming authentication service
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+**TISCI Message ID**
+
+.. sysfwapimacro:: TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE
+
+.. sysfwapistruct:: tisci_security_mesg_mcelf_update_req
+
+.. sysfwapistruct:: tisci_security_mesg_mcelf_update_resp
+
+.. attention::
+
+    * On HS-FS device type, only image integrity check is done. The root of
+      trust key comparison check is skipped.
+    * Reason for failure is NOT provided to prevent security attacks by
+      scan. If permitted, System firmware logs shall provide relevant failure
+      information.
+
+.. _proc-boot-validate-streaming-authentication-and-optional-streaming-decryption:
+
+TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH - validate streaming authentication, optional streaming decryption and configure processor
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. attention::
+   TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH API is currently supported by am275x.
+
+**Purpose**: Provides a means for the host with current control to do the following:
+
+-  Validate streaming hash authentication operation
+-  Optional streaming decryption
+-  Use certificate information to setup critical processor specific flags
+-  Configure processor
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+**TISCI Message ID**
+
+.. sysfwapimacro:: TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH
+
+.. sysfwapistruct:: tisci_security_mesg_mcelf_finish_req
+
+.. sysfwapistruct:: tisci_security_mesg_mcelf_finish_resp
+
+.. attention::
+
+    * On HS-FS device type, only image integrity check is done. The root of
+      trust key comparison check is skipped.
+    * Reason for failure is NOT provided to prevent security attacks by
+      scan. If permitted, System firmware logs shall provide relevant failure
+      information.
+
 .. _proc_boot_get_processor_status:
 
 TISCI_MSG_PROC_GET_STATUS - Get Processor Status
@@ -590,7 +726,7 @@ ARM R5
 
 The usage of R5_LPSC and R5_RESET is only for below mentioned devices,
 - MCU R5F on the J721E, J7200, J721S2 and J784S2 family of devices where the RM and PM functions run on the MCU R5F.
-- DM R5F on the AM62x, AM62Ax, AM62Px and J722S family of devices where the RM and PM functions run on the DM R5F.
+- DM R5F on the AM62x, AM62Ax, AM62Px, J722S and AM275x family of devices where the RM and PM functions run on the DM R5F.
 
 The MCU R5F and DM R5F (where the RM and PM functions run) cannot turn off/on by itself during a re-boot sequence which
 requires the following fundamental sequence of steps:
