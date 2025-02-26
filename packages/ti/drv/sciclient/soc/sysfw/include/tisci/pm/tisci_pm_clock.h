@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2015-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -122,18 +122,18 @@
  * and the full value placed in the clk32 field. This is kept for backwards
  * compatibility with older firmwares.
  *
- * \param clk32
- * Stores the actual clock index if clk field is set to 255. This field is
- * ignored otherwise. This field can hold the full range of possible clock
- * indexes, but for compatibility with older firmwares should only be used
- * when the index is 255 or greater.
- *
  * \param state
  * The desired state of the clock, TISCI_MSG_VALUE_CLOCK_SW_STATE_REQ if the clock is
  * currently required by the IP and TISCI_MSG_VALUE_CLOCK_SW_STATE_UNREQ if it is
  * not. TISCI_MSG_VALUE_CLOCK_SW_STATE_AUTO enables the clock when the IP is set
  * to enabled and disables it when the IP is set to disabled. This is the
  * default state.
+ *
+ * \param clk32
+ * Stores the actual clock index if clk field is set to 255. This field is
+ * ignored otherwise. This field can hold the full range of possible clock
+ * indexes, but for compatibility with older firmwares should only be used
+ * when the index is 255 or greater.
  */
 struct tisci_msg_set_clock_req {
     struct tisci_header    hdr;

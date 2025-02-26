@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2015-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -78,25 +78,25 @@
  * must be used in conjunction with SoC dependencies to identify the
  * overall power domain state being achieved.
  */
-#define TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF    0
+#define TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF    0U
 
 /** Used by TISCI_MSG_SET_DEVICE to disable device but keep in retention. */
-#define TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION   1
+#define TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION   1U
 
 /** Used by TISCI_MSG_SET_DEVICE to turn device on for usage. */
-#define TISCI_MSG_VALUE_DEVICE_SW_STATE_ON          2
+#define TISCI_MSG_VALUE_DEVICE_SW_STATE_ON          2U
 
 /**
  * TISCI_MSG_GET_DEVICE sets this as current state to indicate device
  * is off.
  */
-#define TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF         0
+#define TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF         0U
 
 /**
  * TISCI_MSG_GET_DEVICE sets this as current state to indicate device
  * is on.
  */
-#define TISCI_MSG_VALUE_DEVICE_HW_STATE_ON          1
+#define TISCI_MSG_VALUE_DEVICE_HW_STATE_ON          1U
 
 /**
  * TISCI_MSG_GET_DEVICE sets this as current state to indicate device is
@@ -106,7 +106,7 @@
  * hardware handshake. Please refer to Technical Reference Manual for
  * additional information.
  */
-#define TISCI_MSG_VALUE_DEVICE_HW_STATE_TRANS       2
+#define TISCI_MSG_VALUE_DEVICE_HW_STATE_TRANS       2U
 
 /**
  * \brief Set the desired state of the device.

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,7 +57,12 @@
 /**
  * \brief Derived key length 32 bytes always
  */
-#define SA2UL_DSMEK_KEY_LEN (32U)
+#define CRYPTO_DSMEK_KEY_LEN (32U)
+
+/**
+ * \note This has been kept to prevent compilation failures.
+ */
+#define SA2UL_DSMEK_KEY_LEN CRYPTO_DSMEK_KEY_LEN
 
 /**
  * \brief key derivation label and context length
@@ -68,12 +73,32 @@
  * \brief TISCI Request for setting DSMEK in SA2UL registers
  * \param hdr Generic TISCI message header.
  *
- * \param sa2ul_instance SA2UL instance number - set to 0
+ * \param instance Crypto engine instance number - set to 0
  * \param kdf_label_len Length of "Label" input to KDF
  * \param kdf_context_len Length of "Context" input to KDF
  * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
  *                              array one after another. Maximum length of
  *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
+ */
+struct tisci_msg_crypto_set_dsmek_req {
+    struct tisci_header    hdr;
+    uint8_t            instance;
+    uint8_t            kdf_label_len;
+    uint8_t            kdf_context_len;
+    uint8_t            kdf_label_and_context[KDF_LABEL_AND_CONTEXT_LEN_MAX];
+} __attribute__((__packed__));
+
+/**
+ * \brief TISCI Request for setting DSMEK in SA2UL registers
+ * \param hdr Generic TISCI message header.
+ *
+ * \param sa2ul_instance sa2ul engine instance number - set to 0
+ * \param kdf_label_len Length of "Label" input to KDF
+ * \param kdf_context_len Length of "Context" input to KDF
+ * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
+ *                              array one after another. Maximum length of
+ *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
+ * \note This has been kept to prevent user code build issues
  */
 struct tisci_msg_sa2ul_set_dsmek_req {
     struct tisci_header    hdr;
@@ -87,15 +112,29 @@ struct tisci_msg_sa2ul_set_dsmek_req {
  * \brief TISCI Response for setting DSMEK in SA2UL registers
  * \param hdr Generic TISCI message header.
  */
-struct tisci_msg_sa2ul_set_dsmek_resp {
+struct tisci_msg_crypto_set_dsmek_resp {
     struct tisci_header hdr;
+} __attribute__((__packed__));
+
+/* Alias to prevent user code build issues */
+#define tisci_msg_sa2ul_set_dsmek_resp tisci_msg_crypto_set_dsmek_resp
+
+/**
+ * \brief TISCI Request for releasing DSMEK
+ * \param hdr Generic TISCI message header.
+ *
+ * \param instance Crypto engine instance number - set to 0
+ */
+struct tisci_msg_crypto_release_dsmek_req {
+    struct tisci_header    hdr;
+    uint8_t            instance;
 } __attribute__((__packed__));
 
 /**
  * \brief TISCI Request for releasing DSMEK
  * \param hdr Generic TISCI message header.
  *
- * \param sa2ul_instance SA2UL instance number - set to 0
+ * \param sa2ul_instance Crypto engine instance number - set to 0
  */
 struct tisci_msg_sa2ul_release_dsmek_req {
     struct tisci_header    hdr;
@@ -106,20 +145,43 @@ struct tisci_msg_sa2ul_release_dsmek_req {
  * \brief TISCI Response for Releasing DSMEK
  * \param hdr Generic TISCI message header.
  */
-struct tisci_msg_sa2ul_release_dsmek_resp {
+struct tisci_msg_crypto_release_dsmek_resp {
     struct tisci_header hdr;
+} __attribute__((__packed__));
+
+/* Alias to prevent user code build issues */
+#define tisci_msg_sa2ul_release_dsmek_resp tisci_msg_crypto_release_dsmek_resp
+
+/**
+ * \brief TISCI Request for getting DSMEK via TISCI
+ * \param hdr Generic TISCI message header.
+ *
+ * \param instance Crypto engine instance number - set to 0
+ * \param kdf_label_len Length of "Label" input to KDF
+ * \param kdf_context_len Length of "Context" input to KDF
+ * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
+ *                              array one after another. Maximum length of
+ *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
+ */
+struct tisci_msg_crypto_get_dsmek_req {
+    struct tisci_header    hdr;
+    uint8_t            instance;
+    uint8_t            kdf_label_len;
+    uint8_t            kdf_context_len;
+    uint8_t            kdf_label_and_context[KDF_LABEL_AND_CONTEXT_LEN_MAX];
 } __attribute__((__packed__));
 
 /**
  * \brief TISCI Request for getting DSMEK via TISCI
  * \param hdr Generic TISCI message header.
  *
- * \param sa2ul_instance SA2UL instance number - set to 0
+ * \param sa2ul_instance sa2ul engine instance number - set to 0
  * \param kdf_label_len Length of "Label" input to KDF
  * \param kdf_context_len Length of "Context" input to KDF
  * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
  *                              array one after another. Maximum length of
  *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
+ * \note This has been kept to prevent user code build issues
  */
 struct tisci_msg_sa2ul_get_dsmek_req {
     struct tisci_header    hdr;
@@ -134,10 +196,13 @@ struct tisci_msg_sa2ul_get_dsmek_req {
  * \param hdr Generic TISCI message header.
  * \param dsmek Array containing Derived KEK. Length is 32 bytes
  */
-struct tisci_msg_sa2ul_get_dsmek_resp {
+struct tisci_msg_crypto_get_dsmek_resp {
     struct tisci_header    hdr;
-    uint8_t            dsmek[SA2UL_DSMEK_KEY_LEN];
+    uint8_t            dsmek[CRYPTO_DSMEK_KEY_LEN];
 } __attribute__((__packed__));
+
+/* Alias to prevent user code build issues */
+#define tisci_msg_sa2ul_get_dsmek_resp tisci_msg_crypto_get_dsmek_resp
 
 #endif
 

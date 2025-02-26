@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -108,7 +108,7 @@ struct tisci_msg_version_resp {
  * \param hdr TISCI header
  */
 struct tisci_msg_dm_version_req {
-	struct tisci_header hdr;
+    struct tisci_header hdr;
 } __attribute__((__packed__));
 
 /**
@@ -124,14 +124,14 @@ struct tisci_msg_dm_version_req {
  * \param sciserver_version Human readable Sciserver version string.
  */
 struct tisci_msg_dm_version_resp {
-	struct tisci_header	hdr;
-	uint16_t			version;
-	uint8_t			sub_version;
-	uint8_t			patch_version;
-	uint8_t			abi_major;
-	uint8_t			abi_minor;
-	char			rm_pm_hal_version[12];
-	char			sciserver_version[26];
+    struct tisci_header    hdr;
+    uint16_t            version;
+    uint8_t            sub_version;
+    uint8_t            patch_version;
+    uint8_t            abi_major;
+    uint8_t            abi_minor;
+    char            rm_pm_hal_version[12];
+    char            sciserver_version[26];
 } __attribute__((__packed__));
 
 /**

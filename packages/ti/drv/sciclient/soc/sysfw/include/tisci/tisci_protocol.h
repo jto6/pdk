@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -173,6 +173,12 @@ struct tisci_sec_header {
 #define TISCI_MSG_LPM_GET_NEXT_SYS_MODE         (0x030DU)
 #define TISCI_MSG_LPM_GET_NEXT_HOST_STATE       (0x030EU)
 
+/** Message to encrypt an lpm data blob  */
+#define TISCI_MSG_LPM_ENCRYPT                   (0x030FU)
+/** Message to decrypt an lpm data blob */
+#define TISCI_MSG_LPM_DECRYPT                   (0x0310U)
+#define TISCI_MSG_LPM_ABORT                     (0x0311U)
+
 #define TISCI_MSG_FIRMWARE_LOAD                 (0x8105U)
 #define MSG_FIRMWARE_LOAD_RESULT                (0x8805U)
 
@@ -182,10 +188,14 @@ struct tisci_sec_header {
 #define TISCI_MSG_GET_FWL_REGION                (0x9001U)
 /** Message to change firewall region owner */
 #define TISCI_MSG_CHANGE_FWL_OWNER              (0x9002U)
-/** Message to derive a KEK and set SA2UL DKEK register */
-#define TISCI_MSG_SA2UL_SET_DKEK                (0x9003U)
+/** Message to derive a KEK and set DKEK register */
+#define TISCI_MSG_CRYPTO_SET_DKEK               (0x9003U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_SET_DKEK                TISCI_MSG_CRYPTO_SET_DKEK
 /** Message to erase the DKEK register */
-#define TISCI_MSG_SA2UL_RELEASE_DKEK            (0x9004U)
+#define TISCI_MSG_CRYPTO_RELEASE_DKEK           (0x9004U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_RELEASE_DKEK            TISCI_MSG_CRYPTO_RELEASE_DKEK
 /** Message to import a symmetric key to the keystore */
 #define TISCI_MSG_KEYSTORE_IMPORT_SKEY          (0x9005U)
 /** Message to erase a imported symmetric key in the keystore */
@@ -267,7 +277,9 @@ struct tisci_sec_header {
 #define TISCI_MSG_RSVD_OTP_2                    (0x9028U)
 
 /** Message to derive a KEK and return it via TISCI */
-#define TISCI_MSG_SA2UL_GET_DKEK                (0x9029U)
+#define TISCI_MSG_CRYPTO_GET_DKEK               (0x9029U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_GET_DKEK                TISCI_MSG_CRYPTO_GET_DKEK
 
 /** Message to allow safety host to read fwl control region */
 #define TISCI_MSG_ALLOW_FWL_CTRL_READ           (0x902CU)
@@ -298,28 +310,51 @@ struct tisci_sec_header {
 #define TISCI_MSG_WRITE_KEYREV                  (0x9035U)
 
 /** Message to derive a SMEK and return it via TISCI */
-#define TISCI_MSG_SA2UL_GET_DSMEK               (0x9036U)
+#define TISCI_MSG_CRYPTO_GET_DSMEK              (0x9036U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_GET_DSMEK               TISCI_MSG_CRYPTO_GET_DSMEK
 
-/** Message to derive a SMEK and set SA2UL DKEK register */
-#define TISCI_MSG_SA2UL_SET_DSMEK               (0x9037U)
+/** Message to derive a SMEK and set DKEK register */
+#define TISCI_MSG_CRYPTO_SET_DSMEK              (0x9037U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_SET_DSMEK               TISCI_MSG_CRYPTO_SET_DSMEK
 
 /** Message to erase the DKEK register */
-#define TISCI_MSG_SA2UL_RELEASE_DSMEK           (0x9038U)
+#define TISCI_MSG_CRYPTO_RELEASE_DSMEK          (0x9038U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_RELEASE_DSMEK           TISCI_MSG_CRYPTO_RELEASE_DSMEK
 
 /** Message to import keyring */
 #define TISCI_MSG_KEYRING_IMPORT                (0X9039U)
 
-/** Message to derive a constant DKEK and set SA2UL DKEK register */
-#define TISCI_MSG_SA2UL_SET_DKEK_CONST                (0x902AU)
+/** Message to derive a constant DKEK and set DKEK register */
+#define TISCI_MSG_CRYPTO_SET_DKEK_CONST         (0x902AU)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_SET_DKEK_CONST          TISCI_MSG_CRYPTO_SET_DKEK_CONST
 
 /** Message to derive a constant DKEK and return it via TISCI */
-#define TISCI_MSG_SA2UL_GET_DKEK_CONST                (0x902BU)
+#define TISCI_MSG_CRYPTO_GET_DKEK_CONST         (0x902BU)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_GET_DKEK_CONST          TISCI_MSG_CRYPTO_GET_DKEK_CONST
 
 /** Message to encrypt a blob */
-#define TISCI_MSG_SA2UL_AES_ENCRYPT                                             (0x9040U)
+#define TISCI_MSG_CRYPTO_AES_ENCRYPT            (0x9040U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_AES_ENCRYPT             TISCI_MSG_CRYPTO_AES_ENCRYPT
 
 /** Message to decrypt a blob */
-#define TISCI_MSG_SA2UL_AES_DECRYPT                                             (0x9041U)
+#define TISCI_MSG_CRYPTO_AES_DECRYPT            (0x9041U)
+/* Alias to prevent user code build issues */
+#define TISCI_MSG_SA2UL_AES_DECRYPT             TISCI_MSG_CRYPTO_AES_DECRYPT
+
+/** Message to disable JTAG unlock */
+#define TISCI_MSG_DISABLE_JTAG_UNLOCK           (0x9042U)
+
+/** Message to set/clear JTAG unlock check */
+#define TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK     (0x9043U)
+
+/** Message to program boot mode */
+#define TISCI_MSG_SET_OTP_BOOT_MODE             (0x9044U)
 
 /* Processor Control APIs */
 
@@ -343,6 +378,18 @@ struct tisci_sec_header {
 
 /** Message to do authenticated boot configuration of a processor */
 #define TISCI_MSG_PROC_AUTH_BOOT        (0xC120U)
+
+/** Message to authenticate x509 certificate prior to streaming authentication */
+#define TISCI_MSG_MCELF_PROC_AUTH_BOOT_INIT        (0xC122U)
+
+/** Message to do streaming hash authentication operation */
+#define TISCI_MSG_MCELF_PROC_AUTH_BOOT_UPDATE        (0xC123U)
+
+/**
+ * Message to validate streaming authentication, optional streaming decryption
+ * and authenticated boot configuration of a processor
+ */
+#define TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH        (0xC124U)
 
 /* RM IDs */
 
