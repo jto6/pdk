@@ -49,6 +49,10 @@ CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) -DUNITY_INCLUDE_CONFIG_V2_H -DLINUX_OS -DA72
 ifeq ($(SOC), "j721e")
 CFLAGS_LOCAL_COMMON += -DPMIC_USE_DRV
 endif
+
+ifeq ($(SOC), j784s4)
+CFLAGS_LOCAL_COMMON += -DENABLE_DMA
+endif
 # Core/SoC/platform specific source files and CFLAGS
 # Example:
 #   SRCS_<core/SoC/platform-name> =

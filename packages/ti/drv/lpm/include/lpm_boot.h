@@ -1,6 +1,6 @@
 /*
 *
-* Copyright (c) 2021 Texas Instruments Incorporated
+* Copyright (c) 2025 Texas Instruments Incorporated
 *
 * All rights reserved not granted herein.
 *
@@ -105,6 +105,10 @@
 #if defined(SOC_J7200)
 #include <ti/board/src/j7200_evm/include/board_control.h>
 #include <ti/drv/lpm/soc/j7200/boot_core_defs.h>
+#endif
+#if defined(SOC_J784S4)
+#include <ti/board/src/j784s4_evm/include/board_control.h>
+#include <ti/drv/lpm/soc/j784s4/boot_core_defs.h>
 #endif
 
 #include <ti/drv/lpm/src/lpm_utils.h>

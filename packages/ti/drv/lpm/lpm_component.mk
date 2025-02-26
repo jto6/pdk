@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021, Texas Instruments Incorporated
+# Copyright (c) 2025, Texas Instruments Incorporated
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -66,9 +66,10 @@
 #
 ifeq ($(lpm_component_make_include), )
 
-lpm_lib_BOARDLIST       = j721e_evm j7200_evm
+lpm_lib_BOARDLIST       = j721e_evm j7200_evm j784s4_evm
 lpm_lib_j721e_CORELIST  = mcu1_0
 lpm_lib_j7200_CORELIST  = mcu1_0
+lpm_lib_j784s4_CORELIST  = mcu1_0
 
 lpm_RTOS_LIST = $(DEFAULT_RTOS_LIST)
 
@@ -94,7 +95,7 @@ export lpm_CORE_DEPENDENCY = no
 export lpm_SOC_DEPENDENCY = yes
 lpm_PKG_LIST = lpm
 lpm_INCLUDE = $(lpm_PATH)
-export lpm_SOCLIST = j721e j7200
+export lpm_SOCLIST = j721e j7200 j784s4
 export lpm_$(SOC)_CORELIST = mcu1_0
 lpm_LIB_LIST = lpm
 
@@ -135,7 +136,7 @@ export lpm_example_$(1)_CORE_DEPENDENCY = yes
 export lpm_example_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
 lpm_example_$(1)_PKG_LIST = lpm_example_$(1)
 lpm_example_$(1)_INCLUDE = $(lpm_example_$(1)_PATH)
-export lpm_example_$(1)_BOARDLIST = j721e_evm j7200_evm
+export lpm_example_$(1)_BOARDLIST = j721e_evm j7200_evm j784s4_evm
 export lpm_example_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(lpm_$(SOC)_CORELIST))
 export lpm_example_$(1)_SBL_APPIMAGEGEN = yes
 
@@ -159,7 +160,7 @@ lpm_EXAMPLE_LIST += lpm_io_retention_$(1)
 endef
 
 define LPM_BOARDLIST_RULE
-lpm_$(1)_BOARDLIST = j721e_evm j7200_evm
+lpm_$(1)_BOARDLIST = j721e_evm j7200_evm j784s4_evm
 endef
 
 LPM_EXAMPLE_MACRO_LIST := $(foreach curos, $(lpm_RTOS_LIST), $(call LPM_EXAMPLE_RULE,$(curos)))

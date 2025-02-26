@@ -1,6 +1,6 @@
 /*
 *
-* Copyright (c) 2021 Texas Instruments Incorporated
+* Copyright (c) 2025 Texas Instruments Incorporated
 *
 * All rights reserved not granted herein.
 *
@@ -93,6 +93,9 @@
 #endif
 #if defined(SOC_J7200)
 #include <ti/board/src/j7200_evm/include/board_control.h>
+#endif
+#if defined(SOC_J784S4)
+#include <ti/board/src/j784s4_evm/include/board_control.h>
 #endif
 #include <ti/drv/sciclient/sciserver.h>
 

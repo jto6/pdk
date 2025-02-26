@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Texas Instruments Incorporated
+ * Copyright (c) 2025 Texas Instruments Incorporated
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -82,6 +82,8 @@ Lpm_ipcTestParams service_chrdev = { ENDPT_CHRDEV, SERVICE_CHRDEV };
     #define CORE_IN_TEST 8
 #elif defined (SOC_J7200)
     #define CORE_IN_TEST 3
+#elif defined (SOC_J784S4)
+    #define CORE_IN_TEST 11
 #endif
 
 /* ========================================================================== */
@@ -130,6 +132,8 @@ uint32_t remoteProc[] =
     IPC_MPU1_0, IPC_MCU2_0, IPC_MCU2_1, IPC_MCU3_0, IPC_MCU3_1, IPC_C66X_1, IPC_C66X_2, IPC_C7X_1
 #elif defined (SOC_J7200)
     IPC_MPU1_0, IPC_MCU2_0, IPC_MCU2_1
+#elif defined (SOC_J784S4)
+    IPC_MPU1_0, IPC_MCU2_0, IPC_MCU2_1, IPC_MCU3_0, IPC_MCU3_1, IPC_MCU4_0, IPC_MCU4_1, IPC_C7X_1, IPC_C7X_2, IPC_C7X_3, IPC_C7X_4
 #endif
 };
 
