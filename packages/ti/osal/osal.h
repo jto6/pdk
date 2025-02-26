@@ -251,8 +251,8 @@ extern void Osal_DebugP_assert(int32_t expression, const char *file, int32_t lin
 /*!
  *  @brief  Assert checking function
  *
- *  If the expression is evaluated to true, the API does nothing.
- *  If it is evaluated to false, the underlying RTOS port implementation
+ *  If the expression is evaluated to false, the API does nothing.
+ *  If it is evaluated to true, the underlying RTOS port implementation
  *  handles the assert via its mechanisms.
  *
  *  @param  expression Expression to evaluate
