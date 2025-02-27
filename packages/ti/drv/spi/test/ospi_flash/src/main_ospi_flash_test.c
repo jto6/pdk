@@ -805,7 +805,6 @@ static bool OSPI_phyConfigTest(void *arg)
 static bool OSPI_wrProtectTest(void *arg)
 {
     bool            retVal = BTRUE;
-    int32_t         status = SPI_STATUS_SUCCESS;
     OSPI_Tests      *test = (OSPI_Tests *)arg;
     Board_flashHandle boardHandle;
     uint32_t        deviceId = OSPI_getDeviceId(test);
@@ -818,8 +817,8 @@ static bool OSPI_wrProtectTest(void *arg)
 
 #if defined (BUILD_MCU)
     /* Change interrupt number based on core */
-    status = OSPI_socInit();
-    if(SPI_STATUS_SUCCESS != status)
+    retVal = OSPI_socInit();
+    if(SPI_STATUS_SUCCESS != retVal)
     {
         SPI_log("\nOSPI_socInit failed!!\n");
         retVal = BFALSE;
