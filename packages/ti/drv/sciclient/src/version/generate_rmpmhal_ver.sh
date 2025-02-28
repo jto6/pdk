@@ -30,6 +30,7 @@ fi
 # Include an SCMVERSION if applicable. Make it short. Abbreviate dirty as +.
 if "$git_cmd" rev-parse --is-inside-work-tree 2>/dev/null >/dev/null; then
 	pushd $RM_PM_HAL_PATH > /dev/null
+	"$git_cmd" fetch --depth=500
 	if [ "$("$git_cmd" describe --match "v*.*.*")" == "$("$git_cmd" describe --match "v*.*.*" --abbrev=5 --dirty)" ]
 	then 
 		rm_pm_hal_ver="$("$git_cmd" describe --match "v*.*.*")"

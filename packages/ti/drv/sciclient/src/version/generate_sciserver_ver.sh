@@ -38,6 +38,7 @@ fi
 # tag matches what we expect based on v$VERSION.$SUBVERSION.$PATCHVERSION,
 # then don't bother including it. Abbreviate dirty as +.
 if "$git_cmd" rev-parse --is-inside-work-tree 2>/dev/null >/dev/null; then
+	"$git_cmd" fetch --depth=500
 	git_ver=$("$git_cmd" describe --abbrev=5 --dirty | sed -e 's/-dirty$/+/g')
 	makefile_ver="${major_ver_name}.${1}.${2}"
 	git_ver="$(echo "$git_ver" | sed -s "s/^${makefile_ver}-//g")"
