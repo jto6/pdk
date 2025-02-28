@@ -118,6 +118,8 @@ endif
 ifeq ($(TREAT_WARNINGS_AS_ERROR), yes)
   CFLAGS_INTERNAL += -Werror
   LNKFLAGS_INTERNAL_COMMON += -Werror
+else
+  CFLAGS_INTERNAL += -Wno-all -Wno-error -Wno-unused-value -Wno-unused-variable -Wno-unused-function
 endif
 
 ifeq ($(CPLUSPLUS_BUILD), yes)
