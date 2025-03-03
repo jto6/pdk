@@ -37,8 +37,7 @@ fi
 # tree that matches the current tag, the string is blank. If the closest
 # tag matches what we expect based on v$VERSION.$SUBVERSION.$PATCHVERSION,
 # then don't bother including it. Abbreviate dirty as +.
-if "$git_cmd" rev-parse --is-inside-work-tree 2>/dev/null >/dev/null; then
-	"$git_cmd" fetch --depth=500
+if [ "$($git_cmd config --get remote.origin.url | sed -E 's#.*/##')" = "pdk" ]; then
 	git_ver=$("$git_cmd" describe --abbrev=5 --dirty | sed -e 's/-dirty$/+/g')
 	makefile_ver="${major_ver_name}.${1}.${2}"
 	git_ver="$(echo "$git_ver" | sed -s "s/^${makefile_ver}-//g")"
@@ -49,7 +48,7 @@ if "$git_cmd" rev-parse --is-inside-work-tree 2>/dev/null >/dev/null; then
 	# Included dm_ver required for DM version api call. implementing for ease of debug
 	# eg: PSDK.xx.xx.xx.xx-NN+ PSDK explains DM build on which repo, xx.xx.xx.xx explains
 	# the latest tag, NN represents delta between tag and commit, Abbreviate dirty as +.
-	dm_ver="$("$git_cmd" describe --match "REL.PSDK.*" --abbrev=5 --dirty | sed -e 's/-g.....//g' -e 's/-dirty$/+/g' | cut -c 5-)"
+	dm_ver="$("$git_cmd" describe --match "REL.PSDK.*" --abbrev=8 --dirty | sed -e 's/-g........//g' -e 's/-dirty$/+/g' | cut -c 5-)"
 else
 	git_ver=""
 fi
@@ -64,9 +63,9 @@ fi
 S1=$(printf %d $(echo $1 | sed 's/^0*//g'))
 S2=$(printf %d $(echo $2 | sed 's/^0*//g'))
 
-if [ ${#dm_ver} -gt 25 ]
+if [ ${#dm_ver} -gt 25 ] || [ -z "$dm_ver" ]
 then
-	dm_ver=""
+	dm_ver="PSDK.10.01.00.25-22+"
 fi
 
 cat << EOF

@@ -27,30 +27,26 @@ else
 	git_cmd="git"
 fi
 
+pushd $RM_PM_HAL_PATH > /dev/null
 # Include an SCMVERSION if applicable. Make it short. Abbreviate dirty as +.
-if "$git_cmd" rev-parse --is-inside-work-tree 2>/dev/null >/dev/null; then
-	pushd $RM_PM_HAL_PATH > /dev/null
-	"$git_cmd" fetch --depth=500
+if [ "$($git_cmd config --get remote.origin.url | sed -E 's#.*/##')" = "rm_pm_hal" ]; then
 	if [ "$("$git_cmd" describe --match "v*.*.*")" == "$("$git_cmd" describe --match "v*.*.*" --abbrev=5 --dirty)" ]
 	then 
 		rm_pm_hal_ver="$("$git_cmd" describe --match "v*.*.*")"
 	else
 		rm_pm_hal_ver="$("$git_cmd" describe --match "v*.*.*" --abbrev=0)+"
 	fi
-
-	if [ -n "$rm_pm_hal_ver" ]
-	then
-		major_ver=$(echo $rm_pm_hal_ver | cut -d'.' -f1 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
-		sub_ver=$(echo $rm_pm_hal_ver | cut -d'.' -f2 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
-		patch_ver=$(echo $rm_pm_hal_ver | cut -d'.' -f3 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
-	fi
-	popd > /dev/null
 fi
+popd > /dev/null
 
-if [ ${#rm_pm_hal_ver} -gt 11 ]
+if [ ${#rm_pm_hal_ver} -gt 11 ] || [ -z "$rm_pm_hal_ver" ]
 then
-	rm_pm_hal_ver=""
+	rm_pm_hal_ver="v10.01.08a+"
 fi
+
+major_ver=$(echo $rm_pm_hal_ver | cut -d'.' -f1 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
+sub_ver=$(echo $rm_pm_hal_ver | cut -d'.' -f2 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
+patch_ver=$(echo $rm_pm_hal_ver | cut -d'.' -f3 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
 
 if [ -z "$major_ver" ]
 then
@@ -64,7 +60,6 @@ if [ -z "$patch_ver" ]
 then
 	patch_ver=0
 fi
-
 
 cat << EOF
 /**
