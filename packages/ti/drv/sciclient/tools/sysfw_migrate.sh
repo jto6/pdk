@@ -45,6 +45,7 @@ export CAT=cat
 ################################################################################
 # Parse CLI arguments
 SOC_LIST="j721e j7200 j721s2 j784s4 j742s2"
+version=""
 for i in "$@"; do
 case $i in
     -sr|--skip-reset) # Skips the PDK reset and rebase step
@@ -85,6 +86,11 @@ case $i in
         $ECHO "     - j784s4"
         $ECHO "    For example, --soc=\"j721e\" or  --soc=\"j721e j7200\""
         exit 0
+        ;;
+    v*.*.*)
+        $ECHO "$i"
+        version="$i"
+        shift
         ;;
     -*) # Invalid flag
         $ECHO "!!!WARNING!!! - IGNORING INVALID FLAG: $1"
@@ -226,7 +232,7 @@ if [ "$SKIP_COMMIT" != "YES" ]; then
 
     git add $SCI_CLIENT_DIR/src/version/*
 
-    git commit -s -m "Migrating to DM version "
+    git commit -s -m "Migrating to DM version $version "
 fi
 
 
