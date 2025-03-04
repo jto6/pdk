@@ -135,7 +135,9 @@ static int32_t SciclientApp_pvu2GICIntrTest(void);
 static int32_t SciclientApp_mainUart2MCUR5IntrTest(void);
 #endif
 static int32_t SciclientApp_getDMVersion(void);
+#if !defined(BUILD_MCU1_1)
 static int32_t SciclientApp_mcuR5SetStateMsgForwarding2TifsTest(void);
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -219,9 +221,11 @@ int32_t SciApp_testMain(SciApp_TestParams_t *testParams)
         case 11:
             testParams->testResult = SciclientApp_getDMVersion();
             break;
+#if !defined(BUILD_MCU1_1)
         case 12:
             testParams->testResult = SciclientApp_mcuR5SetStateMsgForwarding2TifsTest();
             break;
+#endif
         default:
             break;
     }
@@ -1156,6 +1160,7 @@ void InitMmu(void)
 }
 #endif
 
+#if !defined(BUILD_MCU1_1)
 static int32_t SciclientApp_mcuR5SetStateMsgForwarding2TifsTest(void)
 {
     uint32_t moduleId = TISCI_DEV_MCU_R5FSS0_CORE1;
@@ -1179,6 +1184,11 @@ static int32_t SciclientApp_mcuR5SetStateMsgForwarding2TifsTest(void)
     }
 
     ret = Sciclient_init(&config);
+
+    if (ret == CSL_PASS)
+    {
+        ret = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
+    }
 
     if (ret == CSL_PASS)
     {
@@ -1216,6 +1226,12 @@ static int32_t SciclientApp_mcuR5SetStateMsgForwarding2TifsTest(void)
             ret = status;
         }
 
+        status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status != CSL_PASS)
+        {
+            ret = status;
+        }
+        
     }
     if (ret == CSL_PASS)
     {
@@ -1223,3 +1239,4 @@ static int32_t SciclientApp_mcuR5SetStateMsgForwarding2TifsTest(void)
     }
     return ret;
 }
+#endif
