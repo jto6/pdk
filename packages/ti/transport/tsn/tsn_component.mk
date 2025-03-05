@@ -151,23 +151,48 @@ export tsn_gptp_SOCLIST = $(tsn_SOCLIST)
 export tsn_gptp_$(SOC)_CORELIST = $(tsn_$(SOC)_CORELIST)
 tsn_LIB_LIST += tsn_gptp
 
-#
-# lldp library
-#
-export tsn_lldp_COMP_LIST = tsn_lldp
-tsn_lldp_RELPATH = ti/transport/tsn/tsn-stack
-tsn_lldp_PATH = $(PDK_TSN_COMP_PATH)/tsn-stack
-export tsn_lldp_LIBNAME = tsn_lldp
-export tsn_lldp_LIBPATH = $(PDK_TSN_COMP_PATH)/lib
-export tsn_lldp_MAKEFILE = -f ../makefile_tsn_lldp
-export tsn_lldp_BOARD_DEPENDENCY = no
-export tsn_lldp_SOC_DEPENDENCY = no
-export tsn_lldp_CORE_DEPENDENCY = no
-tsn_lldp_PKG_LIST = tsn_lldp
-tsn_lldp_INCLUDE = $(tsn_lldp_PATH)
-export tsn_lldp_SOCLIST = $(tsn_SOCLIST)
-export tsn_lldp_$(SOC)_CORELIST = $(tsn_$(SOC)_CORELIST)
-tsn_LIB_LIST += tsn_lldp
+# The following 2 libraries, lldp library and tsn_yangemb library
+# need not be built periodically. These makefiles and related code
+# will not be packaged. Anytime there is a code change in these,
+# developers will have to rebuild the .libs for these libraries
+# and update it in the respective repos.
+# Uncommenting these and building them will generate said .libs.
+
+# #
+# # lldp library
+# #
+# export tsn_lldp_COMP_LIST = tsn_lldp
+# tsn_lldp_RELPATH = ti/transport/tsn/tsn-stack
+# tsn_lldp_PATH = $(PDK_TSN_COMP_PATH)/tsn-stack
+# export tsn_lldp_LIBNAME = tsn_lldp
+# export tsn_lldp_LIBPATH = $(PDK_TSN_COMP_PATH)/lib
+# export tsn_lldp_MAKEFILE = -f ../tsn-stack/eval_src/makefile.tsn_lldp_freertos.jacinto.r5f.ti-arm-clang
+# export tsn_lldp_BOARD_DEPENDENCY = no
+# export tsn_lldp_SOC_DEPENDENCY = no
+# export tsn_lldp_CORE_DEPENDENCY = no
+# tsn_lldp_PKG_LIST = tsn_lldp
+# tsn_lldp_INCLUDE = $(tsn_lldp_PATH)  $(tsn_lldp_PATH)/eval_src/tsn_lldp $(tsn_lldp_PATH)/eval_src/tsn_lldp/tilld $(tsn_lldp_PATH)/eval_src/tsn_lldp/lldpcli
+# export tsn_lldp_SOCLIST = $(tsn_SOCLIST)
+# export tsn_lldp_$(SOC)_CORELIST = $(tsn_$(SOC)_CORELIST)
+# tsn_LIB_LIST += tsn_lldp
+
+# #
+# # tsn_yangemb library
+# #
+# export tsn_yangemb_COMP_LIST = tsn_yangemb
+# tsn_yangemb_RELPATH = ti/transport/tsn/tsn-stack
+# tsn_yangemb_PATH = $(PDK_TSN_COMP_PATH)/tsn-stack
+# export tsn_yangemb_LIBNAME = tsn_yangemb
+# export tsn_yangemb_LIBPATH = $(PDK_TSN_COMP_PATH)/lib
+# export tsn_yangemb_MAKEFILE =  -f ../tsn-stack/eval_src/makefile.yangemb_freertos.jacinto.r5f.ti-arm-clang
+# export tsn_yangemb_BOARD_DEPENDENCY = no
+# export tsn_yangemb_SOC_DEPENDENCY = no
+# export tsn_yangemb_CORE_DEPENDENCY = no
+# tsn_yangemb_PKG_LIST = tsn_yangemb
+# tsn_yangemb_INCLUDE = $(tsn_yangemb_PATH) $(tsn_yangemb_PATH)/eval_src/yangblock
+# export tsn_yangemb_SOCLIST = $(tsn_SOCLIST)
+# export tsn_yangemb_$(SOC)_CORELIST = $(tsn_$(SOC)_CORELIST)
+# tsn_LIB_LIST += tsn_yangemb
 
 #
 # tsn_uniconf library

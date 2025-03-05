@@ -13,8 +13,6 @@ SRCDIR = tsn_unibase
 INCDIR = tsn_unibase
 
 SRC_PATH := $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_unibase
-UB_VERSION = $(shell sed -n '/AC_INIT/p' $(SRC_PATH)/configure.ac | awk -F"[][]" '{print $$4}')
-TSNPKGVERSION := $(UB_VERSION)-jacinto
 
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component
@@ -31,9 +29,16 @@ SRCS_COMMON += unibase.c \
 	ub_fileio.c \
 	ub_getmem.c
 
-PACKAGE_SRCS_COMMON = ../makefile_tsn_unibase
+PACKAGE_SRCS_COMMON = ../makefile_tsn_unibase ../tsn-stack/eval_inc
 PACKAGE_SRCS_COMMON += $(SRCDIR)
-CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"$(TSNPKGVERSION)\" \
+
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j721e_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j721e_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j7200_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j7200_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j721s2_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j721s2_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j784s4_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j784s4_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j742s2_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j742s2_evm.r5f.ti-arm-clang.lib
+
+CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"1.1.7\" \
                     -include $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_buildconf/jacinto_buildconf.h
 
 # Core/SoC/platform specific source files and CFLAGS

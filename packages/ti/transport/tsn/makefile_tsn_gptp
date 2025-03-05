@@ -10,11 +10,9 @@ endif
 MODULE_NAME = tsn_gptp
 
 SRCDIR = tsn_gptp tsn_gptp/gptpconf tsn_gptp/tilld
-INCDIR = tsn_gptp tsn_combase/tilld/jacinto tsn_uniconf/yangs
+INCDIR = tsn_gptp tsn_combase/tilld/jacinto tsn_uniconf/yangs tsn_uniconf/yangs/cores
 
 SRC_PATH := $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_gptp
-UB_VERSION = $(shell sed -n '/AC_INIT/p' $(SRC_PATH)/configure.ac | awk -F"[][]" '{print $$4}')
-TSNPKGVERSION := $(UB_VERSION)-jacinto
 
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component
@@ -30,6 +28,7 @@ SRCS_COMMON += announce_interval_setting_sm.c \
 	gm_stable_sm.c \
 	gptp_capable_receive_sm.c \
 	gptp_capable_transmit_sm.c \
+	gptp_capable_interval_setting_sm.c\
 	gptp2_debug_defs.c \
 	gptpclock.c \
 	gptpcommon.c \
@@ -65,11 +64,18 @@ SRCS_COMMON += announce_interval_setting_sm.c \
 	lld_ptpdevclock.c \
 	xl4-extmod-xl4gptp.c \
 	xl4-extmod-xl4gptp_runconf.c \
-	gptp_perfmon.c
+	gptp_perfmon.c \
 
-PACKAGE_SRCS_COMMON = ../tsn_component.mk ../makefile_tsn_gptp
+PACKAGE_SRCS_COMMON = ../tsn_component.mk ../makefile_tsn_gptp ../tsn-stack/eval_inc
 PACKAGE_SRCS_COMMON += $(SRCDIR)
-CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"$(TSNPKGVERSION)\" \
+
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j721e_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j721e_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j7200_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j7200_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j721s2_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j721s2_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j784s4_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j784s4_evm.r5f.ti-arm-clang.lib
+PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j742s2_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j742s2_evm.r5f.ti-arm-clang.lib
+
+CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"1.2.8\" \
 	-DUB_LOGCAT=3 -DUB_LOGTSTYPE=UB_CLOCK_REALTIME \
 	-include $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_buildconf/jacinto_buildconf.h \
 	-include $(SRC_PATH)/tilld/lld_gptp_private.h
