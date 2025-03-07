@@ -89,7 +89,7 @@ extern volatile uint32_t gCurrentProcessorState;
 
 void vDumpExceptionState( void )
 {
-    volatile uint32_t DFSR, DFAR, IFSR, IFAR, CPSR;
+    volatile portUInt32Type DFSR, DFAR, IFSR, IFAR, CPSR;
     DFSR = ulGetDataFaultStatusRegister();
     DFAR = ulGetDataFaultAddressRegister();
     IFSR = ulGetInstructionFaultStatusRegister();
