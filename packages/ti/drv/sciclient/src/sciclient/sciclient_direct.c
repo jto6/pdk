@@ -627,7 +627,7 @@ static int32_t Sciclient_queryFwCapsHandler(const uint32_t reqFlags __attribute_
     return ret;
 }
 
-int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
+int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags  __attribute__((unused)), void *tx_msg)
 {
     int32_t ret = CSL_PASS;
     bool msg_inval = (bool)false;
@@ -939,24 +939,26 @@ int32_t Sciclient_processDMVersionMessage(void *tx_msg)
         resp_prms->abi_minor = RMPMHAL_ABIMINOR;
 
         memcpy(resp_prms->rm_pm_hal_version, rm_pm_hal_version, strlen(rm_pm_hal_version));
-        resp_prms->rm_pm_hal_version[11] = 0;
-        if (strcmp(resp_prms->rm_pm_hal_version, rm_pm_hal_version))
+        resp_prms->rm_pm_hal_version[11] = '\0';
+        if (strcmp(resp_prms->rm_pm_hal_version, rm_pm_hal_version) != 0) {
             ret = CSL_EFAIL;
+        }
 
         if (ret == CSL_PASS)
         {
             memcpy(resp_prms->sciserver_version, sciserver_version, strlen(sciserver_version));
-            resp_prms->sciserver_version[25] = 0;
-            if (strcmp(resp_prms->sciserver_version, sciserver_version))
+            resp_prms->sciserver_version[25] = '\0';
+            if (strcmp(resp_prms->sciserver_version, sciserver_version) != 0) {
                 ret = CSL_EFAIL;
+            }
         }
-    }
-    
-    if ((((struct tisci_header *) tx_msg)->flags & TISCI_MSG_FLAG_AOP) != 0U) {
-        if (ret != CSL_PASS) {
-            Sciclient_TisciMsgSetNakResp((struct tisci_header *)tx_msg);
-        } else {
-            Sciclient_TisciMsgSetAckResp((struct tisci_header *)tx_msg);
+        
+        if ((((struct tisci_header *) tx_msg)->flags & TISCI_MSG_FLAG_AOP) != 0U) {
+            if (ret != CSL_PASS) {
+                Sciclient_TisciMsgSetNakResp((struct tisci_header *)tx_msg);
+            } else {
+                Sciclient_TisciMsgSetAckResp((struct tisci_header *)tx_msg);
+            }
         }
     }
 
