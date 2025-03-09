@@ -114,7 +114,7 @@ void vUndefAbort_c(void)
     /* Call registered call back */
     if ((exptnHandlerPtr)NULL != gExptnHandlers.udefExptnHandler)
     {
-        gExptnHandlers.dabtExptnHandler(gExptnHandlers.udefExptnHandlerArgs);
+        gExptnHandlers.udefExptnHandler(gExptnHandlers.udefExptnHandlerArgs);
     }
     else
     {
@@ -135,7 +135,7 @@ void vPrefetchAbort_c(void)
     /* Call registered call back */
     if ((exptnHandlerPtr)NULL != gExptnHandlers.pabtExptnHandler)
     {
-        gExptnHandlers.dabtExptnHandler(gExptnHandlers.pabtExptnHandlerArgs);
+        gExptnHandlers.pabtExptnHandler(gExptnHandlers.pabtExptnHandlerArgs);
     }
     else
     {

@@ -258,7 +258,7 @@ void __attribute__((section(".text.hwi"))) HwiP_undefined_handler_c(void)
     vPortDumpExceptionState();
     if ((exptnHandlerPtr)NULL != gExptnHandlers.udefExptnHandler)
     {
-        gExptnHandlers.dabtExptnHandler(gExptnHandlers.udefExptnHandlerArgs);
+        gExptnHandlers.udefExptnHandler(gExptnHandlers.udefExptnHandlerArgs);
     }
     else
     {
@@ -277,7 +277,7 @@ void __attribute__((section(".text.hwi"))) HwiP_prefetch_abort_handler_c(void)
     vPortDumpExceptionState();
     if ((exptnHandlerPtr)NULL != gExptnHandlers.pabtExptnHandler)
     {
-        gExptnHandlers.dabtExptnHandler(gExptnHandlers.pabtExptnHandlerArgs);
+        gExptnHandlers.pabtExptnHandler(gExptnHandlers.pabtExptnHandlerArgs);
     }
     else
     {
