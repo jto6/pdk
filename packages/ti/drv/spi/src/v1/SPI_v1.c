@@ -1628,31 +1628,30 @@ void MCSPI_transferCallback_v1(MCSPI_Handle     mcHandle,
 
     if (NULL != mcHandle)
     {
-    /* Get the pointer to the channel object */
-    handle  = mcHandle->handle;
-    chNum   = mcHandle->chnNum;
-    object = (SPI_v1_Object*)handle->object;
-    chObj   = &(object->chObject[chNum]);
+        /* Get the pointer to the channel object */
+        handle  = mcHandle->handle;
+        chNum   = mcHandle->chnNum;
+        object = (SPI_v1_Object*)handle->object;
+        chObj   = &(object->chObject[chNum]);
 
-    if ((uint32_t)SPI_OPER_MODE_CALLBACK == chObj->operMode)
-    {
-        if (NULL != object->transferCallbackFxn)
+        if ((uint32_t)SPI_OPER_MODE_CALLBACK == chObj->operMode)
         {
-            /* Single channel mode callback */
-            object->transferCallbackFxn(handle, transaction);
+            chObj->transaction = NULL;
+            if (NULL != object->transferCallbackFxn)
+            {
+                /* Single channel mode callback */
+                object->transferCallbackFxn(handle, transaction);
+            }
+            else
+            {
+                /* multi channel mode callback */
+                chObj->spiParams.transferCallbackFxn(mcHandle, transaction);
+            }
         }
         else
         {
-            /* multi channel mode callback */
-            chObj->spiParams.transferCallbackFxn(mcHandle, transaction);
+            (void)SPI_osalPostLock(object->transferComplete);
         }
-    }
-    else
-    {
-        (void)SPI_osalPostLock(object->transferComplete);
-    }
-
-    chObj->transaction = NULL;
     }
 }
 
