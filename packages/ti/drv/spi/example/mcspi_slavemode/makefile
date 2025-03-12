@@ -111,7 +111,7 @@ ifeq ($(SOC),$(filter $(SOC), j742s2))
 CFLAGS_SPI_MS    += -Dj742s2_evm=j742s2_evm
 endif
 
-ifeq ($(BOARD),$(filter $(BOARD), am65xx_evm am65xx_idk j721e_sim j721e_evm j7200_evm am64x_evm j721s2_evm j784s4_evm j742s2_evm))
+ifeq ($(BOARD),$(filter $(BOARD), j721e_sim j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm))
 CFLAGS_SPI_UT    = -DMCSPI_MULT_CHANNEL
 endif
 

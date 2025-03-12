@@ -164,6 +164,7 @@
  #define SPI_TEST_ID_TIMEOUT_POLL 15 /* Single-channel Timeout test with polling enabled */
  #define SPI_TEST_ID_DMA_CB_CANCEL   16
  #define SPI_TEST_ID_CB_CANCEL      17
+ #define SPI_TEST_ID_TX_ONLY_DMA     18  /* Multi-channel TX only test */
  
  /* Loopback tests */
  #define SPI_TEST_ID_LOOPBACK    20
@@ -634,6 +635,11 @@
          transCount = testLen / (test->param / 8);
          xferBytes = transCount * (test->param / 8);
      }
+     else if(testId == SPI_TEST_ID_TX_ONLY_DMA)
+     {
+         transCount = testLen + test->trigLvl/2;
+         xferBytes = testLen + test->trigLvl/2;
+     }
      else
      {
          /* Default word length is 8-bit */
@@ -742,7 +748,7 @@
                  goto Err;
              }
          }
-         else if (SPI_TEST_ID_TX_ONLY != testId)
+         else if ((SPI_TEST_ID_TX_ONLY != testId) && (SPI_TEST_ID_TX_ONLY_DMA != testId))
          {
              if (BTRUE == master)
              {
@@ -1248,6 +1254,7 @@
      {SPI_test_multi_channel,    SPI_TEST_ID_MC_DMA_CB,  BTRUE,  BFALSE,   BTRUE,   BTRUE,    BFALSE,   SemaphoreP_WAIT_FOREVER, "\r\n SPI master slave test slave in dma callback mode", },
  #endif
      {SPI_test_multi_channel,    SPI_TEST_ID_TX_ONLY,    BTRUE,  BFALSE,   BFALSE,  BFALSE,   BFALSE,   SemaphoreP_WAIT_FOREVER, "\r\n SPI master slave test slave multi channel TX_ONLY test", 0, },
+     {SPI_test_multi_channel,    SPI_TEST_ID_TX_ONLY_DMA,    BTRUE,  BFALSE,   BTRUE,  BTRUE,   BTRUE,    SemaphoreP_WAIT_FOREVER, "\r\n SPI master slave test slave multi channel TX_ONLY DMA Unaligned transfer test", 0, },
  #endif
  #endif
  
