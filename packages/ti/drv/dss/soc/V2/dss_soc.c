@@ -163,8 +163,8 @@ static const uint32_t gDss_PipeErrEvents[] = {
 };
 
 static const uint32_t gDss_VpFuncEvents[] = {
-    DSS_VP_EVENT_VSYNC,
-    DSS_VP_EVENT_LINE_NUM
+    DSS_VP_EVENT_LINE_NUM,
+    DSS_VP_EVENT_VSYNC
 };
 
 static const uint32_t gDss_VpErrEvents[] = {
