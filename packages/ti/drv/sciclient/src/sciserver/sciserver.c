@@ -115,7 +115,7 @@ static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-const char sciserver_version_str[] = SCISERVER_MAJOR_VERSION_NAME "." sciserver_stringify(SCISERVER_SUBVERSION) \
+const char sciserver_version_str[] = sciserver_stringify(SCISERVER_MAJOR_VERSION_NAME) "." sciserver_stringify(SCISERVER_SUBVERSION) \
                                    "." sciserver_stringify(SCISERVER_PATCHVERSION) \
                                    SCISERVER_SCMVERSION;
 

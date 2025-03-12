@@ -33,15 +33,6 @@ else
   SOC_FOLDER=j784s4
 endif
 
-# Leave RMPMHAL_SCMVERSION blank if you want a script to generate it from git tag/commit
-RMPMHAL_SCMVERSION ?=
-
-SCISERVER_MAJOR_VERSION_NAME ?= "v09.02.00"
-SCISERVER_SUBVERSION ?= 00
-SCISERVER_PATCHVERSION ?= 00
-# Leave SCISERVER_SCMVERSION blank if you want a script to generate it from git tag/commit
-SCISERVER_SCMVERSION ?=
-
 all: src/sciserver/sciserver.c
 src/sciserver/sciserver.c: src/version/sciserver_version.h src/version/rmpmhal_version.h
 src/version/sciserver_version.h: gen_version_includes
@@ -95,17 +86,7 @@ ifeq ($(MAKERULEDIR), )
 endif
 include $(MAKERULEDIR)/common.mk
 
-.PHONY: gen_version_includes
-
-gen_version_includes:
-ifneq ($(OS),Windows_NT)
-	@$(ECHO) \# Check and update: src/version/rmpmhal_version.h
-	@src/version/generate_rmpmhal_ver.sh $(RMPMHAL_SCMVERSION) > src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp
-	@if cmp -s src/version/rmpmhal_version.h src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp; then rm src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp; else mv src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp src/version/rmpmhal_version.h; fi
-	@$(ECHO) \# Check and update: src/version/sciserver_version.h
-	@src/version/generate_sciserver_ver.sh $(SCISERVER_SUBVERSION) $(SCISERVER_PATCHVERSION) $(SCISERVER_MAJOR_VERSION_NAME) $(SCISERVER_SCMVERSION) > src/version/$(MODULE_NAME)-sciserver_version.h.tmp
-	@if cmp -s src/version/sciserver_version.h src/version/$(MODULE_NAME)-sciserver_version.h.tmp; then rm src/version/$(MODULE_NAME)-sciserver_version.h.tmp; else mv src/version/$(MODULE_NAME)-sciserver_version.h.tmp src/version/sciserver_version.h; fi
-endif
+include $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/sciserver_version_makefile
 
 # OBJs and libraries are built by using rule defined in rules_<target>.mk
 #     and need not be explicitly specified here

@@ -7,6 +7,11 @@ else
 include $(RULES_MAKE)
 endif
 
+all: src/sciclient/sciclient_direct.c
+src/sciclient/sciclient_direct.c: src/version/sciserver_version.h src/version/rmpmhal_version.h
+src/version/sciserver_version.h: gen_version_includes
+src/version/rmpmhal_version.h: gen_version_includes
+
 HS_SUFFIX=
 ifeq ($(BUILD_HS),yes)
 HS_SUFFIX=_hs
@@ -111,6 +116,8 @@ ifeq ($(MAKERULEDIR), )
   export MAKERULEDIR
 endif
 include $(MAKERULEDIR)/common.mk
+
+include $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/sciserver_version_makefile
 
 # OBJs and libraries are built by using rule defined in rules_<target>.mk
 #     and need not be explicitly specified here

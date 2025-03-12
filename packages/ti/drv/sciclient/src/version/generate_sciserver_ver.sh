@@ -3,7 +3,7 @@
 ##
 # SCISERVER
 #
-# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
+# Copyright (C) 2021-2025 Texas Instruments Incorporated - http://www.ti.com/
 #
 # This software is licensed under the  standard terms and conditions in the
 # Texas Instruments  Incorporated Technology and Software Publicly Available
@@ -14,14 +14,6 @@
 year=$(date +%Y)
 month=$(date +%m)
 dm_ver=""
-
-# Specify major version name if an explicit non-empty VERSION is specified
-VERSION=${3}
-if [ -n "$VERSION" ]; then
-	major_ver_name="${VERSION}"
-else
-	major_ver_name="v${year}.${month}"
-fi
 
 if [ ! -z "$WIN_GITPATH" ]; then
 	git_cmd="$WIN_GITPATH/git.exe"
@@ -39,8 +31,6 @@ fi
 # then don't bother including it. Abbreviate dirty as +.
 if [ "$($git_cmd config --get remote.origin.url | sed -E 's#.*/##')" = "pdk" ]; then
 	git_ver=$("$git_cmd" describe --abbrev=5 --dirty | sed -e 's/-dirty$/+/g')
-	makefile_ver="${major_ver_name}.${1}.${2}"
-	git_ver="$(echo "$git_ver" | sed -s "s/^${makefile_ver}-//g")"
 	if [ -n "$git_ver" ]; then
 		git_ver="-${git_ver}"
 	fi
@@ -49,24 +39,24 @@ if [ "$($git_cmd config --get remote.origin.url | sed -E 's#.*/##')" = "pdk" ]; 
 	# eg: PSDK.xx.xx.xx.xx-NN+ PSDK explains DM build on which repo, xx.xx.xx.xx explains
 	# the latest tag, NN represents delta between tag and commit, Abbreviate dirty as +.
 	dm_ver="$("$git_cmd" describe --match "REL.PSDK.*" --abbrev=8 --dirty | sed -e 's/-g........//g' -e 's/-dirty$/+/g' | cut -c 5-)"
-else
-	git_ver=""
-fi
 
-# Override git version if an explicit non-empty SCISERVER_SCMVERSION is specified
-SCISERVER_SCMVERSION=${4}
-if [ -n "$SCISERVER_SCMVERSION" ]; then
-	git_ver="-${SCISERVER_SCMVERSION}"
-fi
 
-# Strip away the leading 0 to avoid MISRA.TOKEN.OCTAL.INT
-S1=$(printf %d $(echo $1 | sed 's/^0*//g'))
-S2=$(printf %d $(echo $2 | sed 's/^0*//g'))
+	major_ver=$(echo $dm_ver | cut -d'.' -f2 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
+	sub_ver=$(echo $dm_ver | cut -d'.' -f3 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
+	patch_ver=$(echo $dm_ver | cut -d'.' -f4 | sed -E -e 's/[^0-9.]//g' -e 's/^0*//g')
 
-if [ ${#dm_ver} -gt 25 ] || [ -z "$dm_ver" ]
-then
-	dm_ver="PSDK.10.01.00.25-22+"
-fi
+	if [ -z "$major_ver" ]
+	then
+		major_ver=0
+	fi
+	if [ -z "$sub_ver" ]
+	then
+		sub_ver=0
+	fi
+	if [ -z "$patch_ver" ]
+	then
+		patch_ver=0
+	fi
 
 cat << EOF
 /**
@@ -86,13 +76,13 @@ cat << EOF
 #ifndef INCLUDE_SCISERVER_VERSION_H
 #define INCLUDE_SCISERVER_VERSION_H
 
-#define SCISERVER_MAJOR_VERSION_NAME	"$major_ver_name"
-#define SCISERVER_SUBVERSION	$S1
-#define SCISERVER_PATCHVERSION	$S2
+#define SCISERVER_MAJOR_VERSION_NAME	$major_ver
+#define SCISERVER_SUBVERSION	$sub_ver
+#define SCISERVER_PATCHVERSION	$patch_ver
 #define SCISERVER_SCMVERSION	"$git_ver"
 #define SCISERVER_DMVERSION     "$dm_ver"
 
 #endif /* INCLUDE_SCISERVER_VERSION_H */
 
 EOF
-
+fi
