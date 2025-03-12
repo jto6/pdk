@@ -226,6 +226,11 @@ extern void CPS_MemoryBarrierRead(void);
  */
 extern void CPS_ExtPhyReset(bool reset);
 
+/**
+ * Get time in microseconds
+ */
+extern uint64_t CPS_GetTimeInUs();
+
 /* parasoft-end-suppress METRICS-36-3 */
 /* parasoft-end-suppress MISRAC2012-RULE_8_6-a */
 

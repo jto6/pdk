@@ -161,11 +161,13 @@ void messageReceive(DP_PrivateData *pD, DP_BusType busType)
     uint16_t messageSize;
     uint32_t mailboxEmpty;
     uint32_t readVal;
-    uint32_t timeout = 4000U;   /* 4 seconds */
+    uint32_t timeout = 4000000U;   /* 4 seconds */
     MHDP_ApbRegs* regBase = selectRegBase(pD, busType);
+    uint64_t startTime, currentTime;
+    startTime = CPS_GetTimeInUs();
 
     /* read header first, to get size of message */
-    while ((i < DP_MAILBOX_HEADER_SIZE) && (timeout != 0U))
+    while ((i < DP_MAILBOX_HEADER_SIZE))
     {
         mailboxEmpty = CPS_REG_READ(&regBase->mhdp_apb_regs.MAILBOX_EMPTY_ADDR_p);
 
@@ -176,8 +178,11 @@ void messageReceive(DP_PrivateData *pD, DP_BusType busType)
             pD->rxBuffer[i] = (uint8_t)(readVal & 0x000000FFU);
             i++;
         } else {
-            CPS_DelayNs(1000000);
-            timeout--;
+            currentTime = CPS_GetTimeInUs();
+            if ((currentTime - startTime) >= timeout)
+            {
+                break;
+            }
         }
     }
 
@@ -185,8 +190,9 @@ void messageReceive(DP_PrivateData *pD, DP_BusType busType)
                              (uint16_t)pD->rxBuffer[3]);
     messageSize += DP_MAILBOX_HEADER_SIZE;
 
+    startTime = CPS_GetTimeInUs();
     /* read message */
-    while ((i < messageSize) && (i < 1024U) && (timeout != 0U))
+    while ((i < messageSize) && (i < 1024U))
     {
         mailboxEmpty = CPS_REG_READ(&regBase->mhdp_apb_regs.MAILBOX_EMPTY_ADDR_p);
 
@@ -197,8 +203,11 @@ void messageReceive(DP_PrivateData *pD, DP_BusType busType)
             pD->rxBuffer[i] = (uint8_t)(readVal & 0x000000FFU);
             i++;
         } else {
-            CPS_DelayNs(1000000);
-            timeout--;
+            currentTime = CPS_GetTimeInUs();
+            if ((currentTime - startTime) >= timeout)
+            {
+                break;
+            }
         }
     }
 }

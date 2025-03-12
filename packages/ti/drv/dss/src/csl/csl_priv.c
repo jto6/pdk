@@ -87,6 +87,13 @@ void CPS_DelayNs(uint32_t ns)
     Osal_delay(ms);
 }
 
+uint64_t CPS_GetTimeInUs()
+{
+    uint64_t us;
+    us = TimerP_getTimeInUsecs();
+    return us;
+}
+
 void CPS_ExtPhyReset(bool reset)
 {
     uint32_t regVal;
