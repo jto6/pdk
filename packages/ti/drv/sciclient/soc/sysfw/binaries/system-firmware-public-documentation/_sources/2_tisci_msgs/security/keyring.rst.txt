@@ -6,7 +6,7 @@ KEYRING TISCI Description
 
 .. note::
 
-	This feature is only supported in j721S2, j784S4 and am62p devices
+	This feature is only supported in j721S2, j784S4, am62px, am62x and am64x devices
 
 This chapter provides information on  |sysfw| API for Keyring. The available API are listed below.
 

@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.04
+                11.00.00
               </div>
             
           
@@ -485,6 +485,18 @@ If secure debug needs to be enabled for the following two cores on AM65x,</p>
 </div>
 </li>
 </ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>In case, there is no debug unlock needed for any of the secure cores / non-secure cores ,
+the core id in the corresponding debug extension should be set to (0xFF) to indicate invalid value .</p>
+<p>E.g. To create a certificate to enable only non-secure debug for R5 cores,
+the debug cert extension for list of secure and non-secure debug core should be:
+.. code:</p>
+<div class="last highlight-cpp"><div class="highlight"><pre><span></span><span class="n">coreDbgEn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INTEGER</span><span class="o">:</span><span class="mh">0x0102</span>
+<span class="n">coreDbgSecEn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INTEGER</span><span class="o">:</span><span class="mh">0xFF</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="certificate-validation-done-by-sysfw">
@@ -748,6 +760,11 @@ to unlock the jtag port by using a special host id. Please refer to
 <a class="reference internal" href="../3_boardcfg/BOARDCFG_SEC.html#pub-boardcfg-secure-debug-unlock"><span class="std std-ref">Secure Debug Unlock</span></a>.</p>
 </li>
 </ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">JTAG unlock can be permanently disabled for all cores by blowing efuse. This can be
+achieved by calling <a class="reference internal" href="../2_tisci_msgs/security/runtime_debug.html#disable-jtag-unlock"><span class="std std-ref">TISCI_MSG_DISABLE_JTAG_UNLOCK</span></a> API.</p>
+</div>
 </div>
 </div>
 
@@ -792,7 +809,7 @@ to unlock the jtag port by using a special host id. Please refer to
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'11.00.04',
+            VERSION:'11.00.00',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

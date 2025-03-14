@@ -230,6 +230,17 @@ Debug Extension
 
     coreDbgSecEn = INTEGER:0x2223
 
+.. note::
+   In case, there is no debug unlock needed for any of the secure cores / non-secure cores ,
+   the core id in the corresponding debug extension should be set to (0xFF) to indicate invalid value .
+
+   E.g. To create a certificate to enable only non-secure debug for R5 cores,
+   the debug cert extension for list of secure and non-secure debug core should be:    
+   .. code::
+
+    coreDbgEn = INTEGER:0x0102
+    coreDbgSecEn = INTEGER:0xFF
+
 Certificate validation done by |sysfw|
 ======================================
 
@@ -518,3 +529,7 @@ Controlling Debug via Board Configuration
    can limit the hosts that can unlock debug to a specific hosts. Any host can be allowed
    to unlock the jtag port by using a special host id. Please refer to
    :ref:`pub_boardcfg_secure_debug_unlock`.
+
+.. note::
+   JTAG unlock can be permanently disabled for all cores by blowing efuse. This can be 
+   achieved by calling :ref:`TISCI_MSG_DISABLE_JTAG_UNLOCK  <disable-jtag-unlock>` API.

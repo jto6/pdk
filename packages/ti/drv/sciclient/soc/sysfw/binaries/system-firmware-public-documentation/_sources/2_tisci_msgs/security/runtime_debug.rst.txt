@@ -7,13 +7,17 @@
 This chapter provides information on available TISCI messages
 for configuring runtime debug.
 
-+------------------+----------------------------------------------------+-----------------+--------------------+
-| TISCI Message ID |                        Message Name                | Available in GP | Avialable in HS-FS |
-+==================+====================================================+=================+====================+
-| 0x900C           | :ref:`TISCI_MSG_OPEN_DEBUG_FWLS <open-debug-fwls>` | No              | No                 |
-+------------------+----------------------------------------------------+-----------------+--------------------+
-| 0x9021           | :ref:`TISCI_MSG_GET_SOC_UID <get-soc-uid>`         | Yes             | Yes                |
-+------------------+----------------------------------------------------+-----------------+--------------------+
++------------------+--------------------------------------------------------------------------+-----------------+--------------------+
+| TISCI Message ID |                        Message Name                                      | Available in GP | Avialable in HS-FS |
++==================+==========================================================================+=================+====================+
+| 0x900C           | :ref:`TISCI_MSG_OPEN_DEBUG_FWLS <open-debug-fwls>`                       | No              | No                 |
++------------------+--------------------------------------------------------------------------+-----------------+--------------------+
+| 0x9021           | :ref:`TISCI_MSG_GET_SOC_UID <get-soc-uid>`                               | Yes             | Yes                |
++------------------+--------------------------------------------------------------------------+-----------------+--------------------+
+| 0x9042           | :ref:`TISCI_MSG_DISABLE_JTAG_UNLOCK <disable-jtag-unlock>`               | No              | No                 |
++------------------+--------------------------------------------------------------------------+-----------------+--------------------+
+| 0x9043           | :ref:`TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK <disable-jtag-unlock-check>`   | No              | No                 |
++------------------+--------------------------------------------------------------------------+-----------------+--------------------+
 
 .. _sec_api_runtime_debug_intro:
 
@@ -96,3 +100,62 @@ TISCI Message ID
 .. sysfwapistruct:: tisci_msg_open_debug_fwls_req
 
 .. sysfwapistruct:: tisci_msg_open_debug_fwls_resp
+
+.. _disable-jtag-unlock:
+
+TISCI_MSG_DISABLE_JTAG_UNLOCK - Disable JTAG unlock Permanently
+---------------------------------------------------------------
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | Yes    |
++------------------------+--------+
+
+Unlocking the JTAG port is allowed in HS-SE devices by sending an X509 certificate.
+This API permanently disables JTAG unlock by writing to efuse.
+
+Since this API involves writing to efuse, Disable JTAG goes through only if the 
+Disable JTAG unlock check is set. Refer :ref:`TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK 
+<disable-jtag-unlock-check>` to see how to set the check.
+
+TISCI Message ID
+^^^^^^^^^^^^^^^^
+
+.. sysfwapimacro:: TISCI_MSG_DISABLE_JTAG_UNLOCK
+
+.. sysfwapistruct:: tisci_msg_disable_jtag_unlock_req
+
+.. sysfwapistruct:: tisci_msg_disable_jtag_unlock_resp
+
+.. _disable-jtag-unlock-check:
+
+TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK - Flag to Allow Permanent JTAG Disable
+--------------------------------------------------------------------------
+
+**Usage**:
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | Yes    |
++------------------------+--------+
+
+
+TISCI Message ID
+^^^^^^^^^^^^^^^^
+
+.. sysfwapimacro:: TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK
+
+.. sysfwapistruct:: tisci_msg_disable_jtag_unlock_check_req
+
+.. sysfwapistruct:: tisci_msg_disable_jtag_unlock_check_resp
+
+JTAG Disable Check Identifier
+-----------------------------
+
+This enumeration is used in :ref:`TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK <disable-jtag-unlock-check>` 
+
+.. sysfwapienum:: tisci_jtag_disable_check_identifier

@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.04
+                11.00.00
               </div>
             
           
@@ -184,10 +184,10 @@
 for configuring runtime debug.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="49%" />
+<col width="14%" />
+<col width="57%" />
+<col width="13%" />
 <col width="16%" />
-<col width="19%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">TISCI Message ID</th>
@@ -206,6 +206,16 @@ for configuring runtime debug.</p>
 <td><a class="reference internal" href="#get-soc-uid"><span class="std std-ref">TISCI_MSG_GET_SOC_UID</span></a></td>
 <td>Yes</td>
 <td>Yes</td>
+</tr>
+<tr class="row-even"><td>0x9042</td>
+<td><a class="reference internal" href="#disable-jtag-unlock"><span class="std std-ref">TISCI_MSG_DISABLE_JTAG_UNLOCK</span></a></td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="row-odd"><td>0x9043</td>
+<td><a class="reference internal" href="#disable-jtag-unlock-check"><span class="std std-ref">TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK</span></a></td>
+<td>No</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
@@ -385,6 +395,190 @@ unlock.</p>
 </p>
 </div>
 </div>
+<div class="section" id="tisci-msg-disable-jtag-unlock-disable-jtag-unlock-permanently">
+<span id="disable-jtag-unlock"></span><h3>TISCI_MSG_DISABLE_JTAG_UNLOCK - Disable JTAG unlock Permanently<a class="headerlink" href="#tisci-msg-disable-jtag-unlock-disable-jtag-unlock-permanently" title="Permalink to this headline">¶</a></h3>
+<p><strong>Usage</strong>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Unlocking the JTAG port is allowed in HS-SE devices by sending an X509 certificate.
+This API permanently disables JTAG unlock by writing to efuse.</p>
+<p>Since this API involves writing to efuse, Disable JTAG goes through only if the
+Disable JTAG unlock check is set. Refer <a class="reference internal" href="#disable-jtag-unlock-check"><span class="std std-ref">TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK</span></a> to see how to set the check.</p>
+<div class="section" id="id2">
+<h4>TISCI Message ID<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_DISABLE_JTAG_UNLOCK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9042U)</span></code></p>
+<p>Message to disable JTAG unlock</p>
+</p>
+<p><p><strong>struct tisci_msg_disable_jtag_unlock_req</strong></p>
+<p>Request message to disable jtag unlock</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="37%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Standard TISCI header</td>
+</tr>
+</tbody>
+</table>
+<p>This message can only be sent by the host that is tied to root of trust
+ through the secure boardcfg extended otp extension</p>
+</p>
+<p><p><strong>struct tisci_msg_disable_jtag_unlock_resp</strong></p>
+<p>Response message after disabling jtag unlock</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="37%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Standard TISCI header</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+</div>
+<div class="section" id="tisci-msg-disable-jtag-unlock-check-flag-to-allow-permanent-jtag-disable">
+<span id="disable-jtag-unlock-check"></span><h3>TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK - Flag to Allow Permanent JTAG Disable<a class="headerlink" href="#tisci-msg-disable-jtag-unlock-check-flag-to-allow-permanent-jtag-disable" title="Permalink to this headline">¶</a></h3>
+<p><strong>Usage</strong>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id3">
+<h4>TISCI Message ID<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9043U)</span></code></p>
+<p>Message to set/clear JTAG unlock check</p>
+</p>
+<p><p><strong>struct tisci_msg_disable_jtag_unlock_check_req</strong></p>
+<p>Request message for disabling jtag unlock check</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="21%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Standard TISCI header</td>
+</tr>
+<tr class="row-odd"><td>identifier</td>
+<td>u8</td>
+<td>One of the entries from enum tisci_jtag_disable_check_identifier</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p><p><strong>struct tisci_msg_disable_jtag_unlock_check_resp</strong></p>
+<p>Response message after disabling jtag unlock check</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="34%" />
+<col width="45%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Standard TISCI header</td>
+</tr>
+<tr class="row-odd"><td>value</td>
+<td>u8</td>
+<td>Value of jtag unlock check</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+</div>
+<div class="section" id="jtag-disable-check-identifier">
+<h3>JTAG Disable Check Identifier<a class="headerlink" href="#jtag-disable-check-identifier" title="Permalink to this headline">¶</a></h3>
+<p>This enumeration is used in <a class="reference internal" href="#disable-jtag-unlock-check"><span class="std std-ref">TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK</span></a></p>
+<p><p><strong>enum tisci_jtag_disable_check_identifier</strong></p>
+<p>JTAG Disable check Identifiers</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="15%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Enum</th>
+<th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>JTAG_DISABLE_CHECK_SET</td>
+<td>0</td>
+<td>JTAG Disable check set</td>
+</tr>
+<tr class="row-odd"><td>JTAG_DISABLE_CHECK_CLEAR</td>
+<td>1</td>
+<td>JTAG Disable check clear</td>
+</tr>
+<tr class="row-even"><td>JTAG_DISABLE_CHECK_GET</td>
+<td>2</td>
+<td>JTAG Disable check get</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
 </div>
 </div>
 
@@ -429,7 +623,7 @@ unlock.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.04',
+            VERSION:'11.00.00',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

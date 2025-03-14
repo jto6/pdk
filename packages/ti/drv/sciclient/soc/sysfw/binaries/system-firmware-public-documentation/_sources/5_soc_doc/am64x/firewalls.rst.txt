@@ -154,6 +154,17 @@ List of Region Based Firewalls
 
     For more details on firewalls, refer to the "Interconnect Firewalls" section of the TRM.
 
+
+.. note::
+
+ Firewall 35 region 5 is available for configuration as follows:
+                    +-------------+--------+-------+-----------------+---------------+----------------------------+--------------------+--------------------+
+                    | Firewall ID | Region | Owner | Start Address   | End Address   | CBA_PERMISSION_0           | CBA_PERMISSION_1   | CBA_PERMISSION_2   |
+                    +=============+========+=======+=================+===============+============================+====================+====================+
+                    | 35          | 5      | none  | 0x71A000        | 0x28001FFF    | everyone, rwcd             |                    |                    |
+                    +-------------+--------+-------+-----------------+---------------+----------------------------+--------------------+--------------------+
+                  
+
 .. _soc_doc_am64_public_fwl_desc_channel_fwl_list:
 
 List of Channelized Firewalls
