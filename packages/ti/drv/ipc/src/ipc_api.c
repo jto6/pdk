@@ -823,7 +823,7 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
         strncpy(taskWaiter->waiterElem.name, name, SERVICENAMELEN-1U);
         taskWaiter->waiterElem.name[SERVICENAMELEN-1U] = '\0';
         taskWaiter->waiterElem.procId = currProcId;
-        taskWaiter->waiterElem.endPt  = MAXENDPOINTS+1;
+        taskWaiter->waiterElem.endPt  = MAXENDPOINTS + 1U;
         taskWaiter->waiterElem.token = token;
 #endif /* IPC_EXCLUDE_CTRL_TASKS */
 
@@ -860,7 +860,7 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
              * preempted between lockMutex and lockHIsrGate by the
              * ISR servicing our desired endpt announcement
              */
-            if(rtnVal == IPC_SOK || taskWaiter->waiterElem.endPt != MAXENDPOINTS+1)
+            if((rtnVal == IPC_SOK) || (taskWaiter->waiterElem.endPt != MAXENDPOINTS + 1U))
             {
                 *remoteEndPt = taskWaiter->waiterElem.endPt;
                 *remoteProcId = taskWaiter->waiterElem.procId;
