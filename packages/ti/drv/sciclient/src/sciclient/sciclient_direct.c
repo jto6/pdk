@@ -830,8 +830,10 @@ int32_t Sciclient_processDMVersionMessage(void *tx_msg)
         resp_prms->patch_version = RMPMHAL_PATCHVERSION;
         resp_prms->abi_major = RMPMHAL_ABIMAJOR;
         resp_prms->abi_minor = RMPMHAL_ABIMINOR;
+        memset(resp_prms->rm_pm_hal_version, 0, 12UL);
+        memset(resp_prms->sciserver_version, 0, 26UL);
 
-        memcpy(resp_prms->rm_pm_hal_version, rm_pm_hal_version, strlen(rm_pm_hal_version));
+        memcpy(resp_prms->rm_pm_hal_version, rm_pm_hal_version, (((strlen(rm_pm_hal_version)+1UL)>12UL)?11UL:(strlen(rm_pm_hal_version)+1UL)));
         resp_prms->rm_pm_hal_version[11] = '\0';
         if (strcmp(resp_prms->rm_pm_hal_version, rm_pm_hal_version) != 0) {
             ret = CSL_EFAIL;
@@ -839,7 +841,7 @@ int32_t Sciclient_processDMVersionMessage(void *tx_msg)
 
         if (ret == CSL_PASS)
         {
-            memcpy(resp_prms->sciserver_version, sciserver_version, strlen(sciserver_version));
+            memcpy(resp_prms->sciserver_version, sciserver_version, (((strlen(sciserver_version)+1UL)>26UL)?25UL:(strlen(sciserver_version)+1UL)));
             resp_prms->sciserver_version[25] = '\0';
             if (strcmp(resp_prms->sciserver_version, sciserver_version) != 0) {
                 ret = CSL_EFAIL;
