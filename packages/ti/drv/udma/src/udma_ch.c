@@ -826,10 +826,11 @@ int32_t Udma_chEnable(Udma_ChHandle chHandle)
 
 int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
 {
-    int32_t     retVal = UDMA_SOK;
-    Udma_DrvHandle   drvHandle;
-    uint32_t          startTime = TimerP_getTimeInUsecs();
-    uint32_t          timeoutUs = timeout * 1000;
+    int32_t             retVal = UDMA_SOK;
+    Udma_DrvHandle      drvHandle;
+    uint64_t            startTime = TimerP_getTimeInUsecs();
+    uint64_t            timeoutUs = (uint64_t)timeout * 1000UL;
+    bool                end_loop = BFALSE;
 #if (UDMA_SOC_CFG_UDMAP_PRESENT == 1)
     CSL_UdmapRT     udmapRtStatus;
 #endif
@@ -861,25 +862,29 @@ int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
 
         while(UDMA_SOK != retVal)
         {
-            bool end_loop = false;
             if(0U == timeout)
             {
-                end_loop = true;
+                end_loop = BTRUE;
             }
             else if ((TimerP_getTimeInUsecs() - startTime) >= timeoutUs)
             {
-                end_loop = true;
+                end_loop = BTRUE;
                 retVal = UDMA_ETIMEOUT;
+            }
+            else
+            {
+                /* loop until channel teardown complete */
+                end_loop = BFALSE;
             }
 #if (UDMA_NUM_UTC_INSTANCE > 0)
             if(UDMA_CH_FLAG_UTC == (chHandle->chType & UDMA_CH_FLAG_UTC))
             {
                 utcInfo = chHandle->utcInfo;
                 utcChNum = chHandle->extChNum - utcInfo->startCh;
-                if(CSL_druChIsTeardownComplete(utcInfo->druRegs, utcChNum))
+                if(CSL_druChIsTeardownComplete(utcInfo->druRegs, utcChNum) == TRUE)
                 {
                     retVal = UDMA_SOK;
-                    end_loop = true;
+                    end_loop = BTRUE;
                 }
             }
             else
@@ -894,7 +899,7 @@ int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
                     {
                         /* Teardown complete */
                         retVal = UDMA_SOK;
-                        end_loop = true;
+                        end_loop = BTRUE;
                     }
                 }
                 else
@@ -907,10 +912,15 @@ int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
                     {
                         /* Teardown complete */
                         retVal = UDMA_SOK;
-                        end_loop = true;
+                        end_loop = BTRUE;
                     }
                 }
+                else
 #endif
+                {
+                    /* Invalid Instance */
+                    retVal = UDMA_EFAIL;
+                }
             }
             else
             {
@@ -922,7 +932,7 @@ int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
                     {
                         /* Teardown complete */
                         retVal = UDMA_SOK;
-                        end_loop = true;
+                        end_loop = BTRUE;
                     }
                 }
 #endif
@@ -934,13 +944,13 @@ int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
                     {
                         /* Teardown complete */
                         retVal = UDMA_SOK;
-                        end_loop = true;
+                        end_loop = BTRUE;
                     }
                 }
 #endif
             }
 
-            if(true == end_loop)
+            if(BTRUE == end_loop)
             {
                 break;
             }
