@@ -906,12 +906,12 @@ static void J721S2_UART_InitPwrClk(void)
 void SBL_SocEarlyInit()
 {
     J721S2_UART_InitPwrClk();
-
-    J721S2_SetupLeoPmicAvs(SBL_OPP_NOM);
 }
 
 void SBL_SocLateInit(void)
 {
+    J721S2_SetupLeoPmicAvs(SBL_OPP_NOM);
+
 #if !defined(SBL_USE_MCU_DOMAIN_ONLY)
     SBL_SetQoS();
 #endif
@@ -985,12 +985,12 @@ static void J784S4_UART_InitPwrClk(void)
 void SBL_SocEarlyInit()
 {
     J784S4_UART_InitPwrClk();
-
-    J784S4_SetupPmicAvs(SBL_OPP_NOM);
 }
 
 void SBL_SocLateInit(void)
 {
+    J784S4_SetupPmicAvs(SBL_OPP_NOM);
+
 #if !defined(SBL_USE_MCU_DOMAIN_ONLY)
     SBL_SetQoS();
 #endif
