@@ -43,8 +43,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#if defined (SOC_J721E)
 #include <ti/board/src/j721e_evm/include/board_control.h>
-
+#endif
 #include <ti/drv/sciclient/sciclient.h>
 #include "dss_test.h"
 
