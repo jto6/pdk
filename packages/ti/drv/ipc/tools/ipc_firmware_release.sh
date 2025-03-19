@@ -15,6 +15,8 @@
 
 PDK_INSTALL_PATH=${PWD}/../../../../
 
+set -x
+
 # To get rid of ../../ in the path go to PDK_INSTALL_PATH and reassign PDK_INSTALL_PATH as PWD
 pushd ${PWD}
 
@@ -30,7 +32,7 @@ CORE_LIST_j721e_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 c66xdsp_1 c66xdsp_2 c7x_
 CORE_LIST_j7200_evm="mcu1_1 mcu2_0 mcu2_1"
 CORE_LIST_j721s2_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 c7x_1 c7x_2"
 CORE_LIST_j784s4_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1 c7x_1 c7x_2 c7x_3 c7x_4"
-CORE_LIST_j742s2_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 c7x_1 c7x_2 c7x_3"
+CORE_LIST_j742s2_evm="mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1 c7x_1 c7x_2 c7x_3"
 
 declare -A elf_extensions
 elf_extensions["mcu1_0"]="xer5f"
@@ -56,7 +58,7 @@ usage()
   echo "Usage :"
   echo "./ipc_firmware_release.sh --soc_list=<list of soc's> --ti_linux_firmware_repo_path=<path to linux firmware repo>"
   echo "Eg: "
-  echo "./ipc_firmware_release.sh --soc_list="j7200 j721e" --ti_linux_firmware_repo_path=/home/sai/ti/ti-linux-firmware"
+  echo "./ipc_firmware_release.sh --soc_list=\"j7200 j721e\" --ti_linux_firmware_repo_path=/home/sai/ti/ti-linux-firmware"
   echo "for all socs, you can use --soc_list=all"
 }
 
