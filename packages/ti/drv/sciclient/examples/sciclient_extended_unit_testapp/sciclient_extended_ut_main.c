@@ -4064,6 +4064,18 @@ static int32_t SciclientApp_procbootNegTest(void)
         SciApp_printf ("Sciclient_procBootSetSequenceCtrl: TISCI_MSG_FLAG_RESERVED0 Negative Arg Test FAILED \n");
     }
 
+    status = Sciclient_procBootSetSequenceCtrl(invalidProcID, ctrlFlagSet, ctrlFlagClr, 0, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_EFAIL)
+    {
+        procbootTestStatus += CSL_PASS;
+        SciApp_printf ("Sciclient_procBootSetSequenceCtrl: TISCI_MSG_FLAG_AOP Negative Arg Test PASSED \n");
+    }
+    else
+    {
+        procbootTestStatus += CSL_EFAIL;
+        SciApp_printf ("Sciclient_procBootSetSequenceCtrl: TISCI_MSG_FLAG_AOP Negative Arg Test FAILED \n");
+    }
+
     status = Sciclient_procBootSetProcessorCfg(NULL, SCICLIENT_SERVICE_WAIT_FOREVER);
     if(status == CSL_EFAIL)
     {
@@ -4176,6 +4188,18 @@ static int32_t SciclientApp_procbootPosTest(void)
     int32_t  status                      = CSL_PASS;
     int32_t  procbootTestStatus          = CSL_PASS;
     struct tisci_msg_proc_get_status_resp procGetStatusResp;
+
+    status = Sciclient_procBootWaitProcessorState(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, 1, 1, 0, 3, 0, 0, 0, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
+    {
+        procbootTestStatus += CSL_PASS;
+        SciApp_printf ("Sciclient_procBootGetProcessorState: Positive Arg Test Passed.\n");
+    }
+    else
+    {
+        procbootTestStatus += CSL_EFAIL;
+        SciApp_printf ("Sciclient_procBootGetProcessorState: Positive Arg Test Failed.\n");
+    }
     
     status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, SCICLIENT_SERVICE_WAIT_FOREVER);
     if (status == CSL_PASS)
@@ -6049,6 +6073,12 @@ static int32_t SciclientApp_sciServiceTest(void)
         .pRespPayload    = (uint8_t *) 0,
         .respPayloadSize = (uint32_t) 0
     };
+    struct tisci_msg_board_config_rm_resp resp;
+    Sciclient_RespPrm_t queryFwCapsRespParam = {
+        .flags           = (uint32_t) 0,
+        .pRespPayload    = (uint8_t *) &resp,
+        .respPayloadSize = (uint32_t) sizeof (request)
+    };
     
     Sciclient_ConfigPrms_t config      =
     {
@@ -6086,6 +6116,21 @@ static int32_t SciclientApp_sciServiceTest(void)
         reqParam.flags       = TISCI_MSG_FLAG_AOP;
         reqParam.messageType = TISCI_MSG_QUERY_FW_CAPS;
         status = Sciclient_service(&reqParam, &respParam);
+        if(status == CSL_PASS)
+        {
+            sciServiceTestStatus += CSL_PASS;
+            SciApp_printf("Sciclient_service TISCI_MSG_QUERY_FW_CAPS test passed\n");
+        }
+        else
+        {
+            sciServiceTestStatus += CSL_EFAIL;
+            SciApp_printf("Sciclient_service TISCI_MSG_QUERY_FW_CAPS test failed\n");
+        }
+
+        /* Passing TISCI_MSG_QUERY_FW_CAPS message type with TISCI_MSG_FLAG_AOP as req flag */
+        reqParam.flags       = TISCI_MSG_FLAG_AOP;
+        reqParam.messageType = TISCI_MSG_QUERY_FW_CAPS;
+        status = Sciclient_service(&reqParam, &queryFwCapsRespParam);
         if(status == CSL_PASS)
         {
             sciServiceTestStatus += CSL_PASS;
@@ -6138,6 +6183,18 @@ static int32_t SciclientApp_sciServiceTest(void)
         {
             sciServiceTestStatus += CSL_EFAIL;
             SciApp_printf("Sciclient_service TISCI_MSG_QUERY_FW_CAPS test failed\n");
+        }
+
+        status = Sciclient_service(NULL,&respParam);
+        if(status != CSL_PASS)
+        {
+            sciServiceTestStatus += CSL_PASS;
+            SciApp_printf("Sciclient_service input params test passed\n");
+        }
+        else
+        {
+            sciServiceTestStatus += CSL_EFAIL;
+            SciApp_printf("Sciclient_service input params test failed\n");
         }
     }
     else
