@@ -1082,7 +1082,9 @@ static uint32_t BootApp_loadImg(void)
 #endif
 
 #if defined(ECC_ENABLED)
-        retVal = BootApp_eccFxn();
+    /* Add 1ms delay to fix SDL_MCU_R5FSS0_0 ECC in OSPI Bootmode */
+    Osal_delay(1U);
+    retVal = BootApp_eccFxn();
 #endif
 
     return (retVal);

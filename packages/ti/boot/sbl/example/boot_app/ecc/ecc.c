@@ -649,7 +649,13 @@ int32_t ecc_aggr_test(void)
         for (mainMem = SDL_ECC_MEMTYPE_MCU_R5F0_CORE; mainMem < SDL_ECC_MEMTYPE_MAX; mainMem++)
         {
             static uint64_t gTimeStart, gTimeFinish;
-            if(mainMem == SDL_MCU_ADC12FCC1_ECC_AGGR || mainMem == SDL_ECC_MEMTYPE_MCU_R5F0_CORE || mainMem == SDL_ECC_MEMTYPE_MCU_R5F1_CORE  || mainMem == SDL_ECC_MEMTYPE_A72_1 || mainMem == SDL_ECC_MEMTYPE_A72_0 || mainMem == SDL_ECC_MEMTYPE_A72_COREPAC || mainMem == SDL_MCU_I3C1_0_ECC_AGGR || mainMem == SDL_MCU_I3C1_1_ECC_AGGR || mainMem == SDL_PCIE1_0_ECC_AGGR || mainMem == SDL_PCIE1_1_ECC_AGGR || mainMem == SDL_WKUP_SMS0_TIFS_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_WKUP_SMS0_HSM_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_1_ECC_AGGR )
+            /*
+             * The following ECC aggregators have been excluded from the ECC test:
+             * 1. SDL Known issues: SDL_MCU_I3C1_0_ECC_AGGR, SDL_MCU_I3C1_1_ECC_AGGR, SDL_PCIE1_0_ECC_AGGR, SDL_PCIE1_1_ECC_AGGR, SDL_WKUP_SMS0_TIFS_ECC_AGGR_0_ECC_AGGR,SDL_WKUP_SMS0_HSM_ECC_AGGR_0_ECC_AGGR, SDL_DSS_EDP0_0_ECC_AGGR, SDL_DSS_EDP0_1_ECC_AGGR, SDL_CSI_TX_IF_V2_1_0_ECC_AGGR, SDL_CSI_TX_IF_V2_1_1_ECC_AGGR, SDL_CSI_TX_IF_V2_0_0_ECC_AGGR, SDL_CSI_TX_IF_V2_0_1_ECC_AGGR
+             * 2. SDL_ECC_MEMTYPE_MCU_R5F1_CORE can be tested when an application is loaded and executed on MCU0_1, please refer to Documentation for more details.
+             * 3. SDL_ECC_MEMTYPE_A72_1, SDL_ECC_MEMTYPE_A72_0, SDL_ECC_MEMTYPE_A72_COREPAC are known issues with QNX Boot, can be tested without HLOS Boot. 
+             */
+            if(mainMem == SDL_ECC_MEMTYPE_MCU_R5F1_CORE  || mainMem == SDL_ECC_MEMTYPE_A72_1 || mainMem == SDL_ECC_MEMTYPE_A72_0 || mainMem == SDL_ECC_MEMTYPE_A72_COREPAC || mainMem == SDL_MCU_I3C1_0_ECC_AGGR || mainMem == SDL_MCU_I3C1_1_ECC_AGGR || mainMem == SDL_PCIE1_0_ECC_AGGR || mainMem == SDL_PCIE1_1_ECC_AGGR || mainMem == SDL_WKUP_SMS0_TIFS_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_WKUP_SMS0_HSM_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_1_ECC_AGGR )
             {
                 continue;
             }      
@@ -1642,16 +1648,20 @@ int32_t BootApp_eccFxn(void)
     /* Init the modules */
     BootApp_initDevices();
 
+    /* Power on CPSW1 explicitly */
+    Sciclient_pmSetModuleState(TISCI_DEV_CPSW1, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    UART_printf("Powering on CPSW1\r\n");
+
+    /* Power on ADC12FC_16FFC1 explicitly */
+    Sciclient_pmSetModuleState(TISCI_DEV_MCU_ADC12FC_16FFC1, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    UART_printf("Powering on ADC12FC_16FFC1\r\n");
+
     if (testResult == SDL_PASS)
     {
         /* SDL osal wrapper */
         BootApp_osalWrapper();
 
         UART_printf("\nECC test Application\r\n");
-
-        /* Power on CPSW1 explicitly while testing */
-        Sciclient_pmSetModuleState(TISCI_DEV_CPSW1, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
-        UART_printf("Powering on CPSW1\r\n");
         testResult = ECC_funcTest();
         UART_printf("\n ECC func Test");
         if (testResult == SDL_PASS)
