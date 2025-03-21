@@ -92,11 +92,24 @@ extern "C" {
  * For J7200, Main DMT0 to Main DMT7 are powered on by default. The rest need to
  * be powered on from LPSC_PER_SPARE0.
  */
-#define TIMERP_ANY_MASK         ((uint32_t) 0x0FFFFFU)
-/**< Any available */
-#define TIMERP_AVAILABLE_MASK   ((uint32_t) 0x0FFFFFU)
+#if defined (BUILD_MCU)
+#if defined(BUILD_MCU1_0) || defined(BUILD_MCU1_1)
+  #define TIMERP_ANY_MASK               ((uint32_t) 0x0000FFU)
+  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x0000FFU)
+#else
+  #define TIMERP_ANY_MASK               ((uint32_t) 0x0FFFFFU)
+  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x0FFFFFU)
+#endif
+#endif
 
-
+#if defined (BUILD_MPU)
+  #define TIMERP_ANY_MASK               ((uint32_t) 0x0000FFU)
+  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x0000FFU)
+#endif
+#if defined (BUILD_C7X)
+  #define TIMERP_ANY_MASK               ((uint32_t) 0x0000FFU)
+  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x0000FFU)
+#endif
 
 /* using the default timer base addresses */
 #if defined(__aarch64__)
