@@ -623,10 +623,10 @@ static UdmaTestParams gUdmaTestCases[] =
         .chPrmId    = {UDMA_TEST_CH_PRMID_INTR_DEF},
         .qdepth     = {UDMA_TEST_PERF_QDEPTH},
         .icnt       = {
-                        {1*KB, 1*KB, 1*KB, 1U},
+                        {1*KB, 1U, 1*KB, 1U},
                       },
         .dicnt      = {
-                        {1*KB, 1*KB, 1*KB, 1U},
+                        {1*KB, 1U, 1*KB, 1U},
                       },
         .dim        = {
                         {1*KB, 1*KB, 0U},
