@@ -4064,8 +4064,8 @@ static int32_t SciclientApp_procbootNegTest(void)
         SciApp_printf ("Sciclient_procBootSetSequenceCtrl: TISCI_MSG_FLAG_RESERVED0 Negative Arg Test FAILED \n");
     }
 
-    status = Sciclient_procBootSetSequenceCtrl(invalidProcID, ctrlFlagSet, ctrlFlagClr, 0, SCICLIENT_SERVICE_WAIT_FOREVER);
-    if(status == CSL_EFAIL)
+    status = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, ctrlFlagSet, ctrlFlagClr, 0, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
     {
         procbootTestStatus += CSL_PASS;
         SciApp_printf ("Sciclient_procBootSetSequenceCtrl: TISCI_MSG_FLAG_AOP Negative Arg Test PASSED \n");
@@ -4505,35 +4505,65 @@ static int32_t SciclientApp_pmMessagePosTest(void)
         pmMessageTestStatus += CSL_EFAIL;
         SciApp_printf("Sciclient_pmGetModuleClkNumParent Test Failed.\n");
     }
-
-    status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE0,
-                                        TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
-                                        0U,
-                                        SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
+    
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
     {
-        pmMessageTestStatus += CSL_PASS;
-        SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE0 Test Passed.\n");
+        status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE0,
+                                            TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                            0U,
+                                            SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_PASS)
+        {
+            pmMessageTestStatus += CSL_PASS;
+            SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE0 Test Passed.\n");
+        }
+        else
+        {
+            pmMessageTestStatus += CSL_EFAIL;
+            SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE0 Test Failed.\n");
+        }
     }
     else
     {
         pmMessageTestStatus += CSL_EFAIL;
-        SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE0 Test Failed.\n");
+        SciApp_printf("Processor access request for MCU1_0 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmMessageTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_0 has failed.\n");
     }
 
-    status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
-                                        TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
-                                        0U,
-                                        SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
     {
-        pmMessageTestStatus += CSL_PASS;
-        SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE1 Test Passed.\n");
+        status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
+                                            TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                            0U,
+                                            SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_PASS)
+        {
+            pmMessageTestStatus += CSL_PASS;
+            SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE1 Test Passed.\n");
+        }
+        else
+        {
+            pmMessageTestStatus += CSL_EFAIL;
+            SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE1 Test Failed.\n");
+        }
     }
     else
     {
         pmMessageTestStatus += CSL_EFAIL;
-        SciApp_printf("Sciclient_pmSetModuleState: SCICLIENT_DEV_MCU_R5FSS0_CORE1 Test Failed.\n");
+        SciApp_printf("Processor access request for MCU1_1 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmMessageTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_1 has failed.\n");
     }
 
     status = Sciclient_pmSetModuleState(TISCI_DEV_BOARD0,
@@ -4631,21 +4661,36 @@ static int32_t SciclientApp_pmMessageNegTest(void)
     uint32_t contextLossState       = 0U;
     uint32_t invalidModuleId        = 440U;
     
-    status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE0,
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
+    {
+        status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE0,
                                         TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                                         1U,
                                         SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_EFAIL)
-    {
-        pmMessageNegTestStatus += CSL_PASS;
-        SciApp_printf ("Sciclient_pmSetModuleState Negative Test Passed.\n");
+        if (status == CSL_EFAIL)
+        {
+            pmMessageNegTestStatus += CSL_PASS;
+            SciApp_printf ("Sciclient_pmSetModuleState Negative Test Passed.\n");
+        }
+        else
+        {
+            pmMessageNegTestStatus += CSL_EFAIL;
+            SciApp_printf ("Sciclient_pmSetModuleState Negative Test Failed.\n");
+        }
     }
     else
     {
         pmMessageNegTestStatus += CSL_EFAIL;
-        SciApp_printf ("Sciclient_pmSetModuleState Negative Test Failed.\n");
+        SciApp_printf("Processor access request for MCU1_0 has failed.\n");
     }
-
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmMessageNegTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_0 has failed.\n");
+    }
+    
     status = Sciclient_pmGetModuleState(invalidModuleId,
                                         &moduleState,
                                         &resetState,
@@ -4858,52 +4903,97 @@ static int32_t SciclientApp_pmSetMsgProxyPosTest(void)
     uint32_t reqFlag                    = 0U;
     uint32_t invalidState               = 3U;
     
-    /* Turning OFF CORE1 */
-    status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
-                                        TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                        reqFlag,
-                                        SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
     {
-        pmSetMsgProxyTestStatus += CSL_PASS;
-        SciApp_printf ("Sciclient_pmSetMsgProxy TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF Test Passed.\n");
+        /* Turning OFF CORE1 */
+        status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
+                                            TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+                                            reqFlag,
+                                            SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_PASS)
+        {
+            pmSetMsgProxyTestStatus += CSL_PASS;
+            SciApp_printf ("Sciclient_pmSetMsgProxy TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF Test Passed.\n");
+        }
+        else
+        {
+            pmSetMsgProxyTestStatus += CSL_EFAIL;
+            SciApp_printf ("Sciclient_pmSetMsgProxy TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF Test Failed.\n");
+        }
     }
     else
     {
         pmSetMsgProxyTestStatus += CSL_EFAIL;
-        SciApp_printf ("Sciclient_pmSetMsgProxy TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF Test Failed.\n");
+        SciApp_printf("Processor access request for MCU1_1 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmSetMsgProxyTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_1 has failed.\n");
     }
     
-    /* Passing invalid state and reqFlag */
-    status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
+    {
+         /* Passing invalid state and reqFlag */
+        status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
                                         invalidState,
                                         reqFlag,
                                         SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
-    {
-        pmSetMsgProxyTestStatus += CSL_PASS;
-        SciApp_printf ("Sciclient_pmSetMsgProxy default case Test Passed.\n");
+        if (status == CSL_PASS)
+        {
+            pmSetMsgProxyTestStatus += CSL_PASS;
+            SciApp_printf ("Sciclient_pmSetMsgProxy default case Test Passed.\n");
+        }
+        else
+        {
+            pmSetMsgProxyTestStatus += CSL_EFAIL;
+            SciApp_printf ("Sciclient_pmSetMsgProxy default case Test Failed.\n");
+        }
     }
     else
     {
         pmSetMsgProxyTestStatus += CSL_EFAIL;
-        SciApp_printf ("Sciclient_pmSetMsgProxy default case Test Failed.\n");
+        SciApp_printf("Processor access request for MCU1_1 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmSetMsgProxyTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_1 has failed.\n");
     }
     
-    /* If CORE1 gets OFF with above tests, Turn it ON again */
-    status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
-                                        TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
-                                        reqFlag,
-                                        SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
     {
-        pmSetMsgProxyTestStatus += CSL_PASS;
-        SciApp_printf ("SCICLIENT_DEV_MCU_R5FSS0_CORE1 ON.\n");
+         /* If CORE1 gets OFF with above tests, Turn it ON again */
+        status = Sciclient_pmSetModuleState(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
+                                            TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                            reqFlag,
+                                            SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_PASS)
+        {
+            pmSetMsgProxyTestStatus += CSL_PASS;
+            SciApp_printf ("SCICLIENT_DEV_MCU_R5FSS0_CORE1 ON.\n");
+        }
+        else
+        {
+            pmSetMsgProxyTestStatus += CSL_EFAIL;
+            SciApp_printf ("SCICLIENT_DEV_MCU_R5FSS0_CORE1 ON Failed.\n");
+        }
     }
     else
     {
         pmSetMsgProxyTestStatus += CSL_EFAIL;
-        SciApp_printf ("SCICLIENT_DEV_MCU_R5FSS0_CORE1 ON Failed.\n");
+        SciApp_printf("Processor access request for MCU1_1 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmSetMsgProxyTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_1 has failed.\n");
     }
     
     return pmSetMsgProxyTestStatus;
@@ -4925,53 +5015,97 @@ static int32_t SciclientApp_pmSetCpuResetMsgProxyTest(void)
         .timeout        = (uint32_t) SCICLIENT_SERVICE_WAIT_FOREVER
     };
     #endif
-
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
     /* Taking CORE1 out of reset */
-    status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
-                                      resetBit,
-                                      SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
+    if(status == CSL_PASS)
     {
-        pmSetCpuResetMsgProxyTestStatus += CSL_PASS;
-        SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-1 Passed.\n");
+        status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
+                                          resetBit,
+                                          SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_PASS)
+        {
+            pmSetCpuResetMsgProxyTestStatus += CSL_PASS;
+            SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-1 Passed.\n");
+        }
+        else
+        {
+            pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
+            SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-1 Failed.\n");
+        }
     }
     else
     {
         pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
-        SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-1 Failed.\n");
+        SciApp_printf("Processor access request for MCU1_1 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_1 has failed.\n");
     }
     
-    
-    /* Putting CORE1 in reset */
-    resetBit = 1U;
-    status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
-                                      resetBit,
-                                      SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_PASS)
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
     {
-        pmSetCpuResetMsgProxyTestStatus += CSL_PASS;
-        SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-2 Passed.\n");
+        /* Taking CORE1 out of reset */
+        /* Putting CORE1 in reset */
+        resetBit = 1U;
+        status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
+                                        resetBit,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_PASS)
+        {
+            pmSetCpuResetMsgProxyTestStatus += CSL_PASS;
+            SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-2 Passed.\n");
+        }
+        else
+        {
+            pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
+            SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-2 Failed.\n");
+        }
     }
     else
     {
         pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
-        SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Test-2 Failed.\n");
+        SciApp_printf("Processor access request for MCU1_1 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_1 has failed.\n");
     }
     
-    /* Setting up invalid resetBit */
-    resetBit = 2U;
-    status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
-                                      resetBit,
-                                      SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_EFAIL)
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
     {
-        pmSetCpuResetMsgProxyTestStatus += CSL_PASS;
-        SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Negative Test Passed.\n");
+        /* Setting up invalid resetBit */
+        resetBit = 2U;
+        status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE1,
+                                        resetBit,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_EFAIL)
+        {
+            pmSetCpuResetMsgProxyTestStatus += CSL_PASS;
+            SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Negative Test Passed.\n");
+        }
+        else
+        {
+            pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
+            SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Negative Test Failed.\n");
+        }
     }
     else
     {
         pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
-        SciApp_printf ("Sciclient_pmSetCpuResetMsgProxy Negative Test Failed.\n");
+        SciApp_printf("Processor access request for MCU1_1 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE1, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        pmSetCpuResetMsgProxyTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_1 has failed.\n");
     }
     
     #if defined(BUILD_MCU1_0)
@@ -5019,22 +5153,37 @@ static int32_t SciclientApp_processPmMessageTest(void)
         SciApp_printf ("Sciclient_ProcessPmMessage TISCI_MSG_SET_DEVICE Test Failed\n");
     }
     
+    status = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, SCICLIENT_SERVICE_WAIT_FOREVER);
     /* Passing invalid resetBit */
-    resetBit = 2U;
-    status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE0,
-                                      resetBit,
-                                      SCICLIENT_SERVICE_WAIT_FOREVER);
-    if (status == CSL_EFAIL)
+    if(status == CSL_PASS)
     {
-        processPmMessageTestStatus += CSL_PASS;
-        SciApp_printf ("sciclient_processPMmessage Negative Test Passed.\n");
+        resetBit = 2U;
+        status = Sciclient_pmSetModuleRst(SCICLIENT_DEV_MCU_R5FSS0_CORE0,
+                                        resetBit,
+                                        SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status == CSL_EFAIL)
+        {
+            processPmMessageTestStatus += CSL_PASS;
+            SciApp_printf ("sciclient_processPMmessage Negative Test Passed.\n");
+        }
+        else
+        {
+            processPmMessageTestStatus += CSL_EFAIL;
+            SciApp_printf ("sciclient_processPMmessage Negative Test Failed.\n");
+        }
     }
     else
     {
         processPmMessageTestStatus += CSL_EFAIL;
-        SciApp_printf ("sciclient_processPMmessage Negative Test Failed.\n");
-    }  
-    
+        SciApp_printf("Processor access request for MCU1_0 has failed.\n");
+    }
+    status = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        processPmMessageTestStatus += CSL_EFAIL;
+        SciApp_printf("Processor release request for MCU1_0 has failed.\n");
+    }
+
     /* Incrementing coreRefCnt twice so that it will not shutdown even if 
        TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF called */
     status = Sciclient_pmSetModuleState(TISCI_DEV_BOARD0,
@@ -5141,7 +5290,7 @@ static int32_t SciclientApp_pmTest(void)
     }
     status = Sciclient_init(&config);
     sciclientInitStatus = status;
-  
+
     if(status == CSL_PASS)
     {
         SciApp_printf("Sciclient_init PASSED.\n");
