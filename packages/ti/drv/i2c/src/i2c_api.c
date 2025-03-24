@@ -124,13 +124,14 @@ static void I2C_close_v1(I2C_Handle handle)
     /* Get the pointer to the object and hwAttrs */
     hwAttrs = (I2C_HwAttrs const *)handle->hwAttrs;
     object = (I2C_v1_Object*)handle->object;
-
+#if (1U == CSL_I2C_ENABLE_SLAVE_MODE)
     if ((NULL != object->currentTransaction) && (BFALSE == object->currentTransaction->masterMode))
     {
         /* Mask I2C Slave interrupts */
         I2CSlaveIntDisableEx(hwAttrs->baseAddr, CSL_I2C_INT_ALL);
     }
-    else
+#endif
+    if ((NULL != object->currentTransaction) && (BTRUE == object->currentTransaction->masterMode))
     {
         /* Mask I2C Master interrupts */
         I2CMasterIntDisableEx(hwAttrs->baseAddr, CSL_I2C_INT_ALL);
