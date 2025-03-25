@@ -285,7 +285,7 @@ int32_t RPMessageParams_init(RPMessage_Params *params)
         params->numBufs        = RPMessage_Buffer_Count_Default;
         params->stackBuffer    = NULL;
         params->stackSize      = 0U;
-        params->ctrlTaskPriority = IPC_CTRL_TASK_PRIORITY;
+        params->ctrlTaskPriority = (int8_t) IPC_CTRL_TASK_PRIORITY;
     }
 
     return (retVal);
@@ -860,7 +860,7 @@ int32_t RPMessage_getRemoteEndPtToken(uint32_t currProcId, const char* name, uin
              * preempted between lockMutex and lockHIsrGate by the
              * ISR servicing our desired endpt announcement
              */
-            if((rtnVal == IPC_SOK) || (taskWaiter->waiterElem.endPt != MAXENDPOINTS + 1U))
+            if((rtnVal == IPC_SOK) || (taskWaiter->waiterElem.endPt != ((uint32_t)MAXENDPOINTS + 1U)))
             {
                 *remoteEndPt = taskWaiter->waiterElem.endPt;
                 *remoteProcId = taskWaiter->waiterElem.procId;
