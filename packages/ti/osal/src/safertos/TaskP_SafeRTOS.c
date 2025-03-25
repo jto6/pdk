@@ -38,6 +38,9 @@
 #include "SafeRTOS_config.h"
 
 portTaskHandleType TaskP_getSafeRTOSHandle(TaskP_Handle handle);
+uint32_t TaskP_getTaskId(TaskP_Handle handle);
+extern void LoadP_addTask(TaskP_Handle handle, uint32_t tskId);
+extern void LoadP_removeTask(uint32_t tskId);
 
 /**
  * \brief Value to be used for lowest priority task
@@ -60,12 +63,17 @@ typedef void ( * TaskP_mainFunction_t )(  void *arg0, void *arg1 );
 typedef struct TaskP_SafeRTOS_s {
     bool                    used;
     xTCB                    taskObj;
+#if ( configINCLUDE_RUNTIMESTATS == 1 )
+    xRTS                    taskRTS;
+#endif
+    uint32_t                tskId;
     portTaskHandleType      taskHndl;
     TaskP_mainFunction_t    taskfxn;
     void                    *arg0;
     void                    *arg1;
     bool                    terminated;
 } TaskP_SafeRTOS;
+
 
 /* The function that implements the task being created. */
 static void TaskP_Function (void *arg);
@@ -142,6 +150,7 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
     {
         /* Grab the memory */
         handle = ( TaskP_SafeRTOS * ) &taskPool[i];
+        handle->tskId = i;
     }
 
     if( NULL_PTR == handle ) {
@@ -167,6 +176,7 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
         handle->arg1 = params->arg1;
         handle->terminated = BFALSE;
 
+
         /* The structure passed to xTaskCreate(  ) to create the check task. */
          xTaskParameters xTaskPParams =
          {
@@ -177,7 +187,11 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
              params->stacksize,             /* The size of the buffer allocated for use as the task stack - note this is in BYTES! */
              handle,                        /* The task parameter. */
              (portUnsignedBaseType)taskPriority,     /* The priority to assigned to the task being created. */
-             params->userData,              /* User-defined data. */
+            #if ( configINCLUDE_RUNTIMESTATS == 1 )
+                &handle->taskRTS,              /* User-defined data. */
+            #else
+                params->userData, 
+            #endif
 #if defined (BUILD_MCU)
              pdTRUE,                            /* Check task does not use the FPU. */
              {                                   /* MPU task parameters. */
@@ -219,6 +233,9 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
         }
         else
         {
+        #if ( configINCLUDE_RUNTIMESTATS == 1 )
+            LoadP_addTask((TaskP_Handle)handle, handle->tskId);
+        #endif
             ret_handle = ( ( TaskP_Handle )handle );
         }
     }
@@ -259,7 +276,9 @@ TaskP_Status TaskP_delete(TaskP_Handle *hTaskPtr)
             xReturn = xTaskDelete(task->taskHndl);
             task->terminated = BTRUE;
             DebugP_assert( pdPASS == xReturn );
-
+        #if ( configINCLUDE_RUNTIMESTATS == 1 )
+            LoadP_removeTask(task->tskId);
+        #endif
             key = HwiP_disable(  );
             task->used      = BFALSE;
             task->taskHndl  = NULL;
@@ -400,6 +419,16 @@ portTaskHandleType TaskP_getSafeRTOSHandle( TaskP_Handle handle )
     DebugP_assert( BFALSE != taskHandle->used );
 
     return ( taskHandle->taskHndl );
+}
+
+uint32_t TaskP_getTaskId( TaskP_Handle handle )
+{
+    TaskP_SafeRTOS *taskHandle = ( TaskP_SafeRTOS * )handle;
+
+    DebugP_assert( NULL_PTR != handle );
+    DebugP_assert( BFALSE != taskHandle->used );
+
+    return ( taskHandle->tskId );
 }
 
 uint32_t TaskP_getTaskStackHighWatermark(TaskP_Handle handle)

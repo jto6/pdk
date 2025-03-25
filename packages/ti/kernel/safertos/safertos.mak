@@ -13,6 +13,8 @@ SRCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRT
 SRCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/portable/$(SAFERTOS_ISA_EXT_$(ISA))/$(SAFERTOS_COMPILER_EXT_$(ISA))
 ifeq ($(ISA),$(filter $(ISA), r5f))
 SRCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/api/${SAFERTOS_ISA_EXT_$(ISA)}
+SRCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/runtimestats
+SRCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/runtimestats/PrivWrapperStd
 endif
 ifeq ($(ISA),$(filter $(ISA), c7x))
 SRCDIR += $(PDK_SAFERTOS_COMP_PATH)/TI_CGT/c7x
@@ -27,6 +29,10 @@ INCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRT
 INCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/kernel/include_api
 INCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/portable/$(SAFERTOS_ISA_EXT_$(ISA))
 INCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/portable/$(SAFERTOS_ISA_EXT_$(ISA))/$(SAFERTOS_COMPILER_EXT_$(ISA))
+ifeq ($(ISA),$(filter $(ISA), r5f))
+INCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/runtimestats
+INCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/runtimestats/PrivWrapperStd
+endif
 ifeq ($(ISA),$(filter $(ISA), c7x))
 INCDIR += ${SAFERTOS_KERNEL_INSTALL_PATH_$(ISA)}/source_code_and_projects/SafeRTOS/api/NoWrapper
 INCDIR += $(PDK_SAFERTOS_COMP_PATH)/TI_CGT/c7x
@@ -74,6 +80,14 @@ SRCS_COMMON += \
     apiMPU.c
 
 endif
+
+#Runtime stats C files
+ifeq ($(ISA),$(filter $(ISA), r5f))
+SRCS_COMMON += \
+    runtimestats.c \
+    apiRuntimestatsWrapper.c
+endif
+
 ifeq ($(ISA),$(filter $(ISA), c7x))
 # Following does not compile in CPP build. Skip it for CPP build
 ifneq ($(CPLUSPLUS_BUILD), yes)

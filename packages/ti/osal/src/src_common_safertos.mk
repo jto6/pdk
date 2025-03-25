@@ -34,11 +34,11 @@ endif
 ifeq ($(CORE),$(filter $(CORE), mcu1_0 mcu2_0 mcu2_1 mcu1_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1))
   SRCDIR += arch/core/r5
   SRCS_COMMON += CacheP_nonos_r5.c Arch_util_r5.c SafeRTOS_aborts_r5f.c SafeRTOS_mpu_r5f.c HwiP_safertos.c
-  SRCS_COMMON += SafeRTOS_config_r5f.c
+  SRCS_COMMON += SafeRTOS_config_r5f.c LoadP_safertos.c
   SRCS_ASM_COMMON += TimestampProvider_asm.asm
   SRCS_ASM_COMMON += SafeRTOS_utils_r5f.asm
   PACKAGE_SRCS_COMMON += arch/core/r5 src/safertos/SafeRTOS_aborts_r5f.c src/safertos/SafeRTOS_mpu_r5f.c
-  PACKAGE_SRCS_COMMON += src/safertos/SafeRTOS_config_r5f.c src/safertos/HwiP_safertos.c
+  PACKAGE_SRCS_COMMON += src/safertos/SafeRTOS_config_r5f.c src/safertos/LoadP_safertos.c src/safertos/HwiP_safertos.c
   PACKAGE_SRCS_COMMON += src/safertos/SafeRTOS_utils_r5f.asm
 endif
 

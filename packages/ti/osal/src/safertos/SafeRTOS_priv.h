@@ -58,6 +58,12 @@ extern "C" {
 #include <ti/osal/soc/osal_soc.h>
 
 #include <SafeRTOS_API.h>
+
+#if ( configINCLUDE_RUNTIMESTATS == 1 )
+#include <runtimestatsAPI.h>
+#include <runtimestats.h>
+#endif
+
 #include <portable.h>
 
 #if defined (BUILD_C7X)
@@ -100,6 +106,8 @@ void prvGetOSTimerParams( Safertos_OSTimerParams *params);
 int32_t Osal_isInISRContext(void);
 portBaseType _system_pre_init( void );
 void _system_post_cinit( void );
+portTaskHandleType xGetIdleTaskHandle( void );
+TimerP_Handle TimerP_getTickTimerHandle( void );
 
 #ifdef __cplusplus
 }

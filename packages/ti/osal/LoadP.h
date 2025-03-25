@@ -102,7 +102,7 @@ extern LoadP_Status LoadP_getTaskLoad(TaskP_Handle taskHandle, LoadP_Stats *stat
 /*!
  *  @brief  Function to get CPU load in percentage
  *          
- *  @return CPU load in percentage
+ *  @return CPU load in percentage. NOTE: In case of SafeRTOS, the return value is fixed-point values with 2 decimal digits, i.e. 1 is equal to 0.01%. 
  */
 extern uint32_t LoadP_getCPULoad(void);
 

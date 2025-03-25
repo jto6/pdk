@@ -46,8 +46,8 @@
 /* SafeRTOS Includes */
 #include "SafeRTOS_API.h"
 #include "SafeRTOS_priv.h"
+#include "task.h"
 #include "mpuARM.h"
-
 #include <ti/osal/src/nonos/Nonos_config.h>
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/csl/arch/csl_arch.h>
@@ -84,6 +84,12 @@ void vApplicationInterruptHandlerHook( void );
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+static portTaskHandleType xIdleTaskHandle = NULL;
+
+static portUInt32Type ulRtsLastTickCount = 0U;
+
+static portBaseType xIdleTaskFirstExecution = pdTRUE;
+
 /*-----------------------------------------------------------------------------
  * TI PDK variables required by the interrupt handler.
  *---------------------------------------------------------------------------*/
@@ -115,6 +121,7 @@ extern uint32_t             intrSrcType[ R5_VIM_INTR_NUM ];
 /*  Usage notes:
     On entry to this function from boot, R5F must be in System (privileged) mode. */
 
+__attribute__((weak)) \
 __attribute__((section(".startupCode"))) void __mpu_init( void )
 {
     portBaseType xInitMpuResult;
@@ -165,6 +172,7 @@ __attribute__((section(".startupCode"))) void __mpu_init( void )
 /* The linker will include the updated version if it is linked in prior to   */
 /* linking with the C/C++ runtime library.                                   */
 /*****************************************************************************/
+__attribute__((weak)) \
 __attribute__((section(".startupCode")))  portBaseType _system_pre_init( void )
 {
     extended_system_pre_init();
@@ -185,6 +193,7 @@ __attribute__((section(".startupCode")))  portBaseType _system_pre_init( void )
 
 /*---------------------------------------------------------------------------*/
 /* __TI_default_system_post_cinit indicates that the default                 */
+__attribute__((weak)) \
 __attribute__((section(".startupCode")))  void _system_post_cinit( void )
 {
     osalArch_Config_t cfg;
@@ -263,6 +272,7 @@ __attribute__((section(".startupCode")))  void _system_post_cinit( void )
  * or enable interrupts on exit.
  *---------------------------------------------------------------------------*/
 
+__attribute__((weak)) \
 void vApplicationInterruptHandlerHook( void )
 {
     IntrFuncPtr        fxnPtr;
@@ -304,6 +314,7 @@ void vApplicationInterruptHandlerHook( void )
 /*-------------------------------------------------------------------------*/
 
 /* Hardware setup using the TI PDK libraries. */
+__attribute__((weak)) \
 portBaseType prvSetupHardware( void )
 {
     portBaseType xStatus = pdPASS;
@@ -352,6 +363,7 @@ portBaseType prvSetupHardware( void )
 
 /*-------------------------------------------------------------------------*/
 
+__attribute__((weak)) \
 void vApplicationFiqHandlerHook( void )
 {
     /* FIQ is not supported with SafeRTOS.
@@ -361,3 +373,105 @@ void vApplicationFiqHandlerHook( void )
 }
 
 /*-------------------------------------------------------------------------*/
+
+__attribute__((weak)) \
+void vApplicationTickHook ( void )
+{
+    vUpdateRTSFromTick();
+}
+
+/*-------------------------------------------------------------------------*/
+
+__attribute__((weak)) \
+void vApplicationTaskCreateHook( const xTCB *pxNewTaskHandle )
+{
+    vInitialiseTaskRunTimeStatistics( ( xRTS * ) pxNewTaskHandle->pvObject );
+}
+
+/*---------------------------------------------------------------------------*/
+
+__attribute__((weak)) \
+void vApplicationTaskSwitchHook( const xTCB *pxTCBOfTaskSwitchedOut,
+                                 const xTCB *pxTCBOfTaskSwitchedIn )
+{
+    /* Update the statistics for the task switching out. */
+    vUpdateRunTimeStatistics( ( xRTS * ) pxTCBOfTaskSwitchedOut->pvObject );
+
+    /* Not used for RTS. */
+    ( void ) pxTCBOfTaskSwitchedIn;
+}
+/*---------------------------------------------------------------------------*/
+
+__attribute__((weak)) \
+void vApplicationIdleHook( void )
+{
+    /* Idle Task Handle is neccessary for Run Time Stats implementation. If this hook is being re-defined 
+     * ensure to have the handle populated and xGetIdleTaskHandle defined */
+    if( pdFALSE != xIdleTaskFirstExecution )
+    {
+        xIdleTaskFirstExecution = pdFALSE;
+
+        xIdleTaskHandle = xTaskGetCurrentTaskHandle();
+    }
+}
+
+/*---------------------------------------------------------------------------*/
+
+void vRtsInitialise( void )
+{
+    ulRtsLastTickCount = 0U;
+}
+/*---------------------------------------------------------------------------*/
+
+void vRtsGetElapsedCPUTime( volatile portUInt32Type *pulTaskSwitchedInTime, portUInt32Type *pulElapsedTime )
+{
+    TimerP_Handle pxTickTimerHandle = TimerP_getTickTimerHandle();
+    portUInt32Type ulCountCurr = (TimerP_getCount( pxTickTimerHandle ) - TimerP_getReloadCount( pxTickTimerHandle ));
+    portUInt32Type ulCountPrev = ( portUInt32Type )( *pulTaskSwitchedInTime );
+    portUInt32Type ulTickCurr = ( portUInt32Type ) xTickCount;
+    portUInt32Type ulCounterMax = (TimerP_MAX_PERIOD - TimerP_getReloadCount( pxTickTimerHandle ));
+    portUInt32Type ulTimeValue;
+
+    /* Update missed ticks is scheduler is suspended */
+    ulTickCurr += uxMissedTicks;
+
+    if( ( ulTickCurr == ulRtsLastTickCount ) && ( ulCountCurr < ulCountPrev ) )
+    {
+        /* Increment tick if the counter has wrapped around. */
+        ++ulTickCurr;
+    }
+    else if( ( ulTickCurr + 1U ) == ulRtsLastTickCount )
+    {
+        /* Increment tick if the counter has wrapped around but the tick has not been serviced
+         * despite being called once before*/
+        ++ulTickCurr;
+    }
+    else
+    {
+        /* This block is only here for MISRA compliance. */
+    }
+
+    /* Update for elapsed ticks. */
+    ulTimeValue = ( ulTickCurr - ulRtsLastTickCount ) * ( ulCounterMax + 1U );
+
+    /* Calculate the counter difference */
+    ulTimeValue += ulCountCurr;
+    ulTimeValue -= ulCountPrev;
+
+    /* Save tick count for next update */
+    ulRtsLastTickCount = ulTickCurr;
+
+    /* Set new time value. */
+    *pulElapsedTime = ulTimeValue;
+    *pulTaskSwitchedInTime = ulCountCurr;
+}
+/*---------------------------------------------------------------------------*/
+
+__attribute__((weak)) \
+portTaskHandleType xGetIdleTaskHandle( void )
+{
+    return xIdleTaskHandle;
+}
+
+/*---------------------------------------------------------------------------*/
+

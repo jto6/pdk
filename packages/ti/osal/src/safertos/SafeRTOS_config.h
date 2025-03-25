@@ -41,6 +41,7 @@
 #elif defined (BUILD_MCU)
 #define configMINIMAL_STACK_SIZE_WITH_FPU       ( 1024U )
 #define configMINIMAL_STACK_SIZE_WITH_NO_FPU    ( 512U )
+#define configINCLUDE_RUNTIMESTATS          ( 1 )
 #endif
 
 /* System tick rate. */

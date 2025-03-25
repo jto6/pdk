@@ -75,6 +75,7 @@
 #include "SafeRTOS.h"
 #if defined (BUILD_MCU)
 #include <ti/osal/SafeRTOS_MPU.h>
+#include <ti/osal/LoadP.h>
 #include "mpuARM.h"
 #endif
 #endif
@@ -1939,7 +1940,7 @@ bool OSAL_mutex_test()
 
 #endif /* #if !defined(BARE_METAL) && !defined (SAFERTOS) */
 
-#if defined(FREERTOS)
+#if defined(FREERTOS) || (defined (SAFERTOS) && defined (BUILD_MCU))
 /*
  *  ======== Load test function ========
  */
@@ -1964,12 +1965,23 @@ static bool loadPrint()
 
         if(0U < loadStatsTask[i].percentLoad)
         {
+        #if defined(SAFERTOS)
+            /*SafeRTOS load stats return direct percentages as fixed-point values with 2 decimal digits */
+            OSAL_log("  Task %d - Load = %d.%d%% \n", i, loadStatsTask[i].percentLoad/100U, loadStatsTask[i].percentLoad%100U);
+        #else
             OSAL_log("    %s - Load = %d%% \n", loadStatsTask[i].name, loadStatsTask[i].percentLoad);
+        #endif
         }
         else
-        {   
+        {
+            
+        #if defined(SAFERTOS)
+            /*SafeRTOS load stats return direct percentages as fixed-point values with 2 decimal digits */
+            OSAL_log("  Task %d - Load = %d.%d%% \n", i, loadStatsTask[i].percentLoad/100U, loadStatsTask[i].percentLoad%100U);
+        #else
             /* Load less than 1%, Try to get fractional part */
             OSAL_log("    %s - Load = 0.000%d%% \n", loadStatsTask[i].name, loadStatsTask[i].threadTime/(loadStatsTask[i].totalTime/(100*1000)));
+        #endif
         }
     }
     if(LoadP_OK != status)
@@ -1980,7 +1992,12 @@ static bool loadPrint()
 
     /* Query CPU Load */
     cpuLoad = LoadP_getCPULoad();
+
+#if defined(SAFERTOS)
+    OSAL_log("\n    CPU Load = %d.%d%% \n\n", cpuLoad/100U,cpuLoad%100U);
+#else
     OSAL_log("\n    CPU Load = %d%% \n\n", cpuLoad);
+#endif
 
     return BTRUE;
 }
@@ -2110,7 +2127,7 @@ bool OSAL_load_test()
     return status;
 }
 
-#endif /* #if defined(FREERTOS) */
+#endif /* #if defined(FREERTOS) || (defined (SAFERTOS) && defined (BUILD_MCU)) */
 
 
 #if defined(USE_BIOS)
@@ -2734,7 +2751,7 @@ void osal_test(void *arg0, void *arg1)
     }
 #endif /* #if !defined(BARE_METAL) && !defined (SAFERTOS) */
 
-#if defined(FREERTOS)    
+#if defined(FREERTOS) || (defined (SAFERTOS) && defined (BUILD_MCU))
     OSAL_log(" \n OSAL Load Test Starting...\n Takes about 10 seconds ...\n\n"); 
     if(BTRUE == OSAL_load_test())
     {
@@ -2745,7 +2762,7 @@ void osal_test(void *arg0, void *arg1)
         OSAL_log("\n Load tests have failed. \n");
         testFail = BTRUE;
     }
-#endif /* #if defined(FREERTOS) */
+#endif /* #if defined(FREERTOS) || (defined (SAFERTOS) && defined (BUILD_MCU)) */
 
 
 #if ENABLE_DEBUG_LOG_TEST
