@@ -177,6 +177,11 @@ static void taskFxn(void* a0, void* a1)
 
     #if defined LDRA_DYN_COVERAGE_EXIT
     UART_printf("\n LDRA Entry... \n");
+    /* Add 3 minutes delay before printing execution history to make sure extended ut running on 
+       mcu2_0 will complete it's execution, this will introduce additional code coverage by 
+       sending requests to sciserver.
+     */
+    Osal_delay(180*1000);
     upload_execution_history();
     UART_printf("\n LDRA Exit... \n");
     #endif
