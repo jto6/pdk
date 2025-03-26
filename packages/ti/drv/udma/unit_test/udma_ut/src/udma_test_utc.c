@@ -1273,6 +1273,7 @@ int32_t UdmaEventProgramSteeringTestNeg(UdmaTestTaskObj *taskObj)
     retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
     Udma_ChUtcPrms utcPrms;
     UdmaChUtcPrms_init(&utcPrms);
+    utcPrms.druOwner = CSL_DRU_OWNER_DIRECT_TR;
     if(UDMA_SOK == retVal)
     {
         retVal = Udma_chConfigUtc(chHandle, &utcPrms);

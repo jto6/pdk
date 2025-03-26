@@ -827,7 +827,6 @@ int32_t UdmaChDisableTest(UdmaTestTaskObj *taskObj)
     int32_t            retVal = UDMA_SOK;
     struct Udma_ChObj  chObj;
     Udma_ChHandle      chHandle;
-    uint32_t           timeout = 0U;
     uint32_t           instID;
     struct Udma_DrvObj backUpDrvObj;
     Udma_DrvHandle     drvHandle;
@@ -920,7 +919,7 @@ int32_t UdmaChDisableTest(UdmaTestTaskObj *taskObj)
                 retVal  = Udma_chSetChaining(chHandle, chHandle, trigger);
                 if(UDMA_SOK == retVal)
                 {
-                    retVal = Udma_chDisable(chHandle, timeout);
+                    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
                     if(UDMA_SOK != retVal)
                     {
                         GT_0trace(taskObj->traceMask, GT_ERR,
