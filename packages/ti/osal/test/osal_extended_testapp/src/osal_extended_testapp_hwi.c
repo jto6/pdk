@@ -83,6 +83,9 @@
 volatile uint32_t gOsalAppFlagHwiTest = UFALSE, gOsalAllFIQFlag = UFALSE;
 volatile uintptr_t gOsalAppHwiKey;
 
+volatile uint32_t gOsalPreISRHookCount = 0U;
+volatile uint32_t gOsalPostISRHookCount = 0U;
+
 /* ========================================================================== */
 /*                           Function Declarations                            */
 /* ========================================================================== */
@@ -128,6 +131,20 @@ static int32_t OsalApp_hwiCreateNegativeTest(void);
  * Description : Testing Maximum Hwi creation
  */
 static int32_t OsalApp_hwiCreateMaxTest(void);
+#endif
+
+#if defined (SAFERTOS) && (defined (BUILD_MCU) || defined (BUILD_C7X))
+
+/*
+ * Description : Testing Pre ISR hook
+ */
+static void OsalApp_preISRHook(void);
+
+/*
+ * Description : Testing Post ISR hook
+ */
+static void OsalApp_postISRHook(void);
+
 #endif
 
 /* ========================================================================== */
@@ -622,6 +639,20 @@ static int32_t OsalApp_hwiCreateMaxTest(void)
 }
 #endif
 
+#if defined (SAFERTOS) && (defined (BUILD_MCU) || defined (BUILD_C7X))
+static void OsalApp_preISRHook(void)
+{
+    gOsalPreISRHookCount++;
+}
+
+static void OsalApp_postISRHook(void)
+{
+
+    gOsalPostISRHookCount++;
+}
+#endif
+
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -634,6 +665,14 @@ int32_t OsalApp_hwiTests(void)
 
     Intc_InitExptnHandlers(&handlers);
     Intc_RegisterExptnHandlers(&handlers);
+#endif
+
+#if defined (SAFERTOS) && (defined (BUILD_MCU) || defined (BUILD_C7X))
+    Osal_ISRHooks isrHooks;
+    Osal_initISRHooks(&isrHooks);
+    isrHooks.preISRHook=(IsrHookPtr)OsalApp_preISRHook;
+    isrHooks.postISRHook=(IsrHookPtr)OsalApp_postISRHook;
+    Osal_registerISRHooks(&isrHooks);
 #endif
 
 #if defined(BUILD_C7X) 

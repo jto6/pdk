@@ -65,6 +65,9 @@ uint32_t  gOsalHeapAllocCnt  = 0U, gOsalHeapPeak = 0U;
 #define OSAL_CPU_FREQ_KHZ_DEFAULT ( 400000U )
 #endif
 
+/* Global Osal ISR hooks */
+Osal_ISRHooks gOsalISRHooks          = {NULL};
+
 volatile bool Osal_DebugP_Assert_Val = BTRUE;
 
 /* Global Osal_HwAttr structure */
@@ -310,5 +313,23 @@ int32_t Osal_isInPrivilegeMode(void)
 #endif
   return retVal;
 }
+
+void Osal_initISRHooks(Osal_ISRHooks *hooks)
+{
+    hooks->preISRHook = NULL;
+    hooks->postISRHook = NULL;
+    hooks->preISRHookArgs = NULL;
+    hooks->postISRHookArgs = NULL;
+}
+
+void Osal_registerISRHooks(const Osal_ISRHooks *hooks)
+{
+    /* Copying ISR hooks */
+    gOsalISRHooks.preISRHook = hooks->preISRHook;
+    gOsalISRHooks.postISRHook = hooks->postISRHook;
+    gOsalISRHooks.preISRHookArgs = hooks->preISRHookArgs;
+    gOsalISRHooks.postISRHookArgs = hooks->postISRHookArgs;
+}
+
 
 /* Nothing past this point */

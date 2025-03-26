@@ -302,6 +302,25 @@ typedef struct Osal_memRange_s {
 } Osal_memRange;
 
 /*!
+ *  @brief  Osal ISR Hook pointer
+ *
+ */
+typedef void  (*IsrHookPtr)(void *ptr);
+
+/*!
+ *  @brief  Osal ISR Hooks
+ *
+ */
+typedef struct
+{
+    IsrHookPtr preISRHook;
+    void *preISRHookArgs;
+    IsrHookPtr postISRHook;
+    void *postISRHookArgs;
+}Osal_ISRHooks;
+
+
+/*!
  *  @brief  Osal hw attributes structure
  *
  */
@@ -432,6 +451,20 @@ extern uint32_t Osal_getCoreId(void);
  *  @return Returns pdTrue
  */
 int32_t Osal_isInPrivilegeMode(void);
+
+/*!
+ *  @brief  Function to initialise ISR hooks
+ *
+ *  @return Returns none
+ */
+void Osal_initISRHooks(Osal_ISRHooks *hooks);
+
+/*!
+ *  @brief  Function to register ISR hooks
+ *
+ *  @return Returns none
+ */
+void Osal_registerISRHooks(const Osal_ISRHooks *hooks);
 
 /*! 
  * @brief external references for Osal Hw Attribute structure 

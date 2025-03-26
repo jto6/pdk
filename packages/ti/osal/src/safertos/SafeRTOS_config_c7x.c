@@ -53,6 +53,8 @@ void Osal_initMmuDefault(void);
 
 /* Hook function handlers targeting the TI PDK libraries. */
 
+extern Osal_ISRHooks gOsalISRHooks;
+
 /*-----------------------------------------------------------------------------
  * Public function definitions.
  *---------------------------------------------------------------------------*/
@@ -157,7 +159,19 @@ void OsalCfgClecAccessCtrl (bool onlyInSecure)
 /* Dispatch handler for TI PDK style interrupts. */
 void vApplicationInterruptHandlerHook( portUInt32Type ulInterruptVectorNum )
 {
-   Hwi_dispatchCore( ulInterruptVectorNum );
+    /* Call registered pre-ISR hook */
+    if ((IsrHookPtr)NULL != gOsalISRHooks.preISRHook)
+    {
+        gOsalISRHooks.preISRHook(gOsalISRHooks.preISRHookArgs);
+    }
+
+    Hwi_dispatchCore( ulInterruptVectorNum );
+
+    /* Call registered post-ISR hook */
+    if ((IsrHookPtr)NULL != gOsalISRHooks.postISRHook)
+    {
+        gOsalISRHooks.postISRHook(gOsalISRHooks.postISRHookArgs);
+    }
 }
 
 /*-----------------------------------------------------------------------------

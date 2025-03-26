@@ -77,6 +77,8 @@ __attribute__((section(".startupCode"))) extern void Osal_disableMPU( void );
 
 /* Hook function handlers targeting the TI PDK libraries. */
 
+extern Osal_ISRHooks gOsalISRHooks;
+
 /* Timer interrupt handler function. */
 void vApplicationInterruptHandlerHook( void );
 
@@ -290,6 +292,12 @@ void vApplicationInterruptHandlerHook( void )
     IRQ_stat = CSL_vimGetActivePendingIntr( (CSL_vimRegs *)gVimBaseAddr, CSL_VIM_INTR_MAP_IRQ, (uint32_t *)&intNum, (uint32_t *)0 );
     if( ( 0 == FIQ_stat ) || ( 0 == IRQ_stat ) )
     {
+        /* Call registered pre-ISR hook */
+        if ((IsrHookPtr)NULL != gOsalISRHooks.preISRHook)
+        {
+            gOsalISRHooks.preISRHook(gOsalISRHooks.preISRHookArgs);
+        }
+
         /* Clear pulse-type interrupt before calling ISR */
         if( CSL_VIM_INTR_TYPE_PULSE == intrSrcType[intNum] )
         {
@@ -308,6 +316,12 @@ void vApplicationInterruptHandlerHook( void )
         }
         /* Acknowledge interrupt servicing */
         CSL_vimAckIntr( (CSL_vimRegs *)gVimBaseAddr, (CSL_VimIntrMap)intrMap[intNum] );
+    
+        /* Call registered post-ISR hook */
+        if ((IsrHookPtr)NULL != gOsalISRHooks.postISRHook)
+        {
+            gOsalISRHooks.postISRHook(gOsalISRHooks.postISRHookArgs);
+        }
     }
 }
 
