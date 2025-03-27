@@ -48,6 +48,7 @@
 #include <ti/drv/sciclient/src/sciclient/sciclient_rm_priv.h>
 #include <ti/drv/sciclient/examples/common/sci_app_common.h>
 #include <ti/drv/sciclient/examples/sciclient_extended_unit_testapp/sciclient_extended_ut_tests.h>
+#include <ti/drv/sciclient/sciserver.h>
 #include <ti/csl/soc.h>
 
 /* ========================================================================== */
@@ -164,9 +165,9 @@ static int32_t SciclientApp_pmTest(void);
 #endif
 #if defined (BUILD_MCU1_0)
 static int32_t SciclientApp_boardcfgTest(void);
-static int32_t SciclientApp_dkekTest(void);
 static int32_t SciclientApp_directTest(void);
 #endif
+static int32_t SciclientApp_dkekTest(void);
 static int32_t SciclientApp_romTest(void);
 static int32_t SciclientApp_secureproxyTest(void);
 static int32_t SciclientApp_osalTest(void);
@@ -244,11 +245,9 @@ int32_t SciApp_testMain(SciApp_TestParams_t *testParams)
         case 10:
             testParams->testResult = SciclientApp_secureproxyTest();
             break;
-#if defined(BUILD_MCU1_0)
         case 11:
             testParams->testResult = SciclientApp_dkekTest();
             break;
-#endif
         case 12:
             testParams->testResult = SciclientApp_osalTest();
             break;
@@ -318,9 +317,14 @@ static int32_t SciclientApp_contextNegTest(void)
     uint32_t IntrNum1            = 1000;
     uint32_t contextId           = SCICLIENT_CONTEXT_NONSEC;
     uint32_t IntrNum2            = gSciclientMap[contextId].respIntrNum;
-    uint16_t messagetype[4]      = {TISCI_MSG_BOOT_NOTIFICATION, 
+    uint16_t messagetype[10]      = {TISCI_MSG_BOOT_NOTIFICATION, 
                                     TISCI_MSG_BOARD_CONFIG, 
-                                    TISCI_MSG_BOARD_CONFIG_SECURITY
+                                    TISCI_MSG_BOARD_CONFIG_SECURITY,
+                                    TISCI_MSG_BOARD_CONFIG_RM,
+                                    TISCI_MSG_BOARD_CONFIG_PM,
+                                    TISCI_MSG_SA2UL_SET_DKEK,
+                                    TISCI_MSG_SA2UL_RELEASE_DKEK,
+                                    TISCI_MSG_SA2UL_GET_DKEK
                                    };
     int8_t   num;
     
@@ -351,7 +355,7 @@ static int32_t SciclientApp_contextNegTest(void)
     }
 
     /* Passing different message types to determine the which context to be used. */
-    for(num = 0; num < 3; num++)
+    for(num = 0; num < 8; num++)
     {
         status = Sciclient_getCurrentContext(messagetype[num]);
         if (status == SCICLIENT_CONTEXT_SEC)
@@ -364,6 +368,19 @@ static int32_t SciclientApp_contextNegTest(void)
             sciclientTestStatus += CSL_EFAIL;
             SciApp_printf("Sciclient_getCurrentContext: Secure Arg Test Failed.\n");
         }
+    }
+
+    gSciclientHandle.isSecureMode = 1;
+    status = Sciclient_getCurrentContext(0);
+    if (status == SCICLIENT_CONTEXT_SEC)
+    {
+        sciclientTestStatus += CSL_PASS;
+        SciApp_printf("Sciclient_getCurrentContext: Secure Arg Test Passed.\n");
+    }
+    else
+    {
+        sciclientTestStatus += CSL_EFAIL;
+        SciApp_printf("Sciclient_getCurrentContext: Secure Arg Test Failed.\n");
     }
 
     return sciclientTestStatus;
@@ -565,6 +582,18 @@ static int32_t SciclientApp_sciclientMcdcTest(void)
             sciclientTestStatus += CSL_EFAIL;
             SciApp_printf("Sciclient_serviceGetPayloadSize Negative test Failed\n");
         }
+
+        status = Sciclient_configPrmsInit(NULL);
+        if(status == CSL_EFAIL)
+        {
+            sciclientTestStatus += CSL_PASS;
+            SciApp_printf("Sciclient_configPrmsInit Negative test Passed\n");
+        }
+        else
+        {
+            sciclientTestStatus += CSL_EFAIL;
+            SciApp_printf("Sciclient_configPrmsInit Negative test Failed\n");
+        }
     }
     else
     {
@@ -585,6 +614,64 @@ static int32_t SciclientApp_sciclientMcdcTest(void)
     }
 
     return sciclientTestStatus;
+}
+
+static int32_t SciclientApp_deinitTest(void)
+{
+    int32_t status               = CSL_PASS;
+    Sciclient_ServiceHandle_t gSciclientHandleTemp = gSciclientHandle;
+    gSciclientHandle.respIntr[0] = NULL;
+    gSciclientHandle.respIntr[1] = NULL;
+
+    status = Sciclient_deinit();
+    if(status == CSL_PASS)
+    {
+        SciApp_printf("Sciclient deinit NULL test for interrupt has passed.\n");
+        status = CSL_PASS;
+    }
+    else
+    {
+        SciApp_printf("Sciclient deinit NULL test for interrupt has failed.\n");
+        status = CSL_EFAIL;
+    }
+
+    gSciclientHandle = gSciclientHandleTemp;
+
+    return status;
+}
+
+static int32_t SciclientApp_getPayloadSizeTest(void)
+{
+    int32_t status = CSL_PASS;
+    Sciclient_ReqPrm_t  pReqPrm;
+    Sciclient_RespPrm_t pRespPrm;
+    pReqPrm.messageType = TISCI_MSG_BOARD_CONFIG_RM;
+
+    status = Sciclient_serviceSecureProxy(&pReqPrm, &pRespPrm);
+    if(status != CSL_PASS)
+    {
+        status = CSL_PASS;
+        SciApp_printf("SciclientApp_getPayloadSize Negative Test passed.\n");
+    }
+    else
+    {
+        status = CSL_EFAIL;
+        SciApp_printf("SciclientApp_getPayloadSize Negative Test failed.\n");
+    }
+
+    return status;
+}
+
+static int32_t SciclientApp_getThreadIdsTest(void)
+{
+    int status = CSL_PASS;
+    Sciclient_ReqPrm_t pReqPrm;
+    pReqPrm.messageType = TISCI_MSG_BOARD_CONFIG_RM;
+    uint32_t contextId,txThread,rxThread;
+
+    status = Sciclient_serviceGetThreadIds(&pReqPrm, &contextId, &txThread, &rxThread);
+
+    return status;
 }
 
 static int32_t SciclientApp_sciclientTest(void)
@@ -614,6 +701,9 @@ static int32_t SciclientApp_sciclientTest(void)
         sciclientTestStatus += SciclientApp_contextNegTest();
         sciclientTestStatus += SciclientApp_initTest();
         sciclientTestStatus += SciclientApp_sciclientMcdcTest();
+        sciclientTestStatus += SciclientApp_deinitTest();
+        sciclientTestStatus += SciclientApp_getPayloadSizeTest();
+        sciclientTestStatus += SciclientApp_getThreadIdsTest();
     }
     else
     {
@@ -1670,7 +1760,7 @@ static int32_t SciclientApp_rmUnmappedVintRouteCreateTest(void)
         const struct tisci_msg_rm_irq_release_req rmIrqReleaseReq =
         {
             .valid_params          = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID |
-                                        TISCI_MSG_VALUE_RM_IA_ID_VALID  | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID,
+                                     TISCI_MSG_VALUE_RM_IA_ID_VALID  | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID,
             .src_id                = TISCI_DEV_MCU_NAVSS0_MCRC_0,
             .src_index             = 0U,
             .dst_id                = TISCI_DEV_MCU_R5FSS0_CORE0,
@@ -1697,7 +1787,7 @@ static int32_t SciclientApp_rmUnmappedVintRouteCreateTest(void)
         const struct tisci_msg_rm_irq_release_req rmIrqReleaseNegReq =
         {
             .valid_params          = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID |
-                                        TISCI_MSG_VALUE_RM_IA_ID_VALID  | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID,
+                                     TISCI_MSG_VALUE_RM_IA_ID_VALID  | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID,
             .src_id                = TISCI_DEV_MCU_NAVSS0_MCRC_0,
             .src_index             = 0U,
             .dst_id                = TISCI_DEV_MCU_R5FSS0_CORE0,
@@ -1724,7 +1814,7 @@ static int32_t SciclientApp_rmUnmappedVintRouteCreateTest(void)
         const struct tisci_msg_rm_irq_set_req rmIrqSetNegReq =
         {
             .valid_params          = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID |
-                                        TISCI_MSG_VALUE_RM_IA_ID_VALID  | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID,
+                                     TISCI_MSG_VALUE_RM_IA_ID_VALID  | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID,
             .src_id                = TISCI_DEV_MCU_NAVSS0_MCRC_0,
             .src_index             = 0U,
             .dst_id                = TISCI_DEV_MCU_NAVSS0_UDMASS_INTA_0,
@@ -2005,6 +2095,26 @@ static int32_t SciclientApp_rmIrInpRomMappedTest(void)
     return rmIrInpRomMappedTestStatus;
 }
 
+static int32_t SciclientApp_rmIrqReleaseTest(void)
+{
+    int32_t rmIrqReleasestatus  = CSL_PASS;
+    int32_t status              = CSL_PASS;
+
+    status = Sciclient_rmIrqRelease(NULL,SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        rmIrqReleasestatus += CSL_PASS;
+        SciApp_printf("Sciclient_rmIrqRelease negative Test PASSED.\n");
+    }
+    else
+    {
+        rmIrqReleasestatus += CSL_EFAIL;
+        SciApp_printf("Sciclient_rmIrqRelease negative Test Failed.\n");
+    }
+
+    return rmIrqReleasestatus;
+}
+
 static int32_t SciclientApp_rmTest(void)
 {
     int32_t  status                       = CSL_PASS;
@@ -2028,7 +2138,7 @@ static int32_t SciclientApp_rmTest(void)
     {
         SciApp_printf("Sciclient_init PASSED.\n");
         SciApp_printf("This test has twelve sub-tests:\n"); 
-        sciclientRmTestStatus += SciclientApp_rmPsilNegTest();    
+        sciclientRmTestStatus += SciclientApp_rmPsilNegTest(); 
         sciclientRmTestStatus += SciclientApp_rmRingCfgNegTest();
         sciclientRmTestStatus += SciclientApp_rmRingMonCfgNegTest();
         sciclientRmTestStatus += SciclientApp_rmUdmapNegTest();
@@ -2041,7 +2151,8 @@ static int32_t SciclientApp_rmTest(void)
         #endif
         sciclientRmTestStatus += SciclientApp_rmUnmappedVintRouteCreateTest();
         sciclientRmTestStatus += SciclientApp_rmIaValidateEvtTest();
-        sciclientRmTestStatus += SciclientApp_rmIrInpRomMappedTest();  
+        sciclientRmTestStatus += SciclientApp_rmIrInpRomMappedTest();
+        sciclientRmTestStatus += SciclientApp_rmIrqReleaseTest();
     }
     else
     {
@@ -5483,18 +5594,21 @@ static int32_t SciclientApp_boardcfgTest(void)
 
     return boardCfgTestStatus;
 }
+#endif
 
 static int32_t SciclientApp_dkekTest(void)
 {
     int32_t status                = CSL_PASS;
     int32_t sciclientInitStatus   = CSL_PASS;
     int32_t dkekTestStatus        = CSL_PASS;
+#if defined(BUILD_MCU1_0)
     struct tisci_msg_sa2ul_set_dkek_req setDkekReq;
     struct tisci_msg_sa2ul_set_dkek_resp setDkekResp;
     struct tisci_msg_sa2ul_get_dkek_req getDkekReq;
     struct tisci_msg_sa2ul_get_dkek_resp getDkekResp;
     struct tisci_msg_sa2ul_release_dkek_req releaseDkekReq;
     struct tisci_msg_sa2ul_release_dkek_resp releaseDkekResp;
+#endif
 
     Sciclient_ConfigPrms_t config =
     {
@@ -5548,7 +5662,7 @@ static int32_t SciclientApp_dkekTest(void)
            dkekTestStatus += CSL_EFAIL;
            SciApp_printf("Sciclient_getDKEK: Negative Arg Test Failed.\n");
         }
-
+#if defined(BUILD_MCU1_0)
         /* Passing valid setDkekReq parameters to cover Sciclient_setDKEK */
         setDkekReq.sa2ul_instance  = 0;
         setDkekReq.kdf_label_len   = 16;
@@ -5594,6 +5708,7 @@ static int32_t SciclientApp_dkekTest(void)
             dkekTestStatus += CSL_EFAIL;
             SciApp_printf("Sciclient_releaseDKEK: Positive Arg Test Failed.\n");
         }
+#endif
     }
     else
     {
@@ -5618,7 +5733,6 @@ static int32_t SciclientApp_dkekTest(void)
 
     return dkekTestStatus;
 }
-#endif
 
 static int32_t SciclientApp_romTest(void)
 {
@@ -5788,11 +5902,13 @@ static int32_t SciclientApp_secureproxyTest(void)
             secureProxyTestStatus += CSL_EFAIL;
             SciApp_printf("Sciclient_waitThread: Negative Arg Test Failed.\n");
         }
-        
+
+        uint8_t pSecHeaderVar=0;
         /* Few NULL, 0U Arguments and appropriate gSciclient_maxMsgSizeBytes argument is passed
             to Sciclient_sendMessage */
         gSciclient_maxMsgSizeBytes = 8U;
         Sciclient_sendMessage(thread, NULL, 0U, NULL, NULL, 0U, gSciclient_maxMsgSizeBytes);
+        Sciclient_sendMessage(thread,&pSecHeaderVar,1,NULL, NULL, 0U, gSciclient_maxMsgSizeBytes);
     }
     else
     {

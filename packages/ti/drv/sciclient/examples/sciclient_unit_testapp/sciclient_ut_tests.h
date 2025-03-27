@@ -188,7 +188,6 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_NEGATIVE)
     },
-#if defined(SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined(SOC_J742S2)
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -221,7 +220,6 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
-#endif
 #if defined(ENABLE_MSG_FWD)
     {
         /** enableTest **/
@@ -290,7 +288,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         (SCI_APP_TEST_TYPE_SANITY)
     },
 #endif
-#if ((defined (SOC_J721S2) || defined (SOC_J784S4) || defined(SOC_J742S2)) && defined(BUILD_MCU2_0))
+#if ((defined (SOC_J721S2) || defined (SOC_J784S4) || defined(SOC_J742S2)))
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -326,8 +324,6 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
-#endif
-#if ((defined (SOC_J721S2) || defined (SOC_J784S4) || defined(SOC_J742S2)) && defined(BUILD_MCU2_0))
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -360,7 +356,7 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         (SCI_APP_TEST_TYPE_SANITY)
     },
 #endif
-#if ((defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined(SOC_J742S2)) && defined (BUILD_MCU1_0))
+#if (defined (BUILD_MCU1_0))
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
