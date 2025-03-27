@@ -805,6 +805,7 @@ static bool OSPI_phyConfigTest(void *arg)
 static bool OSPI_wrProtectTest(void *arg)
 {
     bool            retVal = BTRUE;
+    int32_t         status = SPI_STATUS_SUCCESS;
     OSPI_Tests      *test = (OSPI_Tests *)arg;
     Board_flashHandle boardHandle;
     uint32_t        deviceId = OSPI_getDeviceId(test);
@@ -817,8 +818,8 @@ static bool OSPI_wrProtectTest(void *arg)
 
 #if defined (BUILD_MCU)
     /* Change interrupt number based on core */
-    retVal = OSPI_socInit();
-    if(SPI_STATUS_SUCCESS != retVal)
+    status = OSPI_socInit();
+    if(SPI_STATUS_SUCCESS != status)
     {
         SPI_log("\nOSPI_socInit failed!!\n");
         retVal = BFALSE;
@@ -883,26 +884,30 @@ static bool OSPI_wrProtectTest(void *arg)
 
         if(BTRUE == retVal)
         {
-            retVal = CSL_ospiCfgWrProtectReg(pRegs, blockNum, blockNum + 1U, CSL_OSPI_CFG_INV_WR_PRTCT_DEFAULT);
-            if(CSL_PASS == retVal)
+            status = CSL_ospiCfgWrProtectReg(pRegs, blockNum, blockNum + 1U, CSL_OSPI_CFG_INV_WR_PRTCT_DEFAULT);
+
+            if(CSL_PASS == status)
             {
-                retVal = CSL_ospiEnableWrProtectReg(pRegs, true);
-                if(CSL_PASS == retVal)
-                {
-                    retVal = BTRUE;
-                }
+                status = CSL_ospiEnableWrProtectReg(pRegs, true);
             }
 
-            for(int32_t i=0 ; i < NOR_BLOCK_SIZE ; i++)
+            if(CSL_PASS != status)
             {
-                txBuf[i] = 0xBBU;
-            }
-
-            /* Erase block, to which data has to be written */
-            if (Board_flashEraseBlk(boardHandle, blockNum))
-            {
-                SPI_log("\n Board_flashEraseBlk failed. \n");
                 retVal = BFALSE;
+            }
+            if(BTRUE == retVal)
+            {
+                for(int32_t i=0 ; i < NOR_BLOCK_SIZE ; i++)
+                {
+                    txBuf[i] = 0xBBU;
+                }
+
+                /* Erase block, to which data has to be written */
+                if (Board_flashEraseBlk(boardHandle, blockNum))
+                {
+                    SPI_log("\n Board_flashEraseBlk failed. \n");
+                    retVal = BFALSE;
+                }
             }
             if(BTRUE == retVal)
             {
@@ -925,7 +930,7 @@ static bool OSPI_wrProtectTest(void *arg)
 
             if(BTRUE == retVal)
             {
-                SPI_log("\n::Data should mismatch as programming of flash is disabled::\r\n\n");
+                SPI_log("\n:: Data should mismatch as programming of flash is disabled ::\r\n\n");
                 if(VerifyData(&txBuf[0], &rxBuf[0], NOR_BLOCK_SIZE) == BTRUE)
                 {
                     retVal = BFALSE;
