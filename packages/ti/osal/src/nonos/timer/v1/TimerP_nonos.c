@@ -568,6 +568,13 @@ static TimerP_Status TimerP_dmTimerInstanceInit(TimerP_Struct *timer, uint32_t i
   uint32_t      mappedId = 0xFFFF;
   uint32_t      coreId = Osal_getCoreId();
 
+#if defined (BUILD_MCU)
+  if ((coreId == OSAL_MCU1_0) || (coreId == OSAL_MCU1_1))
+  {
+    timerPAnyMask = TIMERP_ANY_MASK_MCU_DOMAIN;
+  }
+#endif
+
   if ((TimerP_ANY != id) && (TimerP_numTimerDevices <= id)) {
     ret = TimerP_FAILURE;
   }
@@ -579,6 +586,12 @@ static TimerP_Status TimerP_dmTimerInstanceInit(TimerP_Struct *timer, uint32_t i
     if (UFALSE == gTimerInitDone)
     {
         gTimerAnyMask  = TIMERP_AVAILABLE_MASK;
+    #if defined (BUILD_MCU)
+        if ((coreId == OSAL_MCU1_0) || (coreId == OSAL_MCU1_1))
+        {
+          gTimerAnyMask = TIMERP_AVAILABLE_MASK_MCU_DOMAIN;
+        }
+    #endif
         gTimerInitDone = UTRUE;
     }
 

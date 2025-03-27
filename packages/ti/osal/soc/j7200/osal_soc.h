@@ -93,13 +93,10 @@ extern "C" {
  * be powered on from LPSC_PER_SPARE0.
  */
 #if defined (BUILD_MCU)
-#if defined(BUILD_MCU1_0) || defined(BUILD_MCU1_1)
-  #define TIMERP_ANY_MASK               ((uint32_t) 0x0000FFU)
-  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x0000FFU)
-#else
-  #define TIMERP_ANY_MASK               ((uint32_t) 0x0FFFFFU)
-  #define TIMERP_AVAILABLE_MASK         ((uint32_t) 0x0FFFFFU)
-#endif
+  #define TIMERP_ANY_MASK_MCU_DOMAIN                ((uint32_t) 0x0000FFU)
+  #define TIMERP_AVAILABLE_MASK_MCU_DOMAIN          ((uint32_t) 0x0000FFU)
+  #define TIMERP_ANY_MASK                           ((uint32_t) 0x0FFFFFU)
+  #define TIMERP_AVAILABLE_MASK                     ((uint32_t) 0x0FFFFFU)
 #endif
 
 #if defined (BUILD_MPU)
