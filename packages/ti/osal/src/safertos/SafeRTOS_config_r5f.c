@@ -409,8 +409,10 @@ void vApplicationTaskSwitchHook( const xTCB *pxTCBOfTaskSwitchedOut,
                                  const xTCB *pxTCBOfTaskSwitchedIn )
 {
     /* Update the statistics for the task switching out. */
+    if( NULL != pxTCBOfTaskSwitchedOut )
+    {
     vUpdateRunTimeStatistics( ( xRTS * ) pxTCBOfTaskSwitchedOut->pvObject );
-
+    }
     /* Not used for RTS. */
     ( void ) pxTCBOfTaskSwitchedIn;
 }
