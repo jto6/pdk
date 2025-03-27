@@ -46,6 +46,7 @@
 /* SafeRTOS Includes */
 #include "SafeRTOS_API.h"
 #include "SafeRTOS_priv.h"
+#include "rtsPort.h"
 #include "task.h"
 #include "mpuARM.h"
 #include <ti/osal/src/nonos/Nonos_config.h>
@@ -442,10 +443,10 @@ void vRtsInitialise( void )
 void vRtsGetElapsedCPUTime( volatile portUInt32Type *pulTaskSwitchedInTime, portUInt32Type *pulElapsedTime )
 {
     TimerP_Handle pxTickTimerHandle = TimerP_getTickTimerHandle();
-    portUInt32Type ulCountCurr = (TimerP_getCount( pxTickTimerHandle ) - TimerP_getReloadCount( pxTickTimerHandle ));
+    portUInt32Type ulCountCurr = ( portUInt32Type )(TimerP_getCount( pxTickTimerHandle ) - TimerP_getReloadCount( pxTickTimerHandle ));
     portUInt32Type ulCountPrev = ( portUInt32Type )( *pulTaskSwitchedInTime );
     portUInt32Type ulTickCurr = ( portUInt32Type ) xTickCount;
-    portUInt32Type ulCounterMax = (TimerP_MAX_PERIOD - TimerP_getReloadCount( pxTickTimerHandle ));
+    portUInt32Type ulCounterMax = ( portUInt32Type )(TimerP_MAX_PERIOD - TimerP_getReloadCount( pxTickTimerHandle ));
     portUInt32Type ulTimeValue;
 
     /* Update missed ticks is scheduler is suspended */

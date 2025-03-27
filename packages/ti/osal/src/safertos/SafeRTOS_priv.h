@@ -59,7 +59,7 @@ extern "C" {
 
 #include <SafeRTOS_API.h>
 
-#if ( configINCLUDE_RUNTIMESTATS == 1 )
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
 #include <runtimestatsAPI.h>
 #include <runtimestats.h>
 #endif

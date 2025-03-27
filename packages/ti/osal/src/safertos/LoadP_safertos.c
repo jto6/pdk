@@ -66,15 +66,15 @@ typedef struct LoadP_taskLoadObj_s
 {
     bool                used;
     TaskP_Handle        pTsk;
-    uint64_t            threadTime;
-    uint32_t            lastUpdate_threadTime;
+    portUInt32Type            threadTime;
+    portUInt32Type            lastUpdate_threadTime;
 } LoadP_taskLoadObj;
 
 typedef struct LoadP_safertos_s
 {   
     LoadP_taskLoadObj taskLoadObj[OSAL_SAFERTOS_CONFIGNUM_TASK];
-    uint32_t          idlTskTime;
-    uint32_t          lastUpdate_idlTskTime;
+    portUInt32Type          idlTskTime;
+    portUInt32Type          lastUpdate_idlTskTime;
 } LoadP_safertos;
 
 /* ========================================================================== */
@@ -139,7 +139,7 @@ LoadP_Status LoadP_getTaskLoad(TaskP_Handle taskHandle, LoadP_Stats *stats)
 
         if ((BTRUE == pHndl->used) && (pHndl->pTsk == taskHandle))
         {
-            stats->percentLoad = pHndl->threadTime;
+            stats->percentLoad = (uint32_t)pHndl->threadTime;
             ret_val = LoadP_OK;
         }
 
@@ -160,7 +160,7 @@ uint32_t LoadP_getCPULoad(void)
     vTaskSuspendScheduler();
 
     /* SafeRTOS RTS returns percentages as fixed point values of 2 decimal. Ex: 1 corresponds to 0.01% */
-    cpuLoad = 10000U - gLoadP_safertos.idlTskTime;
+    cpuLoad = (uint32_t)(10000U - gLoadP_safertos.idlTskTime);
 
     (void)xTaskResumeScheduler();
 
@@ -175,6 +175,7 @@ void LoadP_update(void)
     LoadP_taskLoadObj   *pHndl;
     xPERCENTAGES xIdleTaskPercentages = { { 0U, 0U }, { 0U, 0U } };
     xPERCENTAGES xTaskPercentages = { { 0U, 0U }, { 0U, 0U } };
+    portBaseType xStatus;
 
     vTaskSuspendScheduler();
 
@@ -186,9 +187,12 @@ void LoadP_update(void)
 
     /* SafeRTOS RTS returns percentages as fixed point values of 2 decimal. Ex: 1 corresponds to 0.01% */
     /* Idle Task Update */
-    xCalculateCPUUsage( xGetIdleTaskHandle(), &xIdleTaskPercentages );
+    xStatus = xCalculateCPUUsage( xGetIdleTaskHandle(), &xIdleTaskPercentages );
+    if(pdPASS == xStatus)
+    {
     gLoadP_safertos.idlTskTime = xIdleTaskPercentages.xOverall.ulCurrent;
     gLoadP_safertos.lastUpdate_idlTskTime = xIdleTaskPercentages.xPeriod.ulCurrent;
+    }
 
     /* All tasks Update */
     for (i = 0U; i < OSAL_FREERTOS_CONFIGNUM_TASK; i++)
@@ -197,9 +201,12 @@ void LoadP_update(void)
 
         if ((BTRUE == pHndl->used) && (NULL_PTR != pHndl->pTsk))
         {
-            xCalculateCPUUsage( TaskP_getSafeRTOSHandle(pHndl->pTsk), &xTaskPercentages );
+            xStatus = xCalculateCPUUsage( TaskP_getSafeRTOSHandle(pHndl->pTsk), &xTaskPercentages );
+            if(pdPASS == xStatus)
+            {
             pHndl->threadTime = xTaskPercentages.xOverall.ulCurrent;
             pHndl->lastUpdate_threadTime = xTaskPercentages.xPeriod.ulCurrent;
+            }
         }
     }
 

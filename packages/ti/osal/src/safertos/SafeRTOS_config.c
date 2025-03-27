@@ -118,7 +118,7 @@ static portInt8Type acTimerTaskStack[ configTIMER_TASK_STACK_SIZE ] __attribute_
 static portInt8Type acIdleTaskStack[ configIDLE_TASK_STACK_SIZE ] __attribute__( ( aligned ( safertosapiSTACK_ALIGNMENT ) ) )   = { 0 };
 #endif /* defined (BUILD_MCU) */
 
-#if ( configINCLUDE_RUNTIMESTATS == 1 )
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
 /* RTS structs for all the tasks. */
 static xRTS xIdleTaskRTS = { 0 };
 #endif
@@ -158,7 +158,7 @@ const xPORT_INIT_PARAMETERS gSafertosPortInit =
 #if defined (BUILD_C66X)
     safertosapiUNPRIVILEGED_TASK,       /* The idle hook will not be executed in privileged mode. */
 #endif
-#if ( configINCLUDE_RUNTIMESTATS == 1 )
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
         &xIdleTaskRTS,                      /* RTS struct passed in as pvIdleTaskTLSObject */
 #else
         NULL,                               /* pvIdleTaskTLSObject */
@@ -252,7 +252,7 @@ void vApplicationSetupTickInterruptHook( portUInt32Type ulTimerClockHz,
             DebugP_assert(BFALSE);
     }
 
-#if ( configINCLUDE_RUNTIMESTATS == 1 )
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
     /*Initialise Run Time Stats */
     vInitialiseRunTimeStatistics();
 #endif

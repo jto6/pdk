@@ -63,7 +63,7 @@ typedef void ( * TaskP_mainFunction_t )(  void *arg0, void *arg1 );
 typedef struct TaskP_SafeRTOS_s {
     bool                    used;
     xTCB                    taskObj;
-#if ( configINCLUDE_RUNTIMESTATS == 1 )
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
     xRTS                    taskRTS;
 #endif
     uint32_t                tskId;
@@ -187,7 +187,7 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
              params->stacksize,             /* The size of the buffer allocated for use as the task stack - note this is in BYTES! */
              handle,                        /* The task parameter. */
              (portUnsignedBaseType)taskPriority,     /* The priority to assigned to the task being created. */
-            #if ( configINCLUDE_RUNTIMESTATS == 1 )
+            #if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
                 &handle->taskRTS,              /* User-defined data. */
             #else
                 params->userData, 
@@ -233,7 +233,7 @@ TaskP_Handle TaskP_create(TaskP_Fxn taskfxn, const TaskP_Params *params )
         }
         else
         {
-        #if ( configINCLUDE_RUNTIMESTATS == 1 )
+        #if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
             LoadP_addTask((TaskP_Handle)handle, handle->tskId);
         #endif
             ret_handle = ( ( TaskP_Handle )handle );
@@ -276,7 +276,7 @@ TaskP_Status TaskP_delete(TaskP_Handle *hTaskPtr)
             xReturn = xTaskDelete(task->taskHndl);
             task->terminated = BTRUE;
             DebugP_assert( pdPASS == xReturn );
-        #if ( configINCLUDE_RUNTIMESTATS == 1 )
+        #if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
             LoadP_removeTask(task->tskId);
         #endif
             key = HwiP_disable(  );
