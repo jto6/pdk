@@ -945,12 +945,12 @@ void J784S4_SetLeoPmicVoltages(void *handle, sblCfgPmic_t *pmicVoltCfg)
             retStatus = Board_TPS6287SetVoltage(handle, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource, pmicVoltCfg->millivolts);
             if(retStatus != BOARD_SOK)
             {
-                SBL_log(SBL_LOG_NONE,"Failed to set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource);
+                SBL_log(SBL_LOG_ERR,"Failed to set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource);
                 SblErrLoop(__FILE__, __LINE__);
             }
             else
             {
-                SBL_log(SBL_LOG_NONE,"Successfully set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource)
+                SBL_log(SBL_LOG_MAX,"Successfully set voltage to %d mV for Slave:0x%x, Res:0x%x\r\n", pmicVoltCfg->millivolts, pmicVoltCfg->slaveAddr, pmicVoltCfg->powerResource)
             }
         }
         pmicVoltCfg++;
