@@ -2365,6 +2365,10 @@ bool OSAL_TimerP_ANY_test( void )
 	TimerP_Handle handle[TimerP_numTimerDevices];
 	TimerP_Status timerStatus = TimerP_FAILURE;
 
+#if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1)
+    availMask = TIMERP_AVAILABLE_MASK_MCU_DOMAIN;
+#endif
+
 	/* Figure out the number of timers available to use with the TIMERP_AVAILABLE_MASK. */
 	while(availMask > 0U)
 	{
