@@ -13,6 +13,7 @@ SRCDIR = tsn_combase tsn_combase/tilld tsn_combase/tilld/jacinto
 INCDIR = tsn_combase tsn_combase/tilld tsn_combase/tilld/jacinto
 
 SRC_PATH := $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_combase
+TSNPKGVERSION = 1.1.8
 
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component
@@ -45,7 +46,7 @@ PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j742s2_evm.r5f.
 PACKAGE_SRCS_COMMON += $(SRCDIR)
 PACKAGE_SRCS_COMMON += tsn_buildconf ../tsn-stack/eval_inc
 
-CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"1.1.8\" \
+CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"$(TSNPKGVERSION)\" \
 	-include $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_buildconf/jacinto_buildconf.h
 
 # Core/SoC/platform specific source files and CFLAGS

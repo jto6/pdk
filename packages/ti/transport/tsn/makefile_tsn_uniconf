@@ -16,6 +16,7 @@ INCDIR = tsn_uniconf tsn_uniconf/hal tsn_uniconf/yangs tsn_combase/tilld/jacinto
 INCDIR += tsn_uniconf/yangs tsn_uniconf/yangs/tsnconf tsn_uniconf/yangs/tsnconf/generated
 
 SRC_PATH := $(PDK_TSN_COMP_PATH)/tsn-stack/tsn_uniconf
+TSNPKGVERSION = 1.3.11
 
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component
@@ -102,7 +103,7 @@ PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j721s2_evm.r5f.
 PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j784s4_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j784s4_evm.r5f.ti-arm-clang.lib
 PACKAGE_SRCS_COMMON += ../tsn-stack/license_lib/yangemb-freertos.j742s2_evm.r5f.ti-arm-clang.lib ../tsn-stack/eval_lib/tsn_lldp-freertos.j742s2_evm.r5f.ti-arm-clang.lib
 
-CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"1.3.11\" \
+CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(TSN_CFLAGS) -DTSNPKGVERSION=\"$(TSNPKGVERSION)\" \
     -DUB_LOGCAT=2 -DUB_LOGTSTYPE=UB_CLOCK_REALTIME\
     -D__STDC_LIBC_EXT1__ \
     -D__STDC_WANT_LIB_EXT1__=1 \
