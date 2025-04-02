@@ -390,6 +390,7 @@ static int32_t SciclientApp_initTest(void)
 {
     int32_t status              = CSL_PASS;
     int32_t sciclientInitStatus = CSL_PASS;
+    Sciclient_ServiceHandle_t gSciclientHandleTemp;
     Sciclient_ConfigPrms_t SciApp_Config =
     {
        2,
@@ -428,6 +429,35 @@ static int32_t SciclientApp_initTest(void)
     {
         sciclientInitStatus += CSL_EFAIL;
         SciApp_printf("Sciclient_init: Negative Arg Test Failed.\n");
+    }
+
+    Sciclient_deinit();
+    status = Sciclient_init(NULL);
+    if (status == CSL_PASS)
+    {
+        sciclientInitStatus += CSL_PASS;
+        SciApp_printf("Sciclient_init: NULL Arg Test Passed.\n");
+    }
+    else
+    {
+        sciclientInitStatus += CSL_EFAIL;
+        SciApp_printf("Sciclient_init: NULL Arg Test Failed.\n");
+    }
+
+    Sciclient_deinit();
+    gSciclientHandleTemp = gSciclientHandle;
+    gSciclientHandle.initCount=1;
+    status = Sciclient_init(&SciApp_Config);
+    gSciclientHandle = gSciclientHandleTemp;
+    if (status == CSL_PASS)
+    {
+        sciclientInitStatus += CSL_PASS;
+        SciApp_printf("Sciclient_init: initCount Arg Test Passed.\n");
+    }
+    else
+    {
+        sciclientInitStatus += CSL_EFAIL;
+        SciApp_printf("Sciclient_init: initCount Arg Test Failed.\n");
     }
 
     status = Sciclient_deinit();
@@ -2227,6 +2257,11 @@ static int32_t SciclientApp_firewallPosTest(void)
     int32_t status                       = CSL_PASS;
     int32_t firewallPositiveTestStatus   = CSL_PASS;
     struct tisci_msg_fwl_get_firewall_region_resp getFirewallRegionResp;
+    #if defined(BUILD_C7X) && (defined(SOC_J721S2) || defined(SOC_J784S4))
+    uint32_t firewallId;
+    uint64_t startAddress;
+    uint64_t endAddress;
+    #endif
     struct tisci_msg_fwl_get_firewall_region_req  getFirewallRegionReq =
     {
         .fwl_id            = SCICLIENT_APP_MCU_SRAM_FWL_ID,
@@ -2236,6 +2271,10 @@ static int32_t SciclientApp_firewallPosTest(void)
     #if defined(BUILD_MCU1_0)
     struct tisci_msg_fwl_change_owner_info_resp fwlChangeOwnerInfoRespR5  = {0};
     struct tisci_msg_fwl_set_firewall_region_resp fwlSetRegionRespR5;
+    #endif
+    #if defined(BUILD_C7X) && (defined(SOC_J721S2) || defined(SOC_J784S4))
+    struct tisci_msg_fwl_change_owner_info_resp fwlChangeOwnerInfoRespC7x  = {0};
+    struct tisci_msg_fwl_set_firewall_region_resp fwlSetRegionRespC7x;
     #endif
 
     status = Sciclient_firewallGetRegion(&getFirewallRegionReq, &getFirewallRegionResp, SCICLIENT_SERVICE_WAIT_FOREVER);
@@ -2291,6 +2330,60 @@ static int32_t SciclientApp_firewallPosTest(void)
         firewallPositiveTestStatus += CSL_EFAIL;
         SciApp_printf ("Sciclient_firewallSetRegion: Positive Arg Test Failed.\n");
     }
+    #endif
+
+    #if defined(BUILD_C7X)
+    #if defined(SOC_J721S2)
+    firewallId   = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_DSP4_CFG_DSP_ECCAGGR4_ID;
+    startAddress = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_DSP4_CFG_DSP_ECCAGGR4_DSP0_ECC_AGGR_START;
+    endAddress   = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_DSP4_CFG_DSP_ECCAGGR4_DSP0_ECC_AGGR_END;
+    #endif
+    #if defined(SOC_J784S4)
+    firewallId   = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_AW4_CFG_DSP_ECCAGGR4_ID;
+    startAddress = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_AW4_CFG_DSP_ECCAGGR4_DSP0_ECC_AGGR_START;
+    endAddress   = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_AW4_CFG_DSP_ECCAGGR4_DSP0_ECC_AGGR_END;
+    #endif
+    #if defined(SOC_J721S2) || defined(SOC_J784S4)
+    struct tisci_msg_fwl_change_owner_info_req fwlChangeOwnerInfoReqC7x = 
+    {
+        .fwl_id      = (uint16_t) firewallId,
+        .region      = (uint16_t) 1,
+        .owner_index = (uint8_t)  TISCI_HOST_ID_C7X_0_1
+    };
+    status = Sciclient_firewallChangeOwnerInfo(&fwlChangeOwnerInfoReqC7x, &fwlChangeOwnerInfoRespC7x, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
+    {
+        firewallPositiveTestStatus += CSL_PASS;
+        SciApp_printf ("Sciclient_firewallChangeOwnerInfo: Positive Arg Test Passed.\n");
+    }
+    else
+    {
+        firewallPositiveTestStatus += CSL_EFAIL;
+        SciApp_printf ("Sciclient_firewallChangeOwnerInfo: Positive Arg Test Failed.\n");
+    }
+    struct tisci_msg_fwl_set_firewall_region_req fwlSetRegionReqC7x = {
+        .fwl_id            = (uint16_t) firewallId,
+        .region            = (uint16_t) 1,
+        .n_permission_regs = (uint32_t) 3,
+        .control           = (uint32_t) 0x10A,
+        .permissions[0]    = (uint32_t) 0,
+        .permissions[1]    = (uint32_t) 0,
+        .permissions[2]    = (uint32_t) 0,
+        .start_address     = startAddress,
+        .end_address       = endAddress
+    };
+    status = Sciclient_firewallSetRegion(&fwlSetRegionReqC7x, &fwlSetRegionRespC7x, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status == CSL_PASS)
+    {
+        firewallPositiveTestStatus += CSL_PASS;
+        SciApp_printf ("Sciclient_firewallSetRegion: Positive Arg Test Passed.\n");
+    }
+    else
+    {
+        firewallPositiveTestStatus += CSL_EFAIL;
+        SciApp_printf ("Sciclient_firewallSetRegion: Positive Arg Test Failed.\n");
+    }
+    #endif
     #endif
 
     return firewallPositiveTestStatus;
@@ -4023,6 +4116,42 @@ static int32_t SciclientApp_iaEvtRomMappedTest()
     return rmIaValidateEvtTestStatus;
 }
 
+static int32_t SciclientApp_rmIrqVintMappingOnlyTest()
+{
+    /* Covers True condition for (!Sciclient_rmIrIsIr(iface->rid)) in  Sciclient_rmIrqCfgIsEventToVintMappingOnly() */
+    int32_t status          = CSL_PASS;
+    int32_t rmIrqTestStatus = CSL_PASS;
+    const struct tisci_msg_rm_irq_set_req Sciclient_Req =
+    {
+        .valid_params          = TISCI_MSG_VALUE_RM_IA_ID_VALID | TISCI_MSG_VALUE_RM_VINT_VALID | TISCI_MSG_VALUE_RM_GLOBAL_EVENT_VALID |
+                                 TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID | TISCI_MSG_VALUE_RM_DST_ID_VALID,
+        .src_id                = TISCI_DEV_MCU_NAVSS0_MCRC_0,
+        .src_index             = 0U,
+        .dst_id                = TISCI_DEV_MCU_R5FSS0_CORE0,
+        .dst_host_irq          = 0U,
+        .global_event          = 10,
+        .ia_id                 = TISCI_DEV_MCU_NAVSS0_INTR,
+        .vint                  = 0U,
+        .vint_status_bit_index = 0U,
+        .secondary_host        = TISCI_MSG_VALUE_RM_UNUSED_SECONDARY_HOST
+    };
+    struct tisci_msg_rm_irq_set_resp Sciclient_Resp;
+
+    status = Sciclient_rmProgramInterruptRoute(&Sciclient_Req, &Sciclient_Resp, SCICLIENT_SERVICE_WAIT_FOREVER);
+    if(status != CSL_PASS)
+    {
+        SciApp_printf("Sciclient_rmProgramInterruptRoute Negative testcase has passed.\n");
+        rmIrqTestStatus += CSL_PASS;
+    }
+    else
+    {
+        SciApp_printf("Sciclient_rmProgramInterruptRoute Negative testcase has failed.\n");
+        rmIrqTestStatus += CSL_EFAIL;
+    }
+
+    return rmIrqTestStatus;
+}
+
 static int32_t SciclientApp_rmIrqTest(void)
 {
     int32_t  status                       = CSL_PASS;
@@ -4061,6 +4190,7 @@ static int32_t SciclientApp_rmIrqTest(void)
         sciclientRmIrqTestStatus += SciclientApp_rmIrGetOutpTest();
         sciclientRmIrqTestStatus += SciclientApp_rmIrqVintRouteTest();
         sciclientRmIrqTestStatus += SciclientApp_rmIrqClearRouteNegTest();
+        sciclientRmIrqTestStatus += SciclientApp_rmIrqVintMappingOnlyTest();
     }
     else
     {
