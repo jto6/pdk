@@ -2257,7 +2257,7 @@ static int32_t SciclientApp_firewallPosTest(void)
     int32_t status                       = CSL_PASS;
     int32_t firewallPositiveTestStatus   = CSL_PASS;
     struct tisci_msg_fwl_get_firewall_region_resp getFirewallRegionResp;
-    #if defined(BUILD_C7X) && (defined(SOC_J721S2) || defined(SOC_J784S4))
+    #if defined(BUILD_C7X_1) && (defined(SOC_J721S2) || defined(SOC_J784S4))
     uint32_t firewallId;
     uint64_t startAddress;
     uint64_t endAddress;
@@ -2272,7 +2272,7 @@ static int32_t SciclientApp_firewallPosTest(void)
     struct tisci_msg_fwl_change_owner_info_resp fwlChangeOwnerInfoRespR5  = {0};
     struct tisci_msg_fwl_set_firewall_region_resp fwlSetRegionRespR5;
     #endif
-    #if defined(BUILD_C7X) && (defined(SOC_J721S2) || defined(SOC_J784S4))
+    #if defined(BUILD_C7X_1) && (defined(SOC_J721S2) || defined(SOC_J784S4))
     struct tisci_msg_fwl_change_owner_info_resp fwlChangeOwnerInfoRespC7x  = {0};
     struct tisci_msg_fwl_set_firewall_region_resp fwlSetRegionRespC7x;
     #endif
@@ -2332,7 +2332,7 @@ static int32_t SciclientApp_firewallPosTest(void)
     }
     #endif
 
-    #if defined(BUILD_C7X)
+    #if defined(BUILD_C7X_1)
     #if defined(SOC_J721S2)
     firewallId   = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_DSP4_CFG_DSP_ECCAGGR4_ID;
     startAddress = CSL_STD_FW_COMPUTE_CLUSTER0_C71SS0_ECC_AGGR_0__VBUSP4_CFG_DSP4_CFG_DSP_ECCAGGR4_DSP0_ECC_AGGR_START;
