@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -323,6 +323,28 @@ void SciApp_consoleInit(void)
     Board_init(boardCfg);
 }
 
+
+int32_t SciApp_pmicShutdown(void)
+{
+    int32_t ret = CSL_PASS;
+    Board_STATUS status = -1;
+
+    status = Board_pmPowerOff(0x48);
+    if (status != 0) {
+        ret = CSL_EFAIL;
+    }
+
+#if defined(SOC_J721E)
+    if (ret == CSL_PASS) {
+        status = Board_pmPowerOff(0x4C);
+        if (status != 0) {
+            ret = CSL_EFAIL;
+        }
+    }
+#endif
+
+    return ret;
+}
 /* ========================================================================== */
 /*                     Internal Function Definitions                          */
 /* ========================================================================== */

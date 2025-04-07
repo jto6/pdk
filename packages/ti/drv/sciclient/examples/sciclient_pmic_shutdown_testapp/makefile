@@ -9,8 +9,8 @@ endif
 
 APP_NAME = sciclient_pmic_shutdown_testapp_$(BUILD_OS_TYPE)
 
-SRCDIR = .
-INCDIR = .
+SRCDIR = . ../common
+INCDIR = . ../common
 
 ifeq ($(BUILD_OS_TYPE),freertos)
   CFLAGS_OS_DEFINES = -DFREERTOS
@@ -29,10 +29,11 @@ endif
 INCLUDE_EXTERNAL_INTERFACES = pdk sciclient board uart $(EXTERNAL_INTERFACES)
 
 # Common source files and CFLAGS across all platforms and cores
-SRCS_COMMON = sciclient_pmic_shutdown_testapp.c
+SRCS_COMMON = sciclient_pmic_shutdown_testapp.c \
+              sci_app_common.c
 
 CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(CFLAGS_OS_DEFINES)
-PACKAGE_SRCS_COMMON = .
+PACKAGE_SRCS_COMMON = . ../common
 
 # Core/SoC/platform specific source files and CFLAGS
 # Example:

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2020, Texas Instruments Incorporated
+ * Copyright (c) 2018-2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -766,11 +766,22 @@ int32_t Sciclient_prepareSleep(void);
  */
 int32_t Sciclient_enterSleep(uint32_t *msg_recv);
 
+#if defined (BUILD_MCU1_0)
 /** \brief Sciclient PMIC shutdown function.
  *
  *  \return status    Function return status.
  */
-void Sciclient_pmicShutdown(void);
+int32_t Sciclient_pmicShutdown(void);
+
+/** \brief This API allows user to set the PMIC power off function.
+ *         Application user must call this API to use PMIC power off feature.
+ * 
+ *  \param func   Function pointer to the PMIC power off function.
+ * 
+ *  \return None
+ */
+int32_t Sciclient_setPmicShutdownCb(int32_t (*func)(void));
+#endif
 
 /* ========================================================================== */
 /*                       Static Function Definitions                          */

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2024-2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,18 @@
 
 #include <ti/drv/sciclient/sciserver_tirtos.h>
 #include "boot_app_priv.h"
+
+#if defined(SOC_J721E)
+#include <ti/board/src/j721e_evm/include/board_power.h>
+#elif defined(SOC_J7200)
+#include <ti/board/src/j7200_evm/include/board_power.h>
+#elif defined(SOC_J721S2)
+#include <ti/board/src/j721s2_evm/include/board_power.h>
+#elif defined(SOC_J784S4)
+#include <ti/board/src/j784s4_evm/include/board_power.h>
+#elif defined(SOC_J742S2)
+#include <ti/board/src/j742s2_evm/include/board_power.h>
+#endif
 
 #if defined(SAFETY_CHECKER_LOOP_ENABLED)
 #if defined(SOC_J721E)
@@ -310,6 +322,15 @@ static void BootApp_canTaskFxn(void* a0, void* a1);
 static void BootApp_mainDomainSetup(void);
 #endif
 
+/**
+ * \brief   Function to shutdown the pmic.
+ * 
+ * \param   None.
+ * 
+ * \return  Success or failure.
+*/
+int32_t BootApp_pmicShutdown(void);
+
 /* Function Pointer used while reading data from the storage. */
 extern int32_t  (*fp_readData)(void *dstAddr, void *srcAddr, uint32_t length);
 extern void     (*fp_seek)(void *srcAddr, uint32_t location);
@@ -448,6 +469,12 @@ static uint32_t BootApp_setupSciServer(void)
     if (ret == CSL_PASS)
     {
         ret = Sciserver_tirtosInit(&appPrms);
+    }
+
+    /* Set PMIC Shutdown Function Pointer */
+    if (ret == CSL_PASS)
+    {
+        ret = Sciclient_setPmicShutdownCb(BootApp_pmicShutdown);
     }
 
     if (ret == CSL_PASS)
@@ -1174,3 +1201,25 @@ static int32_t BootApp_releaseCores(uint8_t stageNum)
     return (status);
 }
 
+/* PMIC Shutdown Function */
+int32_t BootApp_pmicShutdown(void)
+{
+    int32_t ret = CSL_PASS;
+    Board_STATUS status = -1;
+
+    status = Board_pmPowerOff(0x48);
+    if (status != 0) {
+        ret = CSL_EFAIL;
+    }
+
+#if defined(SOC_J721E)
+    if (ret == CSL_PASS) {
+        status = Board_pmPowerOff(0x4C);
+        if (status != 0) {
+            ret = CSL_EFAIL;
+        }
+    }
+#endif
+
+    return ret;
+}

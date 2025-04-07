@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -164,6 +164,12 @@ static void taskFxn(void* a0, void* a1)
     if (ret == CSL_PASS)
     {
         ret = Sciserver_tirtosInit(&appPrms);
+    }
+
+    /* Set PMIC Shutdown Function Pointer */
+    if (ret == CSL_PASS)
+    {
+        ret = Sciclient_setPmicShutdownCb(SciApp_pmicShutdown);
     }
 
     if (ret == CSL_PASS)

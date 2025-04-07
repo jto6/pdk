@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2024, Texas Instruments Incorporated
+ * Copyright (c) 2020-2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -565,7 +565,7 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags  __attribute__((unuse
                          */
                         if (coreRefCnt <= 0) {
                             Osal_delay(1000U); /* time for ATF go in WFI */
-                            Sciclient_pmicShutdown();
+                            ret = Sciclient_pmicShutdown();
                         }
                     }
                     else {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018-2023
+ *  Copyright (c) Texas Instruments Incorporated 2018-2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -69,6 +69,18 @@
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/board/board.h>
 
+#if defined(SOC_J721E)
+#include <ti/board/src/j721e_evm/include/board_power.h>
+#elif defined(SOC_J7200)
+#include <ti/board/src/j7200_evm/include/board_power.h>
+#elif defined(SOC_J721S2)
+#include <ti/board/src/j721s2_evm/include/board_power.h>
+#elif defined(SOC_J784S4)
+#include <ti/board/src/j784s4_evm/include/board_power.h>
+#elif defined(SOC_J742S2)
+#include <ti/board/src/j742s2_evm/include/board_power.h>
+#endif
+
 #if (defined (BUILD_MCU1_0) && (defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)))
 #include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
 #include <ti/drv/sciclient/sciserver_tirtos.h>
@@ -120,6 +132,7 @@
 static void taskFxn(void* a0, void* a1);
 
 #if (defined (BUILD_MCU1_0) && (defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)))
+int32_t Ipc_pmicShutdown(void);
 void Ipc_setupSciServer(void *arg0, void *arg1);
 /**< Initialize SCI Server, to process RM/PM Requests by other cores */
 #endif
@@ -355,6 +368,12 @@ void Ipc_setupSciServer(void *arg0, void *arg1)
         ret = Sciserver_tirtosInit(&appPrms);
     }
 
+    /* Set PMIC Shutdown Function Pointer */
+    if (ret == CSL_PASS)
+    {
+        ret = Sciclient_setPmicShutdownCb(Ipc_pmicShutdown);
+    }
+
     version_str = Sciserver_getVersionStr();
     rmpmhal_version_str = Sciserver_getRmPmHalVersionStr();
     App_printf("DM Built On: %s %s\n", __DATE__, __TIME__);
@@ -371,5 +390,29 @@ void Ipc_setupSciServer(void *arg0, void *arg1)
     }
 
     return;
+}
+#endif
+
+#if (defined (BUILD_MCU1_0) && (defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)))
+int32_t Ipc_pmicShutdown(void)
+{
+    int32_t ret = CSL_PASS;
+    Board_STATUS status = -1;
+
+    status = Board_pmPowerOff(0x48);
+    if (status != 0) {
+        ret = CSL_EFAIL;
+    }
+
+#if defined(SOC_J721E)
+    if (ret == CSL_PASS) {
+        status = Board_pmPowerOff(0x4C);
+        if (status != 0) {
+            ret = CSL_EFAIL;
+        }
+    }
+#endif
+
+    return ret;
 }
 #endif

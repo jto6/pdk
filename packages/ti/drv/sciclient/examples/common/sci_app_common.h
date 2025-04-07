@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,6 +47,18 @@
 
 #include <ti/csl/tistdtypes.h>
 #include <ti/drv/uart/UART_stdio.h>
+
+#if defined(SOC_J721E)
+#include <ti/board/src/j721e_evm/include/board_power.h>
+#elif defined(SOC_J7200)
+#include <ti/board/src/j7200_evm/include/board_power.h>
+#elif defined(SOC_J721S2)
+#include <ti/board/src/j721s2_evm/include/board_power.h>
+#elif defined(SOC_J784S4)
+#include <ti/board/src/j784s4_evm/include/board_power.h>
+#elif defined(SOC_J742S2)
+#include <ti/board/src/j742s2_evm/include/board_power.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -193,6 +205,15 @@ uint32_t SciApp_getNum(void);
  * \return  None.
  */
 void SciApp_consoleInit(void);
+
+/**
+ * \brief   Shutdown the pmic.
+ * 
+ * \param   None.
+ * 
+ * \return  Success or failure.
+*/
+int32_t SciApp_pmicShutdown(void);
 
 /**
  * \brief   Fetches total number of test cases.

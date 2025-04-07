@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -139,11 +139,17 @@ static void SciclientApp_pmicPowerOff(void)
     SciApp_printf("\n#### Start of PMIC Poweroff Test ####\n");
     int32_t ret = CSL_PASS;
 
+    /* Set PMIC Shutdown Function Pointer */
+    ret = Sciclient_setPmicShutdownCb(SciApp_pmicShutdown);
+
     /* Poweroff */
-    ret = Sciclient_pmSetModuleState(TISCI_DEV_BOARD0,
-                                     TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                     TISCI_MSG_FLAG_AOP,
-                                     SCICLIENT_SERVICE_WAIT_FOREVER);
+    if (ret == CSL_PASS)
+    {
+        ret = Sciclient_pmSetModuleState(TISCI_DEV_BOARD0,
+                                         TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+                                         TISCI_MSG_FLAG_AOP,
+                                         SCICLIENT_SERVICE_WAIT_FOREVER);
+    }
     /* Incase of Success, following code should not be excuted */
     SciApp_printf("ERROR!!: Device is still powered ON\n");
     
