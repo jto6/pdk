@@ -2071,7 +2071,8 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
     MMCSD_v2_HwAttrs const *hwAttrs = NULL;
     MMCSD_v2_Transaction    transaction;
     uint32_t drvStrength_controller=0;
-    uint8_t  **extCid = (uint8_t**) &gExtCidAddr;
+    uint8_t *extcidsptr = (uint8_t*)&gExtCidAddr;
+    uint8_t  **extCid = (uint8_t**) &extcidsptr;
     uint8_t  driveStrengthSupportRegInExdCsd = 0;
     /* Get the pointer to the object and hwAttrs */
     object = (MMCSD_v2_Object *)((MMCSD_Config *) handle)->object;
