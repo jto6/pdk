@@ -60,7 +60,7 @@ static uint32_t sblMemOffset = 0;
 
 /* SBL scratch memory defined at compile time */
 static uint8_t *sbl_scratch_mem_for_auth = ((uint8_t *)(SBL_SCRATCH_MEM_START));
-static uint32_t sbl_scratch_sz = SBL_SCRATCH_MEM_SIZE/2;
+static uint32_t sbl_scratch_sz = SBL_SCRATCH_MEM_SIZE;
 
 /******************************************************************************
  ***                     SBL Multicore RPRC parse functions                 ***

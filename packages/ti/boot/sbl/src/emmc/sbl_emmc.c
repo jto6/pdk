@@ -78,7 +78,7 @@ extern volatile uint32_t * outData01;
 /* Handle to operate eMMC read/write */
 MMCSD_Handle gHandle=NULL;
 /* SBL scratch memory defined at compile time */
-static uint8_t *sbl_scratch_mem_for_appcopy = ((uint8_t *)(SBL_SCRATCH_MEM_START + SBL_SCRATCH_MEM_SIZE/2));
+static uint8_t *sbl_scratch_mem_for_appcopy = ((uint8_t *)(SBL_SCRATCH_MEM_APP_COPY_START));
 
 /**
  * \brief    SBL_FileRead function reads N bytes from eMMC and
@@ -431,9 +431,9 @@ int32_t SBL_eMMCBootImage(sblEntryPoint_t *pEntry)
         SBL_ADD_PROFILE_POINT;
 
 #if defined(SBL_ENABLE_HLOS_BOOT) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined(SOC_J784S4) || defined(SOC_J742S2))
-        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem_for_appcopy, (SBL_SCRATCH_MEM_START + SBL_SCRATCH_MEM_SIZE/2), pEntry, SBL_SKIP_BOOT_AFTER_COPY);
+        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem_for_appcopy, (SBL_SCRATCH_MEM_APP_COPY_START), pEntry, SBL_SKIP_BOOT_AFTER_COPY);
 #else
-        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem_for_appcopy, (SBL_SCRATCH_MEM_START + SBL_SCRATCH_MEM_SIZE/2), pEntry, SBL_BOOT_AFTER_COPY);
+        retVal = SBL_MulticoreImageParse((void *) &sbl_scratch_mem_for_appcopy, (SBL_SCRATCH_MEM_APP_COPY_START), pEntry, SBL_BOOT_AFTER_COPY);
 #endif
     }
     else
