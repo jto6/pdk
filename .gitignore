@@ -10,6 +10,7 @@ packages/ti/drv/csitx/
 packages/ti/drv/pm/
 packages/ti/drv/pmic/
 packages/ti/drv/sa/
+packages/ti/drv/pdm_utils/
 packages/ti/drv/sciclient/src/rm_pm_hal
 packages/ti/*/lib
 packages/ti/*/*/lib
