@@ -356,6 +356,8 @@ static int32_t OsalApp_archUtilsNegativeTest(void)
     hwiParams.evtId = CSL_INVALID_EVENT_ID;
 
     hwiHandle = OsalArch_HwiPCreate(0U, OsalApp_hwiIRQ, &hwiParams);
+    /* Reconfiguring the same interrupt to trigger negative scenario */
+    hwiHandle = OsalArch_HwiPCreate(0U, OsalApp_hwiIRQ, &hwiParams);
     if(NULL_PTR != hwiHandle)
     {
         OSAL_log("hwiHandle = %x\n",hwiHandle);
@@ -381,9 +383,9 @@ static int32_t OsalApp_archUtilsC66xMaxTest(void)
     HwiP_Params_init(&hwiParams);
 
     /* Testing Maximum Hwi creation */
-    for(hwiIndex = 0U; hwiIndex < (OSAL_NONOS_CONFIGNUM_HWI + 2U); hwiIndex++)
+    for(hwiIndex = 0U; hwiIndex < (OSAL_NONOS_CONFIGNUM_HWI + 4U); hwiIndex++)
     {
-        if((21U != hwiIndex) && (16U != hwiIndex) && (14U != hwiIndex))
+        if((21U != hwiIndex) && (16U != hwiIndex) && (14U != hwiIndex) && (15U != hwiIndex) && (20U != hwiIndex))
         {
             hwiParams.evtId = hwiIndex;
             hwiHandle[hwiIndex] = OsalArch_HwiPCreate(hwiIndex, OsalApp_hwiIRQ, &hwiParams);
@@ -409,7 +411,7 @@ static int32_t OsalApp_archUtilsC66xMaxTest(void)
     {
         for(hwiIndex = 0U; hwiIndex < maxIndex; hwiIndex++)
         {
-            if((21U != hwiIndex) && (16U != hwiIndex) && (14U != hwiIndex))
+            if((21U != hwiIndex) && (16U != hwiIndex) && (14U != hwiIndex) && (15U != hwiIndex) && (20U != hwiIndex))
             {
                 if(HwiP_OK != OsalArch_HwiPDelete(hwiHandle[hwiIndex]))
                 {
