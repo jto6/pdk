@@ -397,7 +397,6 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
-#if defined(BUILD_MCU1_0)
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,
@@ -431,7 +430,6 @@ SciApp_TestParams_t gSciApp_TestcaseParams[] =
         /** testType **/
         (SCI_APP_TEST_TYPE_SANITY)
     },
-#endif
     {
         /** enableTest **/
         SCI_APP_TEST_ENABLE,

@@ -849,13 +849,13 @@ static int32_t SciclientApp_pvu2R5IntrTest(void)
         {
             SciApp_printf("\nDeleting PVU to Main R5 Interrupt Route\n");
 
-            rmIrqReqRel.valid_params   = TISCI_MSG_VALUE_RM_DST_ID_VALID;
+            rmIrqReqRel.valid_params   = TISCI_MSG_VALUE_RM_DST_ID_VALID | TISCI_MSG_VALUE_RM_SECONDARY_HOST_VALID;
             rmIrqReqRel.valid_params  |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
             rmIrqReqRel.src_id         = TISCI_DEV_NAVSS0_PVU_0;
             rmIrqReqRel.src_index      = 0;
             rmIrqReqRel.dst_id         = TISCI_DEV_R5FSS0_CORE0;
             rmIrqReqRel.dst_host_irq   = intNum;
-            rmIrqReqRel.secondary_host = TISCI_MSG_VALUE_RM_UNUSED_SECONDARY_HOST;
+            rmIrqReqRel.secondary_host = TISCI_HOST_ID_MAIN_0_R5_0;
             gAppIsrExecNum = 0;
 
             status = Sciclient_rmIrqRelease(&rmIrqReqRel, SCICLIENT_SERVICE_WAIT_FOREVER);
