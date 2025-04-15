@@ -1794,11 +1794,11 @@ export sbl_lib_cust_hs_$(SOC)_CORELIST
 # SBL Custom LIB - GP build variant for boot performace tests
 sbl_boot_perf_lib_cust_COMP_LIST = sbl_boot_perf_lib_cust
 sbl_boot_perf_lib_cust_RELPATH = ti/boot/sbl
-export sbl_boot_perf_lib_cust_OBJPATH = ti/boot/sbl/cust
+export sbl_boot_perf_lib_cust_OBJPATH = ti/boot/sbl/cust_perf
 sbl_boot_perf_lib_cust_LIBNAME = sbl_boot_perf_lib_cust
 sbl_boot_perf_lib_cust_PATH = $(PDK_SBL_COMP_PATH)
 sbl_boot_perf_lib_cust_LIBNAME = sbl_boot_perf_lib_cust
-sbl_boot_perf_lib_cust_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust
+sbl_boot_perf_lib_cust_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust_perf
 sbl_boot_perf_lib_cust_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_LIB) BOOT_PERF=yes
 export sbl_boot_perf_lib_cust_MAKEFILE
 export sbl_boot_perf_lib_cust_LIBNAME
@@ -1821,11 +1821,11 @@ export sbl_boot_perf_lib_cust_$(SOC)_CORELIST
 # SBL Custom LIB - HS build variant for boot performace tests
 sbl_boot_perf_lib_cust_hs_COMP_LIST = sbl_boot_perf_lib_cust_hs
 sbl_boot_perf_lib_cust_hs_RELPATH = ti/boot/sbl
-export sbl_boot_perf_lib_cust_hs_OBJPATH = ti/boot/sbl/cust_hs
+export sbl_boot_perf_lib_cust_hs_OBJPATH = ti/boot/sbl/cust_perf_hs
 sbl_boot_perf_lib_cust_hs_LIBNAME = sbl_boot_perf_lib_cust_hs
 sbl_boot_perf_lib_cust_hs_PATH = $(PDK_SBL_COMP_PATH)
 sbl_boot_perf_lib_cust_hs_LIBNAME = sbl_boot_perf_lib_cust_hs
-sbl_boot_perf_lib_cust_hs_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust_hs
+sbl_boot_perf_lib_cust_hs_LIBPATH = $(PDK_SBL_COMP_PATH)/lib/cust_perf_hs
 sbl_boot_perf_lib_cust_hs_MAKEFILE = -f$(PDK_SBL_COMP_PATH)/build/sbl_lib.mk BOOTMODE=cust SBL_USE_DMA=yes CUST_SBL_FLAGS=$(CUST_SBL_BOOT_PERF_TEST_FLAGS_LIB) BUILD_HS=yes BOOT_PERF=yes
 export sbl_boot_perf_lib_cust_hs_MAKEFILE
 export sbl_boot_perf_lib_cust_hs_LIBNAME
