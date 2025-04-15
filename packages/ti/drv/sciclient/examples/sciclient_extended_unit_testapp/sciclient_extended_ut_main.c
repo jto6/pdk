@@ -4217,7 +4217,7 @@ static int32_t SciclientApp_rmIrqDirectNonEventTest(void)
     memset(&rmIrqReqRel,0,sizeof(rmIrqReqRel));
 
     req.type = TISCI_DEV_MAIN2MCU_LVL_INTRTR0;
-    req.secondary_host = TISCI_MSG_VALUE_RM_UNUSED_SECONDARY_HOST;
+    req.secondary_host = TISCI_HOST_ID_MCU_0_R5_0;
 
     status  = Sciclient_rmGetResourceRange(&req,
                                             &res,
