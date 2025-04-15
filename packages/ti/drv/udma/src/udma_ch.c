@@ -907,7 +907,7 @@ int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
 #if (UDMA_SOC_CFG_UDMAP_PRESENT == 1)
                 if(UDMA_INST_TYPE_NORMAL == drvHandle->instType)
                 {
-                    (void) CSL_udmapGetRxRT(&drvHandle->udmapRegs, chHandle->txChNum, &udmapRtStatus);
+                    (void) CSL_udmapGetRxRT(&drvHandle->udmapRegs, chHandle->rxChNum, &udmapRtStatus);
                     if(UFALSE == udmapRtStatus.enable)
                     {
                         /* Teardown complete */
