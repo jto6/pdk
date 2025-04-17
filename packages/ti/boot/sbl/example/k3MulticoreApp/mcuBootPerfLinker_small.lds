@@ -78,7 +78,7 @@ SECTIONS
     .intc_text 	: {} palign(8) 		> VECTORS
     .rstvectors : {} palign(8) 		> RESET_VECTORS
     .bootCode    	: {} palign(8) 		> OCMRAM_BOOT_PERF
-    .startupCode 	: {} palign(8) 		> OCMRAM_BOOT_PERF
+    .startupCode 	: {} palign(128)    > OCMRAM_BOOT_PERF
     .startupData 	: {} palign(8) 		> OCMRAM_BOOT_PERF, type = NOINIT
     .sbl_mcu_1_0_resetvector : {} palign(8) > OCMRAM_BOOT_PERF
     .text    	: {} palign(8) 		> OCMRAM_BOOT_PERF
