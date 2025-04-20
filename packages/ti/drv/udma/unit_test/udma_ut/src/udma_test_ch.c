@@ -1795,3 +1795,97 @@ int32_t UdmaTestChDisablePolling(UdmaTestTaskObj *taskObj)
 
     return retVal;
 }
+
+/*
+ * Test Case Description: Verifies the function Udma_chDisablePolling when
+ * Test scenario 1: Null check for chHandle
+ * Test scenario 2: Check when chInitDone is not UDMA_INIT_DONE
+ * Test scenario 3: Null check for drvHandle
+ * Test scenario 4: Check when drvInitDone is not UDMA_INIT_DONE
+*/
+int32_t UdmaTestChDisablePollingNeg(UdmaTestTaskObj *taskObj)
+{
+    int32_t            retVal = UDMA_SOK;
+    struct Udma_ChObj  chObj;
+    Udma_ChHandle      chHandle;
+    uint32_t           timeout = 0U;
+
+    GT_0trace(taskObj->traceMask, GT_INFO, "Neg Test: Udma_chDisablePolling: Null check for chHandle \n");
+
+    /* Test scenario 1: Null check for chHandle */
+    retVal = Udma_chDisablePolling(NULL, timeout);
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_ERR,
+                    " |TEST INFO|:: FAIL:: UDMA:: chDisablePolling:: Neg:: "
+                    " Null check for chHandle!!\n");
+        retVal = UDMA_EFAIL;
+    }
+    else
+    {
+        retVal = UDMA_SOK;
+    }
+
+    /* Test scenario 2: Check when chInitDone is not UDMA_INIT_DONE */
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_INFO, "Neg Test: Udma_chDisablePolling: Check when chInitDone is not UDMA_INIT_DONE \n");
+        chHandle             = &chObj;
+        chHandle->chInitDone = UDMA_DEINIT_DONE;
+        retVal = Udma_chDisablePolling(chHandle, timeout);
+        if(UDMA_SOK == retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                        " |TEST INFO|:: FAIL:: UDMA:: chDisablePolling:: Neg:: "
+                        " Check when chInitDone is not UDMA_INIT_DONE!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+
+    /* Test scenario 3: Null check for drvHandle */
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_INFO, "Neg Test: Udma_chDisablePolling: Null check for drvHandle \n");
+        chHandle->drvHandle = NULL;
+        retVal = Udma_chDisablePolling(chHandle, timeout);
+        if(UDMA_SOK == retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                        " |TEST INFO|:: FAIL:: UDMA:: chDisablePolling:: Neg:: "
+                        " Null check for drvHandle!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+    }
+
+    /* Test scenario 4: Check when drvInitDone is not UDMA_INIT_DONE */
+    if(UDMA_SOK == retVal)
+    {
+        GT_0trace(taskObj->traceMask, GT_INFO, "Neg Test: Udma_chDisablePolling: Check when drvInitDone is not UDMA_INIT_DONE \n");
+        chHandle->drvHandle = &taskObj->testObj->drvObj[UDMA_INST_ID_MAIN_0];
+        uint32_t drvInitDone = chHandle->drvHandle->drvInitDone;
+        chHandle->drvHandle->drvInitDone = UDMA_DEINIT_DONE;
+        retVal = Udma_chDisablePolling(chHandle, timeout);
+        if(UDMA_SOK == retVal)
+        {
+            GT_0trace(taskObj->traceMask, GT_ERR,
+                        " |TEST INFO|:: FAIL:: UDMA:: chDisablePolling:: Neg:: "
+                        " Check when drvInitDone is not UDMA_INIT_DONE!!\n");
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+        chHandle->drvHandle->drvInitDone = drvInitDone;
+    }
+
+    return retVal;
+}
