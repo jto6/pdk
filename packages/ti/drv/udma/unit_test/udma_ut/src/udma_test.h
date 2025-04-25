@@ -85,7 +85,7 @@ extern "C" {
 #define UDMA_TEST_USE_DEF               (0xFAFAU)
 #define UDMA_TEST_DEF_LOOP_CNT          (10U)
 #define UDMA_TEST_DEF_QDEPTH            (1U)
-#define UDMA_TEST_PERF_LOOP_CNT         (100U)
+#define UDMA_TEST_PERF_LOOP_CNT         (10000U)
 #define UDMA_TEST_PERF_QDEPTH           (1U)
 
 #define UDMA_TEST_DEF_ICNT0             (1000U)
