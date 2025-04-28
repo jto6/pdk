@@ -1041,7 +1041,7 @@ int32_t DmaUtilsAutoInc3d_deinit(void * autoIncrementContext) {
       #if!HOST_EMULATION
       /* Avoid calling chDisable API for host emulation as it depends on some of the hardware sequence
       which are not emulated in host emulation */
-      retVal = Udma_chDisable(channelHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+      retVal = Udma_chDisablePolling(channelHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
       #endif
       if (retVal != (int32_t)DMAUTILS_SOK) {
         DmaUtilsAutoInc3d_printf(autoIncrementContext, 0, "DmaUtilsAutoInc3d_deconfigure : Failed : Udma_chDisable\n");
