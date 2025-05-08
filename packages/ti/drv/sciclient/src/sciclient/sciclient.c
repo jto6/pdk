@@ -40,6 +40,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
+#include <stdint.h>
 #include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
 #include <ti/csl/soc.h>
 #include <ti/drv/sciclient/sciclient.h>
@@ -51,6 +52,7 @@
 
 #include <ti/drv/sciclient/sciserver.h>
 #include <ti/osal/osal.h>
+#include <ti/drv/sciclient/src/sciclient/sciclient_trace_internal.h>
 
 #ifdef QNX_OS
 #include <ti/drv/sciclient/src/sciclient/sciclient_qnx.h>
@@ -618,6 +620,7 @@ int32_t Sciclient_serviceGetThreadIds (const Sciclient_ReqPrm_t *pReqPrm,
          */
         if (pReqPrm->forwardStatus == SCISERVER_FORWARD_MSG)
         {
+            Sciclient_printf("This request uses dedicated DM2DMSC queue to forward the message\n");
             *txThread = TISCI_SEC_PROXY_DM2DMSC_WRITE_NOTIFY_RESP_THREAD_ID;
             *rxThread = TISCI_SEC_PROXY_DM2DMSC_READ_RESPONSE_THREAD_ID;
            /*
@@ -673,6 +676,7 @@ int32_t Sciclient_serviceGetThreadIds (const Sciclient_ReqPrm_t *pReqPrm,
         status = CSL_EBADARGS;
     }
 
+    Sciclient_printf("Tx thread ID = %u Rx thread ID = %u \n", *txThread, *rxThread);
     return status;
 }
 
@@ -856,6 +860,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
     {
         /* Send Message */
         initialCount = Sciclient_readThreadCount(rxThread);
+        Sciclient_printf("Send the message request to TIFS using the thread id %u\n", txThread);
         Sciclient_sendMessage(txThread,
                               (const uint8_t *)&gSciclient_secHeader,
                               gSecHeaderSizeWords,
@@ -895,6 +900,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
             else
             {
                 status = CSL_ETIMEOUT;
+                Sciclient_printf("Timeout Failure: Response from TIFS is not received within the time limit\n");
                 break;
             }
         }
@@ -944,6 +950,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         numWords   = (uint32_t) (rxPayloadSize / 4U);
         trailBytes = (uint8_t) (rxPayloadSize - (numWords * 4U));
         /* Read the full message */
+        Sciclient_printf("Received the response from TIFS in the thread %u\n", rxThread);
         pRespPrm->flags = Sciclient_readThread32(rxThread, 1U+gSecHeaderSizeWords);
 
         for (i = 0; i < numWords; i++)

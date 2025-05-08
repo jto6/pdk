@@ -58,6 +58,7 @@
 #include <ti/drv/sciclient/sciserver.h>
 #include <ti/drv/sciclient/src/version/sciserver_version.h>
 #include <ti/drv/sciclient/src/version/rmpmhal_version.h>
+#include <ti/drv/sciclient/src/sciclient/sciclient_trace_internal.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -221,6 +222,7 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                            Sciclient_RespPrm_t      *pRespPrm)
 #endif
 {
+    Sciclient_printf("Entering Sciclient_service function\n");
     int32_t ret = CSL_PASS;
     uint32_t msgType;
     uint32_t message[20] = {0};
@@ -245,13 +247,25 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
     if (CSL_PASS == ret)
     {
         msgType = pReqPrm->messageType;
+        Sciclient_printf("Request message type = 0x%X\n", msgType);
         ret = Sciclient_serviceGetThreadIds (pReqPrm, &contextId, &txThread,
                                          &rxThread);
+
+        if(CSL_PASS != ret)
+        {
+            Sciclient_printf("ERROR:: Sciclient_service: Failed to get thread IDs\n");
+        }
     }
+
     if (CSL_PASS == ret)
     {
         ret = Sciclient_servicePrepareHeader(pReqPrm, &localSeqId,
                  contextId, &hdr);
+
+        if (CSL_PASS != ret)
+        {
+            Sciclient_printf("ERROR:: Sciclient_service: Failed to prepare header\n");
+        }
     }
     if (CSL_PASS == ret)
     {
@@ -270,7 +284,14 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_PREPARE_SLEEP:
             case TISCI_MSG_ENTER_SLEEP:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                Sciclient_printf("This request is releated to Power Management and will be processed by DM core\n");
                 ret = Sciclient_ProcessPmMessage(pReqPrm->flags, message);
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: DM failed to process PM message\n");
+                }
+
                 if (pRespPrm->pRespPayload != NULL)
                 {
                     memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -299,13 +320,28 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                         uint32_t bkupMode;
                         bkupMode = gSciclientHandle.isSecureMode;
                         gSciclientHandle.isSecureMode = 1U;
+                        Sciclient_printf("This request is related to MCU R5F Power Management.");
+                        Sciclient_printf("Therefore, it will be forwarded to TIFS\n");
                         ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+
+                        if(CSL_PASS != ret)
+                        {
+                            Sciclient_printf("ERROR:: Sciclient_service: TIFS failed to process PM message for MCU R5F\n");
+                        }
+
                         gSciclientHandle.isSecureMode = bkupMode;
                     }
                     else
                     {
                         memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                        Sciclient_printf("This request is releated to Power Management and will be processed by DM core\n");
                         ret = Sciclient_ProcessPmMessage(pReqPrm->flags, message);
+
+                        if(CSL_PASS != ret)
+                        {
+                            Sciclient_printf("ERROR:: Sciclient_service: DM failed to process PM message of set device/reset\n");
+                        }
+
                         if (pRespPrm->pRespPayload != NULL)
                         {
                             memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -323,6 +359,13 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_RM_UDMAP_GCFG_CFG:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 ret = Sciclient_ProcessRmMessage(message);
+                Sciclient_printf("RM messages processed solely by RM within DM on MCU R5F\n");
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: DM failed to process RM message\n");
+                }
+
                 if (pRespPrm->pRespPayload != NULL)
                 {
                     memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -342,7 +385,16 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_RM_UDMAP_RX_CH_CFG:
             case TISCI_MSG_RM_PROXY_CFG:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                Sciclient_printf("This request is releated to Resource Management.");
+                Sciclient_printf("Therefore Request will be processed by DM first ");
+                Sciclient_printf("and then TIFS will process Secure RM\n");
                 ret = Sciclient_ProcessRmMessage(message);
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: DM failed to process RM message on MCU R5F\n");
+                }
+
                 if (pRespPrm->pRespPayload != NULL)
                 {
                     memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -357,6 +409,11 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                      */
                     *fwdStatus = SCISERVER_FORWARD_MSG;
                     ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+
+                    if(CSL_PASS != ret)
+                    {
+                        Sciclient_printf("ERROR:: Sciclient_service: TIFS failed to process RM message on M core\n");
+                    }
                 }
 
                 break;
@@ -366,8 +423,15 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 /* If RM boardcfg has a certificate, find the length */
                 adjSize = boardcfgRmFindCertSize((uint32_t *)pReqPrm->pReqPayload);
 
+                Sciclient_printf("TISCI_MSG_BOARD_CONFIG_RM : RM boardcfg sent to TIFS before local processing\n");
                 /* Send to TIFS */
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: TIFS failed to process RM boardcfg\n");
+                }
+
                 if ((ret == CSL_PASS) &&
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
@@ -383,12 +447,27 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                      * to be advanced.
                      */
                     ret = boardcfg_RmAdjustReq((uint32_t *)pReqPrm->pReqPayload, adjSize);
+
+                    if(CSL_PASS != ret)
+                    {
+                        Sciclient_printf("ERROR:: Sciclient_service: Failed to adjust RM boardcfg by RM ");
+                        Sciclient_printf("processed by DM for size adjustment\n");
+                    }
                 }
                 if ((ret == CSL_PASS) &&
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
                     memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                    Sciclient_printf("TISCI_MSG_BOARD_CONFIG_RM : RM boardcfg sending to RM processed by DM ");
+                    Sciclient_printf("for local processing\n");
                     ret = Sciclient_ProcessRmMessage(message);
+
+                    if(CSL_PASS != ret)
+                    {
+                        Sciclient_printf("ERROR:: Sciclient_service: Failed to process RM boardcfg by RM ");
+                        Sciclient_printf("processed by DM for local processing\n");
+                    }
+
                     if (pRespPrm->pRespPayload != NULL)
                     {
                         memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -420,12 +499,27 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                  * NOTE: Forwarding always leads to forced polling.
                  */
                 *fwdStatus = SCISERVER_FORWARD_MSG;
+                Sciclient_printf("RM messages processed by Secure RM within TIFS\n");
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: Failed to process RM message ");
+                    Sciclient_printf("processed by Secure RM within TIFS\n");
+                }
+
                 break;
             }
             case TISCI_MSG_QUERY_FW_CAPS:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                Sciclient_printf("Firmware Query is processed internally by DM driver\n");
                 ret = Sciclient_queryFwCapsHandler(pReqPrm->flags,message);
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: Failed to process Firmware Query ");
+                }
+
                 if (pRespPrm->pRespPayload != NULL)
                 {
                     memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -435,7 +529,14 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 break;
             case TISCI_MSG_DM_VERSION:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                Sciclient_printf("DM Version is processed internally by DM driver\n");
                 ret = Sciclient_processDMVersionMessage(message);
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: Failed to process DM Version\n");
+                }
+
                 if (pRespPrm->pRespPayload != NULL)
                 {
                     memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -457,7 +558,14 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 uint32_t bkupMode;
                 bkupMode = gSciclientHandle.isSecureMode;
                 gSciclientHandle.isSecureMode = 1U;
+                Sciclient_printf("This is either baseport or security message and forwarded to TIFS\n");
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+
+                if(CSL_PASS != ret)
+                {
+                    Sciclient_printf("ERROR:: Sciclient_service: Failed to process baseport or ");
+                    Sciclient_printf("security message forwarded to TIFS\n");
+                }
                 gSciclientHandle.isSecureMode = bkupMode;
                 break;
             }
@@ -471,16 +579,27 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
      */
     *fwdStatus = SCISERVER_NO_FORWARD_MSG;
 
+    if(CSL_PASS == ret)
+    {
+        Sciclient_printf("Exiting Sciclient_service function with Status - PASS\n");
+    }
+    else
+    {
+        Sciclient_printf("ERROR:: Exiting Sciclient_service function with Status - FAIL\n");
+    }
+
     return ret;
 }
 
 void Sciclient_TisciMsgSetAckResp(struct tisci_header *hdr)
 {
+    Sciclient_printf("Requested service is executed sucessfully by DM\n");
     hdr->flags |= TISCI_MSG_FLAG_ACK;
 }
 
 void Sciclient_TisciMsgSetNakResp(struct tisci_header *hdr)
 {
+    Sciclient_printf("Requested service in DM results in failure\n");
     hdr->flags &= (~TISCI_MSG_FLAG_ACK);
 }
 
@@ -527,6 +646,7 @@ static int32_t Sciclient_queryFwCapsHandler(const uint32_t reqFlags __attribute_
 
 int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags  __attribute__((unused)), void *tx_msg)
 {
+    Sciclient_printf("Entering Sciclient_ProcessPmMessage function\n");
     int32_t ret = CSL_PASS;
     bool msg_inval = (bool)false;
     uint32_t msgType = ((struct tisci_header *) tx_msg)->type;
@@ -534,27 +654,82 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags  __attribute__((unuse
     switch (msgType)
     {
         case TISCI_MSG_BOARD_CONFIG_PM         :
+            Sciclient_printf("case: TISCI_MSG_BOARD_CONFIG_PM\n");
             ret = board_config_pm_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_SET_CLOCK               :
-            ret = set_clock_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_set_clock_req *req =(struct tisci_msg_set_clock_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_SET_CLOCK : Requested Device id = %u Clock ID = %u State = %d \n",
+                                 req->device, req->clk, req->state);
+                ret = set_clock_handler((uint32_t*)tx_msg); break;
+            }
         case TISCI_MSG_GET_CLOCK               :
-            ret = get_clock_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_get_clock_req *req = (struct tisci_msg_get_clock_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_CLOCK : Requested Device id = %u Clock ID = %u\n", req->device, req->clk);
+                ret = get_clock_handler((uint32_t*)tx_msg);
+                struct tisci_msg_get_clock_resp *resp = (struct tisci_msg_get_clock_resp *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_CLOCK : Current Clock state is %d\n", resp->current_state);
+                break;
+            }
         case TISCI_MSG_SET_CLOCK_PARENT        :
-            ret = set_clock_parent_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_set_clock_parent_req *req = (struct tisci_msg_set_clock_parent_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_SET_CLOCK_PARENT : Requested Device id = %u Clock ID = %u Parent Clock ID = %u\n",
+                                 req->device, req->clk, req->parent);
+                ret = set_clock_parent_handler((uint32_t*)tx_msg); break;
+            }
         case TISCI_MSG_GET_CLOCK_PARENT        :
-            ret = get_clock_parent_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_get_clock_parent_req *req = (struct tisci_msg_get_clock_parent_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_CLOCK_PARENT : Requested Device id = %u Clock ID = %u\n", req->device, req->clk);
+                ret = get_clock_parent_handler((uint32_t*)tx_msg);
+                struct tisci_msg_get_clock_parent_resp *resp = (struct tisci_msg_get_clock_parent_resp *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_CLOCK_PARENT : Clock Parent = %u \n", resp->parent);
+                break;
+            }
         case TISCI_MSG_GET_NUM_CLOCK_PARENTS   :
-            ret = get_num_clock_parents_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_get_num_clock_parents_req *req = (struct tisci_msg_get_num_clock_parents_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_NUM_CLOCK_PARENTS : Requested Device id = %u Clock ID = %u\n", req->device, req->clk);
+                ret = get_num_clock_parents_handler((uint32_t*)tx_msg);
+                struct tisci_msg_get_num_clock_parents_resp *resp = (struct tisci_msg_get_num_clock_parents_resp *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_NUM_CLOCK_PARENTS : Total Number of parents = %u \n", resp->num_parents);
+                break;
+            }
         case TISCI_MSG_SET_FREQ                :
-            ret = set_freq_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_set_freq_req *req = (struct tisci_msg_set_freq_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_SET_FREQ : Requested Device id = %u Clock ID = %u "\
+                                 "Target Frequency = %luHz Min_Frequency = %luHz Max_Frequency = %luHz\n",
+                                 req->device, req->clk, req->target_freq_hz, req->min_freq_hz, req->max_freq_hz);
+                ret = set_freq_handler((uint32_t*)tx_msg); break;
+            }
         case TISCI_MSG_QUERY_FREQ              :
-            ret = query_freq_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_query_freq_req *req = (struct tisci_msg_query_freq_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_QUERY_FREQ : Requested Device id = %u Clock ID = %u "\
+                                 "Target Frequency = %luHz Min_Frequency = %luHz Max_Frequency = %luHz\n",
+                                 req->device, req->clk, req->target_freq_hz, req->min_freq_hz, req->max_freq_hz);
+                ret = query_freq_handler((uint32_t*)tx_msg);
+                struct tisci_msg_query_freq_resp *resp = (struct tisci_msg_query_freq_resp *) tx_msg;
+                Sciclient_printf("TISCI_MSG_QUERY_FREQ : Allowed Frequency = %lu\n", resp->freq_hz);
+                break;
+            }
         case TISCI_MSG_GET_FREQ                :
-            ret = get_freq_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_get_freq_req *req = (struct tisci_msg_get_freq_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_FREQ : Requested Device id = %u Clock ID = %u\n", req->device, req->clk);
+                ret = get_freq_handler((uint32_t*)tx_msg);
+                struct tisci_msg_get_freq_resp *resp = (struct tisci_msg_get_freq_resp *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_FREQ : Current Frequency = %lu\n", resp->freq_hz);
+                break;
+            }
         case TISCI_MSG_SET_DEVICE              :
             {
                 struct tisci_msg_set_device_req *req =
                     (struct tisci_msg_set_device_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_SET_DEVICE : Requested Device id = %u State = %d\n", req->id, req->state);
                 uint32_t id = req->id;
                 uint8_t state = req->state;
                 if (id == TISCI_DEV_BOARD0)
@@ -584,22 +759,37 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags  __attribute__((unuse
             }
             break;
         case TISCI_MSG_GET_DEVICE              :
-            ret = get_device_handler((uint32_t*)tx_msg); break;
+            {
+                struct tisci_msg_get_device_req *req = (struct tisci_msg_get_device_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_DEVICE : Requested Device id = %u \n", req->id);
+                ret = get_device_handler((uint32_t*)tx_msg);
+                struct tisci_msg_get_device_resp *resp = (struct tisci_msg_get_device_resp *) tx_msg;
+                Sciclient_printf("TISCI_MSG_GET_DEVICE : Current Device state = %d \n", resp->current_state);
+                break;
+            }
         case TISCI_MSG_SET_DEVICE_RESETS       :
+            Sciclient_printf("TISCI_MSG_SET_DEVICE_RESETS : Requested Device id = %u \n",
+                                    ((struct tisci_msg_set_device_resets_req *)tx_msg)->id);
             ret = set_device_resets_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_SYS_RESET               :
-            ret = sys_reset_handler((uint32_t*)tx_msg);
-            break;
+            {
+                struct tisci_msg_sys_reset_req *req = (struct tisci_msg_sys_reset_req *) tx_msg;
+                Sciclient_printf("TISCI_MSG_SYS_RESET : Requested Domain = %d\n", req->domain);
+                ret = sys_reset_handler((uint32_t*)tx_msg);
+                break;
+            }
         case TISCI_MSG_PREPARE_SLEEP            :
+            Sciclient_printf("TISCI_MSG_PREPARE_SLEEP : Prepare the device to enter into low power mode \n");
             ret = Sciclient_prepareSleep();
             break;
         case TISCI_MSG_ENTER_SLEEP              :
+            Sciclient_printf("TISCI_MSG_ENTER_SLEEP : Device enters into low power mode \n");
             ret = Sciclient_enterSleep((uint32_t*)tx_msg);
             break;
         default:
             ret = CSL_EFAIL;
             msg_inval = (bool)true;
-        break;
+            break;
     }
     if ((flags & TISCI_MSG_FLAG_AOP) != 0UL) {
         if (ret == CSL_PASS) {
@@ -619,6 +809,16 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags  __attribute__((unuse
          */
         ret = CSL_PASS;
     }
+
+    if(CSL_PASS != ret)
+    {
+        Sciclient_printf("ERROR:: Exiting Sciclient_ProcessPmMessage function with status FAIL\n");
+    }
+    else
+    {
+        Sciclient_printf("Exiting Sciclient_ProcessPmMessage function with status PASS\n");
+    }
+
     return ret;
 }
 
@@ -743,6 +943,7 @@ static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv)
 
 int32_t Sciclient_ProcessRmMessage(void *tx_msg)
 {
+    Sciclient_printf("Entering Sciclient_ProcessRmMessage function\n");
     int32_t r = CSL_PASS;
     bool msg_inval = (bool)false;
     uint32_t msgType = ((struct tisci_header *) tx_msg)->type;
@@ -750,42 +951,55 @@ int32_t Sciclient_ProcessRmMessage(void *tx_msg)
     switch (msgType) {
         case TISCI_MSG_BOARD_CONFIG_RM:
             r = tisci_msg_board_config_rm_handler((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_BOARD_CONFIG_RM\n");
             break;
         case TISCI_MSG_RM_GET_RESOURCE_RANGE:
             r = rm_core_get_resource_range((uint32_t *)tx_msg, (uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_GET_RESOURCE_RANGE\n");
             break;
         case TISCI_MSG_RM_IRQ_SET:
             r = rm_irq_set((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_IRQ_SET\n");
             break;
         case TISCI_MSG_RM_IRQ_RELEASE:
             r = rm_irq_release((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_IRQ_RELEASE\n");
             break;
         case TISCI_MSG_RM_RING_CFG:
             r = rm_ra_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_RING_CFG\n");
             break;
         case TISCI_MSG_RM_RING_MON_CFG:
             r = rm_ra_mon_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_RING_MON_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_TX_CH_CFG:
             r = rm_udmap_tx_ch_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_UDMAP_TX_CH_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_RX_CH_CFG:
             r = rm_udmap_rx_ch_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_UDMAP_RX_CH_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_FLOW_CFG:
             r = rm_udmap_flow_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_UDMAP_FLOW_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_FLOW_SIZE_THRESH_CFG:
             r = rm_udmap_flow_size_thresh_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_UDMAP_FLOW_SIZE_THRESH_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_FLOW_DELEGATE:
             r = rm_udmap_flow_delegate((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_UDMAP_FLOW_DELEGATE\n");
             break;
         case TISCI_MSG_RM_UDMAP_GCFG_CFG:
             r = rm_udmap_gcfg_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_UDMAP_GCFG_CFG\n");
             break;
         case TISCI_MSG_RM_PROXY_CFG:
             r = rm_proxy_cfg((uint32_t *)tx_msg);
+            Sciclient_printf("case: TISCI_MSG_RM_PROXY_CFG\n");
             break;
         default:
             r = CSL_EFAIL;
@@ -813,6 +1027,14 @@ int32_t Sciclient_ProcessRmMessage(void *tx_msg)
         r = CSL_PASS;
     }
 
+    if(CSL_PASS != r)
+    {
+        Sciclient_printf("ERROR:: Exiting Sciclient_ProcessRmMessage function with status FAIL\n");
+    }
+    else
+    {
+        Sciclient_printf("Exiting Sciclient_ProcessRmMessage function with status PASS\n");
+    }
     return r;
 }
 

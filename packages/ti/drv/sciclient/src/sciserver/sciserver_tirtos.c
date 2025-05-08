@@ -55,6 +55,7 @@
 #include <ti/drv/sciclient/sciserver_tirtos.h>
 #include <sciserver_hwiData.h>
 #include "sciserver_secproxyTransfer.h"
+#include <ti/drv/sciclient/src/sciclient/sciclient_trace_internal.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -62,7 +63,6 @@
 
 /** \brief Macro to determine the size of an array */
 #define SCISERVER_ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -76,6 +76,9 @@ SemaphoreP_Handle gSciserverSyncHandle;
 TaskP_Handle gSciserverUserTaskHandles[SCISERVER_TASK_MAX_CNT];
 TaskP_Params gSciserverUserTaskParams[SCISERVER_TASK_MAX_CNT];
 uint8_t hwiMasked = 1U;
+#if defined (ENABLE_DM_TRACE)
+extern uint32_t gStoreLog;
+#endif
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -130,6 +133,10 @@ int32_t Sciserver_tirtosInit(Sciserver_TirtosCfgPrms_t *pAppPrms)
 
     /* user task initialization */
     if (ret == CSL_PASS) {
+#if defined (ENABLE_DM_TRACE)
+        /* Stores logs in trace_dm buffer from this point */
+        gStoreLog = 1;
+#endif
         ret = Sciserver_tirtosInitUserTasks(pAppPrms);
     }
 
@@ -200,6 +207,7 @@ void Sciserver_tirtosDeinit(void)
 
 void Sciserver_tirtosUserMsgTask(void *arg0, void* arg1)
 {
+    Sciserver_printf("Entering Sciserver_tirtosUserMsgTask function\n");
     uintptr_t key;
     uint32_t i = 0U;
     int32_t ret;
@@ -226,6 +234,7 @@ void Sciserver_tirtosUserMsgTask(void *arg0, void* arg1)
         hwiMasked = 0;
         for (i = 0U; i < SCISERVER_ARRAY_SIZE(sciserver_hwi_list); i++) {
             Osal_EnableInterrupt(0,sciserver_hwi_list[i].irq_num);
+            Sciserver_printf("Sciserver_tirtosUserMsgTask: Enabled interrupt - %d\n", sciserver_hwi_list[i].irq_num);
         }
     }
 
@@ -245,11 +254,14 @@ void Sciserver_tirtosUserMsgTask(void *arg0, void* arg1)
 
         if (ret != CSL_PASS)
         {
+            Sciserver_printf("ERROR:: Sciserver_tirtosUserMsgTask: Error processing task\n");
             /* Failed to process message and failed to send nak response */
             OS_stop();
+            Sciserver_printf("ERROR:: Sciserver_tirtosUserMsgTask: Stopping OS due to error\n");
         }
         else
         {
+            Sciserver_printf("Sciserver_tirtosUserMsgTask: processing task Successful\n");
             /*
              * This is a bit of a hack... using the task ID to pick the offset
              * for the gloabl interrupt data array. This is functional but can
@@ -259,6 +271,7 @@ void Sciserver_tirtosUserMsgTask(void *arg0, void* arg1)
                     ((int32_t) utd->state->current_buffer_idx)].irq_num);
         }
     }
+    Sciserver_printf("Exiting Sciserver_tirtosUserMsgTask function\n");
 }
 
 /* ========================================================================== */

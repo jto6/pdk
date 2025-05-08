@@ -47,6 +47,7 @@
 #include <ti/board/board.h>
 #include <ti/drv/sciclient/sciserver_tirtos.h>
 #include <ti/drv/sciclient/examples/common/sci_app_common.h>
+#include <ti/drv/sciclient/src/sciclient/sciclient_trace_internal.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -58,10 +59,27 @@
 #define SCISERVER_INIT_TASK_PRI             (4)
 #define SCISERVER_SETUP_TASK_PRI_HIGH       (3)
 #define SCISERVER_SETUP_TASK_PRI_LOW        (2)
+#if defined (ENABLE_DM_TRACE)
+/*
+ * Low priority for DM trace task - must be least than all the tasks to print trace logs.
+ * This is perferred because whenever DM receives a service request
+ * that request should be excuted first.
+ */
+#define SCISERVER_DM_TRACE_TASK_PRI      (1)
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+#if defined (ENABLE_DM_TRACE)
+extern char tracelog_dm[];
+extern uint32_t gDMTraceBufIndex;
+extern uint32_t gDMTraceBufCount;
+TaskP_Handle gTrace_task;
+TaskP_Params gTrace_taskParams;
+static uint8_t  gTrace_TskStackMain[APP_TSK_STACK_MAIN];
+#endif
 
 /* Test application stack */
 /* For SafeRTOS on R5F with FFI Support, task stack should be aligned to the stack size */
@@ -90,6 +108,10 @@ __attribute__ ((aligned(8192)));
 /* ========================================================================== */
 
 static void taskFxn(void* a0, void* a1);
+#if defined (ENABLE_DM_TRACE)
+/* Prints the logs stored in tracelog_dm buffer when DM is waiting for message request */
+static void Sciclient_dmTrace(void* a0, void* a1);
+#endif
 
 /* ========================================================================== */
 /*                            Function Definitions                            */
@@ -200,6 +222,43 @@ static void taskFxn(void* a0, void* a1)
     {
         SciApp_printf("Starting Sciserver..... FAILED\n");
     }
+#if defined (ENABLE_DM_TRACE)
+    /* Initialize the task params */
+    TaskP_Params_init(&gTrace_taskParams);
+    gTrace_taskParams.priority     = SCISERVER_DM_TRACE_TASK_PRI;
+    gTrace_taskParams.stack        = gTrace_TskStackMain;
+    gTrace_taskParams.stacksize    = sizeof (gTrace_TskStackMain);
+    gTrace_task = TaskP_create(&Sciclient_dmTrace, &gTrace_taskParams);
+#endif
 }
 
+#if defined (ENABLE_DM_TRACE)
+static void Sciclient_dmTrace(void* a0, void* a1)
+{
+    uint32_t index;
+    uint32_t count = 0; 
+    SciApp_printf("--- Start of DM trace ----\n");
 
+    /* Loop through tracelog_dm buffer to print the DM trace logs */
+    for (index = 0; index <= DM_TRACE_LOG_BUF_SIZE; index++)
+    {
+        /* Check if we have reached the end of the buffer
+         * and reset index to start while incrementing count
+         * so that we can print all the logs without missing */
+        if(DM_TRACE_LOG_BUF_SIZE == index)
+        {
+            index = 0;
+            count++;
+        }
+
+        /* Wait till gDMTraceBufIndex or gDMTraceBufCount is updated */
+        while(index == gDMTraceBufIndex && count == gDMTraceBufCount)
+        {
+            Osal_delay(1);
+        }
+        SciApp_printf("%c", tracelog_dm[index]);
+    }
+
+     return;
+}
+#endif

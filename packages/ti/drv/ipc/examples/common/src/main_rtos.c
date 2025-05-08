@@ -96,6 +96,12 @@
 #include <ti/drv/ipc/examples/rtos/ipc_extended_test/ipc_extended_setup.h>
 #endif
 
+#if defined (ENABLE_DM_TRACE)
+#include <ti/drv/uart/UART.h>
+#include <ti/drv/uart/UART_stdio.h>
+#include <ti/drv/sciclient/src/sciclient/sciclient_trace_internal.h>
+#endif
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -118,6 +124,12 @@
  * multicore ping/pong.
  */
 #define IPC_SETUP_SCISERVER_TASK_PRI_LOW    (4)
+/*
+ * Low priority for DM trace task - must be least than all the tasks to print trace logs.
+ * This is perferred because whenever DM receives a service request
+ * that request should be excuted first.
+ */
+#define IPC_SETUP_DM_TRACE_TASK_PRI         (3)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -137,9 +149,23 @@ void Ipc_setupSciServer(void *arg0, void *arg1);
 /**< Initialize SCI Server, to process RM/PM Requests by other cores */
 #endif
 
+#if defined (ENABLE_DM_TRACE)
+/* This function prints the logs stored in tracelog_dm buffer when DM is waiting for message request */
+static void Ipc_dmTrace(void* a0, void* a1);
+#endif
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+#if defined (ENABLE_DM_TRACE)
+extern char tracelog_dm[];
+extern uint32_t gDMTraceBufIndex;
+extern uint32_t gDMTraceBufCount;
+TaskP_Handle gTrace_task;
+TaskP_Params gTrace_taskParams;
+static uint8_t  gTrace_TskStackMain[APP_TSK_STACK_MAIN];
+#endif
 
 /* Test application stack */
 /* For SafeRTOS on R5F with FFI Support, task stack should be aligned to the stack size */
@@ -315,7 +341,7 @@ static void taskFxn(void* a0, void* a1)
 #elif defined IPC_EXTENDED_TEST
     IpcApp_extTest();
 #else
-    Ipc_echo_test(); 
+    Ipc_echo_test();
     
 #if(defined(BUILD_C7X_1) && (IPC_SANITY_C7X))
 #if defined LDRA_DYN_COVERAGE_EXIT
@@ -325,6 +351,14 @@ static void taskFxn(void* a0, void* a1)
 #endif 
 #endif
 
+#if defined (ENABLE_DM_TRACE)
+    /* Initialize the task params */
+    TaskP_Params_init(&gTrace_taskParams);
+    gTrace_taskParams.priority     = IPC_SETUP_DM_TRACE_TASK_PRI;
+    gTrace_taskParams.stack        = gTrace_TskStackMain;
+    gTrace_taskParams.stacksize    = sizeof (gTrace_TskStackMain);
+    gTrace_task = TaskP_create(&Ipc_dmTrace, &gTrace_taskParams);
+#endif
 #endif
 
 }
@@ -414,5 +448,35 @@ int32_t Ipc_pmicShutdown(void)
 #endif
 
     return ret;
+}
+#endif
+
+#if defined (ENABLE_DM_TRACE)
+void Ipc_dmTrace(void* a0, void* a1)
+{
+    uint32_t index;
+    uint32_t count = 0;
+    UART_printf("--- Start of DM trace ----\n");
+
+    /* Loop through tracelog_dm buffer to print the DM trace logs */
+    for (index = 0; index <= DM_TRACE_LOG_BUF_SIZE; index++)
+    {
+        /* Here we check if we have reached the end of the buffer
+         * and reset index to start while incrementing count
+         * so that we can print all the logs without missing */
+        if(DM_TRACE_LOG_BUF_SIZE == index)
+        {
+            index = 0;
+            count++;
+        }
+        /* Wait till gDMTraceBufIndex or gDMTraceBufCount is updated */
+        while(index == gDMTraceBufIndex && count == gDMTraceBufCount)
+        {
+            Osal_delay(1);
+        }
+        UART_printf("%c", tracelog_dm[index]);
+    }
+
+     return;
 }
 #endif

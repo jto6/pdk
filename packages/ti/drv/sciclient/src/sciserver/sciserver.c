@@ -40,6 +40,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
+#include <stdint.h>
 #include <string.h>
 #include <ti/csl/csl_types.h>
 #include <ti/csl/hw_types.h>
@@ -51,15 +52,11 @@
 #include <ti/drv/sciclient/src/version/sciserver_version.h>
 #include <ti/drv/sciclient/src/version/rmpmhal_version.h>
 #include <ti/drv/uart/UART_stdio.h>
+#include <ti/drv/sciclient/src/sciclient/sciclient_trace_internal.h>
 
-/* Set VERBOSE to 1 for trace information on message routing */
-#define VERBOSE 0
-
-#if VERBOSE
-#define Sciserver_printf UART_printf
-#else
-#define Sciserver_printf(...)
-#endif
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /**
  * sciserver_stringify - Turn expression into a string literal
@@ -72,10 +69,6 @@
 #define sciserver_stringify(expr)   sciserver_stringify_1(expr)
 /* Double-indirection required to stringify expansions */
 #define sciserver_stringify_1(expr) #expr
-
-/* ========================================================================== */
-/*                           Macros & Typedefs                                */
-/* ========================================================================== */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -267,6 +260,7 @@ int32_t Sciserver_interruptHandler(Sciserver_hwiData *uhd, bool* soft_error)
 
 int32_t Sciserver_processtask(Sciserver_taskData *utd)
 {
+    Sciserver_printf("Entering Sciserver_processtask function\n");
     int32_t ret = CSL_PASS;
     uint8_t i;
     /* the host ID that the response message is sent to */
@@ -277,10 +271,14 @@ int32_t Sciserver_processtask(Sciserver_taskData *utd)
     uint32_t *respMsg = NULL;
     /* TISCI flags of the received message  */
     uint32_t  tisci_flags;
+    Sciserver_printf("Message received type = 0x%x \nMessage received from the host = %d\n",
+                     ((struct tisci_header *) utd->hw_msg_buffer_list[utd->state->current_buffer_idx])->type,
+                     utd->user_msg_data[utd->state->current_buffer_idx]->host);
 
     for (i = 0; i < SCISERVER_SECPROXY_INSTANCE_COUNT; i++)
     {
         utd->state->current_buffer_idx++;
+
         if (utd->state->current_buffer_idx >= SCISERVER_SECPROXY_INSTANCE_COUNT)
         {
             utd->state->current_buffer_idx = 0;
@@ -301,33 +299,59 @@ int32_t Sciserver_processtask(Sciserver_taskData *utd)
                 utd->hw_msg_buffer_list[utd->state->current_buffer_idx],
                 &respMsgSize,
                 utd->user_msg_data[utd->state->current_buffer_idx]->host);
+
+        if(CSL_PASS != ret)
+        {
+            Sciserver_printf("ERROR:: Sciserver_processtask: User process message status - FAIL\n");
+        }
+
         respMsg = utd->hw_msg_buffer_list[utd->state->current_buffer_idx];
     }
     else
     {
+        Sciserver_printf("ERROR:: Sciserver_processtask: No pending message found\n");
         ret = CSL_EFAIL;
     }
 
     if (ret == CSL_PASS)
     {
+        Sciserver_printf("Sciserver_processtask: Processing response message for message received type = 0x%x \nMessage received from the host = %d\n",
+                         ((struct tisci_header *) utd->hw_msg_buffer_list[utd->state->current_buffer_idx])->type,
+                         utd->user_msg_data[utd->state->current_buffer_idx]->host);
         respHost = utd->user_msg_data[utd->state->current_buffer_idx]->host;
         if (respHost == TISCI_HOST_ID_DMSC2DM)
         {
             /* DMSC2DM is processed by DM. Need to update response message value
              * so the host verification on TIFS can succeed */
             Sciserver_SetMsgHostId(respMsg, TISCI_HOST_ID_DM);
+            Sciserver_printf("Sciserver_processtask: Updated response message value for DMSC2DM\n");
         }
         /* Check AOP flag before sending a respone back */
         if((tisci_flags & TISCI_MSG_FLAG_AOP)!= 0U){
+            Sciserver_printf("Sciserver_processtask: Sending AOP response message to host with message type = 0x%x \nMessage to be sent to the host = %d\n",
+                             ((struct tisci_header *)respMsg)->type, respHost);
             ret = Sciserver_TisciMsgResponse(respHost, respMsg, respMsgSize);
         }
 
         if (ret == CSL_PASS)
         {
             utd->user_msg_data[utd->state->current_buffer_idx]->is_pending = false;
+            Sciserver_printf("Sciserver_processtask: Response message processed successfully and marked as not pending\n");
+        }
+        else
+        {
+            Sciserver_printf("ERROR:: Sciserver_processtask: Error processing response message\n");
         }
 
         utd->state->state = SCISERVER_TASK_PENDING;
+    }
+    if(CSL_PASS == ret)
+    {
+        Sciserver_printf("Exiting Sciserver_processtask function with status - PASS\n");
+    }
+    else
+    {
+        Sciserver_printf("ERROR:: Exiting Sciserver_processtask function with status - FAIL\n");
     }
 
     return ret;
@@ -401,6 +425,7 @@ static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
     uint32_t reqMsgSize,
     uint32_t respMsgSize)
 {
+    Sciserver_printf("Entering Sciserver_ProcessFullMessage function\n");
     int32_t ret = CSL_EFAIL;
     Sciclient_ReqPrm_t reqPrm = {0};
     Sciclient_RespPrm_t respPrm = {0};
@@ -425,18 +450,24 @@ static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
      * provider.
      */
     reqPrm.forwardStatus = SCISERVER_FORWARD_MSG;
-
     respPrm.flags = 0;
     respPrm.pRespPayload = (uint8_t *) respMsgBuffer;
     respPrm.respPayloadSize = respMsgSize;
-
     ret = Sciclient_service(&reqPrm, &respPrm);
-
     memcpy(msg_recv, respMsgBuffer, respMsgSize);
 
     /* Must restore the seq field. When forwarded message is processed by
      * TIFS, the returned message would have incorrect sequence value */
     hdr->seq = reqSeq;
+
+    if(ret == CSL_PASS)
+    {
+        Sciserver_printf("Exiting Sciserver_ProcessFullMessage function with status - PASS\n");
+    }
+    else
+    {
+        Sciserver_printf("ERROR:: Exiting Sciserver_ProcessFullMessage function with status - FAIL\n");
+    }
 
     return ret;
 }
@@ -445,150 +476,183 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
                                         uint32_t *pRespMsgSize,
                                         uint8_t hw_host_id)
 {
+    Sciserver_printf("Entering Sciserver_UserProcessMsg function\n");
     int32_t ret = CSL_PASS;
     struct  tisci_header *hdr = (struct tisci_header *) msg_recv;
     int32_t runLocalRmOnly = 0;
     uint32_t reqMsgSize;
     uint32_t respMsgSize;
 
-    Sciserver_printf("type = 0x%x, host = %d\n", hdr->type, hw_host_id);
-
+    Sciserver_printf("Message received type = 0x%x \nMessage received from the host = %d\n", hdr->type, hw_host_id);
     switch (hdr->type)
     {
         case TISCI_MSG_VERSION:
             reqMsgSize = sizeof(struct tisci_msg_version_req);
             respMsgSize = sizeof(struct tisci_msg_version_resp);
+            Sciserver_printf("case: TISCI_MSG_VERSION\n");
             break;
         /* Start of RM messages */
         case TISCI_MSG_BOARD_CONFIG_RM:
             reqMsgSize = sizeof(struct tisci_msg_board_config_rm_req);
             respMsgSize = sizeof(struct tisci_msg_board_config_rm_resp);
+            Sciserver_printf("case: TISCI_MSG_BOARD_CONFIG_RM\n");
             break;
         case TISCI_MSG_RM_GET_RESOURCE_RANGE:
             reqMsgSize = sizeof(struct tisci_msg_rm_get_resource_range_req);
             respMsgSize = sizeof(struct tisci_msg_rm_get_resource_range_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_GET_RESOURCE_RANGE\n");
             break;
         case TISCI_MSG_RM_IRQ_SET:
             reqMsgSize = sizeof(struct tisci_msg_rm_irq_set_req);
             respMsgSize = sizeof(struct tisci_msg_rm_irq_set_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_IRQ_SET\n");
             break;
         case TISCI_MSG_RM_IRQ_RELEASE:
             reqMsgSize = sizeof(struct tisci_msg_rm_irq_release_req);
             respMsgSize = sizeof(struct tisci_msg_rm_irq_release_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_IRQ_RELEASE\n");
             break;
         case TISCI_MSG_RM_RING_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_ring_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_ring_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_RING_CFG\n");
             break;
         case TISCI_MSG_RM_RING_MON_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_ring_mon_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_ring_mon_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_RING_MON_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_TX_CH_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_udmap_tx_ch_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_udmap_tx_ch_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_UDMAP_TX_CH_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_RX_CH_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_udmap_rx_ch_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_udmap_rx_ch_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_UDMAP_RX_CH_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_FLOW_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_udmap_flow_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_udmap_flow_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_UDMAP_FLOW_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_FLOW_SIZE_THRESH_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_udmap_flow_size_thresh_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_udmap_flow_size_thresh_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_UDMAP_FLOW_SIZE_THRESH_CFG\n");
             break;
         case TISCI_MSG_RM_UDMAP_FLOW_DELEGATE:
             reqMsgSize = sizeof(struct tisci_msg_rm_udmap_flow_delegate_req);
             respMsgSize = sizeof(struct tisci_msg_rm_udmap_flow_delegate_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_UDMAP_FLOW_DELEGATE\n");
             break;
         case TISCI_MSG_RM_UDMAP_GCFG_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_udmap_gcfg_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_udmap_gcfg_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_UDMAP_GCFG_CFG\n");
             break;
         case TISCI_MSG_RM_PSIL_PAIR:
             reqMsgSize = sizeof(struct tisci_msg_rm_psil_pair_req);
             respMsgSize = sizeof(struct tisci_msg_rm_psil_pair_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_PSIL_PAIR\n");
             break;
         case TISCI_MSG_RM_PSIL_UNPAIR:
             reqMsgSize = sizeof(struct tisci_msg_rm_psil_unpair_req);
             respMsgSize = sizeof(struct tisci_msg_rm_psil_unpair_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_PSIL_UNPAIR\n");
             break;
         case TISCI_MSG_RM_PSIL_READ:
             reqMsgSize = sizeof(struct tisci_msg_rm_psil_read_req);
             respMsgSize = sizeof(struct tisci_msg_rm_psil_read_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_PSIL_READ\n");
             break;
         case TISCI_MSG_RM_PSIL_WRITE:
             reqMsgSize = sizeof(struct tisci_msg_rm_psil_write_req);
             respMsgSize = sizeof(struct tisci_msg_rm_psil_write_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_PSIL_WRITE\n");
             break;
         case TISCI_MSG_RM_PROXY_CFG:
             reqMsgSize = sizeof(struct tisci_msg_rm_proxy_cfg_req);
             respMsgSize = sizeof(struct tisci_msg_rm_proxy_cfg_resp);
+            Sciserver_printf("case: TISCI_MSG_RM_PROXY_CFG\n");
             break;
         /* Start of PM messages */
         case TISCI_MSG_BOARD_CONFIG_PM:
             reqMsgSize = sizeof(struct tisci_msg_board_config_pm_req);
             respMsgSize = sizeof(struct tisci_msg_board_config_pm_resp);
+            Sciserver_printf("case: TISCI_MSG_BOARD_CONFIG_PM\n");
             break;
         case TISCI_MSG_SET_CLOCK:
             reqMsgSize = sizeof(struct tisci_msg_set_clock_req);
             respMsgSize = sizeof(struct tisci_msg_set_clock_resp);
+            Sciserver_printf("case: TISCI_MSG_SET_CLOCK\n");
             break;
         case TISCI_MSG_GET_CLOCK:
             reqMsgSize = sizeof(struct tisci_msg_get_clock_req);
             respMsgSize = sizeof(struct tisci_msg_get_clock_resp);
+            Sciserver_printf("case: TISCI_MSG_GET_CLOCK\n");
             break;
         case TISCI_MSG_SET_CLOCK_PARENT:
             reqMsgSize = sizeof(struct tisci_msg_set_clock_parent_req);
             respMsgSize = sizeof(struct tisci_msg_set_clock_parent_resp);
+            Sciserver_printf("case: TISCI_MSG_SET_CLOCK_PARENT\n");
             break;
         case TISCI_MSG_GET_CLOCK_PARENT:
             reqMsgSize = sizeof(struct tisci_msg_get_clock_parent_req);
             respMsgSize = sizeof(struct tisci_msg_get_clock_parent_resp);
+            Sciserver_printf("case: TISCI_MSG_GET_CLOCK_PARENT\n");
             break;
         case TISCI_MSG_GET_NUM_CLOCK_PARENTS:
             reqMsgSize = sizeof(struct tisci_msg_get_num_clock_parents_req);
             respMsgSize = sizeof(struct tisci_msg_get_num_clock_parents_resp);
+            Sciserver_printf("case: TISCI_MSG_GET_NUM_CLOCK_PARENTS\n");
             break;
         case TISCI_MSG_SET_FREQ:
             reqMsgSize = sizeof(struct tisci_msg_set_freq_req);
             respMsgSize = sizeof(struct tisci_msg_set_freq_resp);
+            Sciserver_printf("case: TISCI_MSG_SET_FREQ\n");
             break;
         case TISCI_MSG_QUERY_FREQ:
             reqMsgSize = sizeof(struct tisci_msg_query_freq_req);
             respMsgSize = sizeof(struct tisci_msg_query_freq_resp);
+            Sciserver_printf("case: TISCI_MSG_QUERY_FREQ\n");
             break;
         case TISCI_MSG_GET_FREQ:
             reqMsgSize = sizeof(struct tisci_msg_get_freq_req);
             respMsgSize = sizeof(struct tisci_msg_get_freq_resp);
+            Sciserver_printf("case: TISCI_MSG_GET_FREQ\n");
             break;
         case TISCI_MSG_SET_DEVICE:
             reqMsgSize = sizeof(struct tisci_msg_set_device_req);
             respMsgSize = sizeof(struct tisci_msg_set_device_resp);
+            Sciserver_printf("case: TISCI_MSG_SET_DEVICE\n");
             break;
         case TISCI_MSG_GET_DEVICE:
             reqMsgSize = sizeof(struct tisci_msg_get_device_req);
             respMsgSize = sizeof(struct tisci_msg_get_device_resp);
+            Sciserver_printf("case: TISCI_MSG_GET_DEVICE\n");
             break;
         case TISCI_MSG_SET_DEVICE_RESETS:
             reqMsgSize = sizeof(struct tisci_msg_set_device_resets_req);
             respMsgSize = sizeof(struct tisci_msg_set_device_resets_resp);
+            Sciserver_printf("case: TISCI_MSG_SET_DEVICE_RESETS\n");
             break;
         case TISCI_MSG_SYS_RESET:
             reqMsgSize = sizeof(struct tisci_msg_sys_reset_req);
             respMsgSize = sizeof(struct tisci_msg_sys_reset_resp);
+            Sciserver_printf("case: TISCI_MSG_SYS_RESET\n");
             break;
         case TISCI_MSG_DM_VERSION:
             reqMsgSize = sizeof(struct tisci_msg_dm_version_req);
             respMsgSize = sizeof(struct tisci_msg_dm_version_resp);
+            Sciserver_printf("case: TISCI_MSG_DM_VERSION\n");
             break;
         default:
             /* Forward the full message size */
             reqMsgSize = SCISERVER_HW_QUEUE_SIZE;
             respMsgSize = SCISERVER_HW_QUEUE_SIZE;
+            Sciserver_printf("This is security message and forwarding to TIFS with message type: 0x%x\n", hdr->type);
             break;
     }
 
@@ -603,6 +667,7 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
             if (hw_host_id == TISCI_HOST_ID_DMSC2DM)
             {
                 runLocalRmOnly = 1;
+                Sciserver_printf("This request is from TIFS/DMSC will be internal handled by RM driver\n");
             }
             break;
         default:
@@ -621,6 +686,15 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
     }
 
     *pRespMsgSize = respMsgSize;
+
+    if(ret == CSL_PASS)
+    {
+        Sciserver_printf("Exiting Sciserver_UserProcessMsg function with status - PASS\n");
+    }
+    else
+    {
+        Sciserver_printf("ERROR:: Exiting Sciserver_UserProcessMsg function with status - FAIL\n");
+    }
 
     return ret;
 }

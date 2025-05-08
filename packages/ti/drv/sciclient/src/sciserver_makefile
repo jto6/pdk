@@ -73,6 +73,10 @@ endif
 
 CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(SCICLIENT_CFLAGS)
 
+ifeq ($(ENABLE_DM_TRACE),yes)
+CFLAGS_LOCAL_COMMON += -DENABLE_DM_TRACE
+endif
+
 # Core/SoC/platform specific source files and CFLAGS
 # Example:
 #   SRCS_<core/SoC/platform-name> =

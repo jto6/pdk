@@ -79,6 +79,10 @@ ifeq ($(SOC),$(filter $(SOC), j7200))
 SRCS_COMMON += sciclient_s2r.c
 endif
 
+ifeq ($(ENABLE_DM_TRACE),yes)
+SRCS_COMMON += sciclient_trace_internal.c
+endif
+
 #Use CSL implementation to bypass DMSC
 # ifeq ($(SOC),$(filter $(SOC), j721e j7200 j721s2 j784s4 j742s2))
 # SRCS_COMMON = sciclient_rm_csl.c sciclient_dummy.c
@@ -100,6 +104,10 @@ ifeq ($(SOC),$(filter $(SOC), j721s2 j784s4 j742s2))
   ifeq ($(CORE), mcu1_0)
     CFLAGS_LOCAL_COMMON += -DCONFIG_MSG_M4_ROM_USE_ALTERNATE_SPROXY
   endif
+endif
+
+ifeq ($(ENABLE_DM_TRACE),yes)
+CFLAGS_LOCAL_COMMON += -DENABLE_DM_TRACE
 endif
 
 include $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal_build.mk

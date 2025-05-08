@@ -24,7 +24,11 @@ CFLAGS_OS_DEFINES = -DFREERTOS
 # List all the components required by the application
 COMP_LIST_COMMON  = $(PDK_COMMON_FREERTOS_COMP)
 EXTERNAL_INTERFACES = freertos
+ifeq ($(ENABLE_DM_TRACE),yes)
+CONFIG_BLD_LNK_r5f = $(PDK_INSTALL_PATH)/ti/drv/sciclient/examples/sciserver_testapp/linker_r5_debug_trace_freertos.lds
+else
 CONFIG_BLD_LNK_r5f = $(PDK_INSTALL_PATH)/ti/drv/sciclient/examples/sciserver_testapp/linker_r5_freertos_$(BUILD_PROFILE).lds
+endif
 endif
 
 ifeq ($(BUILD_OS_TYPE),safertos)
@@ -34,6 +38,10 @@ COMP_LIST_COMMON  = $(PDK_COMMON_SAFERTOS_COMP)
 EXTERNAL_INTERFACES = safertos
 CONFIG_BLD_LNK_r5f = $(PDK_INSTALL_PATH)/ti/drv/sciclient/examples/sciserver_testapp/safertos/$(SOC)/linker_r5_safertos.lds
 CFLAGS_LOCAL_COMMON += -DSAFERTOS
+endif
+
+ifeq ($(ENABLE_DM_TRACE),yes)
+CFLAGS_LOCAL_COMMON += -DENABLE_DM_TRACE
 endif
 
 COMP_LIST_COMMON += sciserver_tirtos
