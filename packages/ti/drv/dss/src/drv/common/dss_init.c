@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2022
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -139,6 +139,7 @@ int32_t Dss_init(const Dss_InitParams *initParams)
         dctrlInitParams.dpInitParams.isAvailable = initParams->socParams.dpInitParams.isAvailable;
         dctrlInitParams.dpInitParams.isHpdSupported = initParams->socParams.dpInitParams.isHpdSupported;
         dctrlInitParams.dpInitParams.multilinkPhyType = initParams->socParams.dpInitParams.multilinkPhyType;
+        dctrlInitParams.dpInitParams.isMstEnabled = initParams->socParams.dpInitParams.isMstEnabled;
 #endif
 
         dctrlInitParams.dsiInitParams.isAvailable = UFALSE;

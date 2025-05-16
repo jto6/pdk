@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -157,12 +157,13 @@ typedef void (*Dss_DctrlDpHpdCbFxn)(uint32_t hpdState, void *appData);
 #define DSS_DCTRL_NODE_EDP_DPI1               (0x10U)
 #define DSS_DCTRL_NODE_EDP_DPI2               (0x11U)
 #define DSS_DCTRL_NODE_EDP_DPI3               (0x12U)
-#define DSS_DCTRL_NODE_DSI_DPI1               (0x13U)
-#define DSS_DCTRL_NODE_DSI_DPI2               (0x14U)
-#define DSS_DCTRL_NODE_DSI_DPI3               (0x15U)
-#define DSS_DCTRL_NODE_DISCSYNC0              (0x16U)
-#define DSS_DCTRL_NODE_DISCSYNC1              (0x17U)
-#define DSS_DCTRL_NODE_WB                     (0x18U)
+#define DSS_DCTRL_NODE_EDP_MST                (0x13U)
+#define DSS_DCTRL_NODE_DSI_DPI1               (0x14U)
+#define DSS_DCTRL_NODE_DSI_DPI2               (0x15U)
+#define DSS_DCTRL_NODE_DSI_DPI3               (0x16U)
+#define DSS_DCTRL_NODE_DISCSYNC0              (0x17U)
+#define DSS_DCTRL_NODE_DISCSYNC1              (0x18U)
+#define DSS_DCTRL_NODE_WB                     (0x19U)
 /* @} */
 
 /** \brief Defines maximum number of nodes for allocation including invalid node
@@ -346,6 +347,7 @@ typedef struct
     uint32_t multilinkPhyType;
     /**< Multilink Phy Type indicates whether USB or PCI is enabled alongside DP.
      *   Refer to \ref Dss_MultilinkPhyType for values */
+    uint32_t isMstEnabled;
 } Dss_DpInitParams;
 
 /**
@@ -537,6 +539,7 @@ static inline void Dss_dpInitParamsInit(Dss_DpInitParams *dpInitParams)
         dpInitParams->isAvailable    = UTRUE;
         dpInitParams->isHpdSupported = UFALSE;
         dpInitParams->multilinkPhyType = DSS_DP_MULTILINK_PHY_NONE;
+        dpInitParams->isMstEnabled   = UFALSE;
     }
 }
 

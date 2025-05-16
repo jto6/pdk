@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -173,6 +173,9 @@ static int32_t Dss_dctrlDrvSetDpHpdCbParamsIoctl(
 static int32_t Dss_dctrlDrvProcessDpHpdIoctl(
                             Dss_DctrlDrvInstObj *instObj,
                             const uint32_t *dpProcessHpdParams);
+static uint32_t Dss_dctrlEnableDpMstIoctl(
+                            Dss_DctrlDrvInstObj *instObj,
+                            const Dss_DctrlDpMstParams *mstParams);
 static int32_t Dss_dctrlSetDsiParamsIoctl(Dss_DctrlDrvInstObj *instObj,
                                           const Dss_DctrlDsiParams *dsiPrms);
 static uint32_t Dss_dctrlDrvIsOutputDSI(uint32_t vpId);
@@ -303,7 +306,9 @@ int32_t Dss_dctrlDrvInit(const Dss_DctrlDrvInitParams *drvInitParams)
     if((FVID2_SOK == retVal) &&
     (UTRUE == drvInitParams->dpInitParams.isAvailable))
     {
-        retVal = Dss_dctrlDrvInitDp(drvInitParams->dpInitParams.isHpdSupported, drvInitParams->dpInitParams.multilinkPhyType);
+        retVal = Dss_dctrlDrvInitDp(drvInitParams->dpInitParams.isHpdSupported, 
+                                    drvInitParams->dpInitParams.multilinkPhyType,
+                                    drvInitParams->dpInitParams.isMstEnabled);
     }
 
     /* Calling one time */
@@ -870,6 +875,10 @@ static int32_t Dss_dctrlDrvControl(Fdrv_Handle handle,
                 retVal = Dss_dctrlSetDsiParamsIoctl(
                     instObj, (const Dss_DctrlDsiParams*) cmdArgs);
                 break;
+            case IOCTL_DSS_DCTRL_ENABLE_DP_MST:
+                retVal = Dss_dctrlEnableDpMstIoctl(
+                    instObj, (const Dss_DctrlDpMstParams*) cmdArgs);
+                break;
 #endif
             default:
                 GT_0trace(DssTrace,
@@ -1100,6 +1109,9 @@ static int32_t Dss_dctrlDrvSetVpParamsIoctl(
         pVpParams->lcdOpTimingCfg.mInfo.width =
                                             lcdOpTimingCfg->mInfo.width;
         pVpParams->vpId = vpId;
+        /* Used during the MST enable DP IOCTL */
+        pVpParams->lcdPolarityCfg.hsPolarity = lcdPolarityCfg->hsPolarity;
+        pVpParams->lcdPolarityCfg.vsPolarity = lcdPolarityCfg->vsPolarity;
     }
 
     if((FVID2_SOK == retVal) &&
@@ -1164,12 +1176,20 @@ static int32_t Dss_dctrlDrvSetVpParamsIoctl(
     }
 
 #if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-    if((FVID2_SOK == retVal) &&
-    (UTRUE == Dss_dctrlDrvIsOutputDP(vpId)))
+    
+    const Fvid2_ModeInfo* mstModeInfo[CSL_DSS_VP_ID_MAX];
+    uint32_t hsyncPolarity[CSL_DSS_VP_ID_MAX];
+    uint32_t vsyncPolarity[CSL_DSS_VP_ID_MAX];
+    uint32_t numStreams;
+
+    /* Single Stream Transport Mode */
+    if((FVID2_SOK == retVal) && (UTRUE == Dss_dctrlDrvIsOutputDP(vpId))) 
     {
-        retVal = Dss_dctrlDrvEnableVideoDP(&lcdOpTimingCfg->mInfo,
-                               lcdPolarityCfg->hsPolarity,
-                       lcdPolarityCfg->vsPolarity);
+        numStreams = 1U;
+        mstModeInfo[0] = &lcdOpTimingCfg->mInfo;
+        hsyncPolarity[0] = lcdPolarityCfg->hsPolarity;
+        vsyncPolarity[0] = lcdPolarityCfg->vsPolarity;
+        retVal = Dss_dctrlDrvEnableVideoDP(mstModeInfo, hsyncPolarity, vsyncPolarity, numStreams);
     }
 #endif
 
@@ -1255,6 +1275,58 @@ static uint32_t Dss_dctrlDrvIsOutputDP(uint32_t vpId)
     }
 
     return vpFound;
+}
+
+static uint32_t Dss_dctrlEnableDpMstIoctl(Dss_DctrlDrvInstObj *instObj,
+                                        const Dss_DctrlDpMstParams *mstParams)
+{
+    int32_t retVal = FVID2_SOK;
+    uint32_t vpId;
+    uint32_t streamId;
+    uint32_t numStreams = mstParams->numStreams;
+    const Fvid2_ModeInfo *mstModeInfo[CSL_DSS_VP_ID_MAX];
+    uint32_t hsyncPolarity[CSL_DSS_VP_ID_MAX];
+    uint32_t vsyncPolarity[CSL_DSS_VP_ID_MAX];
+    const CSL_DssVpLcdOpTimingCfg *lcdOpTimingCfg;
+    const CSL_DssVpLcdSignalPolarityCfg *lcdPolarityCfg;
+
+    /* Check for NULL pointers */
+    GT_assert(DssTrace, (NULL != instObj));
+    GT_assert(DssTrace, (NULL != mstParams));
+    /* Number of MST streams must be at least 2 otherwise SST can be used */
+    if (1U >= numStreams)
+    {
+        GT_0trace(DssTrace, GT_ERR, "Number of MST streams must be greater than 1 !!!\r\n");
+        retVal = FVID2_EINVALID_PARAMS;
+    }
+
+    /* VP IDs must be in order as per HW mapping from DSS to DP
+     * i.e VP1,2 if num of streams = 2
+     * VP1,2,3 if num of streams = 3 and VP1,2,3,4 if num of streams = 4 
+     */
+    vpId = CSL_DSS_VP_ID_1;
+    for (streamId = 0; streamId < numStreams; streamId++)
+    {
+        if (vpId != mstParams->vpIds[streamId])
+        {
+            retVal = FVID2_EINVALID_PARAMS;
+            break;
+        }
+        vpId++;
+    }
+
+    for (streamId = 0; streamId < numStreams; streamId++)
+    {
+        vpId = mstParams->vpIds[streamId];
+        lcdOpTimingCfg = &gDss_DctrlDrvInfo.vpParams[vpId].lcdOpTimingCfg;
+        lcdPolarityCfg = &gDss_DctrlDrvInfo.vpParams[vpId].lcdPolarityCfg;
+        mstModeInfo[streamId] = &lcdOpTimingCfg->mInfo;
+        hsyncPolarity[streamId] = lcdPolarityCfg->hsPolarity;
+        vsyncPolarity[streamId] = lcdPolarityCfg->vsPolarity;
+    }
+
+    retVal = Dss_dctrlDrvEnableVideoDP(mstModeInfo, hsyncPolarity, vsyncPolarity, numStreams);
+    return retVal;
 }
 
 static uint32_t Dss_dctrlDrvIsOutputDSI(uint32_t vpId)

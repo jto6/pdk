@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018-2022
+ *  Copyright (c) Texas Instruments Incorporated 2018-2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -353,7 +353,14 @@ typedef void (*Dss_DctrlLineNumCbFxn)(uint32_t vpId, void *appData);
  *
  * \return  FVID2_SOK if successful, else suitable error code
  */
+
 #define IOCTL_DSS_DCTRL_IS_DP_CONNECTED      (DSS_DCTRL_IOCTL_BASE + 0x10U)
+/**
+ * < \brief Command to enable DP MST mode. 
+ * 
+ * \return  FVID2_SOK if successful, else suitable error code
+ * */
+#define IOCTL_DSS_DCTRL_ENABLE_DP_MST        (DSS_DCTRL_IOCTL_BASE + 0x11U)
 /* @} */
 
 /* ========================================================================== */
@@ -617,6 +624,12 @@ typedef struct
      *   for DPHY clock configurations.
      */
 } Dss_DctrlDsiParams;
+
+typedef struct 
+{
+    uint32_t numStreams;
+    uint32_t vpIds[CSL_DSS_VP_ID_MAX];
+}Dss_DctrlDpMstParams;
 
 /* ========================================================================== */
 /*                  Internal/Private Function Declarations                    */

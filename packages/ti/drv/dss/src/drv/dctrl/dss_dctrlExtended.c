@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2022
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -99,10 +99,12 @@ typedef struct
     DP_SourceDeviceCapabilities srcCaps;
     HwiP_Handle intrHandle;
     uint32_t isConnected;
+    uint32_t isMstEnabled;
     uint32_t hpdInProgress;
     uint32_t hpdPending;
+    uint32_t numStreams;
     Dss_DctrlDisplayPortVideoState videoState;
-    Dss_DctrlDisplayPortVideoMode videoMode;
+    Dss_DctrlDisplayPortVideoMode videoMode[DP_MAX_NUMBER_OF_STREAMS];
     uint32_t isHpdSupported;
     Dss_DctrlDpHpdCbFxn hpdCbFxn;
     void *hpdCbData;
@@ -128,14 +130,16 @@ static Dss_DctrlDisplayPortDrvObj gDssDctrlDisplayPortDrvObj;
 
 Fvid2_ModeInfo gDpStdModeInfo[] = {
     {FVID2_STD_1080P_60,       1920, 1080, FVID2_SF_PROGRESSIVE, 148500, 60,
-     88, 148, 44, 4, 36, 5}
+     88, 148, 44, 4, 36, 5},
+     {FVID2_STD_720P_60,       1280,  720, FVID2_SF_PROGRESSIVE,  74250, 60,
+        110, 220, 40, 5, 20, 5}
 };
 
 /* ========================================================================== */
 /*                  Internal/Private Function Declarations                    */
 /* ========================================================================== */
 
-static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkPhyType);
+static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkPhyType, uint32_t isMstEnabled);
 static void Dss_dctrlDrvDpIntr(uintptr_t arg);
 static int32_t Dss_dctrlDrvDpStartVideo(Dss_DctrlDisplayPortDrvObj *pObj);
 static int32_t Dss_dctrlDrvDpStopVideo(Dss_DctrlDisplayPortDrvObj *pObj);
@@ -179,14 +183,17 @@ int32_t Dss_dctrlDrvDisableVideoDP(void)
     return retVal;
 }
 
-int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo,
-                                  uint32_t hsyncPolarity,
-                                  uint32_t vsyncPolarity)
+int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo[DP_MAX_NUMBER_OF_STREAMS],
+                                  uint32_t hsyncPolarity[DP_MAX_NUMBER_OF_STREAMS],
+                                  uint32_t vsyncPolarity[DP_MAX_NUMBER_OF_STREAMS],
+                                  uint32_t numStreams)
 {
     int32_t retVal = FVID2_SOK;
     uint32_t cookie;
     Dss_DctrlDisplayPortDrvObj *pObj = &gDssDctrlDisplayPortDrvObj;
     uint32_t numStdModes, modeCnt;
+
+    pObj->numStreams = numStreams;
 
     if(UFALSE == pObj->isHpdSupported)
     {
@@ -209,48 +216,50 @@ int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo,
      * params passed by app, and when all parameters not
      * provided, make a good guess whether to continue or not
      */
-    if(FVID2_STD_CUSTOM != mInfo->standard)
+    for (uint32_t streamId = 0U; streamId < numStreams; streamId++)
     {
-        numStdModes = sizeof (gDpStdModeInfo) / sizeof (Fvid2_ModeInfo);
-        for (modeCnt = 0U; modeCnt < numStdModes; modeCnt++)
+        if(FVID2_STD_CUSTOM != mInfo[streamId]->standard)
         {
-            if (mInfo->standard == gDpStdModeInfo[modeCnt].standard)
+            numStdModes = sizeof (gDpStdModeInfo) / sizeof (Fvid2_ModeInfo);
+            for (modeCnt = 0U; modeCnt < numStdModes; modeCnt++)
             {
-                pObj->videoMode.width    = gDpStdModeInfo[modeCnt].width;
-                pObj->videoMode.height   = gDpStdModeInfo[modeCnt].height;
-                pObj->videoMode.hfp      = gDpStdModeInfo[modeCnt].hFrontPorch;
-                pObj->videoMode.hsw      = gDpStdModeInfo[modeCnt].hSyncLen;
-                pObj->videoMode.hbp      = gDpStdModeInfo[modeCnt].hBackPorch;
-                pObj->videoMode.vfp      = gDpStdModeInfo[modeCnt].vFrontPorch;
-                pObj->videoMode.vsw      = gDpStdModeInfo[modeCnt].vSyncLen;
-                pObj->videoMode.vbp      = gDpStdModeInfo[modeCnt].vBackPorch;
-                pObj->videoMode.pclk     = gDpStdModeInfo[modeCnt].pixelClock;
-                pObj->videoMode.scanMode = gDpStdModeInfo[modeCnt].scanFormat;
-		break;
+                if (mInfo[streamId]->standard == gDpStdModeInfo[modeCnt].standard)
+                {
+                    pObj->videoMode[streamId].width    = gDpStdModeInfo[modeCnt].width;
+                    pObj->videoMode[streamId].height   = gDpStdModeInfo[modeCnt].height;
+                    pObj->videoMode[streamId].hfp      = gDpStdModeInfo[modeCnt].hFrontPorch;
+                    pObj->videoMode[streamId].hsw      = gDpStdModeInfo[modeCnt].hSyncLen;
+                    pObj->videoMode[streamId].hbp      = gDpStdModeInfo[modeCnt].hBackPorch;
+                    pObj->videoMode[streamId].vfp      = gDpStdModeInfo[modeCnt].vFrontPorch;
+                    pObj->videoMode[streamId].vsw      = gDpStdModeInfo[modeCnt].vSyncLen;
+                    pObj->videoMode[streamId].vbp      = gDpStdModeInfo[modeCnt].vBackPorch;
+                    pObj->videoMode[streamId].pclk     = gDpStdModeInfo[modeCnt].pixelClock;
+                    pObj->videoMode[streamId].scanMode = gDpStdModeInfo[modeCnt].scanFormat;
+                    break;
+                }
+            }
+            if (modeCnt == numStdModes)
+            {
+                retVal = FVID2_EFAIL;
             }
         }
-        if (modeCnt == numStdModes)
+        else
         {
-            retVal = FVID2_EFAIL;
+            pObj->videoMode[streamId].width    = mInfo[streamId]->width;
+            pObj->videoMode[streamId].height   = mInfo[streamId]->height;
+            pObj->videoMode[streamId].hfp      = mInfo[streamId]->hFrontPorch;
+            pObj->videoMode[streamId].hsw      = mInfo[streamId]->hSyncLen;
+            pObj->videoMode[streamId].hbp      = mInfo[streamId]->hBackPorch;
+            pObj->videoMode[streamId].vfp      = mInfo[streamId]->vFrontPorch;
+            pObj->videoMode[streamId].vsw      = mInfo[streamId]->vSyncLen;
+            pObj->videoMode[streamId].vbp      = mInfo[streamId]->vBackPorch;
+            pObj->videoMode[streamId].pclk     = mInfo[streamId]->pixelClock;
+            pObj->videoMode[streamId].scanMode = mInfo[streamId]->scanFormat;
         }
-    }
-    else
-    {
-        pObj->videoMode.width    = mInfo->width;
-        pObj->videoMode.height   = mInfo->height;
-        pObj->videoMode.hfp      = mInfo->hFrontPorch;
-        pObj->videoMode.hsw      = mInfo->hSyncLen;
-        pObj->videoMode.hbp      = mInfo->hBackPorch;
-        pObj->videoMode.vfp      = mInfo->vFrontPorch;
-        pObj->videoMode.vsw      = mInfo->vSyncLen;
-        pObj->videoMode.vbp      = mInfo->vBackPorch;
-        pObj->videoMode.pclk     = mInfo->pixelClock;
-        pObj->videoMode.scanMode = mInfo->scanFormat;
-    }
 
-    pObj->videoMode.hsyncPol = hsyncPolarity;
-    pObj->videoMode.vsyncPol = vsyncPolarity;
-
+        pObj->videoMode[streamId].hsyncPol = hsyncPolarity[streamId];
+        pObj->videoMode[streamId].vsyncPol = vsyncPolarity[streamId];
+    }
     /*
      * We are supposed to be IDLE when this function is called
      *
@@ -289,7 +298,7 @@ int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo,
     return retVal;
 }
 
-int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported, uint32_t multilinkPhyType)
+int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported, uint32_t multilinkPhyType, uint32_t isMstEnabled)
 {
     int32_t retVal = FVID2_SOK;
 
@@ -355,7 +364,7 @@ int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported, uint32_t multilinkPhyType)
     /* Set DPTX_SRC_CFG, 0:vif0_en, 1:vif_1_en, 2:vif_2_en, 3: vif_3_en, 4: vif_0_sel, TBD */
     CSL_REG32_WR(CSL_DSS_EDP0_INTG_CFG_VP_BASE + CSL_DPTX_DPTX_SRC_CFG, 0x1F);
 
-    retVal = Dss_dctrlDrvInitDPTX(isHpdSupported, multilinkPhyType);
+    retVal = Dss_dctrlDrvInitDPTX(isHpdSupported, multilinkPhyType, isMstEnabled);
 
     return retVal;
 }
@@ -583,62 +592,58 @@ static int32_t Dss_dctrlDrvDpStartVideo(Dss_DctrlDisplayPortDrvObj *pObj)
     int32_t retVal = FVID2_SOK;
     uint32_t dpApiRet = CDN_EOK;
     DP_AudioVideoClkCfg clkCfg;
-    DP_VideoParameters videoParams;
-
+    /* TODO : Update this for num of video streams as input from user */
+    uint32_t numStreams = pObj->numStreams;
+    uint32_t isMstEnabled = pObj->isMstEnabled;
+    uint32_t streamId;
+    DP_VideoParameters videoParams[DP_MAX_NUMBER_OF_STREAMS];
     clkCfg.videoClockEnable   = BTRUE;
     clkCfg.audioClockEnable   = BTRUE;
     clkCfg.pktDataClockEnable = BTRUE;
 
-    videoParams.bitsPerSubpixel    = 8;
-    videoParams.pxEncFormat        = DP_PXENC_PXL_RGB;
-    videoParams.stereoVidAttr      = DP_STEREO_VIDEO_LEFT;
-    videoParams.btType             = DP_BT_601;
-    videoParams.forceMiscIgnoreBit = BFALSE;
-    videoParams.alignment          = DP_ALIGN_MSB;
-    videoParams.dscEnable          = BFALSE;
-
-    /* fill the ones the driver does not care about */
-    videoParams.vicParams.vic   = 0U;
-    videoParams.vicParams.hFreq = 0.0;
-    videoParams.vicParams.vFreq = 0.0;
-    videoParams.vicParams.vicR  = 0;
-    videoParams.vicParams.vicPR = 0;
-
-    /* and, now the actually important ones */
-    videoParams.vicParams.hActive       = pObj->videoMode.width;
-    videoParams.vicParams.hSync         = pObj->videoMode.hsw;
-    videoParams.vicParams.hFrontPorch   = pObj->videoMode.hfp;
-    videoParams.vicParams.hBackPorch    = pObj->videoMode.hbp;
-    videoParams.vicParams.hBlank        = pObj->videoMode.hbp + pObj->videoMode.hfp + pObj->videoMode.hsw;
-    videoParams.vicParams.hTotal        = videoParams.vicParams.hBlank + videoParams.vicParams.hActive;
-    videoParams.vicParams.vActive       = pObj->videoMode.height;
-    videoParams.vicParams.vSync         = pObj->videoMode.vsw;
-    videoParams.vicParams.vFrontPorch   = pObj->videoMode.vfp;
-    videoParams.vicParams.vBackPorch    = pObj->videoMode.vbp;
-    videoParams.vicParams.vBlank        = pObj->videoMode.vbp + pObj->videoMode.vfp + pObj->videoMode.vsw;
-    videoParams.vicParams.vTotal        = videoParams.vicParams.vBlank + videoParams.vicParams.vActive;
-    videoParams.vicParams.pxlFreq       = pObj->videoMode.pclk / (float64_t)1000;
-    videoParams.vicParams.scanMode      = ((FVID2_SF_PROGRESSIVE == pObj->videoMode.scanMode) ? DP_SM_PROGRESSIVE : DP_SM_INTERLACED);
-    videoParams.vicParams.hSyncPolarity = ((FVID2_POL_HIGH == pObj->videoMode.hsyncPol) ? DP_SP_ACTIVE_HIGH : DP_SP_ACTIVE_LOW);
-    videoParams.vicParams.vSyncPolarity = ((FVID2_POL_HIGH == pObj->videoMode.vsyncPol) ? DP_SP_ACTIVE_HIGH : DP_SP_ACTIVE_LOW);
-
-    if(CDN_EOK == dpApiRet)
+    for (streamId = 0; streamId < numStreams; streamId++)
     {
-        dpApiRet = DP_SetVic(pObj->dpPrivData, 0, &videoParams);
-        if(CDN_EOK != dpApiRet)
-        {
-            GT_0trace(DssTrace, GT_ERR, "error : DP_SetVic\r\n");
-            retVal = FVID2_EFAIL;
-        }
-    }
+        videoParams[streamId].bitsPerSubpixel    = 8;
+        videoParams[streamId].pxEncFormat        = DP_PXENC_PXL_RGB;
+        videoParams[streamId].stereoVidAttr      = DP_STEREO_VIDEO_LEFT;
+        videoParams[streamId].btType             = DP_BT_601;
+        videoParams[streamId].forceMiscIgnoreBit = BFALSE;
+        videoParams[streamId].alignment          = DP_ALIGN_MSB;
+        videoParams[streamId].dscEnable          = BFALSE;
 
-    if(CDN_EOK == dpApiRet)
-    {
-        dpApiRet = DP_SetAudioVideoClkCfg(pObj->dpPrivData, 0, &clkCfg);
-        if(CDN_EOK != dpApiRet)
+        /* fill the ones the driver does not care about */
+        videoParams[streamId].vicParams.vic   = 0U;
+        videoParams[streamId].vicParams.hFreq = 0.0;
+        videoParams[streamId].vicParams.vFreq = 0.0;
+        videoParams[streamId].vicParams.vicR  = 0;
+        videoParams[streamId].vicParams.vicPR = 0;
+
+        /* and, now the actually important ones */
+        videoParams[streamId].vicParams.hActive       = pObj->videoMode[streamId].width;
+        videoParams[streamId].vicParams.hSync         = pObj->videoMode[streamId].hsw;
+        videoParams[streamId].vicParams.hFrontPorch   = pObj->videoMode[streamId].hfp;
+        videoParams[streamId].vicParams.hBackPorch    = pObj->videoMode[streamId].hbp;
+        videoParams[streamId].vicParams.hBlank        = pObj->videoMode[streamId].hbp + pObj->videoMode[streamId].hfp + pObj->videoMode[streamId].hsw;
+        videoParams[streamId].vicParams.hTotal        = videoParams[streamId].vicParams.hBlank + videoParams[streamId].vicParams.hActive;
+        videoParams[streamId].vicParams.vActive       = pObj->videoMode[streamId].height;
+        videoParams[streamId].vicParams.vSync         = pObj->videoMode[streamId].vsw;
+        videoParams[streamId].vicParams.vFrontPorch   = pObj->videoMode[streamId].vfp;
+        videoParams[streamId].vicParams.vBackPorch    = pObj->videoMode[streamId].vbp;
+        videoParams[streamId].vicParams.vBlank        = pObj->videoMode[streamId].vbp + pObj->videoMode[streamId].vfp + pObj->videoMode[streamId].vsw;
+        videoParams[streamId].vicParams.vTotal        = videoParams[streamId].vicParams.vBlank + videoParams[streamId].vicParams.vActive;
+        videoParams[streamId].vicParams.pxlFreq       = pObj->videoMode[streamId].pclk / (float64_t)1000;
+        videoParams[streamId].vicParams.scanMode      = ((FVID2_SF_PROGRESSIVE == pObj->videoMode[streamId].scanMode) ? DP_SM_PROGRESSIVE : DP_SM_INTERLACED);
+        videoParams[streamId].vicParams.hSyncPolarity = ((FVID2_POL_HIGH == pObj->videoMode[streamId].hsyncPol) ? DP_SP_ACTIVE_HIGH : DP_SP_ACTIVE_LOW);
+        videoParams[streamId].vicParams.vSyncPolarity = ((FVID2_POL_HIGH == pObj->videoMode[streamId].vsyncPol) ? DP_SP_ACTIVE_HIGH : DP_SP_ACTIVE_LOW);
+
+        if(CDN_EOK == dpApiRet)
         {
-            GT_0trace(DssTrace, GT_ERR, "error : DP_SetAudioVideoClkCfg\r\n");
-            retVal = FVID2_EFAIL;
+            dpApiRet = DP_SetVic(pObj->dpPrivData, streamId, &videoParams[streamId]);
+            if(CDN_EOK != dpApiRet)
+            {
+                GT_0trace(DssTrace, GT_ERR, "error : DP_SetVic\r\n");
+                retVal = FVID2_EFAIL;
+            }
         }
     }
 
@@ -652,20 +657,107 @@ static int32_t Dss_dctrlDrvDpStartVideo(Dss_DctrlDisplayPortDrvObj *pObj)
         }
     }
 
-    if(CDN_EOK == dpApiRet)
+    for (streamId = 0; streamId < numStreams; streamId++)
     {
-        dpApiRet = DP_SetVideoSst(pObj->dpPrivData, BTRUE);
-        if(CDN_EOK != dpApiRet)
+        if(CDN_EOK == dpApiRet)
         {
-            GT_0trace(DssTrace, GT_ERR, "error : DP_SetVideoSst\r\n");
-            retVal = FVID2_EFAIL;
+            dpApiRet = DP_SetAudioVideoClkCfg(pObj->dpPrivData, streamId, &clkCfg);
+            if(CDN_EOK != dpApiRet)
+            {
+                GT_0trace(DssTrace, GT_ERR, "error : DP_SetAudioVideoClkCfg\r\n");
+                retVal = FVID2_EFAIL;
+                break;
+            }
+        }    
+    }
+
+    if (UTRUE == isMstEnabled)
+    {
+        uint8_t sinkCount;
+        DP_SinkDevice *sinkList[DP_MAX_NUMBER_OF_STREAMS];
+        const DP_SinkDevice **sinkListPtr = (const DP_SinkDevice **)sinkList;
+        DP_SinkDevice *sinkDevice;
+        
+        for (streamId = 0; streamId < numStreams; streamId++)
+        {
+            if(CDN_EOK == dpApiRet)
+            {
+                dpApiRet = DP_MstStreamEnable(pObj->dpPrivData, streamId);
+                if (CDN_EOK != dpApiRet)
+                {
+                    GT_0trace(DssTrace, GT_ERR, "error : DP_MstStreamEnable \r\n");
+                    retVal = FVID2_EFAIL;
+                    break;
+                } 
+            }
+        }
+        
+        if (CDN_EOK == dpApiRet)
+        {
+            dpApiRet = DP_MstScanTopology(pObj->dpPrivData);
+            if (CDN_EOK != dpApiRet)
+            {
+                GT_0trace(DssTrace, GT_ERR, "error : DP_MstScanTopology \r\n");
+                retVal = FVID2_EFAIL;
+            }
+        }
+
+        if (CDN_EOK == dpApiRet)
+        {
+            dpApiRet = DP_MstGetSinkCount(pObj->dpPrivData, &sinkCount);
+            if (CDN_EOK != dpApiRet || sinkCount != numStreams)
+            {
+                GT_0trace(DssTrace, GT_ERR, "error : DP_MstGetSinkCount \r\n");
+                retVal = FVID2_EFAIL;
+            }
+        }
+        
+        if (CDN_EOK == dpApiRet)
+        {
+            dpApiRet = DP_MstGetSinkList(pObj->dpPrivData, sinkListPtr);
+            if (CDN_EOK != dpApiRet)
+            {
+                GT_0trace(DssTrace, GT_ERR, "error : DP_MstGetSinkList \r\n");
+                retVal = FVID2_EFAIL;
+            }
+        }
+
+        /* Allocate VCPI for each stream */
+        
+        for (streamId = 0; streamId < numStreams; streamId++)
+        {
+            sinkDevice = sinkList[streamId];
+            
+            if(CDN_EOK == dpApiRet)
+            {
+                dpApiRet = DP_MstAllocateVcpi(pObj->dpPrivData, streamId, sinkDevice);
+                if (CDN_EOK != dpApiRet)
+                {
+                    GT_0trace(DssTrace, GT_ERR, "error : DP_MstAllocateVcpi \r\n");
+                    retVal = FVID2_EFAIL;
+                    break;
+                }
+            }
+        }    
+    }
+    else
+    {
+        /* Single stream mode */
+        if(CDN_EOK == dpApiRet)
+        {
+            dpApiRet = DP_SetVideoSst(pObj->dpPrivData, BTRUE);
+            if(CDN_EOK != dpApiRet)
+            {
+                GT_0trace(DssTrace, GT_ERR, "error : DP_SetVideoSst\r\n");
+                retVal = FVID2_EFAIL;
+            }
         }
     }
 
     return retVal;
 }
 
-static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkPhyType)
+static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkPhyType, uint32_t isMstEnabled)
 {
     Dss_DctrlDisplayPortDrvObj *pObj;
     uint32_t memReqDp, memReqDpPhy;
@@ -717,6 +809,9 @@ static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkP
 
     pObj->hpdPending                = UFALSE;
     pObj->hpdInProgress             = UFALSE;
+    /* By default set the number of streams to 1 i.e SST (Single Stream Transport)*/
+    pObj->numStreams                = 1U;
+    pObj->isMstEnabled              = isMstEnabled;
 
     if(FVID2_SOK == retVal)
     {
@@ -832,6 +927,16 @@ static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkP
         if (CDN_EOK != dpApiRet)
         {
             GT_0trace(DssTrace, GT_ERR, "error : DP_ConfigurePhyAuxCtrl\r\n");
+            retVal = FVID2_EFAIL;
+        }
+    }
+
+    if(FVID2_SOK == retVal && UTRUE == isMstEnabled)
+    {
+        retVal = DP_MstEnable(pObj->dpPrivData);
+        if (CDN_EOK != retVal)
+        {
+            GT_0trace(DssTrace, GT_ERR, "error : DP_MstEnable failed\n");
             retVal = FVID2_EFAIL;
         }
     }

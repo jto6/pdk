@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) Texas Instruments Incorporated 2025
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -213,11 +213,12 @@ void Dss_dctrlDrvFreeEdgeList(Dss_DctrlDrvGraphObj *graphObj);
 
 #if defined(SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
 int32_t Dss_dctrlDrvDisableVideoDP(void);
-int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo,
-                                  uint32_t hsyncPolarity,
-                                  uint32_t vsyncPolarity);
+int32_t Dss_dctrlDrvEnableVideoDP(const Fvid2_ModeInfo *mInfo[CSL_DSS_VP_ID_MAX],
+                                  uint32_t hsyncPolarity[CSL_DSS_VP_ID_MAX],
+                                  uint32_t vsyncPolarity[CSL_DSS_VP_ID_MAX],
+                                  uint32_t numStreams);
 
-int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported, uint32_t multilinkPhyType);
+int32_t Dss_dctrlDrvInitDp(uint32_t isHpdSupported, uint32_t multilinkPhyType, uint32_t isMstEnabled);
 int32_t Dss_dctrlDrvProcessHpdDp(uint32_t hpdState);
 int32_t Dss_dctrlDrvRegisterHpdCb(const Dss_DctrlDpHpdCbParams *cbParams);
 int32_t Dss_dctrlDrvDetectDp(void);
