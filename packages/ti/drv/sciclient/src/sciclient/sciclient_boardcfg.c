@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Texas Instruments Incorporated
+ * Copyright (c) 2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-#if defined (BUILD_MCU1_0)
+#if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED)
 const uint32_t gSciclient_boardCfgLow[(SCICLIENT_BOARDCFG_SIZE_IN_BYTES+3U)/4U]
     __attribute__(( aligned(128), section(".boardcfg_data") ))
     = SCICLIENT_BOARDCFG;

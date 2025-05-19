@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Texas Instruments Incorporated
+ *  Copyright (C) 2019-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -53,10 +53,10 @@
 #include <ti/drv/sciclient/soc/V1/sciclient_defaultBoardcfg_security_hex.h>
 #endif
 
-#if defined (BUILD_MCU1_0)
+#if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED)
 #define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_R5_NONSEC_0)
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_R5_SEC_0)
-#endif
+#else
 #if defined (BUILD_MCU1_1)
 #define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_R5_NONSEC_1)
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_R5_SEC_1)
@@ -97,6 +97,7 @@
 #define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_C6X_1_NONSEC_0)
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_C6X_1_SEC_0)
 #endif
+#endif /* #if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED) */
 
 #if defined (_TMS320C6X)
 #define SCICLIENT_RAT_ENTRY_DEFAULT (15)

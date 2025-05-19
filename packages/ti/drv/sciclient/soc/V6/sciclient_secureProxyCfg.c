@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Texas Instruments Incorporated
+ * Copyright (c) 2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,9 +48,9 @@
 
 /** \brief This structure contains configuration parameters for
 *       the sec_proxy IP */
-#if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1)
+#if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1) || defined (SCICLIENT_MERGED)
 
-#if defined (CONFIG_MSG_M4_ROM_USE_ALTERNATE_SPROXY)
+#if defined (CONFIG_MSG_M4_ROM_USE_ALTERNATE_SPROXY)|| defined (SCICLIENT_MERGED)
 CSL_SecProxyCfg gSciclient_secProxyCfg_rom =
 {
     (CSL_sec_proxyRegs *)       CSL_MCU_SA3_SS0_IPCSS_SEC_PROXY_CFG_MMRS_BASE,

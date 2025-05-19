@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Texas Instruments Incorporated
+ * Copyright (c) 2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-#if defined (BUILD_MCU1_0)
+#if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED)
 struct tisci_boardcfg_pm {
     struct tisci_boardcfg_abi_rev    rev;
 } __attribute__((__packed__));

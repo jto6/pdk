@@ -766,7 +766,7 @@ int32_t Sciclient_prepareSleep(void);
  */
 int32_t Sciclient_enterSleep(uint32_t *msg_recv);
 
-#if defined (BUILD_MCU1_0)
+#if defined (BUILD_MCU1_0) || defined(SCICLIENT_MERGED)
 /** \brief Sciclient PMIC shutdown function.
  *
  *  \return status    Function return status.

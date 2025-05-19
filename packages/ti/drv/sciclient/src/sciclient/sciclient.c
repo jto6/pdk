@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2024, Texas Instruments Incorporated
+ * Copyright (c) 2017-2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -149,6 +149,12 @@ static struct tisci_sec_header gSciclient_secHeader;
 *       the sec_proxy IP */
 extern CSL_SecProxyCfg *pSciclient_secProxyCfg;
 
+/**
+ *  \brief Context ID used by Sciclient_service function.
+ */
+uint32_t gSecContextId = (uint32_t)SCICLIENT_CONTEXT_SEC;
+uint32_t gNonSecContextId = (uint32_t)SCICLIENT_CONTEXT_NONSEC;
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -216,33 +222,38 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
 
     if(NULL != pCfgPrms)
     {
-#if defined(BUILD_MCU1_0) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
-        Sciclient_DefaultBoardCfgInfo_t boardCfgInfo = {0};
-
-        /* populate the default board configuration */
-        ret = Sciclient_getDefaultBoardCfgInfo(&boardCfgInfo);
-        if (ret == CSL_PASS)
+#if (defined(SCICLIENT_MERGED) || defined(BUILD_MCU1_0)) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
+#if defined(SCICLIENT_MERGED)
+        if (SCICLIENT_CORE_MCU1_0 == Sciclient_getR5CoreId())
+#endif
         {
-            if (((uint64_t)boardCfgInfo.boardCfgLowPm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
-                    ((uint64_t)boardCfgInfo.boardCfgLowPm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END) &&
-                    ((uint64_t)boardCfgInfo.boardCfgLowRm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
-                    ((uint64_t)boardCfgInfo.boardCfgLowRm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END))
-            {
-                pCfgPrms->inPmPrms.boardConfigLow = (uint32_t)boardCfgInfo.boardCfgLowPm;
-                pCfgPrms->inPmPrms.boardConfigHigh = 0U;
-                pCfgPrms->inPmPrms.boardConfigSize = (uint16_t)boardCfgInfo.boardCfgLowPmSize;
-                pCfgPrms->inPmPrms.devGrp = DEVGRP_ALL;
+            Sciclient_DefaultBoardCfgInfo_t boardCfgInfo = {0};
 
-                pCfgPrms->inRmPrms.boardConfigLow = (uint32_t)boardCfgInfo.boardCfgLowRm;
-                pCfgPrms->inRmPrms.boardConfigHigh = 0U;
-                pCfgPrms->inRmPrms.boardConfigSize = (uint16_t)boardCfgInfo.boardCfgLowRmSize;
-                pCfgPrms->inRmPrms.devGrp = DEVGRP_ALL;
-            }
-            else
+            /* populate the default board configuration */
+            ret = Sciclient_getDefaultBoardCfgInfo(&boardCfgInfo);
+            if (ret == CSL_PASS)
             {
-                ret = Sciclient_boardCfgParseHeader(
-                            (uint8_t *) SCICLIENT_COMMON_X509_HEADER_ADDR,
-                            &pCfgPrms->inPmPrms, &pCfgPrms->inRmPrms);
+                if (((uint64_t)boardCfgInfo.boardCfgLowPm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
+                        ((uint64_t)boardCfgInfo.boardCfgLowPm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END) &&
+                        ((uint64_t)boardCfgInfo.boardCfgLowRm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
+                        ((uint64_t)boardCfgInfo.boardCfgLowRm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END))
+                {
+                    pCfgPrms->inPmPrms.boardConfigLow = (uint32_t)boardCfgInfo.boardCfgLowPm;
+                    pCfgPrms->inPmPrms.boardConfigHigh = 0U;
+                    pCfgPrms->inPmPrms.boardConfigSize = (uint16_t)boardCfgInfo.boardCfgLowPmSize;
+                    pCfgPrms->inPmPrms.devGrp = DEVGRP_ALL;
+
+                    pCfgPrms->inRmPrms.boardConfigLow = (uint32_t)boardCfgInfo.boardCfgLowRm;
+                    pCfgPrms->inRmPrms.boardConfigHigh = 0U;
+                    pCfgPrms->inRmPrms.boardConfigSize = (uint16_t)boardCfgInfo.boardCfgLowRmSize;
+                    pCfgPrms->inRmPrms.devGrp = DEVGRP_ALL;
+                }
+                else
+                {
+                    ret = Sciclient_boardCfgParseHeader(
+                                (uint8_t *) SCICLIENT_COMMON_X509_HEADER_ADDR,
+                                &pCfgPrms->inPmPrms, &pCfgPrms->inRmPrms);
+                }
             }
         }
 #endif
@@ -261,7 +272,11 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
 }
 
 
+#if defined(SCICLIENT_MERGED)
+int32_t Sciclient_initInternal(const Sciclient_ConfigPrms_t *pCfgPrms)
+#else
 int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
+#endif
 {
     int32_t   status = CSL_PASS;
     uintptr_t key;
@@ -356,7 +371,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
 
                 /* Register interrupts for secure and non-secure contexts of the CPU */
                 /* Non-Secure */
-                contextId = SCICLIENT_CONTEXT_NONSEC;
+                contextId = gNonSecContextId;
                 if(contextId < SCICLIENT_CONTEXT_MAX_NUM)
                 {
                     OsalRegisterIntrParams_t    intrPrms;
@@ -425,7 +440,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
             }
             if(status == CSL_PASS){
                 /* Secure Context */
-                contextId = SCICLIENT_CONTEXT_SEC;
+                contextId = gSecContextId;
                 if(contextId < SCICLIENT_CONTEXT_MAX_NUM)
                 {
                     OsalRegisterIntrParams_t    intrPrms;
@@ -509,36 +524,41 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
                 gSciclientHandle.isSecureMode = 0U;
             }
         }
-#if defined(BUILD_MCU1_0) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
-        if(status == CSL_PASS){
-            if (pCfgPrms != NULL)
-            {
-                if (pCfgPrms->skipLocalBoardCfgProcess == FALSE)
+#if (defined(SCICLIENT_MERGED) || defined(BUILD_MCU1_0)) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
+#if defined(SCICLIENT_MERGED)
+        if (SCICLIENT_CORE_MCU1_0 == Sciclient_getR5CoreId())
+#endif
+        {
+            if(status == CSL_PASS){
+                if (pCfgPrms != NULL)
                 {
-                    /* Run pm_init */
-                    if (status == CSL_PASS)
+                    if (pCfgPrms->skipLocalBoardCfgProcess == FALSE)
                     {
-                        status = Sciclient_boardCfgPm(&pCfgPrms->inPmPrms);
+                        /* Run pm_init */
                         if (status == CSL_PASS)
                         {
-                            gSciclientHandle.pmBoardConfigComplete = SCICLIENT_FT_PASS;
+                            status = Sciclient_boardCfgPm(&pCfgPrms->inPmPrms);
+                            if (status == CSL_PASS)
+                            {
+                                gSciclientHandle.pmBoardConfigComplete = SCICLIENT_FT_PASS;
+                            }
+                            else
+                            {
+                                gSciclientHandle.pmBoardConfigComplete = SCICLIENT_FT_FAIL;
+                            }
                         }
-                        else
-                        {
-                            gSciclientHandle.pmBoardConfigComplete = SCICLIENT_FT_FAIL;
-                        }
-                    }
-                    /* Run rm_init */
-                    if (status == CSL_PASS)
-                    {
-                        status = Sciclient_boardCfgRm(&pCfgPrms->inRmPrms);
+                        /* Run rm_init */
                         if (status == CSL_PASS)
                         {
-                            gSciclientHandle.rmBoardConfigComplete = SCICLIENT_FT_PASS;
-                        }
-                        else
-                        {
-                            gSciclientHandle.rmBoardConfigComplete = SCICLIENT_FT_FAIL;
+                            status = Sciclient_boardCfgRm(&pCfgPrms->inRmPrms);
+                            if (status == CSL_PASS)
+                            {
+                                gSciclientHandle.rmBoardConfigComplete = SCICLIENT_FT_PASS;
+                            }
+                            else
+                            {
+                                gSciclientHandle.rmBoardConfigComplete = SCICLIENT_FT_FAIL;
+                            }
                         }
                     }
                 }
@@ -614,7 +634,7 @@ int32_t Sciclient_serviceGetThreadIds (const Sciclient_ReqPrm_t *pReqPrm,
             * Therefore, we force Sciclient to use secure mode in this build
             * configuration.
             */
-            *contextId = SCICLIENT_CONTEXT_SEC;
+            *contextId = gSecContextId;
         }
         else
         {
@@ -1044,7 +1064,7 @@ int32_t Sciclient_deinit(void)
             /* De-register interrupts */
             if (gSciclientHandle.respIntr[0] != NULL)
             {
-                contextId = SCICLIENT_CONTEXT_NONSEC;
+                contextId = gNonSecContextId;
                 if(contextId < SCICLIENT_CONTEXT_MAX_NUM)
                 {
                     (void) Osal_DeleteInterrupt(gSciclientHandle.respIntr[0], gSciclientMap[contextId].respIntrNum);
@@ -1052,7 +1072,7 @@ int32_t Sciclient_deinit(void)
             }
             if (gSciclientHandle.respIntr[1] != NULL)
             {
-                contextId = SCICLIENT_CONTEXT_SEC;
+                contextId = gSecContextId;
                 if(contextId < SCICLIENT_CONTEXT_MAX_NUM)
                 {
                     (void) Osal_DeleteInterrupt(gSciclientHandle.respIntr[1], gSciclientMap[contextId].respIntrNum);
@@ -1113,15 +1133,15 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
        (TISCI_MSG_SA2UL_RELEASE_DKEK == messageType) ||
        (TISCI_MSG_SA2UL_GET_DKEK == messageType))
     {
-        retVal = SCICLIENT_CONTEXT_SEC;
+        retVal = gSecContextId;
     }
     else
     {
         /* For all other message type use non-secure context */
-        retVal = SCICLIENT_CONTEXT_NONSEC;
+        retVal = gNonSecContextId;
         if(gSciclientHandle.isSecureMode == 1U)
         {
-            retVal = SCICLIENT_CONTEXT_SEC;
+            retVal = gSecContextId;
         }
     }
 

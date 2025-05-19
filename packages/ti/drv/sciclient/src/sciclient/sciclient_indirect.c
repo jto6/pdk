@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Texas Instruments Incorporated
+ * Copyright (c) 2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,8 +76,13 @@
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
+#if defined(SCICLIENT_MERGED)
+int32_t Sciclient_serviceIndirect(const Sciclient_ReqPrm_t *pReqPrm,
+                                  Sciclient_RespPrm_t      *pRespPrm)
+#else
 int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                            Sciclient_RespPrm_t      *pRespPrm)
+#endif
 {
 #ifdef QNX_OS
     /* Inserting a resource manager layer, to serialize communication, between

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -53,10 +53,10 @@
 #include <ti/drv/sciclient/soc/V6/sciclient_defaultBoardcfg_security_hex.h>
 #endif
 
-#if defined (BUILD_MCU1_0)
+#if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED)
 #define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_R5_NONSEC_0)
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_R5_SEC_0)
-#endif
+#else
 #if defined (BUILD_MCU1_1)
 #define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_R5_NONSEC_1)
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_R5_SEC_1)
@@ -117,5 +117,6 @@
 #define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_C7X_NONSEC_3)
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_C7X_SEC_3)
 #endif
+#endif /* #if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED) */
 
 #endif /* SCICLIENT_SOC_PRIV_H_ */

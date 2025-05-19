@@ -119,6 +119,7 @@ PACKAGE_SRCS_COMMON += src/rm_pm_hal_build.mk
 PACKAGE_SRCS_COMMON += src/rm_pm_hal_makefile
 PACKAGE_SRCS_COMMON += src/sciclient_direct_makefile
 PACKAGE_SRCS_COMMON += src/sciclient_indirect_makefile
+PACKAGE_SRCS_COMMON += src/sciclient_merged_makefile
 PACKAGE_SRCS_COMMON += src/sciserver
 PACKAGE_SRCS_COMMON += src/sciserver_makefile
 PACKAGE_SRCS_COMMON += src/sciserver_version_makefile

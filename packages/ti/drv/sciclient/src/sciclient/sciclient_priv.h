@@ -106,6 +106,25 @@ extern "C" {
 /* Current context is NON-SECURE */
 #define SCICLIENT_NON_SECURE_CONTEXT        (1U)
 
+#if defined (SCICLIENT_MERGED)
+/* Sciclient merged library is applicable only to R5 cores.
+ * Hence define the macros in SCI header for R5 core id.
+ */
+#define SCICLIENT_CORE_INVALID ((uint32_t)0xFFFFFFFFU)
+#define SCICLIENT_CORE_MCU1_0 ((uint32_t)0U)
+#define SCICLIENT_CORE_MCU1_1 ((uint32_t)1U)
+#define SCICLIENT_CORE_MCU2_0 ((uint32_t)2U)
+#define SCICLIENT_CORE_MCU2_1 ((uint32_t)3U)
+#if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
+#define SCICLIENT_CORE_MCU3_0 ((uint32_t)4U)
+#define SCICLIENT_CORE_MCU3_1 ((uint32_t)5U)
+#if defined (SOC_J784S4) || defined (SOC_J742S2)
+#define SCICLIENT_CORE_MCU4_0 ((uint32_t)6U)
+#define SCICLIENT_CORE_MCU4_1 ((uint32_t)7U)
+#endif /* #if defined (SOC_J784S4) || defined (SOC_J742S2) */
+#endif /* #if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2) */
+#endif /* #if defined (SCICLIENT_MERGED) */
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -180,7 +199,7 @@ typedef struct
     /**< Variable to check whether Core context is secure/non-secure. This has
      * to be given by the user via configParams. Default value is 0.
      */
-#if defined(BUILD_MCU1_0) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
+#if (defined(SCICLIENT_MERGED) || defined (BUILD_MCU1_0)) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
     uint32_t              pmBoardConfigComplete;
     /**< Status flag indicating PM Board config went through successfully */
     uint32_t              rmBoardConfigComplete;
@@ -398,6 +417,116 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
 int32_t Sciclient_ProcessRmMessage(void *tx_msg);
 int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg);
 int32_t Sciclient_processDMVersionMessage(void *tx_msg);
+
+#if defined (SCICLIENT_MERGED)
+
+/**
+ *  \brief  This API will be used internally in sciclient merged library to update
+ *          each R5 core specific value in the scilcient driver's global variables.
+ *
+ * Requirement: DOX_REQ_TAG(PDK-17592)
+ *
+ *  \return CSL_PASS on success, else failure
+ */
+int32_t Sciclient_mergedInit(void);
+
+/**
+ *  \brief  This API is rename of Sciclient_init API. This API is renamed because
+ *          to have a wrapper API in which another APIs can also be called. It is 
+ *          not recommended to use this API. This API is only for internal use in 
+ *          sciclient merged library and done for maintaining the backward
+ *          compatibility.
+ *
+ *  Requirement: DOX_REQ_TAG(PDK-17592)
+ *
+ *  \param pCfgPrms     [IN]  Pointer to #Sciclient_ConfigPrms_t
+ *
+ *  \return CSL_PASS on success, else failure
+ *
+ */
+int32_t Sciclient_initInternal(const Sciclient_ConfigPrms_t *pCfgPrms);
+
+/**
+ *  \brief  This API will be used to directly communicate with the System Firmware
+ *          when the Sciclient driver is running on the DM Core in Merged Mode.
+ *
+ *          The caller is expected to allocate memory for the input request
+ *          parameter (Refer #Sciclient_ReqPrm_t). This involves setting the
+ *          message type being communicated to the firmware, the response flags,
+ *          populate the payload of the message based on the inputs in the
+ *          files sciclient_fmwPmMessages.h,sciclient_fmwRmMessages.h,
+ *          sciclient_fmwSecMessages.h and sciclient_fmwCommonMessages.h.
+ *          Since the payload in considered a stream of bytes in this API,
+ *          the caller should also populate the size of this stream in
+ *          reqPayloadSize. The timeout is used to determine for what amount
+ *          of iterations the API would wait for their operation to complete.
+ *
+ *          To make sure the response is captured correctly the caller should
+ *          also allocate the space for #Sciclient_RespPrm_t parameters. The
+ *          caller should populate the pointer to the pRespPayload and the size
+ *          respPayloadSize. The API would populate the response flags to
+ *          indicate any firmware specific errors and also populate the memory
+ *          pointed by pRespPayload till the size given in respPayloadSize.
+ *
+ *
+ * Requirement: DOX_REQ_TAG(PDK-17592)
+ *
+ *  \param pReqPrm        [IN]  Pointer to #Sciclient_ReqPrm_t
+ *  \param pRespPrm       [OUT] Pointer to #Sciclient_RespPrm_t
+ *
+ *  \return CSL_PASS on success, else failure
+ *
+ */
+int32_t Sciclient_serviceDirect(const Sciclient_ReqPrm_t *pReqPrm,
+                                Sciclient_RespPrm_t      *pRespPrm);
+
+/**
+ *  \brief  This API will be used to indirectly communicate with the System Firmware
+ *          over the secure proxy Threads. This API is used when the Sciclient driver
+ *          is running on the NON-DM Core in Merged Mode.
+ *
+ *          The caller is expected to allocate memory for the input request
+ *          parameter (Refer #Sciclient_ReqPrm_t). This involves setting the
+ *          message type being communicated to the firmware, the response flags,
+ *          populate the payload of the message based on the inputs in the
+ *          files sciclient_fmwPmMessages.h,sciclient_fmwRmMessages.h,
+ *          sciclient_fmwSecMessages.h and sciclient_fmwCommonMessages.h.
+ *          Since the payload in considered a stream of bytes in this API,
+ *          the caller should also populate the size of this stream in
+ *          reqPayloadSize. The timeout is used to determine for what amount
+ *          of iterations the API would wait for their operation to complete.
+ *
+ *          To make sure the response is captured correctly the caller should
+ *          also allocate the space for #Sciclient_RespPrm_t parameters. The
+ *          caller should populate the pointer to the pRespPayload and the size
+ *          respPayloadSize. The API would populate the response flags to
+ *          indicate any firmware specific errors and also populate the memory
+ *          pointed by pRespPayload till the size given in respPayloadSize.
+ *
+ *
+ * Requirement: DOX_REQ_TAG(PDK-17592)
+ *
+ *  \param pReqPrm        [IN]  Pointer to #Sciclient_ReqPrm_t
+ *  \param pRespPrm       [OUT] Pointer to #Sciclient_RespPrm_t
+ *
+ *  \return CSL_PASS on success, else failure
+ *
+ */
+int32_t Sciclient_serviceIndirect(const Sciclient_ReqPrm_t *pReqPrm,
+                                  Sciclient_RespPrm_t      *pRespPrm);
+
+/**
+ *  \brief  This API fetches the R5 core ID on which current application is running.
+ *
+ *          This API is only for internal use and used by the SciClient driver.
+ *
+ * Requirement: DOX_REQ_TAG(PDK-17592)
+ *
+ *  \return gets R5 core ID on which current application is running.
+ *
+ */
+uint32_t Sciclient_getR5CoreId(void);
+#endif
 
 #ifdef __cplusplus
 }

@@ -52,6 +52,8 @@ sciclient_LIB_LIST += sciserver_tirtos
 sciclient_LIB_LIST += sciserver_baremetal
 sciclient_LIB_LIST += sciclient_direct
 sciclient_LIB_LIST += sciclient_direct_hs
+sciclient_LIB_LIST += sciclient_merged
+sciclient_LIB_LIST += sciclient_merged_hs
 endif
 
 drvsciclient_BOARDLIST =  j721e_sim j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
@@ -141,6 +143,38 @@ export sciclient_direct_hs_INCLUDE = $(sciclient_hs_direct_PATH)
 export sciclient_direct_hs_SOCLIST = j721e j7200 j721s2 j784s4 j742s2
 export sciclient_direct_hs_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
 export sciclient_direct_hs_$(SOC)_CORELIST = mcu1_0
+
+export sciclient_merged_COMP_LIST = sciclient_merged
+export sciclient_merged_RELPATH = ti/drv/sciclient_merged
+export sciclient_merged_OBJPATH = ti/drv/sciclient_merged
+export sciclient_merged_LIBNAME = sciclient_merged
+export sciclient_merged_PATH = $(PDK_SCICLIENT_COMP_PATH)
+export sciclient_merged_LIBPATH = $(PDK_SCICLIENT_COMP_PATH)/lib
+export sciclient_merged_MAKEFILE = -fsrc/sciclient_merged_makefile BUILD_HS=no
+export sciclient_merged_BOARD_DEPENDENCY = no
+export sciclient_merged_CORE_DEPENDENCY = yes
+export sciclient_merged_PKG_LIST = sciclient_merged
+export sciclient_merged_INCLUDE = $(sciclient_merged_PATH)
+export sciclient_merged_SOCLIST = j721e j7200 j721s2 j784s4 j742s2
+export sciclient_merged_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
+# This library is built only for mcu1_0 and can be used for any other R5 core.
+export sciclient_merged_$(SOC)_CORELIST = mcu1_0
+
+export sciclient_merged_hs_COMP_LIST = sciclient_merged_hs
+export sciclient_merged_hs_RELPATH = ti/drv/sciclient_merged_hs
+export sciclient_merged_hs_OBJPATH = ti/drv/sciclient_merged_hs
+export sciclient_merged_hs_LIBNAME = sciclient_merged_hs
+export sciclient_merged_hs_PATH = $(PDK_SCICLIENT_COMP_PATH)
+export sciclient_merged_hs_LIBPATH = $(PDK_SCICLIENT_COMP_PATH)/lib
+export sciclient_merged_hs_MAKEFILE = -fsrc/sciclient_merged_makefile BUILD_HS=yes
+export sciclient_merged_hs_BOARD_DEPENDENCY = no
+export sciclient_merged_hs_CORE_DEPENDENCY = yes
+export sciclient_merged_hs_PKG_LIST = sciclient_merged_hs
+export sciclient_merged_hs_INCLUDE = $(sciclient_hs_merged_PATH)
+export sciclient_merged_hs_SOCLIST = j721e j7200 j721s2 j784s4 j742s2
+export sciclient_merged_hs_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
+# This library is built only for mcu1_0 and can be used for any other R5 core.
+export sciclient_merged_hs_$(SOC)_CORELIST = mcu1_0
 
 export sciserver_tirtos_COMP_LIST = sciserver_tirtos
 export sciserver_tirtos_RELPATH = ti/drv/sciserver_tirtos
@@ -318,6 +352,34 @@ SCICLIENT_RTOS_APP_MACRO_LIST := $(foreach curos, $(drvsciclient_RTOS_LIST) safe
 
 $(eval ${SCICLIENT_RTOS_APP_MACRO_LIST})
 
+# Sciclient merged test app
+define SCICLIENT_MERGED_TESTAPP_RULE
+
+export sciclient_merged_testapp_$(1)_COMP_LIST = sciclient_merged_testapp_$(1)
+export sciclient_merged_testapp_$(1)_RELPATH = ti/drv/sciclient/examples/sciclient_merged_testapp
+export sciclient_merged_testapp_$(1)_PATH = $(PDK_SCICLIENT_COMP_PATH)/examples/sciclient_merged_testapp
+export sciclient_merged_testapp_$(1)_BOARD_DEPENDENCY = no
+export sciclient_merged_testapp_$(1)_CORE_DEPENDENCY = yes
+export sciclient_merged_testapp_$(1)_PKG_LIST = sciclient_merged_testapp_$(1)
+export sciclient_merged_testapp_$(1)_INCLUDE = $(sciclient_merged_testapp_$(1)_PATH)
+export sciclient_merged_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm)
+export sciclient_merged_testapp_$(1)_$(SOC)_CORELIST = $(filter mcu%, $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(drvsciclient_$(SOC)_CORELIST)))
+export sciclient_merged_testapp_$(1)_SBL_APPIMAGEGEN = no
+export sciclient_merged_testapp_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1) CORE=mcu1_0 BUILD_CORE=$(CORE)
+export sciclient_merged_testapp_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)), yes, no)
+ifneq ($(1),$(filter $(1), safertos))
+sciclient_EXAMPLE_LIST += sciclient_merged_testapp_$(1)
+else
+ifneq ($(wildcard $(SAFERTOS_KERNEL_INSTALL_PATH)),)
+sciclient_EXAMPLE_LIST += sciclient_merged_testapp_$(1)
+endif
+endif
+
+endef
+
+SCICLIENT_MERGED_TESTAPP_MACRO_LIST := $(foreach curos, $(drvsciclient_RTOS_LIST) safertos, $(call SCICLIENT_MERGED_TESTAPP_RULE,$(curos)))
+
+$(eval ${SCICLIENT_MERGED_TESTAPP_MACRO_LIST})
 
 # SCICLIENT RTOS UTs
 define SCICLIENT_UNIT_TESTAPP_RULE

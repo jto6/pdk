@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Texas Instruments Incorporated
+ * Copyright (c) 2018-2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -856,6 +856,24 @@ int32_t Sciclient_rmIrqRelease(const struct tisci_msg_rm_irq_release_req *req,
         if(req->dst_host_irq >= CSLR_R5FSS0_CORE0_INTR_NAVSS0_INTR_ROUTER_0_OUTL_INTR_192)
 #endif
         {
+#if defined(SCICLIENT_MERGED)
+            if((SCICLIENT_CORE_MCU2_0 == Sciclient_getR5CoreId()) || (SCICLIENT_CORE_MCU2_1 == Sciclient_getR5CoreId()))
+            {
+                irOffset = req->dst_host_irq - 32U;
+                if(TISCI_DEV_MCU_R5FSS0_CORE1 == req->dst_id)
+                {
+                    irOffset = req->dst_host_irq;
+                }
+            }
+            else
+            {
+                irOffset = req->dst_host_irq + 32U;
+                if(TISCI_DEV_MCU_R5FSS0_CORE1 == req->dst_id)
+                {
+                    irOffset = req->dst_host_irq + 64U;
+                }
+            }
+#else
 #if defined (BUILD_MCU2_0) || defined (BUILD_MCU2_1)
             irOffset = req->dst_host_irq - 32U;
             if(TISCI_DEV_MCU_R5FSS0_CORE1 == req->dst_id)
@@ -868,6 +886,7 @@ int32_t Sciclient_rmIrqRelease(const struct tisci_msg_rm_irq_release_req *req,
             {
                 irOffset = req->dst_host_irq + 64U;
             }
+#endif
 #endif
         }
         else

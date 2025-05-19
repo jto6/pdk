@@ -76,8 +76,8 @@ extern CSL_SecProxyCfg gSciclient_secProxyCfg;
  */
 CSL_SecProxyCfg *pSciclient_secProxyCfg = &gSciclient_secProxyCfg;
 
-#if defined (CONFIG_MSG_M4_ROM_USE_ALTERNATE_SPROXY)
-/** \brief This structure contains configuration parameters for
+#if defined (CONFIG_MSG_M4_ROM_USE_ALTERNATE_SPROXY) || (defined (SCICLIENT_MERGED) && (defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)))
+/** \brief This struct contains configuration parameters for
  *         the alternate sec_proxy IP used by ROM for firmware
  *         loading only
  */
@@ -106,6 +106,14 @@ int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware)
     /* Switch pointer to struct with alternate sproxy cfg used by ROM for firmware loading */
     pSciclient_secProxyCfg = &gSciclient_secProxyCfg_rom;
 #endif
+#if defined (SCICLIENT_MERGED) && (defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
+    /* If core is MCU1_0 then switch pointer to alternate secure proxy config used by ROM for firmware loading */
+    if (SCICLIENT_CORE_MCU1_0 == Sciclient_getR5CoreId())
+    {
+        pSciclient_secProxyCfg = &gSciclient_secProxyCfg_rom;
+    }
+#endif
+
     /* Update pLocalRespHdr and maxMsgSizeBytes vars, which are dependent on pointer selected above */
     pLocalRespHdr = (Sciclient_RomFirmwareLoadHdr_t *)CSL_secProxyGetDataAddr
                                         (pSciclient_secProxyCfg, rxThread, 0U);
@@ -198,6 +206,13 @@ int32_t Sciclient_bootNotification(void)
     /* Switch pointer to struct with alternate sproxy cfg used by ROM for firmware loading */
     pSciclient_secProxyCfg = &gSciclient_secProxyCfg_rom;
 #endif
+#if defined (SCICLIENT_MERGED) && (defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
+    /* If core is MCU1_0 then switch pointer to alternate secure proxy config used by ROM for firmware loading */
+    if (SCICLIENT_CORE_MCU1_0 == Sciclient_getR5CoreId())
+    {
+        pSciclient_secProxyCfg = &gSciclient_secProxyCfg_rom;
+    }
+#endif
 
     /* Update pLocalRespHdr and maxMsgSizeBytes vars, which are dependent on pointer selected above */
     pLocalRespHdr = (Sciclient_RomFirmwareLoadHdr_t *)CSL_secProxyGetDataAddr
@@ -236,6 +251,13 @@ int32_t Sciclient_bootNotification(void)
         /* Switch pointer back to regular sproxy cfg struct used after Boot Notification msg received */
         pSciclient_secProxyCfg = &gSciclient_secProxyCfg;
 
+#endif
+#if defined (SCICLIENT_MERGED) && (defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2))
+    /* if core is MCU1_0 then, Switch pointer to struct with alternate sproxy cfg used by ROM for firmware loading */
+    if (SCICLIENT_CORE_MCU1_0 == Sciclient_getR5CoreId())
+    {
+        pSciclient_secProxyCfg = &gSciclient_secProxyCfg;
+    }
 #endif
 
     return status;

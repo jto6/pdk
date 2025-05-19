@@ -38,6 +38,12 @@ endif
 
 COMP_LIST_COMMON += sciserver_tirtos
 
+# Replace sciclient_direct with sciclient_merged if we want to use sciclient_merged library
+ifeq ($(SCI_BUILD_INTERNAL), yes)
+COMP_LIST_COMMON := $(filter-out sciclient_direct$(HS_SUFFIX), $(COMP_LIST_COMMON))
+COMP_LIST_COMMON += sciclient_merged$(HS_SUFFIX)
+endif
+
 # List all the external components/interfaces, whose interface header files
 # need to be included for this component
 INCLUDE_EXTERNAL_INTERFACES = pdk sciclient board uart $(EXTERNAL_INTERFACES)

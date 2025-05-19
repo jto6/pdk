@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Texas Instruments Incorporated
+ * Copyright (c) 2020-2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@
 
 /** \brief This structure contains configuration parameters for
 *       the sec_proxy IP */
-#if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1)
+#if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1) || defined (SCICLIENT_MERGED)
 CSL_SecProxyCfg gSciclient_secProxyCfg =
 {
     (CSL_sec_proxyRegs *)       CSL_MCU_NAVSS0_SEC_PROXY0_CFG_BASE,

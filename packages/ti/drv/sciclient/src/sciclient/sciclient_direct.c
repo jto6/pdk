@@ -213,8 +213,13 @@ static int32_t coreRefCnt = 0;
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
+#if defined(SCICLIENT_MERGED)
+int32_t Sciclient_serviceDirect(const Sciclient_ReqPrm_t *pReqPrm,
+                                Sciclient_RespPrm_t      *pRespPrm)
+#else
 int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                            Sciclient_RespPrm_t      *pRespPrm)
+#endif
 {
     int32_t ret = CSL_PASS;
     uint32_t msgType;

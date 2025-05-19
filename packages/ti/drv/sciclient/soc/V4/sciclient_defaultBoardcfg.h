@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2021, Texas Instruments Incorporated
+ * Copyright (c) 2018-2025, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ extern "C" {
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#if defined (BUILD_MCU1_0)
+#if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED)
 struct tisci_local_rm_boardcfg {
     struct tisci_boardcfg_rm      rm_boardcfg;
     /**< RM board configuration */

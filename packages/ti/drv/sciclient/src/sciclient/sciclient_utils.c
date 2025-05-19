@@ -30,49 +30,36 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- *  \file V6/sciclient_defaultBoardcfg.h
+ *  \file sciclient_utils.c
  *
- *  \brief File defining tisci_local_rm_boardcfg for boardCfg RM .
+ *  \brief This file contains utility code, which is common and can be used by
+ *         Sciclient driver.
  *
  */
-
-#ifndef SCICLIENT_DEFAULTBOARDCFG_
-#define SCICLIENT_DEFAULTBOARDCFG_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-#include <ti/csl/csl_types.h>
+
+#include <stdint.h>
 #include <ti/drv/sciclient/sciclient.h>
-#include <ti/drv/sciclient/soc/sysfw/include/tisci/tisci_boardcfg.h>
-#include <ti/drv/sciclient/soc/sysfw/include/j784s4/tisci_resasg_types.h>
+#include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
+#include <ti/csl/arch/csl_arch.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* ========================================================================== */
-/*                            Global Variables                                */
+/*                          Function Definitions                              */
 /* ========================================================================== */
 
-/* None */
+#if defined(SCICLIENT_MERGED)
+uint32_t Sciclient_getR5CoreId(void)
+{
+    uint32_t retVal = SCICLIENT_CORE_INVALID;
+    CSL_ArmR5CPUInfo info;
 
-/* ========================================================================== */
-/*                           Macros & Typedefs                                */
-/* ========================================================================== */
+    CSL_armR5GetCpuID(&info);
+    retVal = ((uint32_t)((info.grpId << 0x01U) | (info.cpuID & 0x01U)));
 
-#if defined (BUILD_MCU1_0) || defined (SCICLIENT_MERGED)
-struct tisci_local_rm_boardcfg {
-    struct tisci_boardcfg_rm      rm_boardcfg;
-    /**< RM board configuration */
-    struct tisci_boardcfg_rm_resasg_entry resasg_entries[TISCI_RESASG_ENTRIES_MAX];
-    /**< Resource Assignment Entries */
-};
-#endif
-
-#ifdef __cplusplus
+    return (retVal);
 }
 #endif
-
-#endif /* #ifndef SCICLIENT_DEFAULTBOARDCFG_ */
-
