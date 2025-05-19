@@ -48,7 +48,7 @@ extern "C" {
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
 #define NUM_BIST_TESTS                                 (7U)
 #elif defined(SOC_J721S2)
 #define NUM_BIST_TESTS                                 (6U)
@@ -91,7 +91,7 @@ extern "C" {
 #define PLL25_LOCKKEY1                                 (0x00699014U)
 #define PLL26_LOCKKEY0                                 (0x0069A010U)
 #define PLL26_LOCKKEY1                                 (0x0069A014U)
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
 #define PLL27_LOCKKEY0                                 (0x0069B010U)
 #define PLL27_LOCKKEY1                                 (0x0069B014U)
 #define PLL28_LOCKKEY0                                 (0x0069C010U)
@@ -102,7 +102,7 @@ extern "C" {
 #if defined (SOC_J721S2)
 #define J721S2_DEV_MAIN2WKUPMCU_VD                     (181U)
 #define J721S2_DEV_WKUPMCU2MAIN_VD                     (366U)
-#elif defined (SOC_J784S4)
+#elif defined (SOC_J784S4) || defined (SOC_J742S2)
 #define J784S4_DEV_MAIN2WKUPMCU_VD                     (244U)
 #define J784S4_DEV_WKUPMCU2MAIN_VD                     (408U)
 #endif

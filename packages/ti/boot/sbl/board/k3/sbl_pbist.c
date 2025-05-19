@@ -57,6 +57,8 @@
 #include <bist_core_defs.h>
 #if defined(SOC_J784S4)
 #include <ti/board/src/j784s4_evm/include/board_utils.h>
+#elif defined(SOC_J742S2)
+#include <ti/board/src/j742s2_evm/include/board_utils.h>
 #elif defined(SOC_J721S2)
 #include <ti/board/src/j721s2_evm/include/board_utils.h>
 #endif
@@ -192,7 +194,7 @@ static s32 j721s2_sys_reset_handler(domgrp_t domain)
     }
     return ret;
 }
-#elif defined (SOC_J784S4)
+#elif defined (SOC_J784S4) || defined (SOC_J742S2)
 static s32 j784s4_sys_reset_handler(domgrp_t domain)
 {
 	struct device *dev;
@@ -298,7 +300,7 @@ int32_t SBL_swResetMainDomain(void)
 #if defined (SOC_J721S2)
     /* Custom Main Domain Reset sequence for J721S2 */
     retVal = j721s2_sys_reset_handler(DEVGRP_01);
-#elif defined (SOC_J784S4)
+#elif defined (SOC_J784S4) || defined (SOC_J742S2)
     /* Custom Main Domain Reset sequence for J784S4 */
     retVal = j784s4_sys_reset_handler(DEVGRP_01);
 #endif
@@ -445,7 +447,7 @@ void SBL_unlockPllMmrs(void)
     HW_WR_REG32(PLL25_LOCKKEY1, KICK1_UNLOCK);
     HW_WR_REG32(PLL26_LOCKKEY0, KICK0_UNLOCK);
     HW_WR_REG32(PLL26_LOCKKEY1, KICK1_UNLOCK);
-#if defined (SOC_J784S4)
+#if defined (SOC_J784S4) || defined (SOC_J742S2)
     HW_WR_REG32(PLL27_LOCKKEY0, KICK0_UNLOCK);
     HW_WR_REG32(PLL27_LOCKKEY1, KICK1_UNLOCK);
     HW_WR_REG32(PLL28_LOCKKEY0, KICK0_UNLOCK);
@@ -458,7 +460,7 @@ void SBL_bistMainDomainReset(void)
     Sciclient_DefaultBoardCfgInfo_t boardCfgInfo;
     int32_t status = CSL_EFAIL;
 
-    #if defined(SOC_J784S4)
+    #if defined(SOC_J784S4) || defined(SOC_J742S2)
     uint32_t PBIST_INSTANCES[NUM_BIST_TESTS]= {
         PBIST_INSTANCE_CODEC,
         PBIST_INSTANCE_MAININFRA_1,

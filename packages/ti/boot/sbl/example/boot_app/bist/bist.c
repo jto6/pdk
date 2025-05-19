@@ -146,7 +146,7 @@ void BootApp_bistFxn(void)
 
         for (i = 0; i < num_pbists_pre_boot; i++)
         {
-            #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)
+            #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
             /* Run test on selected instance */
             testResult = BootApp_pbistRunTest(pbist_pre_boot_stage[i],(uint8_t)PBIST_TEST_POSITIVE);
             /* Convert signed return value (with -1 = failure and 0 = pass) to become
@@ -210,7 +210,7 @@ void BootApp_bistFxn(void)
             {
                 BootApp_pbistClecConfig(pbist_array[i]);
 
-                #if defined (SOC_J784S4)
+                #if defined (SOC_J784S4) || defined (SOC_J742S2)
                 /* Main Infra0/1, NAVSS and MSMC should be run in SBL, if Boot App is running in DDR */
                 if((i==2)||(i==6)||(i==7)||(i==25))
                 {
@@ -336,7 +336,7 @@ void BootApp_bistFxn(void)
 #if defined(GATHER_BIST_STAGE_DETAILS)
             for (i = 0; i < num_pbists_per_boot_stage[j]; i++)
             {
-            #if defined(SOC_J784S4)
+            #if defined(SOC_J784S4) || defined(SOC_J742S2)
                 /* Main Infra0/1, NAVSS and MSMC should be run in SBL, if Boot App is running in DDR */
                 if((i==2)||(i==6)||(i==7)||(i==25))
                 {

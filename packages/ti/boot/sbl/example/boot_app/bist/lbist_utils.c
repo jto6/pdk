@@ -44,6 +44,9 @@
 #include <stdint.h>
 #include <string.h>
 #include <sdl_types.h>
+#if defined (SOC_J742S2)
+#include <lbist/soc/j784s4/sdl_lbist.h>
+#endif
 #include <src/sdl/sdl_lbist.h>
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/drv/uart/UART_stdio.h>

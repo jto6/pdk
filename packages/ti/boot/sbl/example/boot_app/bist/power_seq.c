@@ -47,7 +47,7 @@
 #include <ti/drv/uart/UART_stdio.h>
 #include <ti/drv/sciclient/sciclient.h>
 
-#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2)|| defined (SOC_J784S4)
+#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2)|| defined (SOC_J784S4) || defined (SOC_J742S2)
 #include "armv8_power_utils.h"
 #include "power_seq.h"
 #endif
@@ -104,7 +104,7 @@ int32_t BootApp_customPrepareForPowerUpSequence(uint8_t processorId)
         case (SCICLIENT_PROC_ID_A72SS0_CORE0):
             status = BootApp_armv8PowerPrepareForPowerUpSequence(processorId);
             break;
-#elif defined (SOC_J784S4)
+#elif defined (SOC_J784S4) || defined (SOC_J742S2)
         case (SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE0_0):
         case (SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE0_0):
             status = BootApp_armv8PowerPrepareForPowerUpSequence(processorId);
@@ -131,7 +131,7 @@ int32_t BootApp_customPowerDownSequence(uint8_t processorId)
         case (SCICLIENT_PROC_ID_A72SS0_CORE0):
             status = BootApp_armv8PowerDownSequence(processorId);
             break;
-#elif defined (SOC_J784S4)
+#elif defined (SOC_J784S4) || defined (SOC_J742S2)
         case (SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS0_CORE0_0):
         case (SCICLIENT_PROC_ID_COMPUTE_CLUSTER_J7AHP0_A72SS1_CORE0_0):
             status = BootApp_armv8PowerDownSequence(processorId);

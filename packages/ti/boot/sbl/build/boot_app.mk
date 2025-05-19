@@ -107,26 +107,28 @@ ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
     INCDIR += $(SDL_INSTALL_PATH)/
     INCDIR += $(SDL_INSTALL_PATH)/src/sdl
     INCDIR += $(SDL_INSTALL_PATH)/include
-    INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC)
+    INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC_DIR)
     INCDIR += $(SDL_INSTALL_PATH)/osal/
     INCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
     INCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
-    INCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+    INCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC_DIR)/
     INCDIR += $(SDL_INSTALL_PATH)/src/ip/r5
 
     # SDL Integration
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
     SRCS_COMMON += boot_app_osal_wrap.c
     SRCS_COMMON += bist.c bist_core_defs.c
     SRCS_COMMON += lbist_utils.c lbist_defs.c
     SRCS_COMMON += pbist_utils.c pbist_defs.c
     SRCS_COMMON += power_seq.c armv8_power_utils.c
-    SRCS_COMMON += vtm.c event_trigger.c
-    SRCS_COMMON += pok.c
-    SRCS_COMMON += tog.c
-    SRCS_ASM_COMMON += tog_utils.asm
+    ifneq ($(SOC), j742s2)
+        SRCS_COMMON += vtm.c event_trigger.c
+        SRCS_COMMON += pok.c
+        SRCS_COMMON += tog.c
+        SRCS_ASM_COMMON += tog_utils.asm
+    endif
     ifeq ($(SOC), j721s2)
         SRCS_COMMON += ecc.c soc_ecc_func.c
         SRCS_ASM_COMMON += sdl_arm_r5_mpu.asm sdl_arm_r5_pmu.asm
@@ -134,10 +136,12 @@ ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
 
     # PDK Include Files
     INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
-    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
-    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
-    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
-    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
+    INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC_DIR)/bist
+    ifneq ($(SOC), j742s2)
+        INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
+        INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
+        INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
+    endif
     ifeq ($(SOC), j721s2)
         INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/ecc/soc/$(SOC)
     endif
@@ -145,17 +149,19 @@ ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
     # SDL Source File Paths
     SRCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
     SRCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
-    SRCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+    SRCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC_DIR)/
     ifeq ($(SOC), j721s2)
         SRCDIR += $(SDL_INSTALL_PATH)/src/ip/r5/src
     endif
 
     # PDK Source File Paths
     SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
-    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
-    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
-    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
-    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
+    SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC_DIR)/bist
+    ifneq ($(SOC), j742s2)
+        SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/vtm
+        SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/pok
+        SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/tog
+    endif
     ifeq ($(SOC), j721s2)
         SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/ecc/soc/$(SOC)
         SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/ecc

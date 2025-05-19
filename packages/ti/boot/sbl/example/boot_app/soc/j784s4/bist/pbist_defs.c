@@ -44,6 +44,12 @@
 #include <stdint.h>
 #include <sdl_types.h>
 #include <soc.h>
+#if defined(SOC_J742S2)
+#include <sdlr_soc.h>
+#include <src/ip/pbist/V0/sdlr_pbist.h>
+#include <src/ip/pbist/V0/sdl_ip_pbist.h>
+#include <pbist/soc/j784s4/sdl_pbist.h>
+#endif
 #include <src/ip/sdl_ip_pbist.h>
 #include <src/sdl/sdl_pbist.h>
 #include <ti/csl/csl_clec.h>

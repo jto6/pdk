@@ -80,9 +80,11 @@
 #if defined(SDL_SAFETY_TASK_ENABLED)
 #include <osal/sdl_osal.h>
 #include "bist.h"
+#if !defined(SOC_J742S2)
 #include "vtm.h"
 #include "pok.h"
 #include "tog.h"
+#endif
 #if defined(ECC_ENABLED)
 #include "ecc.h"
 #endif

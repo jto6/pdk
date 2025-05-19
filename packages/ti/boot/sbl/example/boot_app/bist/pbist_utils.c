@@ -44,6 +44,11 @@
 #include <stdint.h>
 #include <string.h>
 #include <sdl_types.h>
+#if defined (SOC_J742S2)
+#include <src/ip/pbist/V0/sdlr_pbist.h>
+#include <src/ip/pbist/V0/sdl_ip_pbist.h>
+#include <pbist/soc/j784s4/sdl_pbist.h>
+#endif
 #include <src/sdl/sdl_pbist.h>
 #include <ti/csl/csl_rat.h>
 #include <ti/csl/soc.h>
@@ -106,7 +111,7 @@
 
 /* BootApp_pbistSetFirewall: Sets firewall settings to be able to access CLEC registers */
 
-#if defined(SOC_J721E) || defined(SOC_J721S2)|| defined(SOC_J784S4)
+#if defined(SOC_J721E) || defined(SOC_J721S2)|| defined(SOC_J784S4) || defined(SOC_J742S2)
 
 
 static int32_t BootApp_pbistSetFirewall(void)
@@ -123,7 +128,7 @@ static int32_t BootApp_pbistSetFirewall(void)
 	#if defined(SOC_J721S2)
 	request.fwl_id       = (uint32_t)CSL_STD_FW_NAVSS0_VIRTSS_NB_SLV0_MEM0_ID;
 	#endif
-	#if defined(SOC_J784S4)
+	#if defined(SOC_J784S4) || defined(SOC_J742S2)
 	request.fwl_id       = (uint32_t)CSL_STD_FW_NAVSS0_VIRTSS_NB_SLV0_MEM0_ID;
 	#endif	
 	request.region = (uint32_t) 1U; /* Pick up any unused region : 1 */
@@ -219,7 +224,7 @@ int32_t SDL_OSAL_getClecOutputEvent(uint32_t *clecOutputEvt)
 #if defined(SOC_J721E) || defined(SOC_J721S2)
     *clecOutputEvt = CSLR_COMPUTE_CLUSTER0_CLEC_MSMC_EVENT_IN_COMPUTE_CLUSTER0_CORE_CORE_MSMC_INTR_12;
 #endif
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     *clecOutputEvt = 12;
 #endif	
     return retVal;
@@ -322,7 +327,7 @@ int32_t BootApp_pbistClecConfig(uint32_t instance)
     }
     return status;
 #endif
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     SDL_ErrType_t status = SDL_EFAIL;
     CSL_ClecEventConfig evtCfg;
     int32_t retValue = 0;
@@ -499,7 +504,7 @@ int32_t BootApp_pbistClecConfig(uint32_t instance)
    for C7x & A72 */
 int32_t BootApp_pbistCommonInit(void)
 {
- #if defined(SOC_J721E) || defined(SOC_J721S2)|| defined(SOC_J784S4)
+ #if defined(SOC_J721E) || defined(SOC_J721S2)|| defined(SOC_J784S4) || defined(SOC_J742S2)
     CSL_ErrType_t status;
     /* Add firewall entry to gain access to CLEC registers */
     status = BootApp_pbistSetFirewall();
@@ -549,7 +554,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
     uint64_t prepTime, diffTime, restoreTime;
 #endif
 
-    #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)
+    #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
         UART_printf("\n Starting PBIST test on %s, index %d...\n",
                     PBIST_TestHandleArray[instanceId].testName,
                     instanceId);
@@ -639,7 +644,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 
-#if defined (SOC_J784S4)
+#if defined (SOC_J784S4) || defined (SOC_J742S2)
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded))
     {
         if ((PBIST_TestHandleArray[instanceId].thirdCoreNeeded)
@@ -727,7 +732,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 		
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded))
     {
         if ((PBIST_TestHandleArray[instanceId].thirdCoreNeeded)
@@ -859,7 +864,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
                           && (PBIST_TestHandleArray[instanceId].tisciThDeviceId != 0U))
     {
@@ -994,7 +999,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
                           && (PBIST_TestHandleArray[instanceId].tisciThDeviceId != 0U))
     {
@@ -1149,7 +1154,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 #ifdef POWERUP_CORES_BEFORE_TEST
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
                           && (PBIST_TestHandleArray[instanceId].tisciFoDeviceId != 0U))
     {
@@ -1260,7 +1265,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 
-#ifndef SOC_J784S4
+#if !defined(SOC_J784S4) && !defined(SOC_J742S2)
         /**--- Step 4f: Power off of Auxilliary modules needed to run test */
         if (testResult == 0)
         {
@@ -1345,7 +1350,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
                  testResult = -1;
             }
         }
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     /* Take Third core out of local reset */
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
                           && (PBIST_TestHandleArray[instanceId].tisciThDeviceId != 0U))
@@ -1432,7 +1437,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded))
     {
         if ((PBIST_TestHandleArray[instanceId].thirdCoreNeeded)
@@ -1523,7 +1528,7 @@ int32_t BootApp_pbistRunTest(uint32_t instanceId, uint8_t test)
             }
         }
 
-#if defined(SOC_J784S4)
+#if defined(SOC_J784S4) || defined(SOC_J742S2)
     if (testResult == 0)
     {
         if ((PBIST_TestHandleArray[instanceId].thirdCoreNeeded)

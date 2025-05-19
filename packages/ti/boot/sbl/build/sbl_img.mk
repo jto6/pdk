@@ -71,7 +71,7 @@ else ifeq ($(RAT), 1)
   APP_NAME = sbl_cust_rat_main_ocm_img
   LOCAL_APP_NAME = sbl_cust_rat_main_ocm_img_$(CORE)
 else ifeq ($(SBL_ENABLE_BIST), yes)
-  APP_NAME = sbl_$(BOOTMODE)_bist_img
+  APP_NAME = sbl_$(BOOTMODE)_bist_img$(HS_FS_SUFFIX)
   LOCAL_APP_NAME=sbl_$(BOOTMODE)_bist_img_$(CORE)
 else
   APP_NAME = sbl_$(SECURE_HSM_BOOT_SUFFIX)$(BOOTMODE)$(OSPI_NAND_SUFFIX)$(EMMC_SUFFIX)_img$(COMBINE_SUFFIX)$(HLOS_SUFFIX)$(HS_SUFFIX)$(HS_FS_SUFFIX)
@@ -234,24 +234,24 @@ ifeq ($(SBL_ENABLE_BIST), yes)
   INCDIR += $(SDL_INSTALL_PATH)/
   INCDIR += $(SDL_INSTALL_PATH)/src/sdl
   INCDIR += $(SDL_INSTALL_PATH)/include
-  INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC)
+  INCDIR += $(SDL_INSTALL_PATH)/include/soc/$(SOC_DIR)
   INCDIR += $(SDL_INSTALL_PATH)/osal/
   INCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
   INCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
-  INCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+  INCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC_DIR)/
   INCDIR += $(SDL_INSTALL_PATH)/src/ip/r5
 
   # PDK Include File Paths
   INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
-  INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+  INCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC_DIR)/bist
 
   # RM_PM Include File Paths
-ifeq ($(SOC), j721s2)
+ifeq ($(SOC_DIR), j721s2)
   INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/soc/V4/
   INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/soc/j721s2/include/soc/j721s2/
   INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/include/soc/j721s2/
   INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/soc/j721s2/include/
-else ifeq ($(SOC), j784s4)
+else ifeq ($(SOC_DIR), j784s4)
   INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/soc/V6/
   INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/pm/soc/j784s4/include/soc/j784s4/
   INCDIR += $(PDK_INSTALL_PATH)/ti/drv/sciclient/src/rm_pm_hal/include/soc/j784s4/
@@ -264,17 +264,17 @@ endif
   # SDL Source File Paths
   SRCDIR += $(SDL_INSTALL_PATH)/bist/pbist/
   SRCDIR += $(SDL_INSTALL_PATH)/bist/lbist/
-  SRCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC)/
+  SRCDIR += $(SDL_INSTALL_PATH)/bist/soc/$(SOC_DIR)/
 
   # PDK Source File Paths
   SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app
   SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/bist
-  SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC)/bist
+  SRCDIR += $(PDK_SBL_COMP_PATH)/example/boot_app/soc/$(SOC_DIR)/bist
 
   # SDL Integration
-  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
-  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
-  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
+  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
+  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
+  EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
   SRCS_COMMON += boot_app_osal_wrap.c
   SRCS_COMMON += sbl_pbist.c
   SRCS_COMMON += bist.c bist_core_defs.c

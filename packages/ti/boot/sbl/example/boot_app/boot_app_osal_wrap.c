@@ -42,6 +42,9 @@
 /* ========================================================================== */
 
 #include <stdio.h>
+#if defined (SOC_J742S2)
+#include <sdlr_soc.h>
+#endif
 #include <soc.h>
 #include <ti/osal/osal.h>
 #include <osal/sdl_osal.h>
@@ -181,7 +184,7 @@ void* BootApp_addrTranslate(uint64_t addr, uint32_t size)
         (addr == SDL_COMPUTE_CLUSTER0_MPU_PBIST0_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_DSP0_PBIST_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_DSP1_PBIST_BASE))
-#elif defined(SOC_J784S4)
+#elif defined(SOC_J784S4) || defined(SOC_J742S2)
     if ((addr == SDL_COMPUTE_CLUSTER0_VBUSP4_CFG_MSMC_PBIST0_CFG_MSMC_PBIST0_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_VBUSP_CFG0_CFG_ARM_PBIST0_0_BASE) ||
         (addr == SDL_COMPUTE_CLUSTER0_VBUSP_CFG0_CFG_ARM_PBIST0_1_BASE) ||
@@ -276,7 +279,7 @@ void* BootApp_addrTranslate(uint64_t addr, uint32_t size)
                                             index = 9;
                     }
                     break;
-#elif defined(SOC_J784S4)
+#elif defined(SOC_J784S4) || defined(SOC_J742S2)
                 case SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR0_BASE:
                 case SDL_COMPUTE_CLUSTER0_MSMC_ECC_AGGR1_BASE:
                 case SDL_COMPUTE_CLUSTER0_VBUSP_MSMC_DDR_0_ECC_AGGR_CFG_MSMC_ECC2_BASE:
