@@ -726,7 +726,6 @@ int32_t PBIST_DSSAuxInitRestore(bool init)
 {
     int32_t testResult = 0;
     uint32_t value;
-    static uint8_t dssaux_apicalled = 0;
     uint32_t *common_m = (uint32_t *)(CSL_DSS0_DISPC_0_COMMON_M_BASE);
 
     uint32_t *vp2 = (uint32_t *)(CSL_DSS0_VP2_BASE);
@@ -739,9 +738,8 @@ int32_t PBIST_DSSAuxInitRestore(bool init)
     uint32_t *vid4 = (uint32_t *)(SDL_DSS0_VIDL2_BASE);
 
 
-    if (init==TRUE && dssaux_apicalled == 0)
+    if (init==TRUE)
     {
-        dssaux_apicalled = 1;
         *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK3_KICK0)) = KICK0_UNLOCK_VAL;
         *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK3_KICK1)) = KICK1_UNLOCK_VAL;
         *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_PBIST_EN)) = 0xFFFFFFFF;
@@ -775,6 +773,11 @@ int32_t PBIST_DSSAuxInitRestore(bool init)
         CSL_REG32_FINS(&((CSL_dss_common_mRegs*)(common_m))->DISPC_CONNECTIONS, DSS_COMMON_M_DISPC_CONNECTIONS_DPI_0_CONN, 4);
 
         CSL_REG32_FINS(&((CSL_dss_vp1Regs*)(vp2))->CONTROL, DSS_VP1_CONTROL_ENABLE, 1);
+    }
+    else
+    {
+        CSL_REG32_FINS(&((CSL_dss_vidl1Regs*)(vid2))->ATTRIBUTES, DSS_VIDL1_ATTRIBUTES_ENABLE, 0);
+        CSL_REG32_FINS(&((CSL_dss_vp1Regs*)(vp2))->CONTROL, DSS_VP1_CONTROL_ENABLE, 0);
     }
 
     return testResult;
