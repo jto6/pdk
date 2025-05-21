@@ -309,7 +309,7 @@ static int32_t DMApp_devicesWithDependencyTest()
     {
         int32_t status1 = CSL_PASS;
 
-        for(uint32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+        for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
         {
             int32_t status = CSL_PASS;
             uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
@@ -326,7 +326,7 @@ static int32_t DMApp_devicesWithDependencyTest()
 
         if(CSL_PASS == status1)
         {
-            for(uint32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+            for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
             {
                 uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
                 int32_t status = CSL_PASS;
@@ -352,7 +352,7 @@ static int32_t DMApp_devicesWithDependencyTest()
 
         if(CSL_PASS == status1)
         {
-            for(uint32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+            for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
             {
                 uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
                 int32_t status = CSL_PASS;
@@ -403,7 +403,7 @@ static int32_t DMApp_devicesWithDependencyTest()
 
         if(CSL_PASS == status1)
         {
-            for(uint32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+            for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
             {
                 int32_t status = CSL_PASS;
                 uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
@@ -434,7 +434,7 @@ static int32_t DMApp_devicesWithDependencyTest()
         {
             Board_initCfg cfg = BOARD_INIT_UART_STDIO;
             Board_init(cfg);
-            for(uint32_t k = gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size-1; k >= 0; k--)
+            for(int32_t k = gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size-1; k >= 0; k--)
             {
                 if(buffer[k] != 0)
                 {
@@ -459,7 +459,7 @@ static int32_t DMApp_devicesWithDependencyTest()
 
     for(uint32_t i = 0; i < gDMAppDevicesWithDependencySize;i++)
     {
-        for(uint32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+        for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
         {
             uint32_t status = CSL_PASS;
             uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
