@@ -2728,7 +2728,7 @@ static MMCSD_Error MMCSD_v2_initEmmc(MMCSD_Handle handle)
         if (MMCSD_OK == ret)
         {
             /* Wait untill device is ready for next transfer */
-            mmcsd_check_transfer_ready(handle);
+            ret = mmcsd_check_transfer_ready(handle);
         }
         if (MMCSD_OK == ret)
         {
@@ -2746,7 +2746,7 @@ static MMCSD_Error MMCSD_v2_initEmmc(MMCSD_Handle handle)
         if (MMCSD_OK == ret)
         {
             /* Wait untill device is ready for next transfer */
-            mmcsd_check_transfer_ready(handle);
+            ret = mmcsd_check_transfer_ready(handle);
         }
     }
 #ifndef MMCSD_SUPPORT_MMC_HS400_DISABLED
