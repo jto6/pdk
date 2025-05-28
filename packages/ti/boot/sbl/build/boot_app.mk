@@ -115,9 +115,9 @@ ifeq ($(SDL_SAFETY_TASK_ENABLED),yes)
     INCDIR += $(SDL_INSTALL_PATH)/src/ip/r5
 
     # SDL Integration
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
-    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC_DIR)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/osal/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_osal.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/ip/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_ip.$(LIBEXT)
+    EXT_LIB_LIST_COMMON += $(SDL_INSTALL_PATH)/binary/src/sdl/lib/$(SOC)/r5f/$(BUILD_PROFILE)/sdl_api.$(LIBEXT)
     SRCS_COMMON += boot_app_osal_wrap.c
     SRCS_COMMON += bist.c bist_core_defs.c
     SRCS_COMMON += lbist_utils.c lbist_defs.c
