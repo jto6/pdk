@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) Texas Instruments Incorporated 2018-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -210,20 +210,47 @@ void Udma_initDrvHandle(Udma_DrvHandle drvHandle)
      * All interrupt related config should be based on core and not
      * based on NAVSS instance
      */
-#if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1)
-    /* IA config init */
-    pIaRegs = &drvHandle->iaRegs;
-    pIaRegs->pCfgRegs       = (CSL_intaggr_cfgRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_CFG_BASE;
-    pIaRegs->pImapRegs      = (CSL_intaggr_imapRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_IMAP_BASE;
-    pIaRegs->pIntrRegs      = (CSL_intaggr_intrRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_INTR_BASE;
-    pIaRegs->pL2gRegs       = (CSL_intaggr_l2gRegs *) UDMA_MCU_NAVSS0_PAR_UDMASS_UDMASS_INTA0_CFG_L2G_BASE;
-    pIaRegs->pMcastRegs     = (CSL_intaggr_mcastRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_MCAST_BASE;
-    pIaRegs->pGcntCfgRegs   = (CSL_intaggr_gcntcfgRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_GCNT_BASE;
-    pIaRegs->pGcntRtiRegs   = (CSL_intaggr_gcntrtiRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_GCNTRTI_BASE;
-    CSL_intaggrGetCfg(pIaRegs);
+#if defined (BUILD_MCU)
+    CSL_ArmR5CPUInfo cpuInfo;
+    CSL_armR5GetCpuID(&cpuInfo);
 
-    drvHandle->devIdIa      = TISCI_DEV_MCU_NAVSS0_UDMASS_INTA_0;
-    drvHandle->devIdIr      = TISCI_DEV_MCU_NAVSS0_INTR_0;
+    /* If MCU_1_0 or MCU_1_1 execute these */
+    if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_0)
+    {
+        /* IA config init */
+        pIaRegs = &drvHandle->iaRegs;
+        pIaRegs->pCfgRegs       = (CSL_intaggr_cfgRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_CFG_BASE;
+        pIaRegs->pImapRegs      = (CSL_intaggr_imapRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_IMAP_BASE;
+        pIaRegs->pIntrRegs      = (CSL_intaggr_intrRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_INTR_BASE;
+        pIaRegs->pL2gRegs       = (CSL_intaggr_l2gRegs *) UDMA_MCU_NAVSS0_PAR_UDMASS_UDMASS_INTA0_CFG_L2G_BASE;
+        pIaRegs->pMcastRegs     = (CSL_intaggr_mcastRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_MCAST_BASE;
+        pIaRegs->pGcntCfgRegs   = (CSL_intaggr_gcntcfgRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_GCNT_BASE;
+        pIaRegs->pGcntRtiRegs   = (CSL_intaggr_gcntrtiRegs *) UDMA_MCU_NAVSS0_UDMASS_INTA0_GCNTRTI_BASE;
+        CSL_intaggrGetCfg(pIaRegs);
+
+        drvHandle->devIdIa      = TISCI_DEV_MCU_NAVSS0_UDMASS_INTA_0;
+        drvHandle->devIdIr      = TISCI_DEV_MCU_NAVSS0_INTR_0;
+    }
+    else
+    {
+        /* IA config init */
+        pIaRegs = &drvHandle->iaRegs;
+        pIaRegs->pCfgRegs       = (CSL_intaggr_cfgRegs *) UDMA_NAVSS0_UDMASS_INTA0_CFG_BASE;
+        pIaRegs->pImapRegs      = (CSL_intaggr_imapRegs *) UDMA_NAVSS0_UDMASS_INTA0_IMAP_BASE;
+        pIaRegs->pIntrRegs      = (CSL_intaggr_intrRegs *) UDMA_NAVSS0_UDMASS_INTA0_CFG_INTR_BASE;
+        pIaRegs->pL2gRegs       = (CSL_intaggr_l2gRegs *) UDMA_NAVSS0_UDMASS_INTA0_CFG_L2G_BASE;
+        pIaRegs->pMcastRegs     = (CSL_intaggr_mcastRegs *) UDMA_NAVSS0_UDMASS_INTA0_CFG_MCAST_BASE;
+        pIaRegs->pGcntCfgRegs   = (CSL_intaggr_gcntcfgRegs *) UDMA_NAVSS0_UDMASS_INTA0_CFG_GCNTCFG_BASE;
+        pIaRegs->pGcntRtiRegs   = (CSL_intaggr_gcntrtiRegs *) UDMA_NAVSS0_UDMASS_INTA0_CFG_GCNTRTI_BASE;
+        CSL_intaggrGetCfg(pIaRegs);
+
+        drvHandle->devIdIa      = TISCI_DEV_NAVSS0_UDMASS_INTA_0;
+        drvHandle->devIdIr      = TISCI_DEV_NAVSS0_INTR_ROUTER_0;
+    #if (UDMA_SOC_CFG_CLEC_PRESENT == 1)
+        drvHandle->clecRtMap    = CSL_CLEC_RTMAP_DISABLE;
+        drvHandle->clecOffset   = 0U;
+    #endif
+    }
 #else
     /* IA config init */
     pIaRegs = &drvHandle->iaRegs;
@@ -329,8 +356,18 @@ uint32_t Udma_getGlobalEventOffset(void)
     uint32_t globalEventOffset = 0U;
 
     /* Global Events(SEVI) Offset - Tied to cores and not based on NAVSS instance */
-#if defined (BUILD_MCU1_0) || defined (BUILD_MCU1_1)
-    globalEventOffset = CSL_NAVSS_GEM_MCU_UDMA_INTA0_SEVI_OFFSET;
+#if defined (BUILD_MCU)
+    CSL_ArmR5CPUInfo cpuInfo;
+    CSL_armR5GetCpuID(&cpuInfo);
+
+    if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_0)
+    {
+        globalEventOffset = CSL_NAVSS_GEM_MCU_UDMA_INTA0_SEVI_OFFSET;
+    }
+    else
+    {
+        globalEventOffset = CSL_NAVSS_GEM_MAIN_UDMA_INTA0_SEVI_OFFSET;
+    }
 #else
     globalEventOffset = CSL_NAVSS_GEM_MAIN_UDMA_INTA0_SEVI_OFFSET;
 #endif
@@ -342,20 +379,35 @@ uint32_t Udma_getCoreId(void)
 {
     uint32_t coreId = UDMA_CORE_ID_INVALID;
 
+#if defined (BUILD_MCU)
+    CSL_ArmR5CPUInfo cpuInfo;
+    CSL_armR5GetCpuID(&cpuInfo);
+
+    if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_0)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            coreId = UDMA_CORE_ID_MCU1_0;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            coreId = UDMA_CORE_ID_MCU1_1;
+        }
+    }
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            coreId = UDMA_CORE_ID_MCU2_0;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            coreId = UDMA_CORE_ID_MCU2_1;
+        }
+    }
+#endif
 #if defined (BUILD_MPU1_0)
     coreId = UDMA_CORE_ID_MPU1_0;
-#endif
-#if defined (BUILD_MCU2_0)
-    coreId = UDMA_CORE_ID_MCU2_0;
-#endif
-#if defined (BUILD_MCU2_1)
-    coreId = UDMA_CORE_ID_MCU2_1;
-#endif
-#if defined (BUILD_MCU1_0)
-    coreId = UDMA_CORE_ID_MCU1_0;
-#endif
-#if defined (BUILD_MCU1_1)
-    coreId = UDMA_CORE_ID_MCU1_1;
 #endif
 
     return (coreId);
@@ -365,20 +417,35 @@ uint16_t Udma_getCoreSciDevId(void)
 {
     uint16_t coreSciDevId = 0U;
 
+#if defined (BUILD_MCU)
+    CSL_ArmR5CPUInfo cpuInfo;
+    CSL_armR5GetCpuID(&cpuInfo);
+
+    if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_0)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            coreSciDevId = TISCI_DEV_MCU_R5FSS0_CORE0;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            coreSciDevId = TISCI_DEV_MCU_R5FSS0_CORE1;
+        }
+    }
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            coreSciDevId = TISCI_DEV_R5FSS0_CORE0;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            coreSciDevId = TISCI_DEV_R5FSS0_CORE1;
+        }
+    }
+#endif
 #if defined (BUILD_MPU1_0)
     coreSciDevId = TISCI_DEV_COMPUTE_CLUSTER0_GIC500SS;
-#endif
-#if defined (BUILD_MCU2_0)
-    coreSciDevId = TISCI_DEV_R5FSS0_CORE0;
-#endif
-#if defined (BUILD_MCU2_1)
-    coreSciDevId = TISCI_DEV_R5FSS0_CORE1;
-#endif
-#if defined (BUILD_MCU1_0)
-    coreSciDevId = TISCI_DEV_MCU_R5FSS0_CORE0;
-#endif
-#if defined (BUILD_MCU1_1)
-    coreSciDevId = TISCI_DEV_MCU_R5FSS0_CORE1;
 #endif
 
     return (coreSciDevId);

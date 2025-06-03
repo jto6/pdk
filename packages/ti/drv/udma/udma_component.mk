@@ -106,6 +106,11 @@ ifeq ($(BOARD),$(filter $(BOARD), j721e_ccqt j721e_loki j721e_hostemu j721s2_hos
 export udma_BOARD_DEPENDENCY = yes
 endif
 export udma_CORE_DEPENDENCY = yes
+ifeq ($(SOC),$(filter $(SOC), j721e j784s4 j721s2 j7200 j742s2))
+  ifneq (,$(filter mcu%,$(CORE)))
+    export udma_CORE_DEPENDENCY = no
+  endif
+endif
 udma_PKG_LIST = udma
 udma_INCLUDE = $(udma_PATH)
 export udma_SOCLIST = $(drvudma_SOCLIST)
@@ -142,6 +147,11 @@ export udma_apputils_LIBPATH = $(PDK_UDMA_COMP_PATH)/lib
 export udma_apputils_MAKEFILE = -fmakefile
 export udma_apputils_BOARD_DEPENDENCY = no
 export udma_apputils_CORE_DEPENDENCY = yes
+ifeq ($(SOC),$(filter $(SOC), j721e j784s4 j721s2 j7200 j742s2))
+  ifneq (,$(filter mcu%,$(CORE)))
+    export udma_apputils_CORE_DEPENDENCY = no
+  endif
+endif
 udma_apputils_PKG_LIST = udma_apputils
 udma_apputils_INCLUDE = $(udma_apputils_PATH)
 export udma_apputils_SOCLIST = $(drvudma_SOCLIST)

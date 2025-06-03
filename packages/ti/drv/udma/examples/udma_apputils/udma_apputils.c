@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018-2023
+ *  Copyright (c) Texas Instruments Incorporated 2018-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -48,13 +48,16 @@
 #if defined (BUILD_C7X)
 #include <ti/csl/arch/csl_arch.h>
 #endif
+#if defined (BUILD_MCU)
+#include <ti/csl/arch/r5/csl_arm_r5.h>
+#endif
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
 #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU2_0)
+#if defined (BUILD_MCU)
 #define REGION_ID (0x0)
 #define MAIN_OCM_VIRT_BASE (0xD0000000U)
 #endif
@@ -83,7 +86,7 @@
 /* ========================================================================== */
 
 #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU2_0)
+#if defined (BUILD_MCU)
 static uint32_t logBase2(uint32_t value)
 {
     uint32_t retVal = 0U;
@@ -105,16 +108,22 @@ void Udma_appMainOcmRatCfg(void)
      *  No need for RAT mapping
      */
 #else
-#if defined (BUILD_MCU2_0)
-    /* Input Address */
-    *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x44 + (REGION_ID*0x10)) = MAIN_OCM_VIRT_BASE;
-    /* Lower 32 bits Output Address */
-    *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x48 + (REGION_ID*0x10)) = (unsigned int)((CSL_MSRAM_512K0_RAM_BASE) & (0xFFFFFFFF));
-    /* Upper 32 bits Output Address */
-    *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x4C + (REGION_ID*0x10)) = (unsigned int)((CSL_MSRAM_512K0_RAM_BASE >> 32) & (0xFFFFFFFF));
-    /* Region Enable[31] + SIZE of memory[5:0] */
-    *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x40 + (REGION_ID*0x10)) = (CSL_RAT_REGION_CTRL_EN_MAX << CSL_RAT_REGION_CTRL_EN_SHIFT) |\
-                                                            (logBase2(CSL_MSRAM_512K0_RAM_SIZE) << CSL_RAT_REGION_BASE_BASE_SHIFT);
+#if defined (BUILD_MCU)
+    CSL_ArmR5CPUInfo cpuInfo;
+    CSL_armR5GetCpuID(&cpuInfo);
+
+    if ( (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1) && (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0) )
+    {
+        /* Input Address */
+        *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x44 + (REGION_ID*0x10)) = MAIN_OCM_VIRT_BASE;
+        /* Lower 32 bits Output Address */
+        *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x48 + (REGION_ID*0x10)) = (unsigned int)((CSL_MSRAM_512K0_RAM_BASE) & (0xFFFFFFFF));
+        /* Upper 32 bits Output Address */
+        *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x4C + (REGION_ID*0x10)) = (unsigned int)((CSL_MSRAM_512K0_RAM_BASE >> 32) & (0xFFFFFFFF));
+        /* Region Enable[31] + SIZE of memory[5:0] */
+        *(unsigned int *)(CSL_R5FSS0_RAT_CFG_BASE + 0x40 + (REGION_ID*0x10)) = (CSL_RAT_REGION_CTRL_EN_MAX << CSL_RAT_REGION_CTRL_EN_SHIFT) |\
+                                                                (logBase2(CSL_MSRAM_512K0_RAM_SIZE) << CSL_RAT_REGION_BASE_BASE_SHIFT);
+    }
 #endif
 #endif
 }
@@ -162,11 +171,16 @@ uint64_t Udma_appVirtToPhyFxn(const void *virtAddr, uint32_t chNum, void *appDat
     uint64_t    atcmBaseGlobal = 0U;
 
 #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU2_0)
+#if defined (BUILD_MCU)
     uint64_t    mainOcmcBaseLocal   = MAIN_OCM_VIRT_BASE;
     uint64_t    mainOcmcBaseGlobal  = CSL_MSRAM_512K0_RAM_BASE;
     uint64_t    mainOcmcSize = (512U * 1024U);
 #endif
+#endif
+
+#if defined (BUILD_MCU)
+    CSL_ArmR5CPUInfo cpuInfo;
+    CSL_armR5GetCpuID(&cpuInfo);
 #endif
 
     phyAddr = (uint64_t) virtAddr;
@@ -198,53 +212,89 @@ uint64_t Udma_appVirtToPhyFxn(const void *virtAddr, uint32_t chNum, void *appDat
 #endif
 
 #if defined (SOC_J721E)  || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU1_0)
-#if defined (SOC_J721E)
-    atcmSizeLocal = CSL_MCU_ARMSS_ATCM_SIZE;
-#else
-    atcmSizeLocal = CSL_MCU_R5FSS0_ATCM_SIZE;
-#endif
-    atcmBaseGlobal = CSL_MCU_R5FSS0_CORE0_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU1_1)
-#if defined (SOC_J721E)
-    atcmSizeLocal = CSL_MCU_ARMSS_ATCM_SIZE;
-#else
-    atcmSizeLocal = CSL_MCU_R5FSS0_ATCM_SIZE;
-#endif
-    atcmBaseGlobal = CSL_MCU_R5FSS0_CORE1_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU2_0)
-#if defined (SOC_J721E)
-    atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
-#else
-    atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
-#endif
-    atcmBaseGlobal = CSL_R5FSS0_CORE0_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU2_1)
-#if defined (SOC_J721E)
-    atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
-#else
-    atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
-#endif
-    atcmBaseGlobal = CSL_R5FSS0_CORE1_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU3_0)
-#if defined (SOC_J721E)
-    atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
-#else
-    atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
-#endif
-    atcmBaseGlobal = CSL_R5FSS1_CORE0_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU3_1)
-#if defined (SOC_J721E)
-    atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
-#else
-    atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
-#endif
-    atcmBaseGlobal = CSL_R5FSS1_CORE1_ATCM_BASE;
+#if defined (BUILD_MCU)
+
+    if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_0)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            #if defined (SOC_J721E)
+                atcmSizeLocal = CSL_MCU_ARMSS_ATCM_SIZE;
+            #else
+                atcmSizeLocal = CSL_MCU_R5FSS0_ATCM_SIZE;
+            #endif
+                atcmBaseGlobal = CSL_MCU_R5FSS0_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            #if defined (SOC_J721E)
+                atcmSizeLocal = CSL_MCU_ARMSS_ATCM_SIZE;
+            #else
+                atcmSizeLocal = CSL_MCU_R5FSS0_ATCM_SIZE;
+            #endif
+                atcmBaseGlobal = CSL_MCU_R5FSS0_CORE1_ATCM_BASE;
+
+        }
+    }
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            #if defined (SOC_J721E)
+                atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
+            #else
+                atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
+            #endif
+                atcmBaseGlobal = CSL_R5FSS0_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            #if defined (SOC_J721E)
+                atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
+            #else
+                atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
+            #endif
+                atcmBaseGlobal = CSL_R5FSS0_CORE1_ATCM_BASE;
+        }
+    }
+    #if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_2)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            #if defined (SOC_J721E)
+                atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
+            #else
+                atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
+            #endif
+                atcmBaseGlobal = CSL_R5FSS1_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            #if defined (SOC_J721E)
+                atcmSizeLocal = CSL_ARMSS_ATCM_BASE;
+            #else
+                atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
+            #endif
+                atcmBaseGlobal = CSL_R5FSS1_CORE1_ATCM_BASE;
+        }
+    }
+    #endif
+    #if defined (SOC_J784S4)
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_3)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+                atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
+                atcmBaseGlobal = CSL_R5FSS2_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+                atcmSizeLocal = CSL_R5FSS0_ATCM_SIZE; 
+                atcmBaseGlobal = CSL_R5FSS2_CORE1_ATCM_BASE;
+        }
+    }
+    #endif
 #endif
 #endif
 
@@ -275,11 +325,14 @@ uint64_t Udma_appVirtToPhyFxn(const void *virtAddr, uint32_t chNum, void *appDat
 
 
 #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU2_0)
-    if((phyAddr >= mainOcmcBaseLocal) && (phyAddr < mainOcmcBaseLocal + mainOcmcSize))
+#if defined (BUILD_MCU)
+    if ( (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1) && (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0) )
     {
-        phyAddr -= mainOcmcBaseLocal;
-        phyAddr += mainOcmcBaseGlobal;
+        if((phyAddr >= mainOcmcBaseLocal) && (phyAddr < mainOcmcBaseLocal + mainOcmcSize))
+        {
+            phyAddr -= mainOcmcBaseLocal;
+            phyAddr += mainOcmcBaseGlobal;
+        }
     }
 #endif
 #endif
@@ -299,11 +352,16 @@ void *Udma_appPhyToVirtFxn(uint64_t phyAddr, uint32_t chNum, void *appData)
     uint64_t    atcmSizeGlobal = 0U;
 
 #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU2_0)
+#if defined (BUILD_MCU)
     uint64_t    mainOcmcBaseLocal   = MAIN_OCM_VIRT_BASE;
     uint64_t    mainOcmcBaseGlobal  = CSL_MSRAM_512K0_RAM_BASE;
     uint64_t    mainOcmcSize        = (512U * 1024U);
 #endif
+#endif
+
+#if defined (BUILD_MCU)
+    CSL_ArmR5CPUInfo cpuInfo;
+    CSL_armR5GetCpuID(&cpuInfo);
 #endif
 
     /* Convert global L2RAM address to local space */
@@ -337,29 +395,63 @@ void *Udma_appPhyToVirtFxn(uint64_t phyAddr, uint32_t chNum, void *appData)
 #endif
 
 #if defined (SOC_J721E)  || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU1_0)
-    atcmSizeGlobal = CSL_MCU_R5FSS0_CORE0_ATCM_SIZE;
-    atcmBaseGlobal = CSL_MCU_R5FSS0_CORE0_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU1_1)
-    atcmSizeGlobal = CSL_MCU_R5FSS0_CORE1_ATCM_SIZE;
-    atcmBaseGlobal = CSL_MCU_R5FSS0_CORE1_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU2_0)
-    atcmSizeGlobal = CSL_R5FSS0_CORE0_ATCM_SIZE;
-    atcmBaseGlobal = CSL_R5FSS0_CORE0_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU2_1)
-    atcmSizeGlobal = CSL_R5FSS0_CORE1_ATCM_SIZE;
-    atcmBaseGlobal = CSL_R5FSS0_CORE1_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU3_0)
-    atcmSizeGlobal = CSL_R5FSS1_CORE0_ATCM_SIZE;
-    atcmBaseGlobal = CSL_R5FSS1_CORE0_ATCM_BASE;
-#endif
-#if defined (BUILD_MCU3_1)
-    atcmSizeGlobal = CSL_R5FSS1_CORE1_ATCM_SIZE;
-    atcmBaseGlobal = CSL_R5FSS1_CORE1_ATCM_BASE;
+#if defined (BUILD_MCU)
+    if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_0)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            atcmSizeGlobal = CSL_MCU_R5FSS0_CORE0_ATCM_SIZE;
+            atcmBaseGlobal = CSL_MCU_R5FSS0_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            atcmSizeGlobal = CSL_MCU_R5FSS0_CORE1_ATCM_SIZE;
+            atcmBaseGlobal = CSL_MCU_R5FSS0_CORE1_ATCM_BASE;
+        }
+    }
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            atcmSizeGlobal = CSL_R5FSS0_CORE0_ATCM_SIZE;
+            atcmBaseGlobal = CSL_R5FSS0_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            atcmSizeGlobal = CSL_R5FSS0_CORE1_ATCM_SIZE;
+            atcmBaseGlobal = CSL_R5FSS0_CORE1_ATCM_BASE;
+        }
+    }
+    #if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_2)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            atcmSizeGlobal = CSL_R5FSS1_CORE0_ATCM_SIZE;
+            atcmBaseGlobal = CSL_R5FSS1_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            atcmSizeGlobal = CSL_R5FSS1_CORE1_ATCM_SIZE;
+            atcmBaseGlobal = CSL_R5FSS1_CORE1_ATCM_BASE;
+        }
+    }
+    #endif
+    #if defined (SOC_J784S4)
+    else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_3)
+    {
+        if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0)
+        {
+            atcmSizeGlobal = CSL_R5FSS2_CORE0_ATCM_SIZE;
+            atcmBaseGlobal = CSL_R5FSS2_CORE0_ATCM_BASE;
+        }
+        else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
+        {
+            atcmSizeGlobal = CSL_R5FSS2_CORE1_ATCM_SIZE;
+            atcmBaseGlobal = CSL_R5FSS2_CORE1_ATCM_BASE;
+        }
+    }
+    #endif
 #endif
 #endif
 
@@ -394,14 +486,17 @@ void *Udma_appPhyToVirtFxn(uint64_t phyAddr, uint32_t chNum, void *appData)
     virtAddr = (void *) temp;
 
 #if defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-#if defined (BUILD_MCU2_0)
-    if((phyAddr >= mainOcmcBaseGlobal) && (phyAddr < mainOcmcBaseGlobal + mainOcmcSize))
+#if defined (BUILD_MCU)
+    if ( (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1) && (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_0) )
     {
-        phyAddr -= mainOcmcBaseGlobal;
-        phyAddr += mainOcmcBaseLocal;
+        if((phyAddr >= mainOcmcBaseGlobal) && (phyAddr < mainOcmcBaseGlobal + mainOcmcSize))
+        {
+            phyAddr -= mainOcmcBaseGlobal;
+            phyAddr += mainOcmcBaseLocal;
+        }
+        temp = (uint32_t) phyAddr;
+        virtAddr = (void *) temp;
     }
-    temp = (uint32_t) phyAddr;
-    virtAddr = (void *) temp;
 #endif
 #endif
 #endif

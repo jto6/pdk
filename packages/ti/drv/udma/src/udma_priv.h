@@ -47,6 +47,10 @@
 #include <string.h>
 #include <ti/drv/udma/udma.h>
 
+#if defined (BUILD_MCU)
+#include <ti/csl/arch/r5/csl_arm_r5.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
