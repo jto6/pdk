@@ -390,7 +390,7 @@ static void EnetIg_deinit(void)
 static int32_t EnetIg_open(EnetIg_PerCtxt *perCtxts,
                            uint32_t numPerCtxts)
 {
-    EnetUdma_Cfg *dmaCfg;
+    EnetDma_Cfg *dmaCfg;
     EnetRm_ResCfg *resCfg;
     Enet_IoctlPrms prms;
     EnetPer_AttachCoreOutArgs attachCoreOutArgs;
@@ -949,7 +949,7 @@ static int32_t EnetIg_openDma(EnetIg_PerCtxt *perCtxt)
     int32_t status = ENET_SOK;
 
     /* Open the TX channel */
-    EnetDma_initTxChParams(&txChCfg);
+    EnetUdma_initTxChParams(&txChCfg);
 
     txChCfg.hUdmaDrv = (ENET_CPSW_2G == perCtxt->enetType) ? gEnetIg.hMcuUdmaDrv : gEnetIg.hMainUdmaDrv;
     txChCfg.cbArg    = perCtxt;
@@ -987,7 +987,7 @@ static int32_t EnetIg_openDma(EnetIg_PerCtxt *perCtxt)
     /* Open the RX flow */
     if (ENET_SOK == status)
     {
-        EnetDma_initRxChParams(&rxChCfg);
+        EnetUdma_initRxFlowParams(&rxChCfg);
 
         rxChCfg.hUdmaDrv = (ENET_CPSW_2G == perCtxt->enetType) ? gEnetIg.hMcuUdmaDrv : gEnetIg.hMainUdmaDrv;
         rxChCfg.notifyCb = BoardDiag_EnetIg_rxIsrFxn;

@@ -907,7 +907,7 @@ static int8_t BoardDiag_enetLpbkOpenDma()
     /* Open the CPSW TX channel  */
     if (status == ENET_SOK)
     {
-        EnetDma_initTxChParams(&txChCfg);
+        EnetUdma_initTxChParams(&txChCfg);
 
         txChCfg.cbArg   = &gEnetLpbk;
         txChCfg.notifyCb = BoardDiag_enetLpbkTxIsrFxn;
@@ -934,7 +934,7 @@ static int8_t BoardDiag_enetLpbkOpenDma()
                                   gEnetLpbk.coreKey,
                                   gEnetLpbk.coreId,
                                   gEnetLpbk.txChNum);
-            UART_printf("EnetDma_openTxCh() failed to open: %d\n",
+            UART_printf("EnetUdma_openTxCh() failed to open: %d\n",
                                status);
         }
     }
@@ -942,7 +942,7 @@ static int8_t BoardDiag_enetLpbkOpenDma()
     /* Open the CPSW RX Channel  */
     if (status == ENET_SOK)
     {
-        EnetDma_initRxChParams(&rxChCfg);
+        EnetUdma_initRxFlowParams(&rxChCfg);
         rxChCfg.notifyCb = BoardDiag_enetLpbkRxIsrFxn;
         rxChCfg.cbArg   = &gEnetLpbk;
 
@@ -957,7 +957,7 @@ static int8_t BoardDiag_enetLpbkOpenDma()
 
         if (NULL == gEnetLpbk.hRxCh)
         {
-            UART_printf("EnetDma_openRxCh() failed to open: %d\n",
+            UART_printf("EnetUdma_openRxFlow() failed to open: %d\n",
                                status);
 
 	    /* TODO: should we close TxCh here */
@@ -1107,7 +1107,7 @@ static void BoardDiag_enetLpbkInitCpswCfg(Cpsw_Cfg *cpswCfg)
 static int8_t BoardDiag_enetLpbkOpenEnet(void)
 {
     Cpsw_Cfg cpswCfg;
-    EnetCpdma_Cfg dmaCfg;
+    EnetDma_Cfg dmaCfg;
     Enet_IoctlPrms prms;
     EnetPer_PortLinkCfg portLinkCfg;
     CpswMacPort_Cfg macCfg;
