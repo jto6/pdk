@@ -1297,7 +1297,6 @@ static void BoardDiag_enetIniParams()
  */
 static int8_t BoardDiag_cpswLoopbackTest()
 {
-    EnetOsal_Cfg osalCfg;
     EnetUtils_Cfg utilsCfg;
     Enet_IoctlPrms prms;
     int32_t status;
@@ -1313,11 +1312,10 @@ static int8_t BoardDiag_cpswLoopbackTest()
     /* Local core id */
     gEnetLpbk.coreId = EnetSoc_getCoreId();
 
-    /* Initialize Enet driver (use default OSAL and utils) */
-    Enet_initOsalCfg(&osalCfg);
+    /* Initialize Enet driver (use default utils) */
     Enet_initUtilsCfg(&utilsCfg);
     utilsCfg.print = EnetAppUtils_print;
-    Enet_init(&osalCfg, &utilsCfg);
+    Enet_init(&utilsCfg);
 
     /* Open Enet driver */
     status = BoardDiag_enetLpbkOpenEnet();

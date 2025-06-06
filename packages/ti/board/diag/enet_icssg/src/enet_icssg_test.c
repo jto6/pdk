@@ -252,15 +252,13 @@ static void EnetIg_PortSelect(void)
 
 static int32_t EnetIg_init(void)
 {
-    EnetOsal_Cfg osalCfg;
     EnetUtils_Cfg utilsCfg;
     int32_t status = ENET_SOK;
 
-    /* Initialize Enet driver (use default OSAL and utils) */
+    /* Initialize Enet driver (use default utils) */
     EnetAppUtils_print("\nInit Enet's OSAL and utils to use defaults");
-    Enet_initOsalCfg(&osalCfg);
     Enet_initUtilsCfg(&utilsCfg);
-    Enet_init(&osalCfg, &utilsCfg);
+    Enet_init(&utilsCfg);
 
     gEnetIg.coreId = EnetSoc_getCoreId();
 
@@ -378,7 +376,7 @@ static void EnetIg_deinit(void)
         EnetAppUtils_udmaclose(gEnetIg.hMcuUdmaDrv);
     }
 
-    /* Deinitialize Enet driver (use default OSAL and utils) */
+    /* Deinitialize Enet driver (use default utils) */
     EnetAppUtils_print("\nDeinit Enet driver");
     Enet_deinit();
 
