@@ -531,12 +531,8 @@ int32_t Sciclient_pmQueryModuleClkFreq(uint32_t moduleId,
     request.min_freq_hz    = (uint64_t) reqFreqHz;
     request.target_freq_hz = (uint64_t) reqFreqHz;
     request.max_freq_hz    = (uint64_t) reqFreqHz;
-    /* This is required in cases of fractional clocks with a recurring decimal */
-    if((reqFreqHz%10U) != 0U)
-    {
-        request.min_freq_hz = (uint64_t)(reqFreqHz-(reqFreqHz%10U));
-        request.max_freq_hz = (uint64_t)(request.min_freq_hz + 10UL);
-    }
+    request.min_freq_hz = (uint64_t)(reqFreqHz-(reqFreqHz%10U));
+    request.max_freq_hz = (uint64_t)(request.min_freq_hz + 10UL);
 
     /* If clockId is larger than 8-bit max, we use clk32 to specify the
      * extended clock id for the device */
