@@ -723,9 +723,106 @@ int32_t UART_dataWrite(const char *pcBuf, uint32_t ulLen)
 }
 
 /**
+ * \brief   This function converts a double value into a string.
+ *
+ * \param   fValue    The double value to be converted.
+ * \param   ulPos     The buffer position of the printed value.
+ * \param   ulNeg     The value is negative or not.
+ * \param   ulCount   Minimum number of character to be printed, otherwise padding.
+ * \param   cFill     The char to be placed between number.
+ * \param   pcBuf     Buffer storing all the numbers.
+ * \param   precision The number of decimal places to include in the string.
+ *
+ * \return Returns the count of characters written.
+ *
+ */
+static int32_t UART_convertDouble(double fValue, uint32_t ulPos, uint32_t ulNeg, uint32_t ulCount, char cFill, char *pcBuf, uint32_t precision)
+{   
+    uint32_t count = ulCount - precision - 1;
+    uint32_t neg = ulNeg;
+    uint32_t pos = ulPos;
+    uint32_t loop = 0;
+    uint32_t retVal = 0;
+    double fraction = 0.0;
+
+    /* Separate the integer and fractional parts of the double value. */
+    double integerPart = (double)(uint64_t)fValue;
+    fraction = fValue - integerPart;
+
+    /* calc exponents and reduce the count of padding characters needed. */
+    uint64_t ulValue = (uint64_t)integerPart;
+    uint64_t ulIdx;
+    for (ulIdx = 1u;(ulIdx * 10) <= ulValue; ulIdx = ulIdx * 10)
+    {
+        count--;
+    }
+
+    /* If the value is negative, reduce the count of padding characters needed. */
+    if (neg != 0U)
+    {
+        count--;
+    }
+
+    /* If the value is negative and the value is padded with zeros, then place the minus sign before the padding. */
+    if ((neg != 0U) && ((int8_t)cFill == (int8_t) '0'))
+    {
+        /* Place the minus sign in the output buffer. */
+        pcBuf[pos] = (char) '-';
+        pos++;
+
+        /* The minus sign has been placed, so turn off the negative flag. */
+        neg = 0;
+    }
+
+    /* Provide additional padding at the beginning of the string conversion if needed. */
+    if ((count > 1u) && (count < 32u))
+    {
+        for (count--; count != 0U; count--)
+        {
+            pcBuf[pos] = cFill;
+            pos++;
+        }
+    }
+
+    /* If the value is negative, then place the minus sign before the number. */
+    if (neg != 0U)
+    {
+        /* Place the minus sign in the output buffer. */
+        pcBuf[pos] = (char) '-';
+        pos++;
+    }
+
+    /* Convert the integer part into a string. */
+    for (; ulIdx != 0U; ulIdx /= 10)
+    {
+        pcBuf[pos] = g_pcHex[(ulValue / ulIdx) % 10];
+        pos++;
+    }
+
+    /* Add the decimal point. */
+    pcBuf[pos] = (char) '.';
+    pos++;
+
+    /* Convert the fractional part into a string. */
+    for (loop = 0; loop < precision; loop++)
+    {
+        fraction *= 10.0;
+        uint32_t digit = (uint32_t)fraction;
+        pcBuf[pos] = (char)(digit + '0');
+        pos++;
+        fraction -= (double)digit;
+    }
+
+    /* Write the string. */
+    retVal = UART_dataWrite(pcBuf, pos);
+
+    return retVal;
+}
+
+/**
  * \brief   This function calls to the common procedure in 
  *          uart printf. This functions writes the output in
- *          required format i.e. float, int, char etc.
+ *          required format i.e. hex, int, char etc.
  *
  * \param   ulValue The value of the resolved variable passed 
                     as argument
@@ -736,16 +833,17 @@ int32_t UART_dataWrite(const char *pcBuf, uint32_t ulLen)
  *          cFill   The char to be placed between number
  *          pcBuf   buffer storing all the numbers
  *
- * \return  0.
+ * \return  Returns the count of characters written.
  *
  */
-static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase, uint32_t ulNeg, uint32_t ulCount, char cFill, char *pcBuf);
-static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase, uint32_t ulNeg, uint32_t ulCount, char cFill, char *pcBuf)
+static int32_t UART_convertVal(uint64_t ulValue, uint32_t ulPos, uint32_t ulBase, uint32_t ulNeg, uint32_t ulCount, char cFill, char *pcBuf);
+static int32_t UART_convertVal(uint64_t ulValue, uint32_t ulPos, uint32_t ulBase, uint32_t ulNeg, uint32_t ulCount, char cFill, char *pcBuf)
 {
-    uint32_t ulIdx;
+    uint64_t ulIdx;
     uint32_t count = ulCount;
     uint32_t neg = ulNeg;
     uint32_t pos = ulPos;
+    uint32_t retVal = 0;
 
     for (ulIdx = 1u;
          (((ulIdx * ulBase) <= ulValue) &&
@@ -777,7 +875,7 @@ static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase
 
     /* Provide additional padding at the beginning of the
      * string conversion if needed. */
-    if ((count > 1u) && (count < 16u))
+    if ((count > 1u) && (count < 32u))
     {
         for (count--; count != 0U; count--)
         {
@@ -803,9 +901,9 @@ static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase
     }
 
     /* Write the string. */
-    (void)UART_dataWrite(pcBuf, pos);
+    retVal = UART_dataWrite(pcBuf, pos);
 
-    return 0;
+    return retVal;
 }
 
 /**
@@ -824,19 +922,21 @@ static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase
  * - \%d to print a decimal value
  * - \%s to print a string
  * - \%u to print an unsigned decimal value
+ * - \%l to print a unsigned long decimal value, \%lf, \%lu etc not supported
+ * - \%f to print a float value or double value
  * - \%x to print a hexadecimal value using lower case letters
  * - \%X to print a hexadecimal value using lower case letters (not upper case
  * letters as would typically be used)
  * - \%p to print a pointer as a hexadecimal value
  * - \%\% to print out a \% character
  *
- * For \%s, \%d, \%u, \%p, \%x, and \%X, an optional number may reside
+ * For \%s, \%d, \%u, \%l,\%f,\%p, \%x, and \%X, an optional number may reside
  * between the \% and the format character, which specifies the minimum number
  * of characters to use for that value; if preceded by a 0 then the extra
  * characters will be filled with zeros instead of spaces.  For example,
  * ``\%8d'' will use eight characters to print the decimal value with spaces
  * added to reach eight; ``\%08d'' will use eight characters as well but will
- * add zeroes instead of spaces.
+ * add zeroes instead of spaces. \%f also support decimal point, e.g. \%.2f, \%08.6f etc
  *
  * The type of the arguments after \e pcString must match the requirements of
  * the format string.  For example, if an integer was passed where a string
@@ -847,9 +947,10 @@ static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase
 void UART_printf(const char *pcString, ...)
 {
     uint32_t ulIdx, ulValue, ulPos, ulCount, ulBase, ulNeg;
-    char    *pcStr, pcBuf[16], cFill;
+    char    *pcStr, pcBuf[32], cFill;
     va_list  vaArgP;
     int32_t temp_var = 0;
+    uint32_t fPrecision = 6u;
     Osal_ThreadType threadType = UART_osalGetThreadType();
     const char *pStr = pcString;
 
@@ -906,6 +1007,19 @@ void UART_printf(const char *pcString, ...)
                 /* Get the next character. */
                 pStr++;
             }
+
+            /* Handle the optional precision. */
+            if(*(pStr) == '.'){
+                pStr++;
+                fPrecision = 0;
+                
+                while(*pStr >= '0' && *pStr <= '9'){
+                    fPrecision*=10;
+                    fPrecision+=((uint32_t)(*pStr)) - (uint32_t) '0';
+                    pStr++;
+                }
+            }
+
             switch (*pStr)
             {
                 /* Handle the %c command. */
@@ -1001,6 +1115,53 @@ void UART_printf(const char *pcString, ...)
 
                     /* Convert the value to ASCII. */
                     (void)UART_convertVal(ulValue, ulPos, ulBase, ulNeg, ulCount, cFill, pcBuf);
+                    
+                    break;
+                }
+
+                case (char) 'l':
+                {
+                    /* Get the value from the varargs. */
+                    uint64_t lValue = (uint64_t)va_arg(vaArgP, uint64_t);
+
+                    /* Reset the buffer position. */
+                    ulPos = 0;
+
+                    /* Set the base to 10. */
+                    ulBase = 10u;
+
+                    /* Indicate that the value is positive so that a minus sign
+                     * isn't inserted. */
+                    ulNeg = 0;
+
+                    /* Convert the value to ASCII. */
+                    (void)UART_convertVal(lValue, ulPos, ulBase, ulNeg, ulCount, cFill, pcBuf);
+                    
+                    break;
+                }
+
+                case (char) 'f':
+                {
+                    /* Get the value from the varargs. */
+                    double lfValue = (double)va_arg(vaArgP, double);
+
+                    /* Reset the buffer position. */
+                    ulPos = 0;
+
+                    /* Indicate that the value is positive so that a minus sign
+                     * isn't inserted. */
+                    if (lfValue < 0.0)
+                    {
+                        lfValue = -lfValue;
+                        ulNeg = 1u;
+                    }
+                    else
+                    {
+                        ulNeg = 0;
+                    }
+
+                    /* Convert the value to ASCII. */
+                    (void)UART_convertDouble(lfValue, ulPos, ulNeg, ulCount, cFill, pcBuf,fPrecision);
                     
                     break;
                 }
