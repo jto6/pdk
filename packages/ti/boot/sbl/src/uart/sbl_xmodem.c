@@ -245,7 +245,7 @@ int32_t SBL_uartXmodemRead(uint8_t *dest, uint32_t destsz)
         {
             if (xbuff[1] == packetno)
             {
-                register uint32_t count = destsz - len;
+                uint32_t count = destsz - len;
                 if (count > bufsz)
                 {
                     /* Remaining bytes/space (count) in destination is more than
