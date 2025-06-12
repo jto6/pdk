@@ -343,6 +343,7 @@ NOR_HANDLE Nor_ospiOpen(uint32_t norIntf, uint32_t portNum, void *params)
     OSPI_v0_HwAttrs ospiCfg;
     NOR_STATUS      retVal;
     uint32_t        data;
+    OSPI_v0_HwAttrs const *hwAttrs;
 
     /* Get the OSPI SoC configurations */
     OSPI_socGetInitCfg(SPI_OSPI_DOMAIN_MCU, portNum, &ospiCfg);
@@ -404,6 +405,10 @@ NOR_HANDLE Nor_ospiOpen(uint32_t norIntf, uint32_t portNum, void *params)
                 /* Reset device memory for all the other lines */
                 Nor_ospiResetMemory(hwHandle);
             }
+            
+			hwAttrs = (OSPI_v0_HwAttrs const *)hwHandle->hwAttrs;
+            CSL_ospiSetDualByteOpcodeMode((const CSL_ospi_flash_cfgRegs *)(hwAttrs->baseAddr),
+                                              UFALSE);
             
             /* Set read/write opcode and read dummy cycles */
             Nor_ospiSetOpcode(hwHandle);
