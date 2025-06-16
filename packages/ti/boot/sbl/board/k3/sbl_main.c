@@ -55,6 +55,9 @@
 #undef SBL_LOG_LEVEL
 #define SBL_LOG_LEVEL 3
 #endif
+#if defined(SOC_J721S2) || defined(SOC_J784S4)
+#define RAT_BASE_REGION0 (0x40F90000)
+#endif
 
 /**********************************************************************
  ************************** Internal functions ************************
@@ -367,6 +370,34 @@ int main()
 #else
     /* Load SYSFW. */
     SBL_SciClientInit(devGroup);
+#endif
+
+/* Patch for errata ID: i2437 */
+#if defined(SOC_J721S2) || defined(SOC_J784S4)
+SBL_log(SBL_LOG_MAX,"Initializing RAT for COMPUTE_CLUSTER_CFG_WRAP_0_CC_CNTRL Register ...");
+/* Register defined at 0x4D21000200 */
+*(unsigned int *)(RAT_BASE_REGION0 + 0x24) = 0xC0000000; // base/in address
+*(unsigned int *)(RAT_BASE_REGION0 + 0x28) = 0x21000000; // lower address bits
+*(unsigned int *)(RAT_BASE_REGION0 + 0x2C) = 0x0000004D; // upper address bits
+*(unsigned int *)(RAT_BASE_REGION0 + 0x20) = 0x80000010; // CTRL register
+SBL_log(SBL_LOG_MAX,"done.\n");
+
+SBL_log(SBL_LOG_MAX,"Write for COMPUTE_CLUSTER_CFG_WRAP_0_CC_CNTRL Register ...");
+/* Enables DSP_X_DEBUG_CLKEN_OVERRIDE where X is available C71x cores */
+#if defined(SOC_J721S2)
+*(unsigned int *)(0xC0000200) = 0x00000300;
+#endif
+#if defined(SOC_J784S4)
+*(unsigned int *)(0xC0000200) = 0x00000F00;
+#endif
+SBL_log(SBL_LOG_MAX,"done.\n");
+
+SBL_log(SBL_LOG_MAX,"Clearing RAT for COMPUTE_CLUSTER_CFG_WRAP_0_CC_CNTRL Register ...");
+*(unsigned int *)(RAT_BASE_REGION0 + 0x20) = 0x00000000;
+*(unsigned int *)(RAT_BASE_REGION0 + 0x24) = 0x00000000;
+*(unsigned int *)(RAT_BASE_REGION0 + 0x28) = 0x00000000;
+*(unsigned int *)(RAT_BASE_REGION0 + 0x2C) = 0x00000000;
+SBL_log(SBL_LOG_MAX,"done.\n");
 #endif
 
 #if defined (SBL_ENABLE_BIST)
