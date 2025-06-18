@@ -296,6 +296,11 @@ else
  EXE_STRIP_NAME = $(BINDIR)/$(LOCAL_APP_NAME)_$(BUILD_PROFILE_$(CORE))_strip.$(EXEEXT)
 endif
 
+ifeq ($($(APP_NAME)_TRICORE),yes)
+  EXE2_NAME = $(BINDIR)/$(APP_NAME)_mcu2_0_$(BUILD_PROFILE_$(CORE)).$(EXEEXT)
+  EXE3_NAME = $(BINDIR)/$(APP_NAME)_mcu3_0_$(BUILD_PROFILE_$(CORE)).$(EXEEXT)
+endif
+
 NUM_PROCS = 1
 
 ifeq ($(OS),Windows_NT)
@@ -329,6 +334,20 @@ ifeq ($(BUILD_PROFILE_$(CORE)), release)
 	$(ECHO) \#
 	$(RM)  $(EXE_STRIP_NAME)
 	$(STRP) -p $(EXE_NAME) -o $(EXE_STRIP_NAME)
+endif
+ifeq ($($(APP_NAME)_TRICORE),yes)
+	$(ECHO) \# Linking into $(EXE2_NAME)...
+	$(ECHO) \#
+	$(LNK) $(_LNKFLAGS) $(OBJ_PATHS_ASM) $(OBJ_PATHS_S) $(OBJ_PATHS) $(OBJ_PATHS_CPP) -Xlinker $(LNKCMD_FILE) $(EXTERNAL_LNKCMD_FILE) $(APPEND2_LNKCMD_FILE) -Xlinker --map_file=$(EXE2_NAME).map -Xlinker --output_file=$(EXE2_NAME) $(LNK_LIBS) $(RTSLIB_PATH)
+	$(ECHO) \#
+	$(ECHO) \# $(EXE2_NAME) created.
+	$(ECHO) \#
+	$(ECHO) \# Linking into $(EXE3_NAME)...
+	$(ECHO) \#
+	$(LNK) $(_LNKFLAGS) $(OBJ_PATHS_ASM) $(OBJ_PATHS_S) $(OBJ_PATHS) $(OBJ_PATHS_CPP) -Xlinker $(LNKCMD_FILE) $(EXTERNAL_LNKCMD_FILE) $(APPEND3_LNKCMD_FILE) -Xlinker --map_file=$(EXE3_NAME).map -Xlinker --output_file=$(EXE3_NAME) $(LNK_LIBS) $(RTSLIB_PATH)
+	$(ECHO) \#
+	$(ECHO) \# $(EXE3_NAME) created.
+	$(ECHO) \#
 endif
 
 ifeq ($(OS),Windows_NT)

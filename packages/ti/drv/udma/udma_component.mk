@@ -393,6 +393,22 @@ endif
 export udma_baremetal_memcpy_testapp_SBL_APPIMAGEGEN = yes
 udma_EXAMPLE_LIST += udma_baremetal_memcpy_testapp
 
+# UDMA memcpy tricore freertos test app
+export udma_memcpy_tricore_testapp_freertos_COMP_LIST = udma_memcpy_tricore_testapp_freertos
+udma_memcpy_tricore_testapp_freertos_RELPATH = ti/drv/udma/examples/udma_memcpy_tricore_test
+udma_memcpy_tricore_testapp_freertos_PATH = $(PDK_UDMA_COMP_PATH)/examples/udma_memcpy_tricore_test
+export udma_memcpy_tricore_testapp_freertos_MAKEFILE = -f makefile BUILD_OS_TYPE=freertos
+export udma_memcpy_tricore_testapp_freertos_BOARD_DEPENDENCY = yes
+export udma_memcpy_tricore_testapp_freertos_CORE_DEPENDENCY = yes
+udma_memcpy_tricore_testapp_freertos_PKG_LIST = udma_memcpy_tricore_testapp_freertos
+udma_memcpy_tricore_testapp_freertos_INCLUDE = $(udma_memcpy_tricore_testapp_freertos_PATH)
+export udma_memcpy_tricore_testapp_freertos_BOARDLIST = j721e_evm j784s4_evm j721s2_evm j7200_evm j742s2_evm
+# Compiling for mcu1_0 will make tricore appimage for mcu1_0, mcu2_0 and mcu3_0
+export udma_memcpy_tricore_testapp_freertos_$(SOC)_CORELIST = mcu1_0
+export udma_memcpy_tricore_testapp_freertos_SBL_APPIMAGEGEN = yes
+export udma_memcpy_tricore_testapp_freertos_TRICORE = yes
+udma_EXAMPLE_LIST += udma_memcpy_tricore_testapp_freertos
+
 # RTOS UDMA chaining test apps
 define UDMA_CHAINING_TESTAPP_RULE
 
