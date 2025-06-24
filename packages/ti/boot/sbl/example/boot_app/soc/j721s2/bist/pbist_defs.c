@@ -79,7 +79,7 @@
 
 #define GPU_NUM_AUX_DEVICES               3
 
-#define DSS_NUM_AUX_DEVICES               10
+#define DSS_NUM_AUX_DEVICES               7
 
 #define C7x_0_NUM_AUX_DEVICES              1
 

@@ -1656,6 +1656,10 @@ int32_t BootApp_eccFxn(void)
     Sciclient_pmSetModuleState(TISCI_DEV_MCU_ADC12FC_16FFC1, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
     UART_printf("Powering on ADC12FC_16FFC1\r\n");
 
+    /* Power on ADC12FC_16FFC0 explicitly */
+    Sciclient_pmSetModuleState(TISCI_DEV_MCU_ADC12FC_16FFC0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+    UART_printf("Powering on ADC12FC_16FFC0\r\n");
+
     if (testResult == SDL_PASS)
     {
         /* SDL osal wrapper */
