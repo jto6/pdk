@@ -2755,7 +2755,7 @@ void osal_test(void *arg0, void *arg1)
     }
 #endif /* #if !defined(BARE_METAL) && !defined (SAFERTOS) */
 
-#if defined(FREERTOS) || (defined (SAFERTOS) && defined (BUILD_MCU))
+#if defined(FREERTOS) || (defined (SAFERTOS) && defined (BUILD_MCU) && defined (configINCLUDE_RUNTIMESTATS) && (configINCLUDE_RUNTIMESTATS == 1))
     OSAL_log(" \n OSAL Load Test Starting...\n Takes about 10 seconds ...\n\n"); 
     if(BTRUE == OSAL_load_test())
     {

@@ -392,7 +392,9 @@ void vApplicationFiqHandlerHook( void )
 __attribute__((weak)) \
 void vApplicationTickHook ( void )
 {
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
     vUpdateRTSFromTick();
+#endif
 }
 
 /*-------------------------------------------------------------------------*/
@@ -400,7 +402,9 @@ void vApplicationTickHook ( void )
 __attribute__((weak)) \
 void vApplicationTaskCreateHook( const xTCB *pxNewTaskHandle )
 {
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
     vInitialiseTaskRunTimeStatistics( ( xRTS * ) pxNewTaskHandle->pvObject );
+#endif
 }
 
 /*---------------------------------------------------------------------------*/
@@ -409,6 +413,7 @@ __attribute__((weak)) \
 void vApplicationTaskSwitchHook( const xTCB *pxTCBOfTaskSwitchedOut,
                                  const xTCB *pxTCBOfTaskSwitchedIn )
 {
+#if defined (configINCLUDE_RUNTIMESTATS) && ( configINCLUDE_RUNTIMESTATS == 1 )
     /* Update the statistics for the task switching out. */
     if( NULL != pxTCBOfTaskSwitchedOut )
     {
@@ -416,6 +421,7 @@ void vApplicationTaskSwitchHook( const xTCB *pxTCBOfTaskSwitchedOut,
     }
     /* Not used for RTS. */
     ( void ) pxTCBOfTaskSwitchedIn;
+#endif
 }
 /*---------------------------------------------------------------------------*/
 
