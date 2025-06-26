@@ -349,10 +349,10 @@ ARM_STATE:
     BLX	r1
 
     ; Restore used registers, LR and SPSR before  returning. 
-    POP	{r0-r4, r12}
     POP	{LR}
     MSR	SPSR_cxsf, LR
     POP	{LR}
+    POP	{r0-r4, r12}
     MOVS	PC, LR
 
 ; FUNCTION DEF: void HwiP_prefetch_abort_handler(void)
