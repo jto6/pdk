@@ -62,6 +62,13 @@
 #define TISCI_BOARDCFG_SEC_ABI_MAJ_VALUE               0x00
 #define TISCI_BOARDCFG_SEC_ABI_MIN_VALUE               0x01
 
+#ifdef CONFIG_SMS_LITE_COPROCESSOR
+/* Size of reserved 0 substructure in sms-lite secure boardconfig */
+#define TISCI_BOARDCFG_SEC_RESV0_SIZE (8U)
+/* Size of reserved 1 substructure in sms-lite secure baordconfig */
+#define TISCI_BOARDCFG_SEC_RESV1_SIZE (10U)
+#endif
+
 /**
  * \brief Contains a unique magic number for each substructure and the size
  *      of the associated superstructure for data validation/API
@@ -317,6 +324,47 @@ struct tisci_boardcfg_sec_handover {
     uint8_t                    rsvd[4];
 };
 
+#ifdef CONFIG_SMS_LITE_COPROCESSOR
+
+/**
+ * \brief Secure boardconfig reserved structure 0.
+ */
+struct tisci_boardcfg_sec_resv0 {
+    uint8_t resv[TISCI_BOARDCFG_SEC_RESV0_SIZE];
+};
+
+/**
+ * \brief Secure boardconfig reserved structure 1.
+ */
+struct tisci_boardcfg_sec_resv1 {
+    uint8_t resv[TISCI_BOARDCFG_SEC_RESV1_SIZE];
+};
+
+/**
+ * \brief Format of the complete board configuration.
+ *
+ * \param tisci_boardcfg_abi_rev Secure Board Config ABI version (separate from DMSC ABI version)
+ * \param tisci_boardcfg_proc_acl Processor Access control list
+ * \param tisci_boardcfg_host_hierarchy Host hierarchy list
+ * \param otp_config  OTP Configuration
+ * \param dkek_config  DKEK Configuration
+ * \param resv0  Reserved structure 0
+ * \param tisci_boardcfg_sa2ul_cfg SA2UL resource configuration
+ * \param resv1 Reserved structure 1
+ */
+struct tisci_boardcfg_sec {
+    struct tisci_boardcfg_abi_rev            rev;
+    struct tisci_boardcfg_proc_acl        processor_acl_list;
+    struct tisci_boardcfg_host_hierarchy        host_hierarchy;
+    struct tisci_boardcfg_extended_otp        otp_config;
+    struct tisci_boardcfg_dkek            dkek_config;
+    struct tisci_boardcfg_sec_resv0        resv0;
+    struct tisci_boardcfg_secure_debug_config    sec_dbg_config;
+    struct tisci_boardcfg_sec_resv1        resv1;
+} __attribute__((__packed__));
+
+#else
+
 /**
  * \brief Format of the complete board configuration.
  *
@@ -339,6 +387,8 @@ struct tisci_boardcfg_sec {
     struct tisci_boardcfg_secure_debug_config    sec_dbg_config;
     struct tisci_boardcfg_sec_handover        sec_handover_cfg;
 } __attribute__((__packed__));
+
+#endif
 
 /**
  * \def TISCI_BOARDCFG_TRACE_DST_UART0
@@ -393,6 +443,45 @@ struct tisci_boardcfg_dbg_cfg {
     uint16_t                    trace_src_enables;
 } __attribute__((__packed__));
 
+#ifdef CONFIG_SMS_LITE_COPROCESSOR
+
+/**
+ * \brief Boot mode service configuration.
+ *
+ * \param subhdr Magic and size for integrity check.
+ * \param allowed_host Host allowed to use the boot mode service.
+ */
+struct tisci_boardcfg_boot_mode_cfg {
+    struct tisci_boardcfg_substructure_header    subhdr;
+    uint8_t                    allowed_host;
+};
+
+/**
+ * \brief Reservied structure 1
+ */
+struct tisci_boardcfg_resv {
+    uint8_t resv[7];
+} __attribute__((__packed__));
+
+/**
+ * \brief Format of the complete board configuration.
+ *
+ * \param tisci_boardcfg_abi_rev Board Config ABI version (separate from DMSC ABI version)
+ * \param control DMSC feature control selections
+ * \param bm_writer_cfg Boot mode writer service configuration
+ * \param resv1 Reserved structure 1
+ * \param debug_cfg Debug/trace configuration
+ */
+struct tisci_boardcfg {
+    struct tisci_boardcfg_abi_rev        rev;
+    struct tisci_boardcfg_control        control;
+    struct tisci_boardcfg_boot_mode_cfg    bm_writer_cfg;
+    struct tisci_boardcfg_resv        resv;
+    struct tisci_boardcfg_dbg_cfg        debug_cfg;
+} __attribute__((__packed__));
+
+#else
+
 /**
  * \brief Format of the complete board configuration.
  *
@@ -410,6 +499,7 @@ struct tisci_boardcfg {
     struct tisci_boardcfg_dbg_cfg        debug_cfg;
 } __attribute__((__packed__));
 
+#endif
 
 /**
  * \brief structure to hold the board configuration hashes received via X509 certificate
