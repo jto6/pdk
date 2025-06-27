@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -110,6 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#security-configuration-in-system-firmware">Security Configuration in System Firmware</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#tisci-api-for-security-board-config">TISCI API for Security Board Config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#configuration-substructure-enumeration">Configuration substructure enumeration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-substructure-enumeration-for-sms-lite">Configuration substructure enumeration for SMS-LITE</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#processor-access-list">Processor Access List</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#host-hierarchy">Host Hierarchy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#extended-otp-array-configuration">Extended OTP array configuration</a></li>
@@ -117,6 +118,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#sa2ul-configuration">SA2UL Configuration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#secure-debug-unlock">Secure Debug Unlock</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#security-handover">Security Handover</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#security-boardconfig-reserved-substructure-0">Security boardconfig reserved substructure 0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#security-boardconfig-reserved-substructure-1">Security boardconfig reserved substructure 1</a></li>
 </ul>
 </li>
 </ul>
@@ -360,6 +363,56 @@ boardcfg structure does..</p>
 <tr class="row-odd"><td>sec_handover_cfg</td>
 <td><a class="reference internal" href="#pub-boardcfg-security-handover"><span class="std std-ref">Security Handover</span></a></td>
 <td>Security handover configuration</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="configuration-substructure-enumeration-for-sms-lite">
+<h3>Configuration substructure enumeration for SMS-LITE<a class="headerlink" href="#configuration-substructure-enumeration-for-sms-lite" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="33%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>boardcfg_abi_rev</td>
+<td><a class="reference internal" href="BOARDCFG.html#pub-boardcfg-abi-rev"><span class="std std-ref">ABI revision structure</span></a></td>
+<td>Board Config ABI version (separate from DMSC ABI version)</td>
+</tr>
+<tr class="row-odd"><td>processor_acl_list</td>
+<td><a class="reference internal" href="#pub-boardcfg-proc-acl"><span class="std std-ref">Processor Access List</span></a></td>
+<td>Processor access control list configuration</td>
+</tr>
+<tr class="row-even"><td>host_hierarchy</td>
+<td><a class="reference internal" href="#pub-boardcfg-host-hierarchy"><span class="std std-ref">Host Hierarchy</span></a></td>
+<td>Host hierarchy configuration</td>
+</tr>
+<tr class="row-odd"><td>otp_config</td>
+<td><a class="reference internal" href="#pub-boardcfg-ext-otp-config"><span class="std std-ref">Extended OTP array configuration</span></a></td>
+<td>Extended OTP access configuration</td>
+</tr>
+<tr class="row-even"><td>dkek_config</td>
+<td><a class="reference internal" href="#pub-boardcfg-dkek-config"><span class="std std-ref">Derived KEK Management</span></a></td>
+<td>DKEK access configuration</td>
+</tr>
+<tr class="row-odd"><td>sec_reserved_0</td>
+<td><a class="reference internal" href="#pub-boardcfg-sec-reserved-0"><span class="std std-ref">Security boardconfig reserved substructure 0</span></a></td>
+<td>This structure is reserved for future use. This can be zeroed for now.</td>
+</tr>
+<tr class="row-even"><td>sec_dbg_config</td>
+<td><a class="reference internal" href="#pub-boardcfg-secure-debug-unlock"><span class="std std-ref">Secure Debug Unlock</span></a></td>
+<td>Secure debug unlock configuration</td>
+</tr>
+<tr class="row-odd"><td>sec_reserved_1</td>
+<td><a class="reference internal" href="#pub-boardcfg-sec-reserved-1"><span class="std std-ref">Security boardconfig reserved substructure 1</span></a></td>
+<td>This structure is reserved for future use. This can be zeroed for now.</td>
 </tr>
 </tbody>
 </table>
@@ -785,6 +838,50 @@ be transferred</p>
 </table>
 <p>The magic number to be populated in the <code class="docutils literal"><span class="pre">subhdr</span></code> is <code class="docutils literal"><span class="pre">0x608F</span></code>.</p>
 </div>
+<div class="section" id="security-boardconfig-reserved-substructure-0">
+<span id="pub-boardcfg-sec-reserved-0"></span><h3>Security boardconfig reserved substructure 0<a class="headerlink" href="#security-boardconfig-reserved-substructure-0" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="14%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>resv</td>
+<td>u8</td>
+<td>An array of 8 bytes.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="security-boardconfig-reserved-substructure-1">
+<span id="pub-boardcfg-sec-reserved-1"></span><h3>Security boardconfig reserved substructure 1<a class="headerlink" href="#security-boardconfig-reserved-substructure-1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="14%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Element</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>resv</td>
+<td>u8</td>
+<td>An array of 10 bytes.</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 
@@ -829,7 +926,7 @@ be transferred</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

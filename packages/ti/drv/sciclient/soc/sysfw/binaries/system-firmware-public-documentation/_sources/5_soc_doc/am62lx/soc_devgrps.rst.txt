@@ -1,0 +1,26 @@
+================================
+AM62LX Device Group descriptions
+================================
+
+.. _soc_doc_am62lx_public_devgrp_desc_intro:
+
+Introduction
+============
+
+This chapter provides information of specific device groups(DEVGRP)
+that are permitted in the AM62LX SoC. These device groups are more specific
+grouping of devices and resources used optionally to have staged init
+sequence control of the SoC.
+
+.. _soc_doc_am62lx_public_devgrp_desc_devgrp_list:
+
+Enumeration of Device group IDs
+===============================
+
++-----------------+---------------------+--------------+---------------------------------------------------------------------------------+
+| SoC Devgrp ID   | Generic Devgrp ID   | Flag Value   | Description                                                                     |
++=================+=====================+==============+=================================================================================+
+| WAKEUP          | DEVGRP_01           | 0x1U <<  1U  | Set of Wakeup domain peripherals to initialize at boot and use during runtime.  |
++-----------------+---------------------+--------------+---------------------------------------------------------------------------------+
+| MAIN            | DEVGRP_00           | 0x1U <<  0U  | Set of Main domain peripherals to initialize at boot and use during runtime.    |
++-----------------+---------------------+--------------+---------------------------------------------------------------------------------+

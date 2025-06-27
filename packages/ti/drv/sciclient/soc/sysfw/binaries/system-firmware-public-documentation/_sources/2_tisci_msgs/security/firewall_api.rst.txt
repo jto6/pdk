@@ -8,13 +8,13 @@ This chapter provides information on Firewall API's provided by system firmware.
 There are three firewall API as listed below.
 
 +------------------+------------------------------------------------------------+-----------------+--------------------+
-| TISCI Message ID |                        Message Name                        | Available in GP | Avialable in HS-FS |
+| TISCI Message ID |                        Message Name                        | Available in GP | Available in HS-FS |
 +==================+============================================================+=================+====================+
-| 0x9000           | :ref:`TISCI_MSG_SET_FWL_REGION <set-firewall-region>`.     | Yes             | Yes                |
+| 0x9000           | :ref:`TISCI_MSG_SET_FWL_REGION <set-firewall-region>`      | Yes             | Yes                |
 +------------------+------------------------------------------------------------+-----------------+--------------------+
-| 0x9001           | :ref:`TISCI_MSG_GET_FWL_REGION <get-firewall-region>`.     | Yes             | Yes                |
+| 0x9001           | :ref:`TISCI_MSG_GET_FWL_REGION <get-firewall-region>`      | Yes             | Yes                |
 +------------------+------------------------------------------------------------+-----------------+--------------------+
-| 0x9002           | :ref:`TISCI_MSG_CHANGE_FWL_OWNER <change-firewall-owner>`. | Yes             | Yes                |
+| 0x9002           | :ref:`TISCI_MSG_CHANGE_FWL_OWNER <change-firewall-owner>`  | Yes             | Yes                |
 +------------------+------------------------------------------------------------+-----------------+--------------------+
 
 Background Information
@@ -70,6 +70,11 @@ TISCI Message ID
 .. sysfwapistruct:: tisci_msg_fwl_set_firewall_region_req
 
 .. sysfwapistruct:: tisci_msg_fwl_set_firewall_region_resp
+
+.. note::
+
+   To enable debug permission for a region, explicitly set the the debug bit 
+   in the permissions field of :ref:`firewall set request <set-firewall-region>`
 
 .. _get-firewall-region:
 

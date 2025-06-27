@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -204,6 +204,14 @@ message is sent.</p>
 program individual clocks of individual modules to tweak the clocks based on the usecase
 which differ from the default. The APIs to refer to setting individual module clocks are
 <a class="reference internal" href="../../2_tisci_msgs/pm/clocks.html#pm-clocks-msg-set-freq"><span class="std std-ref">TISCI_MSG_SET_FREQ</span></a>, <a class="reference internal" href="../../2_tisci_msgs/pm/clocks.html#pm-clocks-msg-query-freq"><span class="std std-ref">TISCI_MSG_QUERY_FREQ</span></a>.</p>
+<dl class="docutils">
+<dt>Use the below mentioned formula to calculate the output frequency of PLL HSDIVs:</dt>
+<dd><ul class="first last simple">
+<li>HSDIV0 to HSDIV4: CLKOUT Freq * M2 / hsdiv</li>
+<li>HSDIV5 to HSDIV9: CLKOUT Freq / hsdiv</li>
+</ul>
+</dd>
+</dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Any PLL configurations that are done before the PM board configuration is provided will be overwritten
@@ -211,24 +219,25 @@ with the PLL defaults mentioned in the below tables. However, there are some PLL
 overwritten and the list can be found in the table
 <a class="reference internal" href="#soc-doc-am64x-public-plls-no-reinit-status"><span class="std std-ref">PLL No Reinit Defaults for AM64X Device</span></a></p>
 </div>
-<p>The following table gives the PLL configurations for the input crystal Frequency of 19.2 MHz.</p>
+<p><strong>The following table gives the PLL configurations for the input crystal Frequency of 19.2 MHz:</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="19%" />
 <col width="11%" />
 <col width="4%" />
 <col width="3%" />
-<col width="9%" />
+<col width="8%" />
 <col width="3%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">PLL Name</th>
@@ -246,6 +255,7 @@ overwritten and the list can be found in the table
 <th class="head">HSDIV6</th>
 <th class="head">HSDIV7</th>
 <th class="head">HSDIV8</th>
+<th class="head">HSDIV9</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -260,6 +270,7 @@ overwritten and the list can be found in the table
 <td>25</td>
 <td>12</td>
 <td>12</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -280,6 +291,7 @@ overwritten and the list can be found in the table
 <td>5</td>
 <td>5</td>
 <td>8</td>
+<td>3</td>
 </tr>
 <tr class="row-even"><td>PER0 (PLLFRACF_SSMOD_16FFT_MAIN_1)</td>
 <td>960000000U</td>
@@ -294,6 +306,7 @@ overwritten and the list can be found in the table
 <td>80</td>
 <td>6</td>
 <td>16</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -312,6 +325,7 @@ overwritten and the list can be found in the table
 <td>8</td>
 <td>18</td>
 <td>30</td>
+<td>5</td>
 </tr>
 <tr class="row-even"><td>ARM0 (PLLFRACF_SSMOD_16FFT_MAIN_8)</td>
 <td>2000000000U</td>
@@ -328,6 +342,7 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 <tr class="row-odd"><td>DDR (PLLFRACF_SSMOD_16FFT_MAIN_12)</td>
 <td>1600000000U</td>
@@ -336,6 +351,7 @@ overwritten and the list can be found in the table
 <td>5592406</td>
 <td>1</td>
 <td>4</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -360,27 +376,29 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 </tbody>
 </table>
-<p>The following table gives the PLL configurations for the input crystal Frequency of 20.0 MHz.</p>
+<p><strong>The following table gives the PLL configurations for the input crystal Frequency of 20.0 MHz:</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="19%" />
 <col width="11%" />
 <col width="4%" />
 <col width="3%" />
-<col width="9%" />
+<col width="8%" />
 <col width="3%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">PLL Name</th>
@@ -398,6 +416,7 @@ overwritten and the list can be found in the table
 <th class="head">HSDIV6</th>
 <th class="head">HSDIV7</th>
 <th class="head">HSDIV8</th>
+<th class="head">HSDIV9</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -412,6 +431,7 @@ overwritten and the list can be found in the table
 <td>25</td>
 <td>12</td>
 <td>12</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -432,6 +452,7 @@ overwritten and the list can be found in the table
 <td>5</td>
 <td>5</td>
 <td>8</td>
+<td>3</td>
 </tr>
 <tr class="row-even"><td>PER0 (PLLFRACF_SSMOD_16FFT_MAIN_1)</td>
 <td>960000000U</td>
@@ -446,6 +467,7 @@ overwritten and the list can be found in the table
 <td>80</td>
 <td>6</td>
 <td>16</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -464,6 +486,7 @@ overwritten and the list can be found in the table
 <td>8</td>
 <td>18</td>
 <td>30</td>
+<td>5</td>
 </tr>
 <tr class="row-even"><td>ARM0 (PLLFRACF_SSMOD_16FFT_MAIN_8)</td>
 <td>2000000000U</td>
@@ -472,6 +495,7 @@ overwritten and the list can be found in the table
 <td>0</td>
 <td>1</td>
 <td>2</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -496,6 +520,7 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 <tr class="row-even"><td>R5F (PLLFRACF_SSMOD_16FFT_MAIN_14)</td>
 <td>2400000000U</td>
@@ -512,27 +537,29 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 </tbody>
 </table>
-<p>The following table gives the PLL configurations for the input crystal Frequency of 24.0 MHz.</p>
+<p><strong>The following table gives the PLL configurations for the input crystal Frequency of 24.0 MHz:</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="19%" />
 <col width="11%" />
 <col width="4%" />
 <col width="3%" />
-<col width="9%" />
+<col width="8%" />
 <col width="3%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">PLL Name</th>
@@ -550,6 +577,7 @@ overwritten and the list can be found in the table
 <th class="head">HSDIV6</th>
 <th class="head">HSDIV7</th>
 <th class="head">HSDIV8</th>
+<th class="head">HSDIV9</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -564,6 +592,7 @@ overwritten and the list can be found in the table
 <td>25</td>
 <td>12</td>
 <td>12</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -584,6 +613,7 @@ overwritten and the list can be found in the table
 <td>5</td>
 <td>5</td>
 <td>8</td>
+<td>3</td>
 </tr>
 <tr class="row-even"><td>PER0 (PLLFRACF_SSMOD_16FFT_MAIN_1)</td>
 <td>960000000U</td>
@@ -598,6 +628,7 @@ overwritten and the list can be found in the table
 <td>80</td>
 <td>6</td>
 <td>16</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -616,6 +647,7 @@ overwritten and the list can be found in the table
 <td>8</td>
 <td>18</td>
 <td>30</td>
+<td>5</td>
 </tr>
 <tr class="row-even"><td>ARM0 (PLLFRACF_SSMOD_16FFT_MAIN_8)</td>
 <td>2000000000U</td>
@@ -624,6 +656,7 @@ overwritten and the list can be found in the table
 <td>5592406</td>
 <td>1</td>
 <td>2</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -648,6 +681,7 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 <tr class="row-even"><td>R5F (PLLFRACF_SSMOD_16FFT_MAIN_14)</td>
 <td>2400000000U</td>
@@ -664,27 +698,29 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 </tbody>
 </table>
-<p>The following table gives the PLL configurations for the input crystal Frequency of 25.0 MHz.</p>
+<p><strong>The following table gives the PLL configurations for the input crystal Frequency of 25.0 MHz:</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="19%" />
 <col width="11%" />
 <col width="4%" />
 <col width="3%" />
-<col width="9%" />
+<col width="8%" />
 <col width="3%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">PLL Name</th>
@@ -702,6 +738,7 @@ overwritten and the list can be found in the table
 <th class="head">HSDIV6</th>
 <th class="head">HSDIV7</th>
 <th class="head">HSDIV8</th>
+<th class="head">HSDIV9</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -716,6 +753,7 @@ overwritten and the list can be found in the table
 <td>25</td>
 <td>12</td>
 <td>12</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -736,6 +774,7 @@ overwritten and the list can be found in the table
 <td>5</td>
 <td>5</td>
 <td>8</td>
+<td>3</td>
 </tr>
 <tr class="row-even"><td>PER0 (PLLFRACF_SSMOD_16FFT_MAIN_1)</td>
 <td>960000000U</td>
@@ -750,6 +789,7 @@ overwritten and the list can be found in the table
 <td>80</td>
 <td>6</td>
 <td>16</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -768,6 +808,7 @@ overwritten and the list can be found in the table
 <td>8</td>
 <td>18</td>
 <td>30</td>
+<td>5</td>
 </tr>
 <tr class="row-even"><td>ARM0 (PLLFRACF_SSMOD_16FFT_MAIN_8)</td>
 <td>2000000000U</td>
@@ -776,6 +817,7 @@ overwritten and the list can be found in the table
 <td>0</td>
 <td>1</td>
 <td>2</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -800,6 +842,7 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 <tr class="row-even"><td>R5F (PLLFRACF_SSMOD_16FFT_MAIN_14)</td>
 <td>2400000000U</td>
@@ -816,27 +859,29 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 </tbody>
 </table>
-<p>The following table gives the PLL configurations for the input crystal Frequency of 26.0 MHz.</p>
+<p><strong>The following table gives the PLL configurations for the input crystal Frequency of 26.0 MHz:</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="19%" />
 <col width="11%" />
 <col width="4%" />
 <col width="3%" />
-<col width="9%" />
+<col width="8%" />
 <col width="3%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">PLL Name</th>
@@ -854,6 +899,7 @@ overwritten and the list can be found in the table
 <th class="head">HSDIV6</th>
 <th class="head">HSDIV7</th>
 <th class="head">HSDIV8</th>
+<th class="head">HSDIV9</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -868,6 +914,7 @@ overwritten and the list can be found in the table
 <td>25</td>
 <td>12</td>
 <td>12</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -888,6 +935,7 @@ overwritten and the list can be found in the table
 <td>5</td>
 <td>5</td>
 <td>8</td>
+<td>3</td>
 </tr>
 <tr class="row-even"><td>PER0 (PLLFRACF_SSMOD_16FFT_MAIN_1)</td>
 <td>960000000U</td>
@@ -902,6 +950,7 @@ overwritten and the list can be found in the table
 <td>80</td>
 <td>6</td>
 <td>16</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -920,6 +969,7 @@ overwritten and the list can be found in the table
 <td>8</td>
 <td>18</td>
 <td>30</td>
+<td>5</td>
 </tr>
 <tr class="row-even"><td>ARM0 (PLLFRACF_SSMOD_16FFT_MAIN_8)</td>
 <td>2000000000U</td>
@@ -928,6 +978,7 @@ overwritten and the list can be found in the table
 <td>15486661</td>
 <td>1</td>
 <td>2</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -952,6 +1003,7 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 <tr class="row-even"><td>R5F (PLLFRACF_SSMOD_16FFT_MAIN_14)</td>
 <td>2400000000U</td>
@@ -968,27 +1020,29 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 </tbody>
 </table>
-<p>The following table gives the PLL configurations for the input crystal Frequency of 27.0 MHz.</p>
+<p><strong>The following table gives the PLL configurations for the input crystal Frequency of 27.0 MHz:</strong></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
+<col width="19%" />
 <col width="11%" />
 <col width="4%" />
 <col width="3%" />
-<col width="9%" />
+<col width="8%" />
 <col width="3%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">PLL Name</th>
@@ -1006,6 +1060,7 @@ overwritten and the list can be found in the table
 <th class="head">HSDIV6</th>
 <th class="head">HSDIV7</th>
 <th class="head">HSDIV8</th>
+<th class="head">HSDIV9</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -1020,6 +1075,7 @@ overwritten and the list can be found in the table
 <td>25</td>
 <td>12</td>
 <td>12</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -1040,6 +1096,7 @@ overwritten and the list can be found in the table
 <td>5</td>
 <td>5</td>
 <td>8</td>
+<td>3</td>
 </tr>
 <tr class="row-even"><td>PER0 (PLLFRACF_SSMOD_16FFT_MAIN_1)</td>
 <td>960000000U</td>
@@ -1054,6 +1111,7 @@ overwritten and the list can be found in the table
 <td>80</td>
 <td>6</td>
 <td>16</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -1072,6 +1130,7 @@ overwritten and the list can be found in the table
 <td>8</td>
 <td>18</td>
 <td>30</td>
+<td>5</td>
 </tr>
 <tr class="row-even"><td>ARM0 (PLLFRACF_SSMOD_16FFT_MAIN_8)</td>
 <td>2000000000U</td>
@@ -1080,6 +1139,7 @@ overwritten and the list can be found in the table
 <td>1242757</td>
 <td>1</td>
 <td>2</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -1104,6 +1164,7 @@ overwritten and the list can be found in the table
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 <tr class="row-even"><td>R5F (PLLFRACF_SSMOD_16FFT_MAIN_14)</td>
 <td>2400000000U</td>
@@ -1113,6 +1174,7 @@ overwritten and the list can be found in the table
 <td>1</td>
 <td>3</td>
 <td>3</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -1130,9 +1192,10 @@ overwritten and the list can be found in the table
 from reinitializing when PM board configuration is received.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="26%" />
-<col width="8%" />
-<col width="8%" />
+<col width="24%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
 <col width="7%" />
 <col width="7%" />
 <col width="7%" />
@@ -1154,6 +1217,7 @@ from reinitializing when PM board configuration is received.</p>
 <th class="head">HSDIV6</th>
 <th class="head">HSDIV7</th>
 <th class="head">HSDIV8</th>
+<th class="head">HSDIV9</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -1164,6 +1228,7 @@ from reinitializing when PM board configuration is received.</p>
 <td>–</td>
 <td>–</td>
 <td>–</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -1180,6 +1245,7 @@ from reinitializing when PM board configuration is received.</p>
 <td>–</td>
 <td>–</td>
 <td>–</td>
+<td>No Reinit</td>
 </tr>
 <tr class="row-even"><td>PER0 (PLLFRACF_SSMOD_16FFT_MAIN_1)</td>
 <td>–</td>
@@ -1190,6 +1256,7 @@ from reinitializing when PM board configuration is received.</p>
 <td>–</td>
 <td>–</td>
 <td>–</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 </tr>
@@ -1204,10 +1271,12 @@ from reinitializing when PM board configuration is received.</p>
 <td>–</td>
 <td>–</td>
 <td>–</td>
+<td>–</td>
 </tr>
 <tr class="row-even"><td>ARM0 (PLLFRACF_SSMOD_16FFT_MAIN_8)</td>
 <td>–</td>
 <td>–</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -1228,11 +1297,13 @@ from reinitializing when PM board configuration is received.</p>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
+<td>NA</td>
 </tr>
 <tr class="row-even"><td>R5F (PLLFRACF_SSMOD_16FFT_MAIN_14)</td>
 <td>–</td>
 <td>–</td>
 <td>–</td>
+<td>NA</td>
 <td>NA</td>
 <td>NA</td>
 <td>NA</td>
@@ -1287,7 +1358,7 @@ from reinitializing when PM board configuration is received.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

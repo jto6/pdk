@@ -20,9 +20,10 @@
    ./security_handover
    ./secure_debug
    ./key_writer
+   ./key_writer_lite
    ./otp_revision
    ./keyring
    ./csp
    ./fwl_safety_core
    ./boot_mode_writer
-   ./boot_mode_writer_encoding
+   ./tifs_exceptions

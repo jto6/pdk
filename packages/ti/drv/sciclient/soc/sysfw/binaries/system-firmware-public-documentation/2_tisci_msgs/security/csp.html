@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cryto Service TISCI Description &mdash; TISCI User Guide</title>
+  <title>Crypto Service TISCI Description &mdash; TISCI User Guide</title>
   
 
   
@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -118,9 +118,10 @@
 <li class="toctree-l3"><a class="reference internal" href="dsmek_management.html">Derived SMEK TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="security_handover.html">Security Handover Message Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="keywriter.html">OTP Keywriter TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keywriter_lite.html">OTP Keywriter (Lite) TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otp_revision.html">OTP Revision Read/Write Message Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="keyring.html">KEYRING TISCI Description</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Cryto Service TISCI Description</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Crypto Service TISCI Description</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#api-description">API Description</a></li>
 </ul>
 </li>
@@ -165,7 +166,7 @@
       
           <li><a href="../index.html">Chapter 2: TISCI Message Documentation</a> &raquo;</li>
       
-    <li>Cryto Service TISCI Description</li>
+    <li>Crypto Service TISCI Description</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -177,17 +178,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cryto-service-tisci-description">
-<h1>Cryto Service TISCI Description<a class="headerlink" href="#cryto-service-tisci-description" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="crypto-service-tisci-description">
+<h1>Crypto Service TISCI Description<a class="headerlink" href="#crypto-service-tisci-description" title="Permalink to this headline">¶</a></h1>
 <p id="csp-tisci-desc">This chapter provides information on  System Firmware API for Cryptographic Services. The available API are listed below.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
-<col width="40%" />
-<col width="10%" />
+<col width="12%" />
+<col width="33%" />
 <col width="11%" />
-<col width="11%" />
-<col width="18%" />
+<col width="13%" />
+<col width="13%" />
+<col width="19%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">TISCI Message ID</th>
@@ -200,11 +201,17 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>0x9040</td>
-<td colspan="4"><a class="reference internal" href="#csp-encrypt"><span class="std std-ref">TISCI_MSG_CRYPTO_AES_ENCRYPT</span></a>                      | NO              | YES                | YES</td>
+<td><a class="reference internal" href="#csp-encrypt"><span class="std std-ref">TISCI_MSG_CRYPTO_AES_ENCRYPT</span></a></td>
+<td>NO</td>
+<td>YES</td>
+<td>YES</td>
 <td>TISCI_MSG_SA2UL_AES_ENCRYPT</td>
 </tr>
 <tr class="row-odd"><td>0x9041</td>
-<td colspan="4"><a class="reference internal" href="#csp-decrypt"><span class="std std-ref">TISCI_MSG_CRYPTO_AES_DECRYPT</span></a>                      | NO              | YES                | YES</td>
+<td><a class="reference internal" href="#csp-decrypt"><span class="std std-ref">TISCI_MSG_CRYPTO_AES_DECRYPT</span></a></td>
+<td>NO</td>
+<td>YES</td>
+<td>YES</td>
 <td>TISCI_MSG_SA2UL_AES_DECRYPT</td>
 </tr>
 </tbody>
@@ -424,7 +431,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

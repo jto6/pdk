@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -136,12 +136,13 @@
 <li class="toctree-l2"><a class="reference internal" href="security_handover.html">Performing Security Handover</a></li>
 <li class="toctree-l2"><a class="reference internal" href="secure_debug.html">Secure Debug User Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="key_writer.html">Key  Writer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_writer_lite.html">Key Writer (Lite)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="otp_revision.html">Run time read/write to KEYREV and SWREV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="keyring.html">Keyring Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="csp.html">Cryptographic Services</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fwl_safety_core.html">Firewall Data Access to Safety Core</a></li>
 <li class="toctree-l2"><a class="reference internal" href="boot_mode_writer.html">Boot Mode Writer Service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boot_mode_writer_encoding.html">Boot Mode Writer Encoding table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tifs_exceptions.html">Exception Handling in TIFS</a></li>
 </ul>
 </li>
 </ul>
@@ -226,6 +227,10 @@ They cannot be programmed by direct register writes.</p>
 <p>Firewalls are configured using the <a class="reference internal" href="../2_tisci_msgs/security/firewall_api.html#set-firewall-region"><span class="std std-ref">TISCI_MSG_SET_FWL_REGION</span></a> TISCI message.</p>
 <p>Disabling a firewall is also done using the same API using the control word.</p>
 <p>All the registers of a firewall can be configured using the above TISCI message.</p>
+<p>Note : The Initiator Firewall programming is different from Target Firewall programming.
+The Initiator Firewalls reside in the Compute Cluster that must be powered on before
+configuring the firewalls. <a class="reference internal" href="../2_tisci_msgs/security/firewall_api.html#set-firewall-region"><span class="std std-ref">TISCI_MSG_SET_FWL_REGION</span></a> has a handler
+function that performs a read-verification, and failure to power the Compute Cluster shuts down TIFS.</p>
 </div>
 <div class="section" id="how-do-i-specify-which-firewall-to-program">
 <h2><a class="toc-backref" href="#id3">How do I specify which firewall to program ?</a><a class="headerlink" href="#how-do-i-specify-which-firewall-to-program" title="Permalink to this headline">¶</a></h2>
@@ -512,7 +517,7 @@ will result in a firewall exception.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

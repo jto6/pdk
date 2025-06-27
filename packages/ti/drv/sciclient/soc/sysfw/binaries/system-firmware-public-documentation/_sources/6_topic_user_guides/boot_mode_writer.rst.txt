@@ -12,6 +12,7 @@ Introduction
 ============
 
 The boot mode writer service can be used to program boot mode efuses present on devices to support reduced boot pin mode feature.
+A host provided in the boot mode writer configuration substructure in the general boardconfig structure can use this service.
 The service accepts the boot mode efuse index and the 32-bit raw fuse value as inputs.
 
 .. note::
@@ -37,7 +38,7 @@ The following figure demonstrates the procedure to derive the value to be sent o
 How to encode the 16-bit raw value?
 ===================================
 
-Use the :ref:`boot_mode_writer_encoding_table`.
+Refer to this :download:`Table <../img/sec/bootmode/bootmode_ecc_table.csv>` for 16-bit to 25-bit conversion mentioned in Step 1.
 
 How to get the values?
 ======================

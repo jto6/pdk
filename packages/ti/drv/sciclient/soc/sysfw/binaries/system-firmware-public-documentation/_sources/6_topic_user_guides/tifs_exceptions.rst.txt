@@ -1,0 +1,12 @@
+============================
+Exception Handling in TIFS
+============================
+
+TIFS Exception Handlers
+========================
+
+* **common_exception_handler**:
+
+  Exception Type Handled: NMI, Hard Fault, MPU Fault, Bus failure, Usage failure, PendSV, Debug Monitor
+
+  Handler description: The handler will print "Exception...\n" to the console after which it will enter an infinite loop to prevent further execution of the program.

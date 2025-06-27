@@ -1,0 +1,879 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Key Writer (Lite) &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../index.html"/>
+        <link rel="up" title="Chapter 6: Topic User Guides" href="index.html"/>
+        <link rel="next" title="Run time read/write to KEYREV and SWREV" href="otp_revision.html"/>
+        <link rel="prev" title="Key Writer" href="key_writer.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.01.03
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_tisci_msgs/index.html">Chapter 2: TISCI Message Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_soc_doc/index.html">Chapter 5: SoC Family Specific Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Chapter 6: Topic User Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="authentication.html">System Firmware Authentication and Decryption Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devgrp_usage.html">Device Group Primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domgrp_usage.html">Domain Group Primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="secure_boot_signing.html">Signing binaries for Secure Boot on HS Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hs_boardcfg_signing.html">Signing Board Configuration on HS devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openssl_usage.html">Using OpenSSL for certificate creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extended_otp.html">Using Extended OTP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dkek_management.html">Using Derived KEK on HS devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firewall_faq.html">Firewall FAQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="saul_access.html">SAUL Access Outside of SYSFW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security_handover.html">Performing Security Handover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="secure_debug.html">Secure Debug User Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_writer.html">Key  Writer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Key Writer (Lite)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#high-security-hs-device-sub-types">High Security (HS) Device Sub-types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hs-fs-to-hs-se-conversion">HS-FS to HS-SE Conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#programming-modes">Programming Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keywriter-lite-blob">Keywriter Lite blob</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#procedure">Procedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#faqs">FAQs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="otp_revision.html">Run time read/write to KEYREV and SWREV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyring.html">Keyring Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="csp.html">Cryptographic Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fwl_safety_core.html">Firewall Data Access to Safety Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boot_mode_writer.html">Boot Mode Writer Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tifs_exceptions.html">Exception Handling in TIFS</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Chapter 6: Topic User Guides</a> &raquo;</li>
+      
+    <li>Key Writer (Lite)</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="key-writer-lite">
+<h1>Key Writer (Lite)<a class="headerlink" href="#key-writer-lite" title="Permalink to this headline">¶</a></h1>
+<p>This guide describes the procedure to
+be followed to populate customer keys in eFuses of the SoC.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This document must be read along side <a class="reference internal" href="../2_tisci_msgs/security/keywriter_lite.html"><span class="doc">OTP Keywriter (Lite) TISCI Description</span></a></p>
+</div>
+<div class="section" id="high-security-hs-device-sub-types">
+<h2>High Security (HS) Device Sub-types<a class="headerlink" href="#high-security-hs-device-sub-types" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first"><strong>HS-FS (High Security - Field Securable)</strong>:
+Device type before customer keys are programmed (the state in which the device
+leaves TI factory). In this state, device protects the ROM code, TI keys and certain
+security peripherals. HS-FS devices do not enforce secure boot process.</p>
+<blockquote>
+<div><ul class="simple">
+<li>M3/M4 JTAG port is closed, A53 JTAG port is open</li>
+<li>DMSC/SMS/SMS-lite Firewalls are closed, SOC Firewalls are open</li>
+<li>Board configuration need not be signed</li>
+<li>ROM Boot expects a combined boot image that contains TI signed system-firmware binary.
+The outer certificate can be created using any private key.</li>
+<li>System Firmware binary is encrypted by the TI Encryption key (TI MEK), and signed by the
+TI Private key (TI MPK).</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>HS-SE (High Security – Security Enforced without customer encryption keys)</strong>:
+Device type after only the customer public key hashes are programmed.
+HS-SE devices enforce secure boot (without encryption).</p>
+<blockquote>
+<div><ul class="simple">
+<li>M3/M4, A53 JTAG ports are both closed</li>
+<li>DMSC/SMS/SMS-lite, SOC Firewalls are both closed</li>
+<li>Board configuration needs to be signed with active customer private key (SMPK/BMPK)</li>
+<li>ROM Boot expects a combined boot image that contains TI signed system-firmware binary.
+The outer certificate must be created using the active customer private key (SMPK/BMPK).
+The boot image must not be encrypted because HS-SE (converted using keywriter lite) devices
+don’t have any stored customer encryption key.</li>
+<li>System Firmware binary is encrypted by the TI Encryption key (TI MEK), and signed by the
+TI Private key (TI MPK).</li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="hs-fs-to-hs-se-conversion">
+<h2>HS-FS to HS-SE Conversion<a class="headerlink" href="#hs-fs-to-hs-se-conversion" title="Permalink to this headline">¶</a></h2>
+<p>In order to convert a HS-FS device to HS-SE device, one has to program the customer root
+key (optionally backup key) on the target device, using OTP Keywriter Lite.</p>
+<p>Customer key information is put in a structured format to create a binary blob.
+A list of fields that OTP keywriter Lite supports, can be found <a class="reference internal" href="key_writer.html#keywriter-supported-fields"><span class="std std-ref">here</span></a>.</p>
+<div class="figure">
+<a class="reference internal image-reference" href="../_images/hsfs_to_hsselite_conversion.png"><img alt="../_images/hsfs_to_hsselite_conversion.png" src="../_images/hsfs_to_hsselite_conversion.png" style="width: 100%;" /></a>
+</div>
+<p>Certain efuse bits have been allocated to store the type of keywriter (either keywriter or keywriter lite) on devices.</p>
+<p>When keywriter lite is utilized, it checks these bits to verify that they are either empty or contain the state
+corresponding to keywriter lite. If any other value is detected, keywriter lite becomes inoperable.</p>
+<p>Upon the initial execution of keywriter lite on a device, the keywriter lite state is programmed into the efuse bits,
+effectively binding the device to the keywriter lite type. This ensures that the device is permanently associated
+with keywriter lite, preventing any other keywriter type from being used.</p>
+</div>
+<div class="section" id="introduction">
+<span id="keywriter-lite-cert-gen-procedure"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The keywriter lite service is used for programming fields that service different purposes.
+Following is a list of supported fields:</p>
+<table border="1" class="colwidths-given docutils" id="id1">
+<caption><span class="caption-number">Table 6 </span><span class="caption-text">Supported OTP fields</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="20%" />
+<col width="35%" />
+<col width="45%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Description</th>
+<th class="head">Notes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>SMPKH</td>
+<td>Secondary Manufacturer Public Key Hash</td>
+<td>SMPK is 4096-bit customer RSA signing key</td>
+</tr>
+<tr class="row-odd"><td>BMPKH</td>
+<td>Backup Manufacturer Public Key Hash</td>
+<td>BMPK is 4096-bit customer RSA signing key</td>
+</tr>
+<tr class="row-even"><td>MPK Options</td>
+<td>SMPK/BMPK options</td>
+<td>(Reserved for future use) 10 bit value (split into 2 parts)</td>
+</tr>
+<tr class="row-odd"><td>KEYCNT</td>
+<td>Key count</td>
+<td>2 if BMPK, SMPK are used, 1 if SMPK is used, 0 if none</td>
+</tr>
+<tr class="row-even"><td>KEYREV</td>
+<td>Key revision</td>
+<td>Can have a maximum value = key count</td>
+</tr>
+<tr class="row-odd"><td>MSV</td>
+<td>Model specific value</td>
+<td>20 bit value with 12 bit BCH code</td>
+</tr>
+<tr class="row-even"><td>SWREV-BOARDCONFIG</td>
+<td>Secure Board Configuration software revision</td>
+<td>64 bit value</td>
+</tr>
+<tr class="row-odd"><td>SWREV-SBL</td>
+<td>SBL software revision</td>
+<td>48 bit value</td>
+</tr>
+<tr class="row-even"><td>SWREV-SYSFW</td>
+<td>Firmware software revision</td>
+<td>48 bit value</td>
+</tr>
+<tr class="row-odd"><td>JTAG DISABLE</td>
+<td>JTAG unlock disable</td>
+<td>4 bit value</td>
+</tr>
+<tr class="row-even"><td>EFUSE BOOT MODE</td>
+<td>efuse boot modes</td>
+<td>25 bit value</td>
+</tr>
+<tr class="row-odd"><td>EXTENDED OTP</td>
+<td>Extended OTP array</td>
+<td>1024 bit extended otp array</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="programming-modes">
+<h3>Programming Modes<a class="headerlink" href="#programming-modes" title="Permalink to this headline">¶</a></h3>
+<p>The keywriter (lite) service functions in different programming modes each identified by a unique number known as the command id.
+Each mode is dedicated for programming a specific field or a set of fields. The programming modes offer the flexibility to
+selectively program just one field or a group of fields or all fields at once. The structure of binary data blob depends on the
+programming mode. The various programming modes supported by keywriter lite are listed below:</p>
+<table border="1" class="colwidths-given docutils" id="id2">
+<caption><span class="caption-number">Table 7 </span><span class="caption-text">Keywriter Lite Programming Modes</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="20%" />
+<col width="35%" />
+<col width="45%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Programming Mode</th>
+<th class="head">Command ID</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Oneshot mode</td>
+<td>0</td>
+<td>Program all supported fields at once.</td>
+</tr>
+<tr class="row-odd"><td>Multishot mode</td>
+<td>1</td>
+<td>Program a subset of supported fields at once.</td>
+</tr>
+<tr class="row-even"><td>SMPKH mode</td>
+<td>2</td>
+<td>Program just SMPKH.</td>
+</tr>
+<tr class="row-odd"><td>BMPKH mode</td>
+<td>3</td>
+<td>Program just BMPKH.</td>
+</tr>
+<tr class="row-even"><td>Key count mode</td>
+<td>4</td>
+<td>Program just key count.</td>
+</tr>
+<tr class="row-odd"><td>key revision mode</td>
+<td>5</td>
+<td>Program just key revision.</td>
+</tr>
+<tr class="row-even"><td>SBL SWREV mode</td>
+<td>6</td>
+<td>Program just SBL swrev.</td>
+</tr>
+<tr class="row-odd"><td>SYSFW SWREV mode</td>
+<td>7</td>
+<td>Program just SYSFW swrev.</td>
+</tr>
+<tr class="row-even"><td>BRDCFG SWREV mode</td>
+<td>8</td>
+<td>Program just BRDCFG swrev.</td>
+</tr>
+<tr class="row-odd"><td>MSV mode</td>
+<td>9</td>
+<td>Program just MSV.</td>
+</tr>
+<tr class="row-even"><td>JTAG mode</td>
+<td>10</td>
+<td>Program just JTAG unlock disable.</td>
+</tr>
+<tr class="row-odd"><td>Boot mode mode</td>
+<td>11</td>
+<td>Program just efuse boot modes.</td>
+</tr>
+<tr class="row-even"><td>Extended OTP mode</td>
+<td>12</td>
+<td>Program just extended otp.</td>
+</tr>
+</tbody>
+</table>
+<p>The programming mode must be selected based on the use case. For example, if someone wants to program just SMPKH, ‘SMPKH mode’
+must be use; if someone wants to program SMPKH, key-count and key-revision at once (minimum programming needed for device conversion),
+‘mutli-shot mode’ must be used.</p>
+</div>
+<div class="section" id="keywriter-lite-blob">
+<h3>Keywriter Lite blob<a class="headerlink" href="#keywriter-lite-blob" title="Permalink to this headline">¶</a></h3>
+<p>Field data is provided to keywriter lite service through a structured binary blob. The structure of the blob depends on the
+selected programming mode. The general structure of the blob is shown below:</p>
+<div class="figure">
+<img alt="../_images/kwlite_blob_structure.png" src="../_images/kwlite_blob_structure.png" />
+</div>
+<div class="section" id="structure-of-header">
+<h4>Structure of header<a class="headerlink" href="#structure-of-header" title="Permalink to this headline">¶</a></h4>
+<p>The structure of header is given below:</p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_header</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">magic</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">abi_major</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">abi_minor</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">reserved0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cmd_id</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved1</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>magic: A magic number with value 0x9012</li>
+<li>size: size of the payload section in bytes</li>
+<li>abi_major: abi major version number - 0x0</li>
+<li>abi_minor: abi minor version number - 0x1</li>
+<li>reserved0: reserved for future use, set to zero</li>
+<li>cmd_id: command id for the programming mode to be used</li>
+<li>reserved1: reserved for future use, set to zero</li>
+</ol>
+</div>
+<div class="section" id="payload-substructures">
+<h4>Payload substructures<a class="headerlink" href="#payload-substructures" title="Permalink to this headline">¶</a></h4>
+<p>The payload is made up of field specific substructures. For single-shot and multi-shot programming modes,
+the blob must have all the substructures packed in a specific order (more on this below.) For the remaining
+modes, the blob must have just the corresponding substructure.</p>
+<p><strong>MPK Options substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">mpk_opts</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">options</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">resv_field</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x4A7E</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>options: Reserved for future use, set to zero</li>
+<li>resv_field: Reserved for future use, set to zero</li>
+<li>reserved: Reserved for future use, set to zero</li>
+</ol>
+<p><strong>SMPKH/BMPKH substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">mpkh</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">mpkh</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x1234/0x9FFC (SMPKH/BMPKH)</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>mpkh: MPKH value</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>Key Count substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">key_cnt</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x5678</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>count: The key count value encoded in bit-position format.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>Key Revision substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">key_cnt</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">revision</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x62C8</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>revision: The key revision value encoded in bit-position format.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>SBL SWREV substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sbl_revision</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">revision</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x8BAD</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>revision: The SBL software revision value encoded in bit-position format.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>SYSFW SWREV substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sysfw_revision</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">revision</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x8BAD</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>revision: The SYSFW software revision value encoded in bit-position format.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>BRDCFG SWREV substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">brdcfg_revision</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">revision</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x45A9</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>revision: The BRDCFG software revision value encoded in bit-position format.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>MSV substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">msv</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">msv</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x98DC</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>msv: The 20-bit MSV value.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>JTAG Disable substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">jtag_disable</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">jtag</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0x7421</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>jtag: The 4-bit jtag unlock disable value.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>Boot Mode substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">boot_mode</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">fuse_id</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">boot_mode</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0xA1B2</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>fuse_id: The index of the fuse to program currently accepts only 1,2.</li>
+<li>boot_mode: The 25-bit boot mode value to program.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+<p><strong>Ext OTP substructure:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">ext_otp</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">field_header</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">action_flags</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">index</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">wprp</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">otp</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>field_header: The lower 16-bits contain a magic number with value 0xD0E5</li>
+<li>action_flags: Collection of flags to control the programming</li>
+<li>size: The number of bits to program.</li>
+<li>index: The index in the 1024-bits space to start programming from.</li>
+<li>wprp: Read protect/write protect array.</li>
+<li>otp: The 1024 bits extended otp data.</li>
+<li>reserved: Reserved for future use - set to zero.</li>
+</ol>
+</div>
+<div class="section" id="structure-of-payload">
+<h4>Structure of payload<a class="headerlink" href="#structure-of-payload" title="Permalink to this headline">¶</a></h4>
+<p>For single-shot or multi-shot programming mode the payload contains all the substructures.
+For other programming modes the payload contains just the corresponding substructure.</p>
+<p><strong>Payload structure for single-shot/multi-shot mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpk_opts</span><span class="w"> </span><span class="n">mpkOptions</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpkh</span><span class="w"> </span><span class="n">smpkh</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpkh</span><span class="w"> </span><span class="n">bmpkh</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">key_cnt</span><span class="w"> </span><span class="n">keyCount</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">key_rev</span><span class="w"> </span><span class="n">keyRevision</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sbl_revision</span><span class="w"> </span><span class="n">sblRev</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sysfw_revision</span><span class="w"> </span><span class="n">sysfwRev</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">brdcfg_revision</span><span class="w"> </span><span class="n">brdcfgRev</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">msv</span><span class="w"> </span><span class="n">msvVal</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">jtag_disable</span><span class="w"> </span><span class="n">jtagDisable</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">boot_mode</span><span class="w"> </span><span class="n">bootMode</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ext_otp</span><span class="w"> </span><span class="n">extOtp</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>While using single-shot programming mode, all fields must be enabled.
+While using mutli-shot programming mode, only the fields that need to be programmed must be enabled.</p>
+<p><strong>Payload structure for smpkh mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpk_opts</span><span class="w"> </span><span class="n">mpkOptions</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpkh</span><span class="w"> </span><span class="n">smpkh</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for bmpkh mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpk_opts</span><span class="w"> </span><span class="n">mpkOptions</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mpkh</span><span class="w"> </span><span class="n">bmpkh</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for key count mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">key_cnt</span><span class="w"> </span><span class="n">keyCount</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for key revision mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">key_rev</span><span class="w"> </span><span class="n">keyRevision</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for sbl revision mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sbl_revision</span><span class="w"> </span><span class="n">sblRev</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for boardcfg revision mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">brdcfg_revision</span><span class="w"> </span><span class="n">brdcfgRev</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for msv mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">msv</span><span class="w"> </span><span class="n">msvVal</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for jtag unlock disable mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">jtag_disable</span><span class="w"> </span><span class="n">jtagDisable</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for ‘boot mode’ mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">boot_mode</span><span class="w"> </span><span class="n">bootMode</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Payload structure for extended otp mode:</strong></p>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">keywriter_lite_payload</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ext_otp</span><span class="w"> </span><span class="n">extOtp</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">unused</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="structure-of-checksum">
+<h4>Structure of Checksum<a class="headerlink" href="#structure-of-checksum" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><div class="code highlight-cpp"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">checksum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">hash</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple">
+<li>hash: SHA2-512 hash of the keywriter-lite header and keywriter-lite payload sections combined.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="section" id="procedure">
+<h2>Procedure<a class="headerlink" href="#procedure" title="Permalink to this headline">¶</a></h2>
+<p>The following figure illustrates the procedure to be followed to generate the binary blob for key writing.</p>
+<div class="figure">
+<img alt="../_images/kwlite_blob_creation_procedure.png" src="../_images/kwlite_blob_creation_procedure.png" />
+</div>
+</div>
+<div class="section" id="faqs">
+<h2>FAQs<a class="headerlink" href="#faqs" title="Permalink to this headline">¶</a></h2>
+<p><strong>What happens when one or more unsupported fields are marked as enabled in a single-shot/multi-shot blob?</strong></p>
+<p>The unsupported fields are ignored by TIFS. In case of single-shot mode, if any of supported fields are disabled,
+the request would be NACKed. In case of mutli-shot mode, if none of the supported fields are enabled, the request
+would be NACKed.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="otp_revision.html" class="btn btn-neutral float-right" title="Run time read/write to KEYREV and SWREV" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="key_writer.html" class="btn btn-neutral" title="Key Writer" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'11.01.03',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

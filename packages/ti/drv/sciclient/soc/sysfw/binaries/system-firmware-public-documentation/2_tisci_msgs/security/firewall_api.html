@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -123,9 +123,10 @@
 <li class="toctree-l3"><a class="reference internal" href="dsmek_management.html">Derived SMEK TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="security_handover.html">Security Handover Message Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="keywriter.html">OTP Keywriter TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keywriter_lite.html">OTP Keywriter (Lite) TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otp_revision.html">OTP Revision Read/Write Message Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="keyring.html">KEYRING TISCI Description</a></li>
-<li class="toctree-l3"><a class="reference internal" href="csp.html">Cryto Service TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csp.html">Crypto Service TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fwl_safety_core.html">FIREWALL READ ACCESS SAFETY CORE TISCI Description</a></li>
 </ul>
 </li>
@@ -194,22 +195,22 @@ There are three firewall API as listed below.</p>
 <tr class="row-odd"><th class="head">TISCI Message ID</th>
 <th class="head">Message Name</th>
 <th class="head">Available in GP</th>
-<th class="head">Avialable in HS-FS</th>
+<th class="head">Available in HS-FS</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>0x9000</td>
-<td><a class="reference internal" href="#set-firewall-region"><span class="std std-ref">TISCI_MSG_SET_FWL_REGION</span></a>.</td>
+<td><a class="reference internal" href="#set-firewall-region"><span class="std std-ref">TISCI_MSG_SET_FWL_REGION</span></a></td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
 <tr class="row-odd"><td>0x9001</td>
-<td><a class="reference internal" href="#get-firewall-region"><span class="std std-ref">TISCI_MSG_GET_FWL_REGION</span></a>.</td>
+<td><a class="reference internal" href="#get-firewall-region"><span class="std std-ref">TISCI_MSG_GET_FWL_REGION</span></a></td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
 <tr class="row-even"><td>0x9002</td>
-<td><a class="reference internal" href="#change-firewall-owner"><span class="std std-ref">TISCI_MSG_CHANGE_FWL_OWNER</span></a>.</td>
+<td><a class="reference internal" href="#change-firewall-owner"><span class="std std-ref">TISCI_MSG_CHANGE_FWL_OWNER</span></a></td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
@@ -272,7 +273,7 @@ configuration.</li>
 <table border="1" class="docutils">
 <colgroup>
 <col width="5%" />
-<col width="6%" />
+<col width="5%" />
 <col width="90%" />
 </colgroup>
 <thead valign="bottom">
@@ -292,7 +293,7 @@ configuration.</li>
 </tr>
 <tr class="row-even"><td>region</td>
 <td>u16</td>
-<td>Region or channel number to set config info This field is unused in case of a simple firewall  and must be initialized to zero.  In case of a region based firewall, this field indicates the region in question. (index starting from 0) In case of a channel based firewall, this field indicates the channel in question (index starting from 0)</td>
+<td>Region or channel number to set config info. This field is unused in case of a simple firewall  and must be initialized to zero.  In case of a region based firewall, this field indicates the region in question. (index starting from 0) In case of a channel based firewall, this field indicates the channel in question (index starting from 0)</td>
 </tr>
 <tr class="row-odd"><td>n_permission_regs</td>
 <td>u32</td>
@@ -339,6 +340,11 @@ configuration.</li>
 </tbody>
 </table>
 </p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To enable debug permission for a region, explicitly set the the debug bit
+in the permissions field of <a class="reference internal" href="#set-firewall-region"><span class="std std-ref">firewall set request</span></a></p>
+</div>
 </div>
 <div class="section" id="tisci-msg-get-fwl-region-get-firewall-region">
 <span id="get-firewall-region"></span><h3>TISCI_MSG_GET_FWL_REGION - Get Firewall region<a class="headerlink" href="#tisci-msg-get-fwl-region-get-firewall-region" title="Permalink to this headline">¶</a></h3>
@@ -367,9 +373,9 @@ configuration.</li>
 <p>Request for retrieving the firewall permissions.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
-<col width="22%" />
-<col width="58%" />
+<col width="5%" />
+<col width="5%" />
+<col width="90%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Parameter</th>
@@ -388,7 +394,7 @@ configuration.</li>
 </tr>
 <tr class="row-even"><td>region</td>
 <td>u16</td>
-<td>Region or channel number to set config info</td>
+<td>Region or channel number to get config info. This field is unused in case of a simple firewall  and must be initialized to zero.  In case of a region based firewall, this field indicates the region in question (index starting from 0). In case of a channel based firewall, this field indicates the channel in question (index starting from 0).</td>
 </tr>
 <tr class="row-odd"><td>n_permission_regs</td>
 <td>u32</td>
@@ -396,18 +402,13 @@ configuration.</li>
 </tr>
 </tbody>
 </table>
-<p>This field is unused in case of a simple firewall  and must be initialized
- to zero.  In case of a region based firewall, this field indicates the
- region in question (index starting from 0). In case of a channel based
- firewall, this field indicates the channel in question (index starting
- from 0).</p>
 </p>
 <p><p><strong>struct tisci_msg_fwl_get_firewall_region_resp</strong></p>
 <p>Response for retrieving the firewall permissions.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="5%" />
-<col width="6%" />
+<col width="5%" />
 <col width="90%" />
 </colgroup>
 <thead valign="bottom">
@@ -419,19 +420,19 @@ configuration.</li>
 <tbody valign="top">
 <tr class="row-even"><td>hdr</td>
 <td>struct tisci_header</td>
-<td>Generic TISCI message header. A ACK response in the hdr indicates that the message was processed. successfully. A NACK response indicates failure to retrieve firewall permissions.</td>
+<td>Generic TISCI message header. An ACK response in the hdr indicates that the message was processed successfully. A NACK response indicates failure to retrieve firewall permissions.</td>
 </tr>
 <tr class="row-odd"><td>fwl_id</td>
 <td>u16</td>
-<td>firewall ID in question. fwl_id is defined in the TRM.</td>
+<td>firewall ID requested in the request message. fwl_id is defined in the TRM.</td>
 </tr>
 <tr class="row-even"><td>region</td>
 <td>u16</td>
-<td>Region or channel number to set config info This field is unused in case of a simple firewall  and must be initialized to zero.  In case of a region based firewall, this field indicates the region in question. (index starting from 0) In case of a channel based firewall, this field indicates the channel in question (index starting from 0)</td>
+<td>Region or channel number to get config info. This field is unused in case of a simple firewall  and must be initialized to zero.  In case of a region based firewall, this field indicates the region in question. (index starting from 0) In case of a channel based firewall, this field indicates the channel in question (index starting from 0)</td>
 </tr>
 <tr class="row-odd"><td>n_permission_regs</td>
 <td>u32</td>
-<td>Number of permission registers retrieved</td>
+<td>Number of permission registers retrieved. n_permission_regs is overwritten with number of priv-id slots. If priv-id slots is greater than n_permission_regs then it returns the correct value.</td>
 </tr>
 <tr class="row-even"><td>control</td>
 <td>u32</td>
@@ -439,7 +440,7 @@ configuration.</li>
 </tr>
 <tr class="row-odd"><td>permissions</td>
 <td>u32</td>
-<td>Contents of the firewall PERMISSION registers</td>
+<td>Contents of the firewall PERMISSION registers. Valid values match the n_permission_regs returned values.</td>
 </tr>
 <tr class="row-even"><td>start_address</td>
 <td>soc_phys_addr_t</td>
@@ -597,7 +598,7 @@ configuration.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -1,0 +1,58 @@
+======================================
+OTP Keywriter (Lite) TISCI Description
+======================================
+
+This chapter provides information on TISCI message for programming customer keys
+into eFuse array on devices, using keywriter lite service.
+
++------------------+---------------------------------------------------------------------------+
+| TISCI Message ID |                        Message Name                                       |
++==================+===========================================================================+
+| 0x9045           | :ref:`TISCI_MSG_KEY_WRITER_LITE <sec-api-keywr-lite-program-keys>`        |
++------------------+---------------------------------------------------------------------------+
+
+This document must be read alongside :doc:`../../6_topic_user_guides/key_writer_lite`
+
+API Description
+===============
+
+.. _sec-api-keywr-lite-program-keys:
+
+TISCI_MSG_KEY_WRITER_LITE - Key writer (Lite)
+---------------------------------------------
+
+Usage
+^^^^^
+
++------------------------+--------+
+| **Message Type**       | Secure |
++------------------------+--------+
+| **Secure Queue Only?** | Yes    |
++------------------------+--------+
+
+TISCI Message ID
+^^^^^^^^^^^^^^^^
+
+.. sysfwapimacro:: TISCI_MSG_KEY_WRITER_LITE
+
+.. sysfwapistruct:: tisci_msg_keywriter_lite_req
+
+The address of the structured binary blob containing customer key information is given as an input to the
+API.
+
+.. sysfwapistruct:: tisci_msg_keywriter_lite_resp
+
+A ``debug_response`` of 0x0 means the key programming was successful, other 
+response codes indicate the point of failure, which can be referred from PDK documentation
+for OTP Keywriter.
+
+.. _sec-api-keywr-lite-error-codes:
+
+OTP KEY WRITER ERROR CODES
+--------------------------
+
+.. note::
+
+    For example a ``debug_response`` 0x00000004 would mean that (KEYWR_ERR_DECRYPT_BMPKH) there was an error in decrypting BMPKH extension field
+
+.. sysfwapienum:: keywriter_error_codes

@@ -1,0 +1,53 @@
+========================
+AM62LX Host Descriptions
+========================
+
+.. _soc_doc_am62lx_public_host_desc_intro:
+
+Introduction
+============
+
+This chapter provides information on the set of HostIDs permitted
+in this AM62LX SoC. HostIDs uniquely identify each logically distinct high level
+software entity. A software entity identification number (HostID) can be
+assigned to an OS either native or virtualized, or a firmware/native
+application. The HostID is used to select the set of mailbox channels for
+which this software entity should use to communicate with the System Firmware.
+
+As an example with an A53 core, then there could be 0, 1, or n number of
+A53 related hosts. The only limit is the number of available mailbox
+Channels. Typically though, an A53 core will be assigned one secure host as well as one non
+secure host, but may be assigned additional hosts for certain usecases. As for other
+cores, some will only use secure hosts, and others will only use non secure hosts.
+Since the hosts are tied to mailbox channels, hosts are just a way of sectioning
+off data for a designated purpose.
+
+System Firmware also checks that the used HostID comes from software running
+on the correct core (as implied by Host Name in the below table) and with the
+correct security level (Security Status column).
+
+Additionally, one of the key reasons why HostID is tied in with mailbox
+channels is because it prevents spoofing. When a message is received by
+System Firmware, the mailbox channel tied to the HostID in the message is
+verified against the mailbox channel on which the message was received.
+
+.. _soc_doc_am62lx_public_host_desc_host_list:
+
+Enumeration of Host IDs
+=======================
+
++-----------+-------------+-------------------+--------------------------------------------+
+|   Host ID | Host Name   | Security Status   | Description                                |
++===========+=============+===================+============================================+
+|         0 | TIFS        | Secure            | Device Management and Security Control     |
++-----------+-------------+-------------------+--------------------------------------------+
+|        10 | A53_0       | Secure            | Cortex A53 context 0 on Main island        |
++-----------+-------------+-------------------+--------------------------------------------+
+|        11 | A53_1       | Secure            | Cortex A53 context 1 on Main island        |
++-----------+-------------+-------------------+--------------------------------------------+
+|        12 | A53_2       | Non Secure        | Cortex A53 context 2 on Main island        |
++-----------+-------------+-------------------+--------------------------------------------+
+|        13 | A53_3       | Non Secure        | Cortex A53 context 3 on Main island        |
++-----------+-------------+-------------------+--------------------------------------------+
+|        14 | A53_4       | Non Secure        | Cortex A53 context 4 on Main island        |
++-----------+-------------+-------------------+--------------------------------------------+

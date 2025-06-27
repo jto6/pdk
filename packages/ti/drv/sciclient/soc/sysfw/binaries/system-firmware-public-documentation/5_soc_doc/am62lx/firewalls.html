@@ -1,0 +1,703 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AM62LX Firewall Descriptions &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../../index.html"/>
+        <link rel="up" title="Chapter 5: SoC Family Specific Documentation" href="../index.html"/>
+        <link rel="next" title="AM62LX Device Group descriptions" href="soc_devgrps.html"/>
+        <link rel="prev" title="AM62LX Processor Descriptions" href="processors.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.01.03
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_tisci_msgs/index.html">Chapter 2: TISCI Message Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Chapter 5: SoC Family Specific Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr1">AM65x SR1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am65x-sr2">AM65x SR2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am64x">AM64x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62x">AM62x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62ax">AM62Ax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am62px">AM62Px</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#am275x">AM275x</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#am62lx">AM62Lx</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="boot_mode_efuse.html">AM62LX Boot Mode Efuses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hosts.html">AM62LX Host Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="processors.html">AM62LX Processor Descriptions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">AM62LX Firewall Descriptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-of-region-based-firewalls">List of Region Based Firewalls</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-of-channelized-firewalls">List of Channelized Firewalls</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-of-priv-ids">List of priv-ids</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="soc_devgrps.html">AM62LX Device Group descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mailbox.html">AM62LX Mailbox IPC Channels</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721e">J721E</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j7200">J7200</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j721s2">J721S2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j722s">J722S</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#j784s4">J784S4</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_topic_user_guides/index.html">Chapter 6: Topic User Guides</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Chapter 5: SoC Family Specific Documentation</a> &raquo;</li>
+      
+    <li>AM62LX Firewall Descriptions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="am62lx-firewall-descriptions">
+<h1>AM62LX Firewall Descriptions<a class="headerlink" href="#am62lx-firewall-descriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="soc-doc-am62lx-public-fwl-desc-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This chapter provides information on firewalls that system firmware configures
+by default at boot time. The guide to read the tables in this chapter is
+provided below. For more details on firewalls, refer to the “Interconnect
+Firewalls” section of the TRM and <a class="reference internal" href="../../2_tisci_msgs/security/firewall_api.html#sec-ap-fwl-tisci-desc"><span class="std std-ref">Firewall TISCI Description</span></a>.</p>
+<div class="section" id="table-legend">
+<span id="soc-doc-am62lx-public-fwl-desc-table-legend"></span><h3>Table Legend<a class="headerlink" href="#table-legend" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">Firewall</span> <span class="pre">ID</span></code>: The unique identifier for each firewall</li>
+<li><code class="docutils literal"><span class="pre">Owner</span></code>: The <a class="reference internal" href="hosts.html#soc-doc-am62lx-public-host-desc-host-list"><span class="std std-ref">host ID</span></a> that owns the firewall</li>
+<li><code class="docutils literal"><span class="pre">CBA_PERMISSION_x</span></code>: Each permission slot takes the form of [user, permission], where “user” is a host ID and “permission” is a combination of r-read, w-write, c-cache, d-debug. Additionally, each firewall region/channel can have up to 3 slots for configuring permissions.</li>
+</ul>
+</div>
+<div class="section" id="table-guide">
+<span id="soc-doc-am62lx-public-fwl-desc-table-guide"></span><h3>Table Guide<a class="headerlink" href="#table-guide" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>If a firewall is owned by <code class="docutils literal"><span class="pre">TIFS</span></code>/<code class="docutils literal"><span class="pre">DMSC</span></code>, it means that only TIFS/DMSC can configure it.</li>
+<li>If a firewall is owned by <code class="docutils literal"><span class="pre">none</span></code>, it means any host can configure it.</li>
+<li>If a firewall is not listed in the table below, it does not mean it doesn’t exist. It simply means it was not one of the firewalls configured at boot time by system firmware.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For additional firewall information, checkout the <a class="reference internal" href="../../6_topic_user_guides/firewall_faq.html"><span class="doc">Firewall FAQ</span></a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="list-of-region-based-firewalls">
+<span id="soc-doc-am62lx-public-fwl-desc-region-fwl-list"></span><h2>List of Region Based Firewalls<a class="headerlink" href="#list-of-region-based-firewalls" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="6%" />
+<col width="5%" />
+<col width="13%" />
+<col width="10%" />
+<col width="9%" />
+<col width="16%" />
+<col width="16%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Firewall ID</th>
+<th class="head">Region</th>
+<th class="head">Owner</th>
+<th class="head">Dev Group</th>
+<th class="head">Start Address</th>
+<th class="head">End Address</th>
+<th class="head">CBA_PERMISSION_0</th>
+<th class="head">CBA_PERMISSION_1</th>
+<th class="head">CBA_PERMISSION_2</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>15</td>
+<td>1</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
+<td>0x70814000</td>
+<td>0x70814FFF</td>
+<td>a53_secure_supervisor,rwcd</td>
+<td>a53_secure_supervisor,rwcd</td>
+<td>tifs,rd</td>
+</tr>
+<tr class="row-odd"><td>15</td>
+<td>2</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
+<td>0x70815000</td>
+<td>0x70815FFF</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+<td>a53_secure_supervisor,rc</td>
+</tr>
+<tr class="row-even"><td>96</td>
+<td>0</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_MAIN</td>
+<td>0x00000000</td>
+<td>0xFFFFFFFFFFF</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+</tr>
+<tr class="row-odd"><td>195</td>
+<td>0</td>
+<td>none</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x300000</td>
+<td>0x300FFF</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+</tr>
+<tr class="row-even"><td>512</td>
+<td>1</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x44250000</td>
+<td>0x44250FFF</td>
+<td>everyone,r</td>
+<td>everyone,r</td>
+<td>everyone,r</td>
+</tr>
+<tr class="row-odd"><td>512</td>
+<td>3</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x44234000</td>
+<td>0x44234FFF</td>
+<td>everyone,r</td>
+<td>everyone,r</td>
+<td>everyone,r</td>
+</tr>
+<tr class="row-even"><td>512</td>
+<td>4</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x45000000</td>
+<td>0x458FFFFF</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+<td>tifs,rwd</td>
+</tr>
+<tr class="row-odd"><td>512</td>
+<td>5</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x45B00000</td>
+<td>0x45B0AFFF</td>
+<td>everyone,r</td>
+<td>everyone,r</td>
+<td>everyone,r</td>
+</tr>
+<tr class="row-even"><td>512</td>
+<td>6</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x45D20000</td>
+<td>0x45D27FFF</td>
+<td>everyone,rwcd</td>
+<td>everyone,rwcd</td>
+<td>everyone,rwcd</td>
+</tr>
+<tr class="row-odd"><td>800</td>
+<td>0</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x4000</td>
+<td>0x4FFF</td>
+<td>tifs,rwcd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>800</td>
+<td>0</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x0000</td>
+<td>0x4FFF</td>
+<td>tifs,rwcd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>800</td>
+<td>1</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x6000</td>
+<td>0x6FFF</td>
+<td>tifs,rwcd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>800</td>
+<td>2</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x8000</td>
+<td>0xFFFFFFFFFFF</td>
+<td>tifs,rwcd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>800</td>
+<td>3</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x4000</td>
+<td>0x4FFF</td>
+<td>tifs,rwcd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>800</td>
+<td>4</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x6000</td>
+<td>0x6FFF</td>
+<td>tifs,rwcd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>800</td>
+<td>5</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x8000</td>
+<td>0xFFFFFFFFFFF</td>
+<td>tifs,rwcd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>800</td>
+<td>6</td>
+<td>none</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x5000</td>
+<td>0x5FFF</td>
+<td>tifs,rwcd</td>
+<td>everyone, rwcd</td>
+<td>everyone, rwcd</td>
+</tr>
+<tr class="row-odd"><td>800</td>
+<td>7</td>
+<td>none</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0x7000</td>
+<td>0x7FFF</td>
+<td>tifs,rwcd</td>
+<td>everyone, rwcd</td>
+<td>everyone, rwcd</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For more details on firewalls, refer to the “Interconnect Firewalls” section of the TRM.</p>
+</div>
+</div>
+<div class="section" id="list-of-channelized-firewalls">
+<span id="soc-doc-am62lx-public-fwl-desc-channel-fwl-list"></span><h2>List of Channelized Firewalls<a class="headerlink" href="#list-of-channelized-firewalls" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="6%" />
+<col width="12%" />
+<col width="12%" />
+<col width="11%" />
+<col width="20%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Firewall ID</th>
+<th class="head">Owner</th>
+<th class="head">Dev Group</th>
+<th class="head">Start Channel</th>
+<th class="head">End Channel</th>
+<th class="head">CBA_PERMISSION_0</th>
+<th class="head">CBA_PERMISSION_1</th>
+<th class="head">CBA_PERMISSION_2</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>128</td>
+<td>none</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0</td>
+<td>2</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>193</td>
+<td>none</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0</td>
+<td>0</td>
+<td>everyone, rwcd</td>
+<td>everyone, rwcd</td>
+<td>everyone, rwcd</td>
+</tr>
+<tr class="row-even"><td>193</td>
+<td>none</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0</td>
+<td>0</td>
+<td>tifs, rwd</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>520</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>0</td>
+<td>0</td>
+<td>tifs, rwd</td>
+<td>everyone, r</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>520</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>1</td>
+<td>1</td>
+<td>a53_secure_supervisor, rwd</td>
+<td>everyone, r</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>520</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>2</td>
+<td>3</td>
+<td>tifs, rwd</td>
+<td>everyone, r</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>520</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>4</td>
+<td>5</td>
+<td>tifs, rwd</td>
+<td>everyone, r</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>520</td>
+<td>tifs</td>
+<td>SOC_DEVGRP_WKUP</td>
+<td>6</td>
+<td>7</td>
+<td>a53_secure_supervisor, rwd</td>
+<td>everyone, r</td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="list-of-priv-ids">
+<span id="soc-doc-am62lx-public-fwl-desc-priv-id-list"></span><h2>List of priv-ids<a class="headerlink" href="#list-of-priv-ids" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="11%" />
+<col width="10%" />
+<col width="15%" />
+<col width="15%" />
+<col width="8%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Master name</th>
+<th class="head">priv-id</th>
+<th class="head">secure</th>
+<th class="head">non-secure</th>
+<th class="head">privileged</th>
+<th class="head">user</th>
+<th class="head">HOST-IDs</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>a53_non_secure_supervisor</td>
+<td>4</td>
+<td>False</td>
+<td>True</td>
+<td>True</td>
+<td>False</td>
+<td>12,13,14</td>
+</tr>
+<tr class="row-odd"><td>a53_secure_supervisor</td>
+<td>4</td>
+<td>True</td>
+<td>False</td>
+<td>True</td>
+<td>False</td>
+<td>10,11</td>
+</tr>
+<tr class="row-even"><td>everyone</td>
+<td>195</td>
+<td>True</td>
+<td>True</td>
+<td>True</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>block_everyone</td>
+<td>197</td>
+<td>True</td>
+<td>True</td>
+<td>True</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td>tifs</td>
+<td>202</td>
+<td>True</td>
+<td>True</td>
+<td>True</td>
+<td>True</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="soc_devgrps.html" class="btn btn-neutral float-right" title="AM62LX Device Group descriptions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="processors.html" class="btn btn-neutral" title="AM62LX Processor Descriptions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'11.01.03',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

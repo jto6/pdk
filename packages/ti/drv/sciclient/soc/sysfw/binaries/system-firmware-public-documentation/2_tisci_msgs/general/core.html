@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -385,7 +385,7 @@ is possible with system firmware.</p>
 <p>See <a class="reference internal" href="../../3_boardcfg/BOARDCFG_PM.html#pub-boardcfg-pm-tisci"><span class="std std-ref">TISCI API for Power Management Board Config</span></a>.</p>
 </div>
 <div class="section" id="tisci-msg-query-msmc">
-<h2>TISCI_MSG_QUERY_MSMC<a class="headerlink" href="#tisci-msg-query-msmc" title="Permalink to this headline">¶</a></h2>
+<span id="tisci-query-msmc"></span><h2>TISCI_MSG_QUERY_MSMC<a class="headerlink" href="#tisci-msg-query-msmc" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id5">
 <h3>Objective<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>Retrieve the MSMC memory available.</p>
@@ -412,10 +412,57 @@ of allocation for cache backing RAM and MSMC shared usage by System
 Firmware.</p>
 <p>This API is linked with the parameter provided in
 <a class="reference internal" href="../../3_boardcfg/BOARDCFG.html#pub-boardcfg-msmc"><span class="std std-ref">Design for boardcfg_msmc</span></a>. The parameter <strong>msmc_cache_size</strong> is a value
-ranging from <code class="docutils literal"><span class="pre">0x00</span></code> to <code class="docutils literal"><span class="pre">0x20</span></code> independent of SoC and configured
-at system startup. This API is used by software components that start
+dependent on SoC and configured at system startup.
+This API is used by software components that start
 functionality later in the boot sequence and intends to manage or use
 the remaining SRAM contents.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="16%" />
+<col width="26%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>SOC</td>
+<td>MSMC SRAM size</td>
+<td>msmc_cache_size value range</td>
+<td>msmc_cache_size step value</td>
+<td>Corresponding step size</td>
+</tr>
+<tr class="row-even"><td>AM65x</td>
+<td>2MB</td>
+<td>0x00 to 0x20</td>
+<td>0x04</td>
+<td>0.25MB</td>
+</tr>
+<tr class="row-odd"><td>J721E</td>
+<td>8MB</td>
+<td>0x00 to 0x20</td>
+<td>0x04</td>
+<td>1MB</td>
+</tr>
+<tr class="row-even"><td>J7200</td>
+<td>1MB</td>
+<td>0x00 to 0x20</td>
+<td>0x08</td>
+<td>0.25MB</td>
+</tr>
+<tr class="row-odd"><td>J721S2</td>
+<td>4MB</td>
+<td>0x00 to 0x20</td>
+<td>0x08</td>
+<td>1MB</td>
+</tr>
+<tr class="row-even"><td>J784S4</td>
+<td>8MB</td>
+<td>0x00 to 0x40</td>
+<td>0x08</td>
+<td>1MB</td>
+</tr>
+</tbody>
+</table>
 <p>To understand the relationship, let’s consider a SoC with actual
 physical MSMC SRAM available to allocate as 2MB:</p>
 <p><em>case A) Allocation of 1/2 SRAM(1MB) for L3 backing RAM</em></p>
@@ -455,12 +502,12 @@ memory reserved for communication memory will generate a firewall
 exception.</p>
 </div>
 </div>
-<div class="section" id="tisci-query-msmc">
-<h3>TISCI query MSMC<a class="headerlink" href="#tisci-query-msmc" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h3>TISCI query MSMC<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal"><span class="pre">TISCI_MSG_QUERY_MSMC</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x0020U)</span></code></p>
 </div>
-<div class="section" id="id7">
-<h3>Message Data Structures<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h3>Message Data Structures<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p><p><strong>struct tisci_query_msmc_req</strong></p>
 <p>TISCI_MSG_QUERY_MSMC request to provide currently available MSMC memory if present in the SoC</p>
 <table border="1" class="docutils">
@@ -527,12 +574,12 @@ exception.</p>
 </div>
 <div class="section" id="tisci-msg-get-trace-config">
 <h2>TISCI_MSG_GET_TRACE_CONFIG<a class="headerlink" href="#tisci-msg-get-trace-config" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id8">
-<h3>Objective<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>Objective<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>Retrieve debug trace configuration from TIFS.</p>
 </div>
-<div class="section" id="id9">
-<h3>Usage<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id10">
+<h3>Usage<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">DM firmware doesn’t have the information about debug trace configuration. DM uses this message to
@@ -553,12 +600,12 @@ query TIFS for debug trace configuration.</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="id10">
-<h3>TISCI Message ID<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id11">
+<h3>TISCI Message ID<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal"><span class="pre">TISCI_MSG_GET_TRACE_CONFIG</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x0021U)</span></code></p>
 </div>
-<div class="section" id="id11">
-<h3>Message Data Structures<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id12">
+<h3>Message Data Structures<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p><p><strong>struct tisci_get_trace_config_req</strong></p>
 <p>TISCI_MSG_GET_TRACE_CONFIG request to get the debug trace config from base board config</p>
 <table border="1" class="docutils">
@@ -617,12 +664,12 @@ query TIFS for debug trace configuration.</p>
 </div>
 <div class="section" id="tisci-msg-query-fw-caps">
 <h2>TISCI_MSG_QUERY_FW_CAPS<a class="headerlink" href="#tisci-msg-query-fw-caps" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id12">
-<h3>Objective<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h3>Objective<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>Retrieve the firmware capabilities of the currently running system-firmware.</p>
 </div>
-<div class="section" id="id13">
-<h3>Usage<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id14">
+<h3>Usage<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="75%" />
@@ -682,12 +729,12 @@ query TIFS for debug trace configuration.</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="id14">
-<h3>TISCI Message ID<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id15">
+<h3>TISCI Message ID<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal"><span class="pre">TISCI_MSG_QUERY_FW_CAPS</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x0022U)</span></code></p>
 </div>
-<div class="section" id="id15">
-<h3>Message Data Structures<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id16">
+<h3>Message Data Structures<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <p><p><strong>struct tisci_query_fw_caps_req</strong></p>
 <p>TISCI_MSG_QUERY_FW_CAPS request to provide the firmware/SOC capabilities</p>
 <table border="1" class="docutils">
@@ -742,12 +789,12 @@ query TIFS for debug trace configuration.</p>
 </div>
 <div class="section" id="tisci-msg-dm-version">
 <h2>TISCI_MSG_DM_VERSION<a class="headerlink" href="#tisci-msg-dm-version" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id16">
-<h3>Objective<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id17">
+<h3>Objective<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <p>Retrieve the version of the currently running DM firmware.</p>
 </div>
-<div class="section" id="id17">
-<h3>Usage<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id18">
+<h3>Usage<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="75%" />
@@ -771,12 +818,12 @@ be checked by querying firmware capabilities using TISCI_MSG_QUERY_FW_CAPS to co
 whether <strong>DM split mode</strong> capability is present or not.</p>
 </div>
 </div>
-<div class="section" id="id18">
-<h3>TISCI Message ID<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id19">
+<h3>TISCI Message ID<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal"><span class="pre">TISCI_MSG_DM_VERSION</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x000FU)</span></code></p>
 </div>
-<div class="section" id="id19">
-<h3>Message Data Structures<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id20">
+<h3>Message Data Structures<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
 <p><p><strong>struct tisci_msg_dm_version_req</strong></p>
 <p>Notification message to get DM version.</p>
 <table border="1" class="docutils">
@@ -896,7 +943,7 @@ whether <strong>DM split mode</strong> capability is present or not.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

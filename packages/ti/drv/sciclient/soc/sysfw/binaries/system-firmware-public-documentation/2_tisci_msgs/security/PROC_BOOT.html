@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -122,9 +122,10 @@
 <li class="toctree-l3"><a class="reference internal" href="dsmek_management.html">Derived SMEK TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="security_handover.html">Security Handover Message Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="keywriter.html">OTP Keywriter TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keywriter_lite.html">OTP Keywriter (Lite) TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="otp_revision.html">OTP Revision Read/Write Message Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="keyring.html">KEYRING TISCI Description</a></li>
-<li class="toctree-l3"><a class="reference internal" href="csp.html">Cryto Service TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csp.html">Crypto Service TISCI Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fwl_safety_core.html">FIREWALL READ ACCESS SAFETY CORE TISCI Description</a></li>
 </ul>
 </li>
@@ -1719,6 +1720,69 @@ Applying these flags to any CPU in a cluster affects the corresponding cluster.<
 </tbody>
 </table>
 </div>
+<div class="section" id="armv8-sms-lite">
+<h4>ARMV8 SMS-LITE<a class="headerlink" href="#armv8-sms-lite" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>config_flags_1 Fields</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="17%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag Name</th>
+<th class="head">Bit Offset</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DBG_EN</td>
+<td>0</td>
+<td>invasive Debug</td>
+</tr>
+<tr class="row-odd"><td>DBG_NIDEN</td>
+<td>1</td>
+<td>Non-invasive Debug</td>
+</tr>
+<tr class="row-even"><td>DBG_SPIDEN</td>
+<td>2</td>
+<td>Secure invasive Debug</td>
+</tr>
+<tr class="row-odd"><td>DBG_SPNIDEN</td>
+<td>3</td>
+<td>Secure Non-invasive Debug</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li>control_flags_1 Fields:</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="13%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Flag Name</th>
+<th class="head">Bit Offset</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AINACTS</td>
+<td>1</td>
+<td>ACP interface state</td>
+</tr>
+<tr class="row-odd"><td>L2FLUSHREQ</td>
+<td>8</td>
+<td>SoC level L2 Flush Request - See L2FLUSH_DONE status for completion</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="arm-r5">
 <h4>ARM R5<a class="headerlink" href="#arm-r5" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
@@ -2119,7 +2183,7 @@ gatekeeper for HSM reset control. This is not appicable to general purpose M4 pr
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

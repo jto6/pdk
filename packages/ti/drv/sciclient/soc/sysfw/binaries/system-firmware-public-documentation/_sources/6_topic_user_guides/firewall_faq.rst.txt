@@ -27,6 +27,11 @@ Disabling a firewall is also done using the same API using the control word.
 
 All the registers of a firewall can be configured using the above TISCI message.
 
+Note : The Initiator Firewall programming is different from Target Firewall programming. 
+The Initiator Firewalls reside in the Compute Cluster that must be powered on before 
+configuring the firewalls. :ref:`TISCI_MSG_SET_FWL_REGION <set-firewall-region>` has a handler 
+function that performs a read-verification, and failure to power the Compute Cluster shuts down TIFS.
+
 How do I specify which firewall to program ?
 --------------------------------------------
 

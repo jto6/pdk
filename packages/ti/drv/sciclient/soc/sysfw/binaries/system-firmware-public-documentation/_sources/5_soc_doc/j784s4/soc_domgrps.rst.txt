@@ -1,0 +1,28 @@
+================================
+J784S4 Domain Group descriptions
+================================
+
+.. _soc_doc_j784s4_public_domgrp_desc_intro:
+
+Introduction
+============
+
+This chapter provides information of specific domain groups(DOMGRP)
+that are permitted in the J784S4 SoC. These domain groups are more used
+to identify the functional domain to be reset.
+
+.. _soc_doc_j784s4_public_domgrp_desc_domgrp_list:
+
+Enumeration of Domain group IDs
+===============================
+
++---------------+----------------------+------------+--------------------------------------------------------------+
+| SoC Domgrp ID | Generic Domgrp ID    | Flag Value | Description                                                  |
++===============+======================+============+==============================================================+
+| SYSTEM        | DOMGRP_COMPATIBILITY | 0U         | Reset the entire system. Defined for backward compaitibility.|
+|               |                      |            | Behaves the same as Domgrp ID MCU.                           |
++---------------+----------------------+------------+--------------------------------------------------------------+
+| MCU           | DOMGRP_00            | 0x1U <<  0U| Perform SW_MCU_WARMRST (Reset WKUP, MCU, MAIN domain)        |
++---------------+----------------------+------------+--------------------------------------------------------------+
+| MAIN          | DOMGRP_01            | 0x1U <<  1U| Perform SW_MAIN_WARMRST. Reset MAIN domain.                  |
++---------------+----------------------+------------+--------------------------------------------------------------+

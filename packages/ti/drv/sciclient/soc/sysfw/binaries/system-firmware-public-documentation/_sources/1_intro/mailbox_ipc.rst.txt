@@ -1,0 +1,22 @@
+===========
+Mailbox IPC
+===========
+
+.. _pub_mailbox_ipc_intro:
+
+Introduction to mailbox ipc channels
+====================================
+
+This chapter provides information about various mailbox ipc channels configured by tifs.
+Every mailbox ipc channel can be used for unidirectional communication between two cores.
+Every mailbox ipc channel is comprised of a mailbox fifo and a memory segment.
+While the memory segment is used for storing the actual TISCI messages the mailbox
+fifo is used for storing 32-bit pointers to the messages.
+
+.. figure:: ../img/mailbox_ipc_channel.png
+
+Note:
+
+1. Every mailbox fifo has space for 4 32-bit message pointers which means that one channel can hold at-most 4 tisci messages at a time.
+2. Every mailbox ipc memory segment has space for 5 tisci messages.
+3. The size of every message slot is 64 bytes though all are not used.

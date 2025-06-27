@@ -3,7 +3,7 @@ TISCI PM Low Power Mode API Documentation
 =========================================
 .. note::
 
-  This document is applicable to AM62x, AM62Ax and AM62Px devices.
+  This document is applicable to AM62x, AM62Ax, AM62Px, J7200 and J784S4 devices.
 
 Introduction
 ============
@@ -79,8 +79,12 @@ Device configuration and control APIs
 +------------------+--------------------------------------------+
 | 0x030E           | :ref:`pm_lpm_msg_get_next_host_state`      |
 +------------------+--------------------------------------------+
-| 0x0311           | :ref:`pm_lpm_msg_lpm_abort`                |
+| 0x030F           | :ref:`lpm_msg_lpm_encrypt`                 |
 +------------------+--------------------------------------------+
+| 0x0310           | :ref:`lpm_msg_lpm_decrypt`                 |
++------------------+--------------------------------------------+   
+| 0x0311           | :ref:`pm_lpm_msg_lpm_abort`                |
++------------------+--------------------------------------------+ 
 
 Macros Used in this Document
 ----------------------------
@@ -589,3 +593,74 @@ Message Data Structures
 .. sysfwapistruct:: tisci_msg_lpm_abort_req
 
 .. sysfwapistruct:: tisci_msg_lpm_abort_resp
+
+.. _lpm_msg_lpm_encrypt:
+
+TISCI_MSG_LPM_ENCRYPT
+=======================
+
+.. note::
+  This service is applicable to only J7200 and J784S4.
+
+Objective
+----------
+
+Encrypt the ATF binary present in MSMC and place it in DDR before going into low power mode.
+This service does require the user/caller to specify a Key and an Initialization Vector.
+
+Usage
+-----
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+TISCI Message ID
+----------------
+
+.. sysfwapimacro:: TISCI_MSG_LPM_ENCRYPT
+
+Message Data Structures
+-----------------------
+
+.. sysfwapistruct:: tisci_msg_enc_req
+
+.. sysfwapistruct:: tisci_msg_enc_resp
+
+
+.. _lpm_msg_lpm_decrypt:
+
+TISCI_MSG_LPM_DECRYPT
+======================
+
+.. note::
+  This service is applicable to only J7200 and J784S4.
+
+Objective
+----------
+
+Encrypt the ATF binary present in DDR and place it in MSMC after resuming from low power mode.
+This service does require the user/caller to specify a Key and an Initialization Vector.
+
+Usage
+-----
+
++------------------------+--------+
+| **Message Type**       | Normal |
++------------------------+--------+
+| **Secure Queue Only?** | No     |
++------------------------+--------+
+
+TISCI Message ID
+----------------
+
+.. sysfwapimacro:: TISCI_MSG_LPM_DECRYPT
+
+Message Data Structures
+-----------------------
+
+.. sysfwapistruct:: tisci_msg_dec_req
+
+.. sysfwapistruct:: tisci_msg_dec_resp

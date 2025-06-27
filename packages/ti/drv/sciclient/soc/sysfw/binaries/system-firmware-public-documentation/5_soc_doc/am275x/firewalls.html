@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -192,9 +192,11 @@
 <div class="section" id="introduction">
 <span id="soc-doc-am275-public-fwl-desc-intro"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This chapter provides information on firewalls that system firmware configures
-by default at boot time. The guide to read the tables in this chapter is
-provided below. For more details on firewalls, refer to the “Interconnect
-Firewalls” section of the TRM and <a class="reference internal" href="../../2_tisci_msgs/security/firewall_api.html#sec-ap-fwl-tisci-desc"><span class="std std-ref">Firewall TISCI Description</span></a>.</p>
+by default at boot time. The reasons for choosing specific firewalls and/or
+regions to configure during system firmware initialization are internal. The
+guide to read the tables in this chapter is provided below. For more details on
+firewalls, refer to the “Interconnect Firewalls” section of the TRM and
+<a class="reference internal" href="../../2_tisci_msgs/security/firewall_api.html#sec-ap-fwl-tisci-desc"><span class="std std-ref">Firewall TISCI Description</span></a>.</p>
 <div class="section" id="table-legend">
 <span id="soc-doc-am275-public-fwl-desc-table-legend"></span><h3>Table Legend<a class="headerlink" href="#table-legend" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -221,20 +223,22 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <span id="soc-doc-am275-public-fwl-desc-region-fwl-list"></span><h2>List of Region Based Firewalls<a class="headerlink" href="#list-of-region-based-firewalls" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
-<col width="7%" />
-<col width="6%" />
-<col width="15%" />
+<col width="8%" />
+<col width="5%" />
+<col width="5%" />
+<col width="18%" />
+<col width="13%" />
+<col width="9%" />
+<col width="8%" />
+<col width="12%" />
 <col width="11%" />
-<col width="10%" />
-<col width="14%" />
-<col width="13%" />
-<col width="13%" />
+<col width="11%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Firewall ID</th>
 <th class="head">Region</th>
 <th class="head">Owner</th>
+<th class="head">Background/Foreground Region</th>
 <th class="head">Dev Group</th>
 <th class="head">Start Address</th>
 <th class="head">End Address</th>
@@ -247,6 +251,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>3</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -257,6 +262,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>9</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x49800000</td>
 <td>0x4A67FFFF</td>
@@ -267,6 +273,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>9</td>
 <td>1</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x48100000</td>
 <td>0x4811001F</td>
@@ -277,6 +284,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>9</td>
 <td>2</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x48130000</td>
 <td>0x482500FF</td>
@@ -287,6 +295,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>9</td>
 <td>3</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x48420000</td>
 <td>0x48607FFF</td>
@@ -297,6 +306,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>9</td>
 <td>4</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x4A000000</td>
 <td>0x4A0FFFFF</td>
@@ -307,6 +317,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>9</td>
 <td>5</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x48100000</td>
 <td>0x4811001F</td>
@@ -317,6 +328,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>9</td>
 <td>6</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x48180000</td>
 <td>0x48221FFF</td>
@@ -327,6 +339,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>9</td>
 <td>7</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x484C4000</td>
 <td>0x485C01FF</td>
@@ -337,6 +350,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>9</td>
 <td>8</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x48140000</td>
 <td>0x48140FFF</td>
@@ -347,6 +361,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>9</td>
 <td>9</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x48130000</td>
 <td>0x481301FF</td>
@@ -357,6 +372,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>9</td>
 <td>10</td>
 <td>none</td>
+<td>Background</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x3F005000</td>
 <td>0x4C01FFFF</td>
@@ -367,6 +383,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>33</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x00300000</td>
 <td>0x003000FF</td>
@@ -377,6 +394,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>33</td>
 <td>1</td>
 <td>none</td>
+<td>Background</td>
 <td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -387,6 +405,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>33</td>
 <td>2</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x00A00000</td>
 <td>0x00A00FFF</td>
@@ -397,6 +416,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>35</td>
 <td>0</td>
 <td>none</td>
+<td>Background</td>
 <td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -407,6 +427,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>35</td>
 <td>7</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MCU_WAKEUP</td>
 <td>0x04210000</td>
 <td>0x042103FF</td>
@@ -417,6 +438,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>160</td>
 <td>0</td>
 <td>none</td>
+<td>Background</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x4D000000</td>
 <td>0x4E3FFFFF</td>
@@ -427,6 +449,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>160</td>
 <td>1</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x4E004000</td>
 <td>0x4E013FFF</td>
@@ -437,6 +460,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>256</td>
 <td>1</td>
 <td>none</td>
+<td>Background</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x72000000</td>
 <td>0x720FFFFF</td>
@@ -447,6 +471,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>512</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -457,6 +482,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>513</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -467,6 +493,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>514</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -477,6 +504,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>528</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -487,6 +515,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>536</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -497,6 +526,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>537</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -507,6 +537,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>544</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -517,6 +548,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>545</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -527,6 +559,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>552</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -537,6 +570,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>562</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -547,6 +581,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>576</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -557,6 +592,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>578</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -567,6 +603,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>582</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44234000</td>
 <td>0x44234FFF</td>
@@ -577,6 +614,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>582</td>
 <td>1</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44235000</td>
 <td>0x44237FFF</td>
@@ -587,6 +625,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>592</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -597,6 +636,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>593</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x00000000</td>
 <td>0xFFFFFFFFFFF</td>
@@ -607,6 +647,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>602</td>
 <td>0</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x4423C000</td>
 <td>0x4423CFFF</td>
@@ -617,6 +658,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>602</td>
 <td>1</td>
 <td>hsm</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x4423D000</td>
 <td>0x4423DFFF</td>
@@ -627,6 +669,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>0</td>
 <td>tifs</td>
+<td>Background</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44800000</td>
 <td>0x44FFFFFF</td>
@@ -637,6 +680,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>1</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44880000</td>
 <td>0x44887FFF</td>
@@ -647,6 +691,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>4</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x43702000</td>
 <td>0x43702FFF</td>
@@ -657,6 +702,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>6</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44914000</td>
 <td>0x44915FFF</td>
@@ -667,6 +713,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>7</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44801000</td>
 <td>0x44801FFF</td>
@@ -677,6 +724,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>8</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44918000</td>
 <td>0x44918FFF</td>
@@ -687,6 +735,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>638</td>
 <td>9</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44940000</td>
 <td>0x4494FFFF</td>
@@ -697,6 +746,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>638</td>
 <td>10</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x44960000</td>
 <td>0x4496FFFF</td>
@@ -707,6 +757,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>639</td>
 <td>0</td>
 <td>tifs</td>
+<td>Background</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x45000000</td>
 <td>0x45AFFFFF</td>
@@ -717,6 +768,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>639</td>
 <td>1</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x45D00000</td>
 <td>0x45DFFFFF</td>
@@ -727,6 +779,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>639</td>
 <td>2</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x45E00000</td>
 <td>0x45FFFFFF</td>
@@ -737,6 +790,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>639</td>
 <td>3</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x45B00000</td>
 <td>0x45B09FFF</td>
@@ -747,6 +801,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>639</td>
 <td>4</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x45B0A000</td>
 <td>0x45CFFFFF</td>
@@ -757,6 +812,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>639</td>
 <td>7</td>
 <td>tifs</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x45080000</td>
 <td>0x45100FFF</td>
@@ -767,6 +823,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>641</td>
 <td>0</td>
 <td>none</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x43C00000</td>
 <td>0x43C2FFFF</td>
@@ -777,6 +834,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>642</td>
 <td>0</td>
 <td>none</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x43C30000</td>
 <td>0x43C3FFFF</td>
@@ -787,6 +845,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>672</td>
 <td>0</td>
 <td>hsm</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x43935000</td>
 <td>0x43935FFF</td>
@@ -797,6 +856,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>673</td>
 <td>0</td>
 <td>hsm</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x43936000</td>
 <td>0x439360FF</td>
@@ -807,6 +867,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-even"><td>680</td>
 <td>0</td>
 <td>hsm</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x43A00000</td>
 <td>0x43A00FFF</td>
@@ -817,6 +878,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
 <tr class="row-odd"><td>690</td>
 <td>0</td>
 <td>hsm</td>
+<td>Foreground</td>
 <td>SOC_DEVGRP_MAIN</td>
 <td>0x43701000</td>
 <td>0x437013FF</td>
@@ -1049,7 +1111,7 @@ Firewalls” section of the TRM and <a class="reference internal" href="../../2_
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

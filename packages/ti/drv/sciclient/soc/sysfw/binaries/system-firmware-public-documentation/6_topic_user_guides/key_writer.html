@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="TISCI User Guide" href="../index.html"/>
         <link rel="up" title="Chapter 6: Topic User Guides" href="index.html"/>
-        <link rel="next" title="Run time read/write to KEYREV and SWREV" href="otp_revision.html"/>
+        <link rel="next" title="Key Writer (Lite)" href="key_writer_lite.html"/>
         <link rel="prev" title="Secure Debug User Guide" href="secure_debug.html"/> 
 
   
@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -134,12 +134,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#x509-configuration-template">X509 Configuration Template</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="key_writer_lite.html">Key Writer (Lite)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="otp_revision.html">Run time read/write to KEYREV and SWREV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="keyring.html">Keyring Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="csp.html">Cryptographic Services</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fwl_safety_core.html">Firewall Data Access to Safety Core</a></li>
 <li class="toctree-l2"><a class="reference internal" href="boot_mode_writer.html">Boot Mode Writer Service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boot_mode_writer_encoding.html">Boot Mode Writer Encoding table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tifs_exceptions.html">Exception Handling in TIFS</a></li>
 </ul>
 </li>
 </ul>
@@ -293,7 +294,7 @@ needs to be signed using BMPK (private).</li>
 </tr>
 <tr class="row-odd"><td>BMPKH</td>
 <td>Backup Manufacturer Public Key Hash</td>
-<td>BMPK is 4096-bit customer RSA signing key</td>
+<td>BMPKH is the SHA2-512 hash of 4096-bit customer RSA signing key</td>
 </tr>
 <tr class="row-even"><td>EXTENDED OTP</td>
 <td>Extended OTP array</td>
@@ -325,7 +326,7 @@ needs to be signed using BMPK (private).</li>
 </tr>
 <tr class="row-odd"><td>SMPKH</td>
 <td>Secondary Manufacturer Public Key Hash</td>
-<td>SMPK is 4096-bit customer RSA signing key</td>
+<td>SMPKH is the SHA2-512 hash of 4096-bit customer RSA signing key</td>
 </tr>
 <tr class="row-even"><td>SWREV-BOARDCONFIG</td>
 <td>Secure Board Configuration software revision</td>
@@ -566,7 +567,7 @@ also to be write protected.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="otp_revision.html" class="btn btn-neutral float-right" title="Run time read/write to KEYREV and SWREV" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="key_writer_lite.html" class="btn btn-neutral float-right" title="Key Writer (Lite)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="secure_debug.html" class="btn btn-neutral" title="Secure Debug User Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -600,7 +601,7 @@ also to be write protected.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

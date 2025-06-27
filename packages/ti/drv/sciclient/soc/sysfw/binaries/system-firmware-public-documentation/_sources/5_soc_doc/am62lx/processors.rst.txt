@@ -1,0 +1,29 @@
+=============================
+AM62LX Processor Descriptions
+=============================
+
+.. _soc_doc_am62lx_public_proc_desc_intro:
+
+
+Introduction
+============
+
+This chapter provides information of Processor and Host IDs that are permitted
+in the AM62LX SoC. These Processor IDs represent an actual physical processor
+on the SoC.
+
+NOTE: This should not be confused with HOST_ID.
+
+.. _soc_doc_am62lx_public_proc_desc_processors_list:
+
+
+Enumeration of Processor IDs
+============================
+
++----------------+-------------------+-----------------------------------------------------+
+| Processor ID   | Processor Name    | Location in SoC                                     |
++================+===================+=====================================================+
+| 0x20           | A53SS0_CORE_0     | AM62L_MAIN_SEC_MMR_MAIN_0: (Cluster 0 Processor 0)  |
++----------------+-------------------+-----------------------------------------------------+
+| 0x21           | A53SS0_CORE_1     | AM62L_MAIN_SEC_MMR_MAIN_0: (Cluster 0 Processor 1)  |
++----------------+-------------------+-----------------------------------------------------+

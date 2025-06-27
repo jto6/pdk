@@ -6,3 +6,4 @@ Chapter 1: Introduction
    :maxdepth: 1
 
    TISCI
+   mailbox_ipc

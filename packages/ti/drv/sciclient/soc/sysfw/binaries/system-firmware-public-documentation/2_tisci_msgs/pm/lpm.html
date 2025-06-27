@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -123,6 +123,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-get-next-sys-mode">TISCI_MSG_LPM_GET_NEXT_SYS_MODE</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-get-next-host-state">TISCI_MSG_LPM_GET_NEXT_HOST_STATE</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-abort">TISCI_MSG_LPM_ABORT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-encrypt">TISCI_MSG_LPM_ENCRYPT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tisci-msg-lpm-decrypt">TISCI_MSG_LPM_DECRYPT</a></li>
 </ul>
 </li>
 </ul>
@@ -183,7 +185,7 @@
 <h1>TISCI PM Low Power Mode API Documentation<a class="headerlink" href="#tisci-pm-low-power-mode-api-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This document is applicable to AM62x, AM62Ax and AM62Px devices.</p>
+<p class="last">This document is applicable to AM62x, AM62Ax, AM62Px, J7200 and J784S4 devices.</p>
 </div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
@@ -298,6 +300,12 @@ supported by the SOC.</p>
 </tr>
 <tr class="row-even"><td>0x030E</td>
 <td><a class="reference internal" href="#pm-lpm-msg-get-next-host-state"><span class="std std-ref">TISCI_MSG_LPM_GET_NEXT_HOST_STATE</span></a></td>
+</tr>
+<tr class="row-odd"><td>0x030F</td>
+<td><a class="reference internal" href="#lpm-msg-lpm-encrypt"><span class="std std-ref">TISCI_MSG_LPM_ENCRYPT</span></a></td>
+</tr>
+<tr class="row-even"><td>0x0310</td>
+<td><a class="reference internal" href="#lpm-msg-lpm-decrypt"><span class="std std-ref">TISCI_MSG_LPM_DECRYPT</span></a></td>
 </tr>
 <tr class="row-odd"><td>0x0311</td>
 <td><a class="reference internal" href="#pm-lpm-msg-lpm-abort"><span class="std std-ref">TISCI_MSG_LPM_ABORT</span></a></td>
@@ -1608,6 +1616,194 @@ one of the following system modes.</p>
 </p>
 </div>
 </div>
+<div class="section" id="tisci-msg-lpm-encrypt">
+<span id="lpm-msg-lpm-encrypt"></span><h2>TISCI_MSG_LPM_ENCRYPT<a class="headerlink" href="#tisci-msg-lpm-encrypt" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This service is applicable to only J7200 and J784S4.</p>
+</div>
+<div class="section" id="id45">
+<h3>Objective<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h3>
+<p>Encrypt the ATF binary present in MSMC and place it in DDR before going into low power mode.
+This service does require the user/caller to specify a Key and an Initialization Vector.</p>
+</div>
+<div class="section" id="id46">
+<h3>Usage<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id47">
+<h3>TISCI Message ID<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h3>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_LPM_ENCRYPT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x030FU)</span></code></p>
+<p>Message to encrypt an lpm data blob</p>
+</p>
+</div>
+<div class="section" id="id48">
+<h3>Message Data Structures<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h3>
+<p><p><strong>struct tisci_msg_enc_req</strong></p>
+<p>Request for TISCI_MSG_LPM_ENCRYPT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="15%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header to provide ACK/NAK flags to the host.</td>
+</tr>
+<tr class="row-odd"><td>unencrypted_addr</td>
+<td>u64</td>
+<td>MSMC source address where the unencrypted binary is placed</td>
+</tr>
+<tr class="row-even"><td>encrypted_addr</td>
+<td>u64</td>
+<td>DDR destination address where the [context + encrypted metadata + encrypted binary] should be placed</td>
+</tr>
+<tr class="row-odd"><td>unencrypted_len</td>
+<td>u32</td>
+<td>The size of the unencrypted binary present in the MSMC</td>
+</tr>
+<tr class="row-even"><td>max_encrypted_len</td>
+<td>u32</td>
+<td>The maximum possible size allowed for storing the [context + encrypted metadata + encrypted binary]</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p><p><strong>struct tisci_msg_enc_resp</strong></p>
+<p>Response for TISCI_MSG_LPM_ENCRYPT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="24%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header to provide ACK/NAK flags to the host.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+</div>
+<div class="section" id="tisci-msg-lpm-decrypt">
+<span id="lpm-msg-lpm-decrypt"></span><h2>TISCI_MSG_LPM_DECRYPT<a class="headerlink" href="#tisci-msg-lpm-decrypt" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This service is applicable to only J7200 and J784S4.</p>
+</div>
+<div class="section" id="id49">
+<h3>Objective<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h3>
+<p>Encrypt the ATF binary present in DDR and place it in MSMC after resuming from low power mode.
+This service does require the user/caller to specify a Key and an Initialization Vector.</p>
+</div>
+<div class="section" id="id50">
+<h3>Usage<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Normal</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id51">
+<h3>TISCI Message ID<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h3>
+<p><p><code class="docutils literal"><span class="pre">TISCI_MSG_LPM_DECRYPT</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x0310U)</span></code></p>
+<p>Message to decrypt an lpm data blob</p>
+</p>
+</div>
+<div class="section" id="id52">
+<h3>Message Data Structures<a class="headerlink" href="#id52" title="Permalink to this headline">¶</a></h3>
+<p><p><strong>struct tisci_msg_dec_req</strong></p>
+<p>Request for TISCI_MSG_LPM_DECRYPT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="16%" />
+<col width="70%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header to provide ACK/NAK flags to the host.</td>
+</tr>
+<tr class="row-odd"><td>unencrypted_addr</td>
+<td>u64</td>
+<td>MSMC destination address where the unencrypted binary should be placed</td>
+</tr>
+<tr class="row-even"><td>encrypted_addr</td>
+<td>u64</td>
+<td>DDR source address where the [context + encrypted metadata + encrypted binary] is placed</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p><p><strong>struct tisci_msg_dec_resp</strong></p>
+<p>Response for TISCI_MSG_LPM_DECRYPT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="24%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>TISCI header to provide ACK/NAK flags to the host.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+</div>
 </div>
 
 
@@ -1651,7 +1847,7 @@ one of the following system modes.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

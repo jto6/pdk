@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>OTP Keywriter (Lite) TISCI Description &mdash; TISCI User Guide</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="TISCI User Guide" href="../../index.html"/>
+        <link rel="up" title="Chapter 2: TISCI Message Documentation" href="../index.html"/>
+        <link rel="next" title="OTP Revision Read/Write Message Description" href="otp_revision.html"/>
+        <link rel="prev" title="OTP Keywriter TISCI Description" href="keywriter.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+  <header id="tiHeader">
+    <div class="top">
+      <ul>
+        <li id="top_logo">
+          <a href="http://www.ti.com">
+            <img src="../../_static/img/ti_logo.png"/>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="nav"></div>
+  </header>
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> TISCI
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                11.01.03
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../1_intro/index.html">Chapter 1: Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Chapter 2: TISCI Message Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../general/TISCI_header.html">Texas Instruments System Controller Interface (TISCI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#general">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#power-management-pm">Power Management (PM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#resource-management-rm">Resource Management (RM)</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#secure-management">Secure Management</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sec_cert_format.html">Security X509 Certificate Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="PROC_BOOT.html">Processor Boot Management TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="firewall_api.html">Firewall TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sec_ap_data_transfer.html">Secure AP Command Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="runtime_debug.html">Runtime Debug TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extended_otp.html">Extended OTP TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dkek_management.html">Derived KEK TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dsmek_management.html">Derived SMEK TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="security_handover.html">Security Handover Message Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keywriter.html">OTP Keywriter TISCI Description</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">OTP Keywriter (Lite) TISCI Description</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#api-description">API Description</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="otp_revision.html">OTP Revision Read/Write Message Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="keyring.html">KEYRING TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="csp.html">Crypto Service TISCI Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fwl_safety_core.html">FIREWALL READ ACCESS SAFETY CORE TISCI Description</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_boardcfg/index.html">Chapter 3: Board Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_trace/index.html">Chapter 4: Interpreting Trace Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../5_soc_doc/index.html">Chapter 5: SoC Family Specific Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../6_topic_user_guides/index.html">Chapter 6: Topic User Guides</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">TISCI</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Chapter 2: TISCI Message Documentation</a> &raquo;</li>
+      
+    <li>OTP Keywriter (Lite) TISCI Description</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="otp-keywriter-lite-tisci-description">
+<h1>OTP Keywriter (Lite) TISCI Description<a class="headerlink" href="#otp-keywriter-lite-tisci-description" title="Permalink to this headline">¶</a></h1>
+<p>This chapter provides information on TISCI message for programming customer keys
+into eFuse array on devices, using keywriter lite service.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">TISCI Message ID</th>
+<th class="head">Message Name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0x9045</td>
+<td><a class="reference internal" href="#sec-api-keywr-lite-program-keys"><span class="std std-ref">TISCI_MSG_KEY_WRITER_LITE</span></a></td>
+</tr>
+</tbody>
+</table>
+<p>This document must be read alongside <a class="reference internal" href="../../6_topic_user_guides/key_writer_lite.html"><span class="doc">Key Writer (Lite)</span></a></p>
+<div class="section" id="api-description">
+<h2>API Description<a class="headerlink" href="#api-description" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="tisci-msg-key-writer-lite-key-writer-lite">
+<span id="sec-api-keywr-lite-program-keys"></span><h3>TISCI_MSG_KEY_WRITER_LITE - Key writer (Lite)<a class="headerlink" href="#tisci-msg-key-writer-lite-key-writer-lite" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="usage">
+<h4>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="75%" />
+<col width="25%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Message Type</strong></td>
+<td>Secure</td>
+</tr>
+<tr class="row-even"><td><strong>Secure Queue Only?</strong></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="tisci-message-id">
+<h4>TISCI Message ID<a class="headerlink" href="#tisci-message-id" title="Permalink to this headline">¶</a></h4>
+<p><code class="docutils literal"><span class="pre">TISCI_MSG_KEY_WRITER_LITE</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(0x9045U)</span></code></p>
+<p><p><strong>struct tisci_msg_keywriter_lite_req</strong></p>
+<p>Request message for keywriter</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="25%" />
+<col width="59%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>Standard TISCI header</td>
+</tr>
+<tr class="row-odd"><td>buff_addr_lo</td>
+<td>u32</td>
+<td>Lower 32 bit address (in LE format) of the blob</td>
+</tr>
+<tr class="row-even"><td>buff_addr_hi</td>
+<td>u32</td>
+<td>Higher 32 bit address (in LE format) of the blob</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p>The address of the structured binary blob containing customer key information is given as an input to the
+API.</p>
+<p><p><strong>struct tisci_msg_keywriter_lite_resp</strong></p>
+<p>Response message for keywriter</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="30%" />
+<col width="46%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>hdr</td>
+<td>struct tisci_header</td>
+<td>standard TISCI header</td>
+</tr>
+<tr class="row-odd"><td>debug_response</td>
+<td>u32</td>
+<td>debug code for success/failure</td>
+</tr>
+</tbody>
+</table>
+</p>
+<p>A <code class="docutils literal"><span class="pre">debug_response</span></code> of 0x0 means the key programming was successful, other
+response codes indicate the point of failure, which can be referred from PDK documentation
+for OTP Keywriter.</p>
+</div>
+</div>
+<div class="section" id="otp-key-writer-error-codes">
+<span id="sec-api-keywr-lite-error-codes"></span><h3>OTP KEY WRITER ERROR CODES<a class="headerlink" href="#otp-key-writer-error-codes" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example a <code class="docutils literal"><span class="pre">debug_response</span></code> 0x00000004 would mean that (KEYWR_ERR_DECRYPT_BMPKH) there was an error in decrypting BMPKH extension field</p>
+</div>
+<p><p><strong>enum keywriter_error_codes</strong></p>
+<p>OTP Keywriter error code bit indices</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="5%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Enum</th>
+<th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>KEYWR_ERR_DECRYPT_AES256_KEY</td>
+<td>0</td>
+<td>Error in Decrypting AES256 key randomly generated by customer</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_DECRYPT_BMEK</td>
+<td>1</td>
+<td>Error in Decrypting BMEK extension field</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_DECRYPT_BMPKH</td>
+<td>2</td>
+<td>Error in Decrypting BMPKH extension field</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_DECRYPT_SMEK</td>
+<td>3</td>
+<td>Error in Decrypting SMEK extension field</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_DECRYPT_SMPKH</td>
+<td>4</td>
+<td>Error in Decrypting SMPKH extension field</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_INTERAL_OP</td>
+<td>5</td>
+<td>Internal Operation Error</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_INVALID_EXT_COUNT</td>
+<td>6</td>
+<td>Invalid extension count in x509 certificate. Either SMPKH, SMEK pair or BMPKH, BMEK, SMPKH, SMEK should be used. Any other combination will trigger error</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PARSE_CERT</td>
+<td>7</td>
+<td>Error in parsing certificate</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_PARSE_FEK</td>
+<td>8</td>
+<td>Error in parsing TI FEK (appended to TIFS binary, before encryption)</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PARSE_SMPK_CERT</td>
+<td>9</td>
+<td>Error in parsing SMPK signed certificate (certificate that contains customer key data)</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_PROGR_BMEK</td>
+<td>10</td>
+<td>Error in programming BMEK into SoC eFuses</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PROGR_BMPKH_PART_1</td>
+<td>11</td>
+<td>Error in programming BMPKH part 1 into SoC eFuses</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_PROGR_BMPKH_PART_2</td>
+<td>12</td>
+<td>Error in programming BMPKH part 2 into SoC eFuses</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PROGR_KEYCOUNT</td>
+<td>13</td>
+<td>Error in programming KEY COUNT into SoC eFuses</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_PROGR_KEYREV</td>
+<td>14</td>
+<td>Error in programming KEY REV into SoC eFuses</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PROGR_SMEK</td>
+<td>15</td>
+<td>Error in programming SMEK into SoC eFuses</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_PROGR_SMPKH_PART_1</td>
+<td>16</td>
+<td>Error in programming SMPKH part 1 into SoC eFuses</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PROGR_SMPKH_PART_2</td>
+<td>17</td>
+<td>Error in programming SMPKH part 2 into SoC eFuses</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_VALIDATION_CERT</td>
+<td>18</td>
+<td>Error validating certificate</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_VALIDATION_SMPK_CERT</td>
+<td>19</td>
+<td>Error validating SMPK signed certificate</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_VALIDATION_BMPK_KEY</td>
+<td>20</td>
+<td>Error validating BMPK key</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_VALIDATION_SMPK_KEY</td>
+<td>21</td>
+<td>Error validating SMPK key</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_WRITE_PROT_KEYCOUNT</td>
+<td>22</td>
+<td>Error write protecting key count row</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_WRITE_PROT_KEYREV</td>
+<td>23</td>
+<td>Error write protecting key revision row</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_IMG_INTEG_SMPK_CERT</td>
+<td>24</td>
+<td>SMPK signed certificate image integrity failed</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PROGR_MSV</td>
+<td>25</td>
+<td>Error in programming MSV into SoC eFuses</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_PROGR_SWREV</td>
+<td>26</td>
+<td>Error in programming SWREV into SoC eFuses</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PROGR_FW_CFG_REV</td>
+<td>27</td>
+<td>Error in programming FW CFG REV into SoC eFuses</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_DECRYPT_EXT_OTP</td>
+<td>28</td>
+<td>Error in Decrypting EXT OTP extension field</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_PROGR_EXT_OTP</td>
+<td>29</td>
+<td>Error in programming EXT OTP extension field</td>
+</tr>
+<tr class="row-even"><td>KEYWR_ERR_PROGR_OVERRIDE</td>
+<td>30</td>
+<td>Error in programming existing field without override specified</td>
+</tr>
+<tr class="row-odd"><td>KEYWR_ERR_JTAG_DISABLE</td>
+<td>31</td>
+<td>Error in programming JTAG DISABLE field</td>
+</tr>
+</tbody>
+</table>
+</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="otp_revision.html" class="btn btn-neutral float-right" title="OTP Revision Read/Write Message Description" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="keywriter.html" class="btn btn-neutral" title="OTP Keywriter TISCI Description" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      <a href="http://www.ti.com/corp/docs/legal/copyright.shtml">&copy; Copyright 2016-2025</a>, Texas Instruments Incorporated. All rights reserved. <br>
+      <a href="http://www.ti.com/corp/docs/legal/trademark/trademrk.htm">Trademarks</a> | <a href="http://www.ti.com/corp/docs/legal/privacy.shtml">Privacy policy</a> | <a href="http://www.ti.com/corp/docs/legal/termsofuse.shtml">Terms of use</a> | <a href="http://www.ti.com/lsds/ti/legal/termsofsale.page">Terms of sale</a>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'11.01.03',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script src="http://www.ti.com/assets/js/headerfooter/analytics.js" type="text/javascript" charset="utf-8"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+        });
+
+      var menuHeight = window.innerHeight;
+
+      var contentOffset = $(".wy-nav-content-wrap").offset();
+      var contentHeight = $(".wy-nav-content-wrap").height();
+      var contentBottom = contentOffset.top + contentHeight;
+
+      function setNavbarTop() {
+          var scrollTop = $(window).scrollTop();
+          var maxTop = scrollTop + menuHeight;
+
+          // If past the header
+          if (scrollTop > contentOffset.top && maxTop < contentBottom) {
+            stickyTop = scrollTop - contentOffset.top;
+          } else if (maxTop > contentBottom) {
+            stickyTop = scrollTop - contentOffset.top - (maxTop - contentBottom);
+          } else {
+            stickyTop = 0;
+          }
+
+          $(".wy-nav-side").css("top", stickyTop);
+      }
+
+      $(document).ready(function() {
+        setNavbarTop();
+        $(window).scroll(function () {
+          setNavbarTop();
+        });
+
+        $('body').on("mousewheel", function () {
+            // Remove default behavior
+            event.preventDefault();
+            // Scroll without smoothing
+            var wheelDelta = event.wheelDelta;
+            var currentScrollPosition = window.pageYOffset;
+            window.scrollTo(0, currentScrollPosition - wheelDelta);
+        });
+      });
+  </script>
+   
+
+</body>
+</html>

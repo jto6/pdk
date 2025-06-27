@@ -67,6 +67,7 @@ Secure Management
    security/dsmek_management
    security/security_handover
    security/keywriter
+   security/keywriter_lite
    security/otp_revision
    security/keyring
    security/csp

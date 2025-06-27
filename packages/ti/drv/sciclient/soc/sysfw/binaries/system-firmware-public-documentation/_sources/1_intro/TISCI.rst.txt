@@ -172,6 +172,7 @@ Further Reading
 - In :ref:`pub_interpret_trace`, we define trace data format.
 - In :ref:`pub_soc_family_doc`, we provide information specific to each SOC that is required using the TISCI messages described in :ref:`pub_tisci_msg_doc`.
 - In :ref:`pub_user_guides`, we provide user guides for the more complex scenarios.
+- In :ref:`pub_mailbox_ipc_intro`, we provide information about mailbox ipc channels.
 
 Glossary
 --------

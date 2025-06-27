@@ -75,6 +75,21 @@ Message Data Structures
 
 .. sysfwapistruct:: tisci_msg_set_device_resp
 
+.. note::
+
+   The entity that services this message varies based on the device and the SOC. In some instances the requests are handled
+   by the TIFS instead of DM. Please see the table below for more details.
+
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | **SOCs**                                         | **Devices**                            | **Forwarded to TIFS**  |
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | J7200, J721E, J721S2, and J784S4                 | MCU1_0 and MCU1_1                      |  Yes                   |
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | J7200, J721E, J721S2, and J784S4                 | All devices except MCU1_0 and MCU1_1   |  No                    |
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | All SOCs other than the ones mentioned above     | All devices                            |  No                    |
+   +--------------------------------------------------+----------------------------------------+------------------------+
+
 .. _pm_devices_msg_get_device:
 
 TISCI_MSG_GET_DEVICE
@@ -179,3 +194,19 @@ Message Data Structures
 .. sysfwapistruct:: tisci_msg_set_device_resets_req
 
 .. sysfwapistruct:: tisci_msg_set_device_resets_resp
+
+
+.. note::
+
+   The entity that services this message varies based on the device and the SOC. In some instances the requests are handled
+   by the TIFS instead of DM. Please see the table below for more details.
+
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | **SOCs**                                         | **Devices**                            | **Forwarded to TIFS**  |
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | J7200, J721E, J721S2, and J784S4                 | MCU1_0 and MCU1_1                      |  Yes                   |
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | J7200, J721E, J721S2, and J784S4                 | All devices except MCU1_0 and MCU1_1   |  No                    |
+   +--------------------------------------------------+----------------------------------------+------------------------+
+   | All SOCs other than the ones mentioned above     | All devices                            |  No                    |
+   +--------------------------------------------------+----------------------------------------+------------------------+

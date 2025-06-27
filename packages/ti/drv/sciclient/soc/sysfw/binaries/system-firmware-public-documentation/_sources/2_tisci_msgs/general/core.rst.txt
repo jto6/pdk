@@ -95,6 +95,8 @@ TISCI_MSG_BOARD_CONFIG_PM
 
 See :ref:`pub_boardcfg_pm_tisci`.
 
+.. _tisci_query_msmc:
+
 TISCI_MSG_QUERY_MSMC
 ====================
 
@@ -119,10 +121,24 @@ Firmware.
 
 This API is linked with the parameter provided in
 :ref:`pub_boardcfg_msmc`. The parameter **msmc_cache_size** is a value
-ranging from ``0x00`` to ``0x20`` independent of SoC and configured
-at system startup. This API is used by software components that start
+dependent on SoC and configured at system startup.
+This API is used by software components that start
 functionality later in the boot sequence and intends to manage or use
 the remaining SRAM contents.
+
++----------+-------------------+-------------------------------+------------------------------+------------------------------+
+| SOC      | MSMC SRAM size    | msmc_cache_size value range   | msmc_cache_size step value   | Corresponding step size      |
++----------+-------------------+-------------------------------+------------------------------+------------------------------+
+| AM65x    | 2MB               | 0x00 to 0x20                  | 0x04                         | 0.25MB                       |
++----------+-------------------+-------------------------------+------------------------------+------------------------------+
+| J721E    | 8MB               | 0x00 to 0x20                  | 0x04                         | 1MB                          |
++----------+-------------------+-------------------------------+------------------------------+------------------------------+
+| J7200    | 1MB               | 0x00 to 0x20                  | 0x08                         | 0.25MB                       |
++----------+-------------------+-------------------------------+------------------------------+------------------------------+
+| J721S2   | 4MB               | 0x00 to 0x20                  | 0x08                         | 1MB                          |
++----------+-------------------+-------------------------------+------------------------------+------------------------------+
+| J784S4   | 8MB               | 0x00 to 0x40                  | 0x08                         | 1MB                          |
++----------+-------------------+-------------------------------+------------------------------+------------------------------+
 
 To understand the relationship, let's consider a SoC with actual
 physical MSMC SRAM available to allocate as 2MB:

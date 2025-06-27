@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -347,6 +347,36 @@ must be carefully used keeping the full system view in mind.</p>
 <p>Although this message is essentially empty and contains only a header
  a full data structure is created for consistency in implementation.</p>
 </p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The entity that services this message varies based on the device and the SOC. In some instances the requests are handled
+by the TIFS instead of DM. Please see the table below for more details.</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="44%" />
+<col width="35%" />
+<col width="21%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>SOCs</strong></td>
+<td><strong>Devices</strong></td>
+<td><strong>Forwarded to TIFS</strong></td>
+</tr>
+<tr class="row-even"><td>J7200, J721E, J721S2, and J784S4</td>
+<td>MCU1_0 and MCU1_1</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>J7200, J721E, J721S2, and J784S4</td>
+<td>All devices except MCU1_0 and MCU1_1</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>All SOCs other than the ones mentioned above</td>
+<td>All devices</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="section" id="tisci-msg-get-device">
@@ -606,6 +636,36 @@ the state chosen will follow the below table:</p>
 <p>Although this message is essentially empty and contains only a header
  a full data structure is created for consistency in implementation.</p>
 </p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The entity that services this message varies based on the device and the SOC. In some instances the requests are handled
+by the TIFS instead of DM. Please see the table below for more details.</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="44%" />
+<col width="35%" />
+<col width="21%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>SOCs</strong></td>
+<td><strong>Devices</strong></td>
+<td><strong>Forwarded to TIFS</strong></td>
+</tr>
+<tr class="row-even"><td>J7200, J721E, J721S2, and J784S4</td>
+<td>MCU1_0 and MCU1_1</td>
+<td>Yes</td>
+</tr>
+<tr class="row-odd"><td>J7200, J721E, J721S2, and J784S4</td>
+<td>All devices except MCU1_0 and MCU1_1</td>
+<td>No</td>
+</tr>
+<tr class="row-even"><td>All SOCs other than the ones mentioned above</td>
+<td>All devices</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -651,7 +711,7 @@ the state chosen will follow the below table:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

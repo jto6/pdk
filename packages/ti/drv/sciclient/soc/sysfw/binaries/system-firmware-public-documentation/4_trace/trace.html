@@ -79,7 +79,7 @@
             
             
               <div class="version">
-                11.00.00
+                11.01.03
               </div>
             
           
@@ -237,6 +237,7 @@ described below:</p>
 <h3>Trace Memory Buffer Location<a class="headerlink" href="#trace-memory-buffer-location" title="Permalink to this headline">¶</a></h3>
 <p>The trace memory buffer is located within the firmware memory. Information
 about the location and size can be found below.</p>
+<p><strong>Regular Firmware Trace Memory Buffer</strong>:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="28%" />
@@ -291,6 +292,66 @@ about the location and size can be found below.</p>
 <td>0x1000</td>
 </tr>
 <tr class="row-even"><td>AM275x</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-odd"><td>AM62Lx</td>
+<td>0x4406B000</td>
+<td>0x1000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>KeyWriter Firmware Trace Memory Buffer</strong>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="45%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">SoC</th>
+<th class="head">Base Address</th>
+<th class="head">Size</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AM65x</td>
+<td>0x44083000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-odd"><td>J721e</td>
+<td>0x4406F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-even"><td>AM64x</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-odd"><td>J7200</td>
+<td>0x4406F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-even"><td>AM62x</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-odd"><td>AM62Ax</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-even"><td>J721S2</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-odd"><td>J784S4</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-even"><td>AM62Px</td>
+<td>0x4405F000</td>
+<td>0x1000</td>
+</tr>
+<tr class="row-odd"><td>J722S</td>
 <td>0x4405F000</td>
 <td>0x1000</td>
 </tr>
@@ -374,6 +435,9 @@ over the UART.</p>
 </tr>
 <tr class="row-even"><td>AM275x</td>
 <td>MAIN UART3</td>
+</tr>
+<tr class="row-odd"><td>AM62Lx</td>
+<td>WKUP UART0</td>
 </tr>
 </tbody>
 </table>
@@ -2361,7 +2425,7 @@ to the requested device</td>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'11.00.00',
+            VERSION:'11.01.03',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

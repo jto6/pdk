@@ -167,6 +167,11 @@ AM62Lx
    :maxdepth: 1
 
    am62lx/boot_mode_efuse
+   am62lx/hosts
+   am62lx/processors
+   am62lx/firewalls
+   am62lx/soc_devgrps
+   am62lx/mailbox
 
 =====
 J721E
@@ -212,6 +217,7 @@ J7200
    j7200/processors
    j7200/firewalls
    j7200/soc_devgrps
+   j7200/soc_domgrps
 
 ======
 J721S2
@@ -234,6 +240,7 @@ J721S2
    j721s2/processors
    j721s2/firewalls
    j721s2/soc_devgrps
+   j721s2/soc_domgrps
 
 =====
 J722S
@@ -256,6 +263,7 @@ J722S
    j722s/processors
    j722s/firewalls
    j722s/soc_devgrps
+   j722s/soc_domgrps
 
 ======
 J784S4
@@ -278,3 +286,4 @@ J784S4
    j784s4/processors
    j784s4/firewalls
    j784s4/soc_devgrps
+   j784s4/soc_domgrps
