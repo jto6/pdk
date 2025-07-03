@@ -77,7 +77,7 @@ extern CSL_SecProxyCfg gSciclient_secProxyCfg;
 CSL_SecProxyCfg *pSciclient_secProxyCfg = &gSciclient_secProxyCfg;
 
 #if defined (CONFIG_MSG_M4_ROM_USE_ALTERNATE_SPROXY) || (defined (SCICLIENT_MERGED) && (defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)))
-/** \brief This struct contains configuration parameters for
+/** \brief This structure contains configuration parameters for
  *         the alternate sec_proxy IP used by ROM for firmware
  *         loading only
  */

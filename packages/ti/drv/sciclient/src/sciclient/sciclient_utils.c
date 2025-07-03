@@ -42,9 +42,9 @@
 /* ========================================================================== */
 
 #include <stdint.h>
+#include <ti/csl/arch/csl_arch.h>
 #include <ti/drv/sciclient/sciclient.h>
 #include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
-#include <ti/csl/arch/csl_arch.h>
 
 
 /* ========================================================================== */

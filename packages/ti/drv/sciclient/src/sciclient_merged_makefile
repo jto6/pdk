@@ -9,8 +9,8 @@ endif
 
 all: src/sciclient/sciclient_direct.c
 src/sciclient/sciclient_direct.c: src/version/sciserver_version.h src/version/rmpmhal_version.h
-src/version/sciserver_version.h: gen_version_includes
-src/version/rmpmhal_version.h: gen_version_includes
+src/version/sciserver_version.h: gen_sciserver_version
+src/version/rmpmhal_version.h: gen_rmpmhal_version
 
 HS_SUFFIX=
 ifeq ($(BUILD_HS), yes)

@@ -234,9 +234,9 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
             if (ret == CSL_PASS)
             {
                 if (((uint64_t)boardCfgInfo.boardCfgLowPm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
-                        ((uint64_t)boardCfgInfo.boardCfgLowPm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END) &&
-                        ((uint64_t)boardCfgInfo.boardCfgLowRm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
-                        ((uint64_t)boardCfgInfo.boardCfgLowRm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END))
+                    ((uint64_t)boardCfgInfo.boardCfgLowPm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END) &&
+                    ((uint64_t)boardCfgInfo.boardCfgLowRm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
+                    ((uint64_t)boardCfgInfo.boardCfgLowRm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END))
                 {
                     pCfgPrms->inPmPrms.boardConfigLow = (uint32_t)boardCfgInfo.boardCfgLowPm;
                     pCfgPrms->inPmPrms.boardConfigHigh = 0U;
@@ -250,9 +250,8 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
                 }
                 else
                 {
-                    ret = Sciclient_boardCfgParseHeader(
-                                (uint8_t *) SCICLIENT_COMMON_X509_HEADER_ADDR,
-                                &pCfgPrms->inPmPrms, &pCfgPrms->inRmPrms);
+                    ret = Sciclient_boardCfgParseHeader((uint8_t *) SCICLIENT_COMMON_X509_HEADER_ADDR,
+                                                        &pCfgPrms->inPmPrms, &pCfgPrms->inRmPrms);
                 }
             }
         }

@@ -43,8 +43,8 @@
 #include <stdint.h>
 #include <ti/csl/csl_types.h>
 #include <ti/drv/sciclient/sciclient.h>
-#include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
 #include <ti/drv/sciclient/src/sec_proxy/csl_sec_proxy.h>
+#include <ti/drv/sciclient/src/sciclient/sciclient_priv.h>
 
 /* ========================================================================== */
 /*                            Global Variables                                */
