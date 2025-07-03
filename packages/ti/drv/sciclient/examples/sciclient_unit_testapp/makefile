@@ -45,7 +45,7 @@ SRCS_COMMON = sciclient_ut_main.c \
 ifeq ($(SOC),$(filter $(SOC), j721e j7200 j721s2 j784s4 j742s2))
   ifeq ($(CORE), mcu1_0)
     ifeq ($(BUILD_OS_TYPE), freertos)
-      # SCICLIENT_UT_CFLAGS += -DENABLE_FW_NOTIFICATION
+      SCICLIENT_UT_CFLAGS += -DENABLE_FW_NOTIFICATION
       SRCS_COMMON +=  sciclient_fw_notify.c
     endif
   endif
