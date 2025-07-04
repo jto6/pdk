@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2025
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,22 +28,24 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
 /**
- *  \file dm_ut_testcases.h
+ *  \file   dm_ut_clocks.h
  *
- *  \brief This file defines the various test cases for DM Unit Test.
+ *  \brief  This file contains function prototypes for clock tests.
+ *
  */
 
-#ifndef DM_UT_TESTCASES_H_
-#define DM_UT_TESTCASES_H_
+#ifndef DM_UT_CLOCKS_H_
+#define DM_UT_CLOCKS_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <dm_ut_testparams.h>
+/* None */
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -58,30 +60,15 @@
 /* None */
 
 /* ========================================================================== */
-/*                            Global Variables                                */
+/*                        Function Declarations                               */
 /* ========================================================================== */
 
-DMApp_TestParams gDmAppUnitTestCases[] =
-{
-    {
-        .enableTest        = DM_APP_TEST_ENABLE,
-        .testcaseId        = 1U,
-        .testCaseName      = "Device Unit Test",
-    },
-    {
-        .enableTest        = DM_APP_TEST_ENABLE,
-        .testcaseId        = 2U,
-        .testCaseName      = "Clock Unit Test",
-    }
-};
-
-/* Number of test cases for DM APP UNIT TEST */
-uint32_t gDMAppNumTests = (sizeof(gDmAppUnitTestCases)/sizeof(DMApp_TestParams));
+int32_t DMApp_clockTest(void);
 
 /* ========================================================================== */
-/*                         Function Declarations                              */
+/*                       Internal Function Declarations                       */
 /* ========================================================================== */
 
 /* None */
 
-#endif /* DM_UT_TESTCASES_H_ */
+#endif /* DM_UT_CLOCKS_H_ */

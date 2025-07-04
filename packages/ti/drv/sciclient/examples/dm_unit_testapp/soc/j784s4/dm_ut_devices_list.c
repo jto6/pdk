@@ -46,6 +46,24 @@
 #include <dm_ut_devices.h>
 
 /* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
 /*                           Global Variables                                */
 /* ========================================================================== */
 
@@ -182,7 +200,10 @@ const uint32_t gDMAppDevicesWithoutDependency[] = {
 	TISCI_DEV_CSI_RX_IF2,
 	TISCI_DEV_CSI_TX_IF0,
 	TISCI_DEV_DMPAC0_SDE_0,
+#if !defined(BUILD_C7X_1)
+/* This device is getting used by c7x_1 core and powering off it will result in crash */
 	TISCI_DEV_TIMER0,
+#endif
 	TISCI_DEV_TIMER1,
 	TISCI_DEV_TIMER2,
 	TISCI_DEV_TIMER3,
@@ -225,7 +246,7 @@ const uint32_t gDMAppDevicesWithoutDependency[] = {
 	TISCI_DEV_SERDES_10G2
 	/*
 	 * TODO: This is related to C7X core
-     *	TISCI_DEV_COMPUTE_CLUSTER0_AW4_MSMC_DFT_EMBED_PBIST_0,
+     * TISCI_DEV_COMPUTE_CLUSTER0_AW4_MSMC_DFT_EMBED_PBIST_0,
      * TISCI_DEV_COMPUTE_CLUSTER0_AW5_MSMC_DFT_EMBED_PBIST_0,
      * TISCI_DEV_COMPUTE_CLUSTER0_AW6_MSMC_DFT_EMBED_PBIST_0,
      * TISCI_DEV_COMPUTE_CLUSTER0_AW7_MSMC_DFT_EMBED_PBIST_0,
@@ -445,8 +466,8 @@ DMApp_DependentDevInfo gDMAppDevicesWithDependency[] = {
 	{0,
 		{
 			TISCI_DEV_DPHY_RX0,
-			 TISCI_DEV_CSI_RX_IF0,
-			 0
+			TISCI_DEV_CSI_RX_IF0,
+			0
 		}
 	},
 
@@ -607,18 +628,6 @@ DMApp_DependentDevInfo gDMAppDevicesWithDependency[] = {
 
 	{0,
 		{
-			TISCI_DEV_UART4,
-			TISCI_DEV_UART5,
-			TISCI_DEV_UART6,
-			TISCI_DEV_UART7,
-			TISCI_DEV_UART8,
-			TISCI_DEV_UART9,
-			0
-		}
-	},
-
-	{0,
-		{
 			TISCI_DEV_COMPUTE_CLUSTER0_DIVH2_DIVH_0,
 			TISCI_DEV_COMPUTE_CLUSTER0_DIVP_TFT_0,
 			0
@@ -633,6 +642,10 @@ DMApp_DependentDevInfo gDMAppDevicesWithDependency[] = {
 		}
 	},
 
+#if !defined(BUILD_C7X_1)
+/* TISCI_DEV_FFI_MAIN_IP_CBASS_VD device is depending on TISCI_DEV_TIMER0
+ * which is getting used by c7x_1 core and powering off it will result in crash
+ */
 	{0,
 		{
 			TISCI_DEV_FFI_MAIN_IP_CBASS_VD,
@@ -670,6 +683,7 @@ DMApp_DependentDevInfo gDMAppDevicesWithDependency[] = {
 			0
 		}
 	},
+#endif
 
 	{0,
 		{
@@ -715,6 +729,21 @@ DMApp_DependentDevInfo gDMAppDevicesWithDependency[] = {
 		}
 	},
 
+#if !defined(BUILD_C7X_1) && !defined(BUILD_MCU2_0)
+/* These devices are getting used by mcu2_0 and c7x core and powering off them will result in crash */
+	{0,
+		{
+			TISCI_DEV_UART4,
+			TISCI_DEV_UART5,
+			TISCI_DEV_UART6,
+			TISCI_DEV_UART7,
+			TISCI_DEV_UART8,
+			TISCI_DEV_UART9,
+			0
+		}
+	},
+#endif
+
 	{0,
 		{
 			TISCI_DEV_WKUP_GPIO0,
@@ -726,7 +755,7 @@ DMApp_DependentDevInfo gDMAppDevicesWithDependency[] = {
 	}
 
 	/*
-	  * TODO: Need to get sequence to test these devices(R5F AND C7X core devices)
+	 * TODO: Need to get sequence to test these devices(R5F AND C7X core devices)
 
 	{0, {TISCI_DEV_SERDES_10G4, TISCI_DEV_DSS_EDP0,TISCI_DEV_PBIST5,0}},
 	{0, {TISCI_DEV_A72SS1, TISCI_DEV_COMPUTE_CLUSTER0_ARM1_DFT_EMBED_PBIST_0,TISCI_DEV_COMPUTE_CLUSTER0_ARM1_DFT_EMBED_PBIST_1,TISCI_DEV_A72SS1_CORE0,TISCI_DEV_RTI4,TISCI_DEV_A72SS1_CORE1,TISCI_DEV_RTI5,TISCI_DEV_A72SS1_CORE2,TISCI_DEV_RTI6,TISCI_DEV_A72SS1_CORE3,TISCI_DEV_RTI7,0}},
@@ -775,3 +804,9 @@ uint32_t gDMAppDevicesWithoutDependencySize = sizeof(gDMAppDevicesWithoutDepende
 	TISCI_DEV_MCU_PBIST2
 }
  */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+/* None */

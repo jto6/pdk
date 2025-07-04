@@ -45,6 +45,7 @@
 #include <ti/csl/csl_types.h>
 #include <ti/drv/uart/UART_stdio.h>
 #include <dm_ut_devices.h>
+#include <dm_ut_clocks.h>
 #include <dm_ut_testparser.h>
 #include <dm_ut_testcases.h>
 
@@ -400,7 +401,7 @@ static int32_t DMApp_testMain(DMApp_TestParams *testParams)
             break;
 
         case DM_APP_CLOCK_TEST:
-            testParams->testResult = CSL_EFAIL;
+            testParams->testResult = DMApp_clockTest();
             break;
 
         default:

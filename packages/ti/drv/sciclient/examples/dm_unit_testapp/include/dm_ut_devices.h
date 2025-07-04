@@ -57,8 +57,11 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* This macro refers to maximum number of dependent devices to enable or disable a particular LPSC */
-#define DM_APP_MAX_DEPENDENT_DEVICES        ((uint32_t) 32U)
+/* This macro refers to maximum number of dependent devices to enable or disable a particular LPSC
+ * The array using this macro ends with a '0' as a terminator for initializing the array size dynamically,
+ * so +1 is added to include it.
+ */
+#define DM_APP_MAX_DEPENDENT_DEVICES        ((uint32_t) (32U + 1U))
 
 typedef struct
 {

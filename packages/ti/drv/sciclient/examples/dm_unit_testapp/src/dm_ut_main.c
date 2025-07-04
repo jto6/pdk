@@ -125,3 +125,11 @@ static void DMApp_mainTask(void* arg0, void* arg1)
 
     DMApp_parser();
 }
+
+#if defined (BUILD_C7X)
+extern void Osal_initMmuDefault(void);
+void InitMmu(void)
+{
+    Osal_initMmuDefault();
+}
+#endif

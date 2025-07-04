@@ -9,7 +9,7 @@ endif
 
 APP_NAME = dm_unit_testapp_$(BUILD_OS_TYPE)
 
-SRCDIR = . ./src ./soc/$(SOC) ./tests/device
+SRCDIR = . ./src ./soc/$(SOC) ./tests/device ./tests/clock
 INCDIR = . ./include
 
 # List all the components required by the application
@@ -20,7 +20,7 @@ COMP_LIST_COMMON  = $(PDK_COMMON_FREERTOS_COMP)
 INCLUDE_EXTERNAL_INTERFACES = pdk sciclient board uart freertos
 
 # Common source files and CFLAGS across all platforms and cores
-SRCS_COMMON = dm_ut_main.c dm_ut_devices.c dm_ut_testparser.c dm_ut_devices_list.c
+SRCS_COMMON = dm_ut_main.c dm_ut_devices.c dm_ut_testparser.c dm_ut_devices_list.c dm_ut_clocks.c dm_ut_clocks_list.c
 
 CFLAGS_LOCAL_COMMON = $(PDK_CFLAGS) $(CFLAGS_OS_DEFINES)
 PACKAGE_SRCS_COMMON = .

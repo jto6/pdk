@@ -109,6 +109,9 @@ static int32_t DMApp_devicesResetTest(uint32_t device_id);
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
+/* Tests all the devices in respective SOC
+ * by resetting them and powering them off and on
+ */
 int32_t DMApp_deviceTest()
 {
     int32_t checkstatus = CSL_PASS;
@@ -156,14 +159,18 @@ int32_t DMApp_deviceTest()
 static int32_t DMApp_devicesWithoutDependencyTest()
 {
     int32_t checkstatus = CSL_PASS;
-    for(uint32_t i = 0; i < gDMAppDevicesWithoutDependencySize; i++)
+    uint32_t i = 0;
+
+    for(i = 0; i < gDMAppDevicesWithoutDependencySize; i++)
     {
         uint32_t device_id = gDMAppDevicesWithoutDependency[i];
         int32_t status = CSL_PASS;
         uint32_t moduleState;
         uint32_t resetState;
         uint32_t contextLossState;
-        for(uint32_t j = 0; j < DM_APP_LOOP_COUNT; j++)
+        uint32_t j = 0;
+
+        for(j = 0; j < DM_APP_LOOP_COUNT; j++)
         {
             if(CSL_PASS == status)
             {
@@ -243,7 +250,9 @@ static int32_t DMApp_devicesWithoutDependencyTest()
 static int32_t DMApp_alwaysonDevicesTest(const uint32_t *device_array,uint32_t DMApp_AlwaysOnDeviceArraySize)
 {
     int32_t checkstatus = CSL_PASS;
-    for(uint32_t i = 0; i < DMApp_AlwaysOnDeviceArraySize; i++)
+    uint32_t i = 0;
+
+    for(i = 0; i < DMApp_AlwaysOnDeviceArraySize; i++)
     {
         uint32_t device_id = device_array[i];
         int32_t status = CSL_PASS;
@@ -297,19 +306,21 @@ static int32_t DMApp_devicesWithDependencyTest()
     DMApp_initializeDeviceSizes();
     int32_t checkstatus = CSL_PASS;
 
-    /* To store errors in buffer when UART is powered off */
-    uint32_t buffer[gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size];
+    /* To store errors in buffer when mcu UART is powered off */
+    uint32_t mcu_buffer[gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size];
+    uint32_t i = 0;
 
-    for(uint32_t i = 0; i < gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size; i++)
+    for(i = 0; i < gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size; i++)
     {
-        buffer[i] = 0;
+        mcu_buffer[i] = 0;
     }
 
-    for(uint32_t i = 0; i < gDMAppDevicesWithDependencySize;i++)
+    for(i = 0; i < gDMAppDevicesWithDependencySize;i++)
     {
         int32_t status1 = CSL_PASS;
+        int32_t j = gDMAppDevicesWithDependency[i].size-1;
 
-        for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+        for(j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
         {
             int32_t status = CSL_PASS;
             uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
@@ -326,7 +337,9 @@ static int32_t DMApp_devicesWithDependencyTest()
 
         if(CSL_PASS == status1)
         {
-            for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+            int32_t j = gDMAppDevicesWithDependency[i].size-1;
+
+            for(j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
             {
                 uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
                 int32_t status = CSL_PASS;
@@ -335,9 +348,9 @@ static int32_t DMApp_devicesWithDependencyTest()
 
                 if(CSL_PASS != status)
                 {
-                    if(i == gDMAppDevicesWithDependencySize-1)
+                    if(gDMAppDevicesWithDependencySize-1 == i)
                     {
-                        buffer[j] = 1;
+                        mcu_buffer[j] = 1;
                     }
                     else
                     {
@@ -352,7 +365,9 @@ static int32_t DMApp_devicesWithDependencyTest()
 
         if(CSL_PASS == status1)
         {
-            for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+            int32_t j = gDMAppDevicesWithDependency[i].size-1;
+
+            for(j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
             {
                 uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
                 int32_t status = CSL_PASS;
@@ -364,11 +379,11 @@ static int32_t DMApp_devicesWithDependencyTest()
 
                 if(CSL_PASS != status)
                 {
-                    if(i == gDMAppDevicesWithDependencySize-1)
+                    if(gDMAppDevicesWithDependencySize-1 == i)
                     {
-                        if(buffer[j] == 0)
+                        if(0 == mcu_buffer[j])
                         {
-                            buffer[j] = 2;
+                            mcu_buffer[j] = 2;
                         }
                     }
                     else
@@ -385,9 +400,9 @@ static int32_t DMApp_devicesWithDependencyTest()
                     {
                         if(gDMAppDevicesWithDependencySize-1 == i)
                         {
-                            if(buffer[j] == 0)
+                            if(0 == mcu_buffer[j])
                             {
-                                buffer[j] = 3;
+                                mcu_buffer[j] = 3;
                             }
                         }
                         else
@@ -403,7 +418,9 @@ static int32_t DMApp_devicesWithDependencyTest()
 
         if(CSL_PASS == status1)
         {
-            for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+            int32_t j = gDMAppDevicesWithDependency[i].size-1;
+
+            for(j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
             {
                 int32_t status = CSL_PASS;
                 uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
@@ -412,11 +429,11 @@ static int32_t DMApp_devicesWithDependencyTest()
 
                 if(CSL_PASS != status)
                 {
-                    if(i == gDMAppDevicesWithDependencySize-1)
+                    if(gDMAppDevicesWithDependencySize-1 == i)
                     {
-                        if(buffer[j] == 0)
+                        if(0 == mcu_buffer[j])
                         {
-                            buffer[j] = 4;
+                            mcu_buffer[j] = 4;
                         }
                     }
                     else
@@ -429,27 +446,29 @@ static int32_t DMApp_devicesWithDependencyTest()
             }
         }
 
-        /* Prints the errors which are detected when UART is off */
+        /* Prints the errors which are detected when mcu UART is off */
         if(i == gDMAppDevicesWithDependencySize-1)
         {
             Board_initCfg cfg = BOARD_INIT_UART_STDIO;
             Board_init(cfg);
-            for(int32_t k = gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size-1; k >= 0; k--)
+            int32_t k = gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size-1;
+
+            for(k = gDMAppDevicesWithDependency[(gDMAppDevicesWithDependencySize)-1].size-1; k >= 0; k--)
             {
-                if(buffer[k] != 0)
+                if(mcu_buffer[k] != 0)
                 {
-                    switch(buffer[k])
+                    switch(mcu_buffer[k])
                     {
-                        case 1: UART_printf("Sciclient_pmSetModuleState OFF error of %d\n", gDMAppDevicesWithDependency[gDMAppDevicesWithDependencySize-1].devices[i]);
+                        case 1: UART_printf("Sciclient_pmSetModuleState OFF error of %d\n", (gDMAppDevicesWithDependency[i].devices)[k]);
                         break;
 
-                        case 2: UART_printf("Sciclient_pmGetModuleState OFF error of %d\n", gDMAppDevicesWithDependency[gDMAppDevicesWithDependencySize-1].devices[i]);
+                        case 2: UART_printf("Sciclient_pmGetModuleState OFF error of %d\n", (gDMAppDevicesWithDependency[i].devices)[k]);
                         break;
 
-                        case 3: UART_printf("ModuleState OFF error of %d\n", gDMAppDevicesWithDependency[gDMAppDevicesWithDependencySize-1].devices[i]);
+                        case 3: UART_printf("ModuleState OFF error of %d\n", (gDMAppDevicesWithDependency[i].devices)[k]);
                         break;
 
-                        case 4: UART_printf("Sciclient_pmSetModuleState ON error of %d\n", gDMAppDevicesWithDependency[gDMAppDevicesWithDependencySize-1].devices[i]);
+                        case 4: UART_printf("Sciclient_pmSetModuleState ON error of %d\n", (gDMAppDevicesWithDependency[i].devices)[k]);
                         break;
                     }
                 }
@@ -457,9 +476,11 @@ static int32_t DMApp_devicesWithDependencyTest()
         }
     }
 
-    for(uint32_t i = 0; i < gDMAppDevicesWithDependencySize;i++)
+    for(i = 0; i < gDMAppDevicesWithDependencySize;i++)
     {
-        for(int32_t j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
+        int32_t j = gDMAppDevicesWithDependency[i].size-1;
+
+        for(j = gDMAppDevicesWithDependency[i].size-1; j >= 0; j--)
         {
             uint32_t status = CSL_PASS;
             uint32_t device_id = gDMAppDevicesWithDependency[i].devices[j];
@@ -482,7 +503,8 @@ static int32_t DMApp_devicesResetTest(uint32_t device_id)
     uint32_t resetState;
     uint32_t contextLossState;
     int32_t checkstatus = CSL_PASS;
-    for(uint32_t j = 0; j < DM_APP_LOOP_COUNT; j++)
+    uint32_t k = 0;
+    for(k = 0; k < DM_APP_LOOP_COUNT; k++)
         {
             status = Sciclient_pmSetModuleRst(device_id,DM_APP_MODULE_RESET_VALUE,SCICLIENT_SERVICE_WAIT_FOREVER);
 
@@ -544,7 +566,8 @@ static int32_t DMApp_devicesResetTest(uint32_t device_id)
 
 static void DMApp_initializeDeviceSizes()
 {
-	for(uint32_t i = 0; i < gDMAppDevicesWithDependencySize; i++)
+    uint32_t i = 0;
+	for(i = 0; i < gDMAppDevicesWithDependencySize; i++)
 	{
 		uint32_t count = 0;
 		while((count < DM_APP_MAX_DEPENDENT_DEVICES) && (gDMAppDevicesWithDependency[i].devices[count] != 0))

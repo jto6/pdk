@@ -517,7 +517,7 @@ export dm_unit_testapp_$(1)_CORE_DEPENDENCY = yes
 export dm_unit_testapp_$(1)_PKG_LIST = dm_unit_testapp_$(1)
 export dm_unit_testapp_$(1)_INCLUDE = $(dm_unit_testapp_$(1)_PATH)
 export dm_unit_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)),j784s4_evm)
-export dm_unit_testapp_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), mcu1_0)
+export dm_unit_testapp_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), mcu1_0 mcu2_0 c7x_1)
 export dm_unit_testapp_$(1)_SBL_APPIMAGEGEN = yes
 export dm_unit_testapp_$(1)_SBL_IMAGEGEN = no
 export dm_unit_testapp_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
