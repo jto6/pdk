@@ -56,10 +56,6 @@ case $i in
         SKIP_BUILD=YES
         shift
         ;;
-    -sg|--skip-gen) # Skips the firmwareHeaderGen.sh step
-        SKIP_GEN_BIN=YES
-        shift
-        ;;
     -sc|--skip-commit) # Skips the PDK commit step
         SKIP_COMMIT=YES
         shift
@@ -106,7 +102,7 @@ export SCI_CLIENT_DIR=$(cd "$SCRIPT_DIR/.." && pwd )
 export ROOTDIR=$(cd "$SCI_CLIENT_DIR/../../.." && pwd )
 export PDK_DIR=$(cd "$ROOTDIR/.." && pwd )
 
-$ECHO " Starting TIFS Migration for $SOC_LIST "
+$ECHO " Starting DM Migration for $SOC_LIST "
 
 ################################################################################
 # Rebase to PDK master
@@ -154,47 +150,6 @@ if [ "$SKIP_BUILD" != "YES" ]; then
 fi
 
 ################################################################################
-
-if [ "$SKIP_GEN_BIN" != "YES" ];  then
-
-    cd $ROOTDIR/ti/drv/sciclient/tools/
-
-    for SOC in $SOC_LIST
-    do
-        case $SOC in
-            "j721e")
-                ./firmwareHeaderGen.sh j721e
-                ./firmwareHeaderGen.sh j721e-hs
-                ./firmwareHeaderGen.sh j721e_sr1_1-hs
-                ./firmwareHeaderGen.sh j721e_sr2-hs
-                ./firmwareHeaderGen.sh j721e_sr2-hs-fs
-                shift
-                ;;
-            "j7200")
-                ./firmwareHeaderGen.sh j7200
-                ./firmwareHeaderGen.sh j7200-hs
-                ./firmwareHeaderGen.sh j7200_sr2-hs
-                ./firmwareHeaderGen.sh j7200_sr2-hs-fs
-                shift
-                ;;
-            "j721s2")
-                ./firmwareHeaderGen.sh j721s2
-                ./firmwareHeaderGen.sh j721s2-hs
-                ./firmwareHeaderGen.sh j721s2-hs-fs
-                shift
-                ;;
-            "j784s4")
-                ./firmwareHeaderGen.sh j784s4
-                ./firmwareHeaderGen.sh j784s4-hs
-                ./firmwareHeaderGen.sh j784s4-hs-fs
-                shift
-                ;;
-        esac
-    done
-
-fi
-
-################################################################################
 # Commit changes to PDK
 if [ "$SKIP_COMMIT" != "YES" ]; then
     $ECHO "Commit changes to PDK"
@@ -204,22 +159,18 @@ if [ "$SKIP_COMMIT" != "YES" ]; then
     do
         case $SOC in
             "j721e")
-                git add $SCI_CLIENT_DIR/soc/V1
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j721e
                 shift
                 ;;
             "j7200")
-                git add $SCI_CLIENT_DIR/soc/V2
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j7200
                 shift
                 ;;
             "j721s2")
-                git add $SCI_CLIENT_DIR/soc/V4
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j721s2
                 shift
                 ;;
             "j784s4")
-                git add $SCI_CLIENT_DIR/soc/V6
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j784s4
                 shift
                 ;;
