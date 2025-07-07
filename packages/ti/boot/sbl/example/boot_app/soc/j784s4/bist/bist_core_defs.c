@@ -174,6 +174,7 @@ int lbist_second_boot_stage[] =
     LBIST_INST_VPAC0_INDEX,
     LBIST_INST_DMPAC_INDEX,
     LBIST_INST_A72_0_INDEX,
+    LBIST_INST_VPAC1_INDEX,
     LBIST_INST_A72_1_INDEX
 };
 
