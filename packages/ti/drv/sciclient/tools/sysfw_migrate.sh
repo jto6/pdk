@@ -159,22 +159,27 @@ if [ "$SKIP_COMMIT" != "YES" ]; then
     do
         case $SOC in
             "j721e")
+                git add $SCI_CLIENT_DIR/soc/V1
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j721e
                 shift
                 ;;
             "j7200")
+                git add $SCI_CLIENT_DIR/soc/V2
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j7200
                 shift
                 ;;
             "j721s2")
+                git add $SCI_CLIENT_DIR/soc/V4
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j721s2
                 shift
                 ;;
             "j784s4")
+                git add $SCI_CLIENT_DIR/soc/V6
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j784s4
                 shift
                 ;;
             "j742s2")
+                git add $SCI_CLIENT_DIR/soc/V6
                 git add $SCI_CLIENT_DIR/tools/ccsLoadDmsc/j742s2
                 shift
                 ;;
