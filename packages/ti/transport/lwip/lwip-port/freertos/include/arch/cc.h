@@ -39,9 +39,6 @@
 #define LWIP_TIMEVAL_PRIVATE 0
 #include <sys/select.h>
 
-/* Define byte order of the system */
-#define BYTE_ORDER LITTLE_ENDIAN
-
 /* Use lwip provided errors as ti compiler is too granular*/
 #define LWIP_PROVIDE_ERRNO  1
 
