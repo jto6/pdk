@@ -10,13 +10,29 @@ all: gen_rmpmhal_version gen_sciserver_version
 gen_rmpmhal_version:
 ifneq ($(OS),Windows_NT)
 	@$(ECHO) \# Check and update: src/version/rmpmhal_version.h
-	@src/version/generate_rmpmhal_ver.sh > src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp
-	@if [ -s src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp ]; then if cmp -s src/version/rmpmhal_version.h src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp; then rm src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp; else mv src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp src/version/rmpmhal_version.h; fi; else rm src/version/$(MODULE_NAME)-rmpmhal_version.h.tmp; fi
+	@TMPFILE=$$(mktemp) && \
+	src/version/generate_rmpmhal_ver.sh > $$TMPFILE && \
+	if [ -s $$TMPFILE ]; \
+	then \
+		if cmp -s src/version/rmpmhal_version.h $$TMPFILE; \
+		then rm $$TMPFILE; \
+		else mv $$TMPFILE src/version/rmpmhal_version.h; \
+		fi; \
+	else rm $$TMPFILE; \
+	fi
 endif
 
 gen_sciserver_version:
 ifneq ($(OS),Windows_NT)
 	@$(ECHO) \# Check and update: src/version/sciserver_version.h
-	@src/version/generate_sciserver_ver.sh > src/version/$(MODULE_NAME)-sciserver_version.h.tmp
-	@if [ -s src/version/$(MODULE_NAME)-sciserver_version.h.tmp ]; then if cmp -s src/version/sciserver_version.h src/version/$(MODULE_NAME)-sciserver_version.h.tmp; then rm src/version/$(MODULE_NAME)-sciserver_version.h.tmp; else mv src/version/$(MODULE_NAME)-sciserver_version.h.tmp src/version/sciserver_version.h; fi; else rm src/version/$(MODULE_NAME)-sciserver_version.h.tmp; fi
+	@TMPFILE=$$(mktemp) && \
+	src/version/generate_sciserver_ver.sh > $$TMPFILE && \
+	if [ -s $$TMPFILE ]; \
+	then \
+		if cmp -s src/version/sciserver_version.h $$TMPFILE; \
+		then rm $$TMPFILE; \
+		else mv $$TMPFILE src/version/sciserver_version.h; \
+		fi; \
+	else rm $$TMPFILE; \
+	fi
 endif
