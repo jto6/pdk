@@ -363,9 +363,9 @@ export sciclient_merged_testapp_$(1)_CORE_DEPENDENCY = yes
 export sciclient_merged_testapp_$(1)_PKG_LIST = sciclient_merged_testapp_$(1)
 export sciclient_merged_testapp_$(1)_INCLUDE = $(sciclient_merged_testapp_$(1)_PATH)
 export sciclient_merged_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm)
-export sciclient_merged_testapp_$(1)_$(SOC)_CORELIST = $(filter mcu%, $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(drvsciclient_$(SOC)_CORELIST)))
-export sciclient_merged_testapp_$(1)_SBL_APPIMAGEGEN = no
-export sciclient_merged_testapp_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1) CORE=mcu1_0 BUILD_CORE=$(CORE)
+export sciclient_merged_testapp_$(1)_$(SOC)_CORELIST = mcu1_0
+export sciclient_merged_testapp_$(1)_SBL_APPIMAGEGEN = yes
+export sciclient_merged_testapp_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
 export sciclient_merged_testapp_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)), yes, no)
 ifneq ($(1),$(filter $(1), safertos))
 sciclient_EXAMPLE_LIST += sciclient_merged_testapp_$(1)
@@ -380,6 +380,36 @@ endef
 SCICLIENT_MERGED_TESTAPP_MACRO_LIST := $(foreach curos, $(drvsciclient_RTOS_LIST) safertos, $(call SCICLIENT_MERGED_TESTAPP_RULE,$(curos)))
 
 $(eval ${SCICLIENT_MERGED_TESTAPP_MACRO_LIST})
+
+# Sciclient merged combined test app
+define SCICLIENT_MERGED_COMBINED_TESTAPP_RULE
+
+export sciclient_merged_combined_testapp_$(1)_COMP_LIST = sciclient_merged_combined_testapp_$(1)
+export sciclient_merged_combined_testapp_$(1)_RELPATH = ti/drv/sciclient/examples/sciclient_merged_testapp
+export sciclient_merged_combined_testapp_$(1)_PATH = $(PDK_SCICLIENT_COMP_PATH)/examples/sciclient_merged_testapp
+export sciclient_merged_combined_testapp_$(1)_BOARD_DEPENDENCY = no
+export sciclient_merged_combined_testapp_$(1)_CORE_DEPENDENCY = yes
+export sciclient_merged_combined_testapp_$(1)_DEPENDS_ON=sciclient_merged_testapp_$(1)
+export sciclient_merged_combined_testapp_$(1)_PKG_LIST = sciclient_merged_combined_testapp_$(1)
+export sciclient_merged_combined_testapp_$(1)_INCLUDE = $(sciclient_merged_combined_testapp_$(1)_PATH)
+export sciclient_merged_combined_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm)
+export sciclient_merged_combined_testapp_$(1)_$(SOC)_CORELIST = $(filter-out mcu1_0, $(filter mcu%, $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(drvsciclient_$(SOC)_CORELIST))))
+export sciclient_merged_combined_testapp_$(1)_SBL_APPIMAGEGEN = no
+export sciclient_merged_combined_testapp_$(1)_MAKEFILE = -f sciclient_merged_combined_testapp.mk BUILD_OS_TYPE=$(1)
+export sciclient_merged_combined_testapp_$(1)_XDC_CONFIGURO = $(if $(findstring tirtos, $(1)), yes, no)
+ifneq ($(1),$(filter $(1), safertos))
+sciclient_EXAMPLE_LIST += sciclient_merged_combined_testapp_$(1)
+else
+ifneq ($(wildcard $(SAFERTOS_KERNEL_INSTALL_PATH)),)
+sciclient_EXAMPLE_LIST += sciclient_merged_combined_testapp_$(1)
+endif
+endif
+
+endef
+
+SCICLIENT_MERGED_COMBINED_TESTAPP_MACRO_LIST := $(foreach curos, $(drvsciclient_RTOS_LIST) safertos, $(call SCICLIENT_MERGED_COMBINED_TESTAPP_RULE,$(curos)))
+
+$(eval ${SCICLIENT_MERGED_COMBINED_TESTAPP_MACRO_LIST})
 
 # SCICLIENT RTOS UTs
 define SCICLIENT_UNIT_TESTAPP_RULE
