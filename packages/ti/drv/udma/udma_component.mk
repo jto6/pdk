@@ -106,16 +106,29 @@ ifeq ($(BOARD),$(filter $(BOARD), j721e_ccqt j721e_loki j721e_hostemu j721s2_hos
 export udma_BOARD_DEPENDENCY = yes
 endif
 export udma_CORE_DEPENDENCY = yes
-ifeq ($(SOC),$(filter $(SOC), j721e j784s4 j721s2 j7200 j742s2))
-  ifneq (,$(filter mcu%,$(CORE)))
-    export udma_CORE_DEPENDENCY = no
-  endif
-endif
 udma_PKG_LIST = udma
 udma_INCLUDE = $(udma_PATH)
 export udma_SOCLIST = $(drvudma_SOCLIST)
 export udma_$(SOC)_CORELIST = $(drvudma_$(SOC)_CORELIST)
 udma_LIB_LIST += udma
+
+# UDMA merged library
+udma_merged_COMP_LIST = udma_merged
+udma_merged_RELPATH = ti/drv/udma
+udma_merged_PATH = $(PDK_UDMA_COMP_PATH)
+export udma_merged_LIBNAME = udma_merged
+export udma_merged_LIBPATH = $(PDK_UDMA_COMP_PATH)/lib
+export udma_merged_MAKEFILE = -fsrc/udma_merged_makefile
+export udma_merged_BOARD_DEPENDENCY = no
+ifeq ($(BOARD),$(filter $(BOARD), j721e_ccqt j721e_loki j721e_hostemu j721s2_hostemu j784s4_hostemu j742s2_hostemu))
+export udma_merged_BOARD_DEPENDENCY = yes
+endif
+export udma_merged_CORE_DEPENDENCY = no
+udma_merged_PKG_LIST = udma_merged
+udma_merged_INCLUDE = $(udma_merged_PATH)
+export udma_merged_SOCLIST = j721e j7200 j721s2 j784s4 j742s2
+export udma_merged_$(SOC)_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1
+udma_LIB_LIST += udma_merged
 
 #
 # DMA Utils
@@ -147,11 +160,6 @@ export udma_apputils_LIBPATH = $(PDK_UDMA_COMP_PATH)/lib
 export udma_apputils_MAKEFILE = -fmakefile
 export udma_apputils_BOARD_DEPENDENCY = no
 export udma_apputils_CORE_DEPENDENCY = yes
-ifeq ($(SOC),$(filter $(SOC), j721e j784s4 j721s2 j7200 j742s2))
-  ifneq (,$(filter mcu%,$(CORE)))
-    export udma_apputils_CORE_DEPENDENCY = no
-  endif
-endif
 udma_apputils_PKG_LIST = udma_apputils
 udma_apputils_INCLUDE = $(udma_apputils_PATH)
 export udma_apputils_SOCLIST = $(drvudma_SOCLIST)

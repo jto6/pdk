@@ -638,14 +638,11 @@ uint32_t Udma_getCoreId(void)
 #if defined (BUILD_C7X_1)
     coreId = UDMA_CORE_ID_C7X_1;
 #endif
-#if defined (BUILD_C7X_2)
-    coreId = UDMA_CORE_ID_C7X_2;
+#if defined (BUILD_C66X_1)
+    coreId = UDMA_CORE_ID_C66X_1;
 #endif
-#if defined (BUILD_C7X_3)
-    coreId = UDMA_CORE_ID_C7X_3;
-#endif
-#if defined (BUILD_C7X_4)
-    coreId = UDMA_CORE_ID_C7X_4;
+#if defined (BUILD_C66X_2)
+    coreId = UDMA_CORE_ID_C66X_2;
 #endif
 
     return (coreId);

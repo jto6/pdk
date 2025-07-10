@@ -33,6 +33,10 @@ APPEND3_LNKCMD_FILE = $(PDK_INSTALL_PATH)/ti/drv/udma/examples/udma_memcpy_trico
 # List all the specific components required by the application
 COMP_LIST_COMMON += udma_apputils
 
+# Using UDMA_merged for this application
+COMP_LIST_COMMON := $(filter-out udma$(HS_SUFFIX), $(COMP_LIST_COMMON))
+COMP_LIST_COMMON += udma_merged
+
 # Common source files and CFLAGS across all platforms and cores
 PACKAGE_SRCS_COMMON = .
 SRCS_COMMON += udma_memcpy_tricore_test.c
