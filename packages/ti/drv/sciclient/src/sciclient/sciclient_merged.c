@@ -75,7 +75,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
 int32_t Sciclient_mergedInit(void)
 {
     int32_t ret = CSL_PASS;
-    int32_t coreId = SCICLIENT_CORE_INVALID;
+    uint32_t coreId = SCICLIENT_CORE_INVALID;
 
     coreId = Sciclient_getR5CoreId();
     switch (coreId)
@@ -139,16 +139,29 @@ int32_t Sciclient_mergedInit(void)
 int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
                           Sciclient_RespPrm_t      *pRespPrm)
 {
-    uint32_t ret = CSL_EFAIL;
+    int32_t ret = CSL_EFAIL;
     uint32_t coreId = Sciclient_getR5CoreId();
 
-    if (SCICLIENT_CORE_MCU1_0 == coreId)
+    switch (coreId)
     {
+    case SCICLIENT_CORE_MCU1_0:
         ret = Sciclient_serviceDirect(pReqPrm, pRespPrm);
-    }
-    else if (SCICLIENT_CORE_INVALID != coreId)
-    {
+        break;
+    case SCICLIENT_CORE_MCU1_1:
+    case SCICLIENT_CORE_MCU2_0:
+    case SCICLIENT_CORE_MCU2_1:
+#if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
+    case SCICLIENT_CORE_MCU3_0:
+    case SCICLIENT_CORE_MCU3_1:
+#if defined (SOC_J784S4) || defined (SOC_J742S2)
+    case SCICLIENT_CORE_MCU4_0:
+    case SCICLIENT_CORE_MCU4_1:
+#endif /* #if defined (SOC_J784S4) || defined (SOC_J742S2) */
+#endif /* #if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2) */
         ret = Sciclient_serviceIndirect(pReqPrm, pRespPrm);
+        break;
+    default:
+        break;
     }
 
     return ret;
