@@ -651,11 +651,11 @@ int32_t ecc_aggr_test(void)
             static uint64_t gTimeStart, gTimeFinish;
             /*
              * The following ECC aggregators have been excluded from the ECC test:
-             * 1. SDL Known issues: SDL_MCU_I3C1_0_ECC_AGGR, SDL_MCU_I3C1_1_ECC_AGGR, SDL_PCIE1_0_ECC_AGGR, SDL_PCIE1_1_ECC_AGGR, SDL_WKUP_SMS0_TIFS_ECC_AGGR_0_ECC_AGGR,SDL_WKUP_SMS0_HSM_ECC_AGGR_0_ECC_AGGR, SDL_DSS_EDP0_0_ECC_AGGR, SDL_DSS_EDP0_1_ECC_AGGR, SDL_CSI_TX_IF_V2_1_0_ECC_AGGR, SDL_CSI_TX_IF_V2_1_1_ECC_AGGR, SDL_CSI_TX_IF_V2_0_0_ECC_AGGR, SDL_CSI_TX_IF_V2_0_1_ECC_AGGR
+             * 1. SDL Known issues: SDL_PCIE1_0_ECC_AGGR, SDL_PCIE1_1_ECC_AGGR, SDL_WKUP_SMS0_TIFS_ECC_AGGR_0_ECC_AGGR,SDL_WKUP_SMS0_HSM_ECC_AGGR_0_ECC_AGGR, SDL_DSS_EDP0_0_ECC_AGGR, SDL_DSS_EDP0_1_ECC_AGGR, SDL_CSI_TX_IF_V2_1_0_ECC_AGGR, SDL_CSI_TX_IF_V2_1_1_ECC_AGGR, SDL_CSI_TX_IF_V2_0_0_ECC_AGGR, SDL_CSI_TX_IF_V2_0_1_ECC_AGGR
              * 2. SDL_ECC_MEMTYPE_MCU_R5F1_CORE can be tested when an application is loaded and executed on MCU0_1, please refer to Documentation for more details.
              * 3. SDL_ECC_MEMTYPE_A72_1, SDL_ECC_MEMTYPE_A72_0, SDL_ECC_MEMTYPE_A72_COREPAC are known issues with QNX Boot, can be tested without HLOS Boot. 
              */
-            if(mainMem == SDL_ECC_MEMTYPE_MCU_R5F1_CORE  || mainMem == SDL_ECC_MEMTYPE_A72_1 || mainMem == SDL_ECC_MEMTYPE_A72_0 || mainMem == SDL_ECC_MEMTYPE_A72_COREPAC || mainMem == SDL_MCU_I3C1_0_ECC_AGGR || mainMem == SDL_MCU_I3C1_1_ECC_AGGR || mainMem == SDL_PCIE1_0_ECC_AGGR || mainMem == SDL_PCIE1_1_ECC_AGGR || mainMem == SDL_WKUP_SMS0_TIFS_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_WKUP_SMS0_HSM_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_1_ECC_AGGR )
+            if(mainMem == SDL_ECC_MEMTYPE_MCU_R5F1_CORE  || mainMem == SDL_ECC_MEMTYPE_A72_1 || mainMem == SDL_ECC_MEMTYPE_A72_0 || mainMem == SDL_ECC_MEMTYPE_A72_COREPAC || mainMem == SDL_PCIE1_0_ECC_AGGR || mainMem == SDL_PCIE1_1_ECC_AGGR || mainMem == SDL_WKUP_SMS0_TIFS_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_WKUP_SMS0_HSM_ECC_AGGR_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_0_ECC_AGGR || mainMem == SDL_DSS_EDP0_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_1_1_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_0_ECC_AGGR || mainMem == SDL_CSI_TX_IF_V2_0_1_ECC_AGGR )
             {
                 continue;
             }      
@@ -767,7 +767,7 @@ int32_t ecc_aggr_test(void)
 								(mainMem == SDL_DSS_DSI1_ECC_AGGR) || (mainMem == SDL_PCIE0_0_ECC_AGGR) || (mainMem == SDL_PCIE0_1_ECC_AGGR)||
 								(mainMem == SDL_PCIE3_0_ECC_AGGR) || (mainMem == SDL_PCIE3_1_ECC_AGGR) || (mainMem == SDL_PCIE2_0_ECC_AGGR) ||
 								(mainMem == SDL_PCIE2_1_ECC_AGGR) || (mainMem == SDL_PCIE1_0_ECC_AGGR) || (mainMem == SDL_PCIE1_1_ECC_AGGR) ||
-								(mainMem == SDL_MCU_I3C1_0_ECC_AGGR) || (mainMem == SDL_MCU_I3C1_1_ECC_AGGR) || (mainMem == SDL_CSI_RX_IF2_ECC_AGGR) || 
+								(mainMem == SDL_CSI_RX_IF2_ECC_AGGR) ||
                                 (mainMem == SDL_CSI_RX_IF1_ECC_AGGR) || (mainMem == SDL_CSI_RX_IF0_ECC_AGGR) || (mainMem == SDL_CSI_TX_IF_V2_1_0_ECC_AGGR) ||
                                 (mainMem == SDL_CSI_TX_IF_V2_1_1_ECC_AGGR) || (mainMem == SDL_CSI_TX_IF_V2_0_0_ECC_AGGR) || (mainMem == SDL_CSI_TX_IF_V2_0_1_ECC_AGGR) ||
                                 (mainMem == SDL_MCU_I3C0_1_ECC_AGGR) )
@@ -1015,7 +1015,7 @@ int32_t ecc_aggr_test(void)
 							(mainMem == SDL_DSS_DSI1_ECC_AGGR) || (mainMem == SDL_PCIE0_0_ECC_AGGR) || (mainMem == SDL_PCIE0_1_ECC_AGGR)||
 							(mainMem == SDL_PCIE3_0_ECC_AGGR) || (mainMem == SDL_PCIE3_1_ECC_AGGR) || (mainMem == SDL_PCIE2_0_ECC_AGGR) ||
 							(mainMem == SDL_PCIE2_1_ECC_AGGR) || (mainMem == SDL_PCIE1_0_ECC_AGGR) || (mainMem == SDL_PCIE1_1_ECC_AGGR) ||
-							(mainMem == SDL_MCU_I3C1_0_ECC_AGGR) || (mainMem == SDL_MCU_I3C1_1_ECC_AGGR) || (mainMem == SDL_CSI_RX_IF2_ECC_AGGR) || 
+							(mainMem == SDL_CSI_RX_IF2_ECC_AGGR) ||
                             (mainMem == SDL_CSI_RX_IF1_ECC_AGGR) || (mainMem == SDL_CSI_RX_IF0_ECC_AGGR) || (mainMem == SDL_CSI_TX_IF_V2_1_0_ECC_AGGR) ||
                             (mainMem == SDL_CSI_TX_IF_V2_1_1_ECC_AGGR) || (mainMem == SDL_CSI_TX_IF_V2_0_0_ECC_AGGR) || (mainMem == SDL_CSI_TX_IF_V2_0_1_ECC_AGGR) ||
                             (mainMem == SDL_MCU_I3C0_1_ECC_AGGR) )
