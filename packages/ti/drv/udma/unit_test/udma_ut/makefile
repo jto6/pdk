@@ -15,6 +15,9 @@ ifeq ($(UDMA_UT_DYNAMIC_ANALYSIS), yes)
 APP_NAME = udma_dynamic_unit_testapp
 BUILD_OS_TYPE=baremetal
 endif
+ifeq ($(USE_UDMA_MERGED), yes)
+APP_NAME = udma_merged_unit_testapp_$(BUILD_OS_TYPE)
+endif
 
 SOC_DIR=$(SOC)
 ifeq ($(SOC), j742s2)
@@ -46,6 +49,11 @@ endif
 # List all the specific components required by the application
 COMP_LIST_COMMON += udma_apputils
 
+# Using UDMA_merged for this application
+ifeq ($(USE_UDMA_MERGED), yes)
+COMP_LIST_COMMON := $(filter-out udma$(HS_SUFFIX), $(COMP_LIST_COMMON))
+COMP_LIST_COMMON += udma_merged
+endif
 
 # Common source files and CFLAGS across all platforms and cores
 PACKAGE_SRCS_COMMON = . ./src ../udma_ut_component.mk

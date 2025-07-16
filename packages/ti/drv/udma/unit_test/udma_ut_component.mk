@@ -116,6 +116,35 @@ UDMA_USER_INPUT_UNIT_TESTAPP_MACRO_LIST := $(foreach curos, $(drvudma_RTOS_LIST)
 
 $(eval ${UDMA_USER_INPUT_UNIT_TESTAPP_MACRO_LIST})
 
+# RTOS udma unit test apps
+define UDMA_MERGED_UNIT_TESTAPP_RULE
+
+export udma_merged_unit_testapp_$(1)_COMP_LIST = udma_merged_unit_testapp_$(1)
+udma_merged_unit_testapp_$(1)_RELPATH = ti/drv/udma/unit_test/udma_ut
+udma_merged_unit_testapp_$(1)_PATH = $(PDK_UDMA_COMP_PATH)/unit_test/udma_ut
+export udma_merged_unit_testapp_$(1)_MAKEFILE = -fmakefile  BUILD_OS_TYPE=$(1) USE_UDMA_MERGED=yes
+export udma_merged_unit_testapp_$(1)_BOARD_DEPENDENCY = yes
+export udma_merged_unit_testapp_$(1)_CORE_DEPENDENCY = yes
+export udma_merged_unit_testapp_$(1)_XDC_CONFIGURO = no
+udma_merged_unit_testapp_$(1)_PKG_LIST = udma_merged_unit_testapp_$(1)
+udma_merged_unit_testapp_$(1)_INCLUDE = $(udma_merged_unit_testapp_$(1)_PATH)
+export udma_merged_unit_testapp_$(1)_BOARDLIST = j721e_evm j7200_evm j721s2_evm j784s4_evm j742s2_evm
+export udma_merged_unit_testapp_$(1)_$(SOC)_CORELIST = mcu1_0 mcu1_1 mcu2_0 mcu2_1 mcu3_0 mcu3_1 mcu4_0 mcu4_1
+export udma_merged_unit_testapp_$(1)_SBL_APPIMAGEGEN = yes
+ifneq ($(1),$(filter $(1), safertos))
+udma_ut_EXAMPLE_LIST += udma_merged_unit_testapp_$(1)
+else
+ifneq ($(wildcard $(SAFERTOS_KERNEL_INSTALL_PATH)),)
+udma_ut_EXAMPLE_LIST += udma_merged_unit_testapp_$(1)
+endif
+endif
+
+endef
+
+UDMA_MERGED_UNIT_TESTAPP_MACRO_LIST := $(foreach curos, $(drvudma_RTOS_LIST) safertos, $(call UDMA_MERGED_UNIT_TESTAPP_RULE,$(curos)))
+
+$(eval ${UDMA_MERGED_UNIT_TESTAPP_MACRO_LIST})
+
 export udma_ut_LIB_LIST
 export udma_ut_EXAMPLE_LIST
 

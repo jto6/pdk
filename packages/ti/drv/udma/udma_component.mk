@@ -410,7 +410,8 @@ export udma_memcpy_tricore_testapp_freertos_BOARD_DEPENDENCY = yes
 export udma_memcpy_tricore_testapp_freertos_CORE_DEPENDENCY = yes
 udma_memcpy_tricore_testapp_freertos_PKG_LIST = udma_memcpy_tricore_testapp_freertos
 udma_memcpy_tricore_testapp_freertos_INCLUDE = $(udma_memcpy_tricore_testapp_freertos_PATH)
-export udma_memcpy_tricore_testapp_freertos_BOARDLIST = j721e_evm j784s4_evm j721s2_evm j7200_evm j742s2_evm
+# j7200 has only two r5 clusters
+export udma_memcpy_tricore_testapp_freertos_BOARDLIST = j721e_evm j784s4_evm j721s2_evm j742s2_evm
 # Compiling for mcu1_0 will make tricore appimage for mcu1_0, mcu2_0 and mcu3_0
 export udma_memcpy_tricore_testapp_freertos_$(SOC)_CORELIST = mcu1_0
 export udma_memcpy_tricore_testapp_freertos_SBL_APPIMAGEGEN = yes
