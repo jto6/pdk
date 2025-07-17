@@ -95,6 +95,8 @@
 #define TEST_AREA_SIZE                    (0x00000400U)
 #define ATCM_FILL_PATTERN                 (0xffffffffU)
 #define FIELDVALUE                        (0x00000001U)
+#define VECTOR_SIZE                       (0x100U)
+
 /* delay for 1us*/
 #define DELAY                             (0x00000001U)
 
@@ -585,6 +587,25 @@ static uint32_t BootApp_getTimeInMicroSec(uint32_t pmuCntrVal)
     uint64_t mcu_clk_freq = SBL_MCU1_CPU0_FREQ_HZ;
     uint32_t cycles_per_usec = (mcu_clk_freq / 1000000);
     return (pmuCntrVal/cycles_per_usec);
+}
+
+int32_t SDL_dummyWaitForInterrupt (uint32_t maxTimeOutMilliSeconds)
+{
+    SDL_ErrType_t result = SDL_PASS;
+    uint32_t timeOutCnt = 0;
+    do
+    {
+        /* dummy wait for the interrupt */
+        SDL_OSAL_delay(DELAY);
+        timeOutCnt += 10;
+        if (timeOutCnt > maxTimeOutMilliSeconds)
+        {
+            result = SDL_EFAIL;
+            break;
+        }
+    } while (esmError == false);
+    
+    return result;
 }
 
 /********************************************************************
@@ -1092,12 +1113,44 @@ int32_t ecc_aggr_test(void)
                                         {
                                             sdl_ecc_psram_test = (bool)true;
                                         }
+
+                                        /* Added to demonstrate testing of MSRAM when memory is Cacheable
+                                        This method helps to invalidate cache just before triggering ECC Error
+                                        MSRAM MPU config is set as Cacheable in this case. SDL_ECC_selfTest can 
+                                        be used for MSRAM when MPU config non- cacheable which is the other case */
+                                        #if defined (SOC_J721S2)
+                                        if (mainMem == SDL_MCU_MSRAM_1MB0_ECC_AGGR && 
+                                            i == SDL_MCU_MSRAM_1MB0_MSRAM128KX64E_ECC_AGGR_MSRAM128KX64E_MSRAM0_ECC0_RAM_ID)
+                                        {
+                                            uint32_t *  localaddr;
+                                            localaddr =injectErrorConfig.pErrMem;
+                                            /* Inject error */
+                                            retVal = SDL_ECC_injectError(mainMem,
+                                                                        i, intsrc,&injectErrorConfig);
+                                            
+                                            /* invalidate cache */
+                                            CacheP_wbInv((uint32_t *)localaddr, VECTOR_SIZE);
+
+                                            /* Read value to trigger ECC error injection */
+                                            SDL_REG32_RD(localaddr);
+                                            if (retVal == SDL_PASS)
+                                            {
+                                                UART_printf("\n\n Waiting for ESM Interrupt \n\n");
+                                                /* Real wait for the interrupt , just reusing the existing wait function */
+                                                result = SDL_dummyWaitForInterrupt(maxTimeOutMilliSeconds);
+                                            }
+                                        }
+                                        else 
+                                        {
+                                        #endif
                                         result = SDL_ECC_selfTest(mainMem,
                                                                 i,
                                                                 intsrc,
                                                                 &injectErrorConfig,
                                                                 100000);
-                                        
+                                        # if defined (SOC_J721S2)
+                                        }
+                                        #endif
                                         /* SDL_EUNSUPPORTED_OPS is only returned in the case of DED test for invalid checker group type */
                                         if (result != SDL_PASS  && result != SDL_EUNSUPPORTED_OPS)
                                         {

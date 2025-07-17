@@ -75,6 +75,7 @@ extern "C"
 extern int32_t ECC_funcTest(void);
 extern volatile bool esmError;
 extern int32_t sdlApp_initDevices(void);
+extern void CacheP_wbInv(const void * addr, uint32_t size);
 
 /* ========================================================================== */
 /*                         Function Declarations                              */
@@ -83,6 +84,7 @@ extern int32_t sdlApp_initDevices(void);
 /* Function to run ECC tests */
 int32_t BootApp_eccFxn(void);
 void ECC_Test_lateDeviceInit(uint32_t mainMem);
+int32_t SDL_dummyWaitForInterrupt (uint32_t);
 
 /* ========================================================================== */
 /*                          Structure Declarations                            */
