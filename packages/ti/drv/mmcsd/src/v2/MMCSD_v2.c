@@ -7,7 +7,7 @@
  */
 
 /*
- * Copyright (C) 2017-2021 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2017-2025 Texas Instruments Incorporated - http://www.ti.com/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -350,6 +350,8 @@
 #define MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V (0x40U)
 #define MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P2V (0x80U)
 
+#define MMCSD_EMMC_ECSD_GENERIC_CMD6_TIME  (248)
+
 #define MMCSD_ECSD_BUS_WIDTH_INDEX (183U)
 #define MMCSD_ECSD_BUS_WIDTH_1BIT       (0U)
 #define MMCSD_ECSD_BUS_WIDTH_4BIT       (1U)
@@ -514,16 +516,34 @@ void mmc_setupDescriptor(
 
 
 /* Wait for DAT0 to go low */
-static int32_t MMCSD_v2_waitDat0(MMCSD_v2_HwAttrs const *hwAttrs);
-static int32_t MMCSD_v2_waitDat0(MMCSD_v2_HwAttrs const *hwAttrs)
+static int32_t MMCSD_v2_waitDat0(MMCSD_Handle handle, MMCSD_v2_HwAttrs const *hwAttrs);
+static int32_t MMCSD_v2_waitDat0(MMCSD_Handle handle, MMCSD_v2_HwAttrs const *hwAttrs)
 {
-  /* Check for DAT0 to go low */
+  MMCSD_v2_Object  *object     = NULL;
   volatile uint32_t present_state_reg;
-  do {
-     present_state_reg= HW_RD_REG32(hwAttrs->baseAddr + MMC_PSTATE);
-  } while( (present_state_reg & (1 << 20))!=(1<<20));
+  uint32_t          timeout_ms;
+  uint32_t          wait_dat0try = 0U;
+  int32_t           retVal = STW_EFAIL;
 
-  return STW_SOK;
+  /* Get the pointer to the object and hwAttrs */
+  object = (MMCSD_v2_Object *)((MMCSD_Config *) handle)->object;
+
+  timeout_ms = 10 * object->ecsd[MMCSD_EMMC_ECSD_GENERIC_CMD6_TIME];
+
+  do
+  {
+     /* Check for DAT0 to go low */
+      present_state_reg= HW_RD_REG32(hwAttrs->baseAddr + MMC_PSTATE);
+     if( (present_state_reg & (1 << 20)) == (1 << 20) )
+     {
+       retVal = MMCSD_OK;
+       break;
+     }
+    Osal_delay(1);
+    wait_dat0try++;
+  }while(wait_dat0try++ < timeout_ms);
+
+  return retVal;
 }
 
 /* Waits for cmd inhibit to go low */
@@ -1548,7 +1568,10 @@ static MMCSD_Error MMCSD_v2_initSd(MMCSD_Handle handle)
         }  else { MMCSD_DEBUG_TRAP }
 
 	 /* Wait for DAT0 to go low */
-	 MMCSD_v2_waitDat0(hwAttrs);
+        if(MMCSD_OK == ret)
+        {
+            ret = MMCSD_v2_waitDat0(handle, hwAttrs);
+        }
 
     /******** Set block len (CMD16) based on the CSD register *******/
         if(MMCSD_OK == ret)
@@ -1685,8 +1708,11 @@ static MMCSD_Error MMCSD_v2_initSd(MMCSD_Handle handle)
             ret = MMCSD_v2_transfer(handle, &transaction);
         }  else { MMCSD_DEBUG_TRAP }
 
-         /* Wait for DAT0 to go low */
-         MMCSD_v2_waitDat0(hwAttrs);
+        if(MMCSD_OK == ret)
+        {
+            /* Wait for DAT0 to go low */
+            ret = MMCSD_v2_waitDat0(handle, hwAttrs);
+        }
 
 		/* Perform the switch and see what function it switches to */
 #ifndef SIMULATOR // Skip CMD8 when VLAB is used
@@ -1796,8 +1822,11 @@ static MMCSD_Error MMCSD_switch_card_speed(MMCSD_Handle handle,uint32_t cmd16_gr
    transaction.dataBuf = cmd6_response_buf;
 
    ret = MMCSD_v2_transfer(handle, &transaction);
-   /* Wait for DAT0 to go low */
-   MMCSD_v2_waitDat0(hwAttrs);
+   if(MMCSD_OK == ret)
+   {
+       /* Wait for DAT0 to go low */
+       ret = MMCSD_v2_waitDat0(handle, hwAttrs);
+   }
 
    if (MMCSD_OK == ret)
    {   /* Checking bits 379:376 of the CMD6 response  to see if the switch happened successfully */
@@ -2077,6 +2106,7 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
     /* Get the pointer to the object and hwAttrs */
     object = (MMCSD_v2_Object *)((MMCSD_Config *) handle)->object;
     hwAttrs = (MMCSD_v2_HwAttrs const *)((MMCSD_Config *) handle)->hwAttrs;
+    uint8_t timeout_ms=10*object->ecsd[MMCSD_EMMC_ECSD_GENERIC_CMD6_TIME];
 
     drvStrength = hwAttrs->drvStrength;
     phyDriverType= hwAttrs->phydrvStrength;
@@ -2157,16 +2187,17 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
         transaction.flags = MMCSD_CMDRSP_BUSY;
         ret = MMCSD_v2_transfer(handle, &transaction);
      }
-    if (MMCSD_OK == ret)
-    {
-        /* Wait untill device is ready for next transfer */
-        mmcsd_check_transfer_ready(handle);
-    }
-     if(MMCSD_OK == ret) {
-  		/* Wait for DAT0 to go low */
-       MMCSD_v2_waitDat0(hwAttrs);
-	 }
 
+    Osal_delay(timeout_ms);
+
+    if(MMCSD_OK == ret)
+    {
+        /* Wait for DAT0 to go low */
+        ret = MMCSD_v2_waitDat0(handle, hwAttrs);
+    }
+
+    if(MMCSD_OK == ret)
+    {
      if(ddrMode == BTRUE)
      {
        uint8_t ecsd_bus_width;
@@ -2186,25 +2217,33 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
             /* Wait untill device is ready for next transfer */
             mmcsd_check_transfer_ready(handle);
         }
-       if(MMCSD_OK == ret) {
-  	  	  /* Wait for DAT0 to go low */
-          MMCSD_v2_waitDat0(hwAttrs);
-       }
+        if(MMCSD_OK == ret)
+        {
+            /* Wait for DAT0 to go low */
+            ret = MMCSD_v2_waitDat0(handle, hwAttrs);
+        }
        phy_clk_freq=52000000;
 
      } else {
 	  phy_clk_freq=clk_freq;
      }
+    }
 
-    /* Configure the host controller and Phy */
-	ret = HSMMCSDUhsModeSet(hwAttrs->baseAddr, uhsMode);
+    if(MMCSD_OK == ret)
+    {
+        /* Configure the host controller and Phy */
+        ret = HSMMCSDUhsModeSet(hwAttrs->baseAddr, uhsMode);
+    }
 
-    MMCSD_socPhyDisableDLL(hwAttrs);
+    if(MMCSD_OK == ret)
+    {
+        MMCSD_socPhyDisableDLL(hwAttrs);
 
-    ret = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk, clk_freq, UFALSE);
-    if(ret!=STW_SOK) {
-		return MMCSD_ERR;
-	}
+        ret = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk, clk_freq, UFALSE);
+        if(ret!=STW_SOK) {
+            return MMCSD_ERR;
+        }
+    }
      
 
     MMCSD_socPhyConfigure(hwAttrs,phyMode, phy_clk_freq, phyDriverType);
@@ -2245,13 +2284,7 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
          transaction.flags = MMCSD_CMDRSP_BUSY;
          ret = MMCSD_v2_transfer(handle, &transaction);
 
-        if (MMCSD_OK == ret)
-        {
-            /* Wait untill device is ready for next transfer */
-            mmcsd_check_transfer_ready(handle);
-        }
-
-
+        Osal_delay(timeout_ms);
 
 	  MMCSD_socPhyDisableDLL(hwAttrs);
 
@@ -2275,10 +2308,11 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
             /* Wait untill device is ready for next transfer */
             mmcsd_check_transfer_ready(handle);
         }
-       if(MMCSD_OK == ret) {
-  	  	  /* Wait for DAT0 to go low */
-          MMCSD_v2_waitDat0(hwAttrs);
-       }
+        if(MMCSD_OK == ret)
+        {
+            /* Wait for DAT0 to go low */
+            ret = MMCSD_v2_waitDat0(handle, hwAttrs);
+        }
 
          /*Set the “Timing Interface” parameter in the HS_TIMING [185] field of the
          * Extended CSD register to 0x3 to switch to HS400 mode.
@@ -2291,35 +2325,37 @@ MMCSD_Error MMCSD_switch_eMMC_mode(MMCSD_Handle handle, MMCSD_SupportedMMCModes_
           transaction.flags = MMCSD_CMDRSP_BUSY;
           ret = MMCSD_v2_transfer(handle, &transaction);
         }
-        if (MMCSD_OK == ret)
-        {
-            /* Wait untill device is ready for next transfer */
-            mmcsd_check_transfer_ready(handle);
-        }
+
+        Osal_delay(timeout_ms);
+
         if(MMCSD_OK == ret) {
   		  /* Wait for DAT0 to go low */
-          MMCSD_v2_waitDat0(hwAttrs);
+          ret = MMCSD_v2_waitDat0(handle, hwAttrs);
 	    }
+        if(MMCSD_OK == ret) {
+          ret = HSMMCSDUhsModeSet(hwAttrs->baseAddr, MMC_AC12_UHSMS_HS400);
 
-        ret = HSMMCSDUhsModeSet(hwAttrs->baseAddr, MMC_AC12_UHSMS_HS400);
+          if(enhancedStrobe)
+          {
+          HSMMCSDEnhancedStrobeSet(hwAttrs->baseAddr,MMC_VREG_STROBE_ENABLE);
+          }
+        }
 
-         if(enhancedStrobe)
-         {
-           HSMMCSDEnhancedStrobeSet(hwAttrs->baseAddr,MMC_VREG_STROBE_ENABLE);
-		 }
+        if(MMCSD_OK == ret) {
+          ret = HSMMCSDUhsDrvStrengthSet(hwAttrs->baseAddr, drvStrength_controller);
 
-        ret = HSMMCSDUhsDrvStrengthSet(hwAttrs->baseAddr, drvStrength_controller);
+          MMCSD_socPhyDisableDLL(hwAttrs);
+        }
 
- 	     MMCSD_socPhyDisableDLL(hwAttrs);
+        if(MMCSD_OK == ret) {
+          /* Host may set the clock frequency to a value not greater than 200 MHz"*/
+          ret = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk, 200000000, UFALSE);
 
-
-         /* Host may set the clock frequency to a value not greater than 200 MHz"*/
-        ret = HSMMCSDBusFreqSet(hwAttrs->baseAddr, hwAttrs->inputClk, 200000000, UFALSE);
-
-         /* NEW: Enable DLL */
-        phyMode = MODE_HS400;
+          /* NEW: Enable DLL */
+          phyMode = MODE_HS400;
         
-        MMCSD_socPhyConfigure(hwAttrs,phyMode, 200000000, phyDriverType);
+          MMCSD_socPhyConfigure(hwAttrs,phyMode, 200000000, phyDriverType);
+        }
 
         
         if(ret!=STW_SOK) {
