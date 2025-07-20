@@ -594,6 +594,12 @@ void OSPI_initConfig(OSPI_Tests *test)
         ospi_cfg.phyEnable = BFALSE;
         ospi_cfg.cacheEnable = BFALSE;
     }
+#if defined (OSPI_TEST_ID_WR_PROTECT)
+    if (OSPI_TEST_ID_WR_PROTECT == test->testId)
+    {
+        ospi_cfg.phyOpMode = test->phyOpMode;
+    }
+#endif
 
     if (OSPI_NAND_TEST_ID_WR_TUNING == test->testId)
     {
@@ -1378,7 +1384,7 @@ OSPI_Tests Ospi_tests[] =
     {OSPI_phyConfigTest,    OSPI_TEST_ID_PHY_CFG_MASTER,      BTRUE,  BFALSE,  BTRUE,       CSL_OSPI_CFG_PHY_OP_MODE_MASTER,   OSPI_MODULE_CLK_133M, "\r\n OSPI Phy Config Master mode test"},
     {OSPI_phyConfigTest,    OSPI_TEST_ID_PHY_CFG_BYPASS,      BTRUE,  BFALSE,  BTRUE,       CSL_OSPI_CFG_PHY_OP_MODE_BYPASS,   OSPI_MODULE_CLK_133M, "\r\n OSPI Phy Config bypass mode test"},
 #if defined(OSPI_TEST_ID_WR_PROTECT)
-    {OSPI_wrProtectTest,    OSPI_TEST_ID_WR_PROTECT,      BTRUE,  BFALSE,  BTRUE,       CSL_OSPI_CFG_PHY_OP_MODE_DEFAULT,   OSPI_MODULE_CLK_133M, "\r\n OSPI WR protect test"},
+    {OSPI_wrProtectTest,    OSPI_TEST_ID_WR_PROTECT,      BTRUE,  BFALSE,  BTRUE,       CSL_OSPI_CFG_PHY_OP_MODE_MASTER,   OSPI_MODULE_CLK_133M, "\r\n OSPI WR protect test"},
 #endif
     {NULL, }
 };
