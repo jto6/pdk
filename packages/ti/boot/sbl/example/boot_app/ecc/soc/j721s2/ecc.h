@@ -501,48 +501,6 @@ static SDL_ECC_InitConfig_t ECC_Test_SDL_USB0_USB3P0SS_16FFC_USB3P0SS_CORE_A_ECC
 };
 
 /** ------------------------------------------------------------------------------------
- * This structure holds the list of Ram Ids for memory subtypes SDL_MCU_I3C1_I3C_S_ECC_AGGR
- * -------------------------------------------------------------------------------------
- */
-static SDL_ECC_MemSubType ECC_Test_SDL_MCU_I3C1_I3C_S_ECC_AGGR_subMemTypeList[SDL_MCU_I3C1_I3C_S_ECC_AGGR_NUM_RAMS] =
-{
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_IBIR_QUEUE_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_SLV_DDR_RX_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_CMDR_QUEUE_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_SLV_DDR_TX_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_IBI_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_CMD_WRD1_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_TX_DATA_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_CMD_WRD0_RAM_ID,
-    SDL_MCU_I3C1_I3C_S_ECC_AGGR_I3C_RX_DATA_RAM_ID,
-};
-
-static SDL_ECC_InitConfig_t ECC_Test_SDL_MCU_I3C1_I3C_S_ECC_AGGR_initConfig =
-{
-    .numRams = SDL_MCU_I3C1_I3C_S_ECC_AGGR_NUM_RAMS,
-    /**< Number of Rams ECC is enabled */
-    .pMemSubTypeList = &(ECC_Test_SDL_MCU_I3C1_I3C_S_ECC_AGGR_subMemTypeList[0]),
-    /**< Sub type list */
-};
-
-/** ------------------------------------------------------------------------------------
- * This structure holds the list of Ram Ids for memory subtypes SDL_MCU_I3C1_I3C_P_ECC_AGGR
- * -------------------------------------------------------------------------------------
- */
-static SDL_ECC_MemSubType ECC_Test_SDL_MCU_I3C1_I3C_P_ECC_AGGR_subMemTypeList[SDL_MCU_I3C1_I3C_P_ECC_AGGR_NUM_RAMS] =
-{
-    SDL_MCU_I3C1_I3C_P_ECC_AGGR_I3C_EDC_CTRL_0_RAM_ID,
-};
-
-static SDL_ECC_InitConfig_t ECC_Test_SDL_MCU_I3C1_I3C_P_ECC_AGGR_initConfig =
-{
-    .numRams = SDL_MCU_I3C1_I3C_P_ECC_AGGR_NUM_RAMS,
-    /**< Number of Rams ECC is enabled */
-    .pMemSubTypeList = &(ECC_Test_SDL_MCU_I3C1_I3C_P_ECC_AGGR_subMemTypeList[0]),
-    /**< Sub type list */
-};
-
-/** ------------------------------------------------------------------------------------
  * This structure holds the list of Ram Ids for memory subtypes SDL_MCAN16_MCANSS_MSGMEM_WRAP_ECC_AGGR
  * -------------------------------------------------------------------------------------
  */
@@ -4084,296 +4042,287 @@ static SDL_Test_EccConfig ECC_Test_config[SDL_ECC_MEMTYPE_MAX] =
         &ECC_Test_SDL_MCU_MSRAM_1MB0_MSRAM128KX64E_ECC_AGGR_initConfig,
         "SDL_MCU_MSRAM_1MB0"
     },
-    {//
+    {//8
         &ECC_Test_SDL_ECC_AGGR4_J7AM_MAIN_RC_ECC_AGGR_initConfig,
         "SDL_ECC_AGGR4"
     },
-    {//
+    {//9
         &ECC_Test_SDL_USB0_USB3P0SS_16FFC_USB3P0SS_CORE_A_ECC_AGGR_initConfig,
         "SDL_USB0"
     },
     {//10
-        &ECC_Test_SDL_MCU_I3C1_I3C_S_ECC_AGGR_initConfig,
-        "SDL_MCU_I3C1_0"
-    },
-    {//
-        &ECC_Test_SDL_MCU_I3C1_I3C_P_ECC_AGGR_initConfig,
-        "SDL_MCU_I3C1_1"
-    },
-    {//
         &ECC_Test_SDL_VPAC0_VPAC_TOP_PAC_BASE_KSDW_ECC_AGGR_initConfig,
         "SDL_VPAC0_0"
     },
-    {//
+    {//11
         &ECC_Test_SDL_VPAC0_VPAC_TOP_VPAC_VISS0_KSDW_ECC_AGGR_initConfig,
         "SDL_VPAC0_1"
     },
-    {//
+    {//12
         &ECC_Test_SDL_VPAC0_VPAC_TOP_VPAC_LDC0_KSDW_ECC_AGGR_initConfig,
         "SDL_VPAC0"
     },
-    {//
+    {//13
         &ECC_Test_SDL_MCAN16_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN16"
     },
-    {// 16
+    {//14
         &ECC_Test_SDL_PCIE1_PCIE_G3X4_128_CORE_AXI_ECC_AGGR_initConfig,
         "SDL_PCIE1_1"
     },
-    {// 17
+    {//15
         &ECC_Test_SDL_PCIE1_PCIE_G3X4_128_CORE_CORE_ECC_AGGR_initConfig,
         "SDL_PCIE1_0"
     },
-    
-    {//
+    {//16
         &ECC_Test_SDL_IVC_DOM0_ECC_AGGR16_IJ7VC_DOM0_ECC_AGGR_initConfig,
         "SDL_IVC_DOM0_ECC_AGGR16"
     },
-    {//19
+    {//17
         &ECC_Test_SDL_PDMA6_PDMA_J7VC_MAIN_SPI_G0_ECCAGGR_initConfig,
         "SDL_PDMA6"
     },
-    {//20
+    {//18
         &ECC_Test_SDL_ECC_AGGR5_J7AM_MAIN_HC_ECC_AGGR_initConfig,
         "SDL_ECC_AGGR5"
     },
-    {//
+    {//19
         &ECC_Test_SDL_DSS_DSI0_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS_initConfig,
         "SDL_DSS_DSI0"
     },
-    {//
+    {//20
         &ECC_Test_SDL_ECC_AGGR0_J7AM_MAIN_INFRA_ECC_AGGR_initConfig,
         "SDL_ECC_AGGR0"
     },
-    {//
+    {//21
         &ECC_Test_SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR_initConfig,
         "SDL_CSI_RX_IF0"
     },
-    {//
+    {//22
         &ECC_Test_SDL_MCAN5_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN5"
     },
-    {//
+    {//23
         &ECC_Test_SDL_PSRAM2KECC0_PSRAM512X32E_ECC_AGGR_initConfig,
         "SDL_PSRAM2KECC0"
     },
-    {//
+    {//24
         &ECC_Test_SDL_PDMA7_PDMA_J7VC_MAIN_SPI_G1_ECCAGGR_initConfig,
         "SDL_PDMA7"
     },
-    {//
+    {//25
         &ECC_Test_SDL_IVC_DOM0_ECC_AGGR18_IJ7VC_DOM0_ECC_AGGR_initConfig,
         "SDL_IVC_DOM0_ECC_AGGR18"
     },
-    {//28
+    {//26
         &ECC_Test_SDL_MCU_NAVSS0_NAVSS_MCU_J7_MODSS_ECCAGGR0_initConfig,
         "SDL_MCU_NAVSS0_0"
     },
-    {//
+    {//27
         &ECC_Test_SDL_MCU_NAVSS0_NAVSS_MCU_J7_UDMASS_UDMASS_ECCAGGR0_initConfig,
         "SDL_MCU_NAVSS0_1"
     },
-    {//30
+    {//28
         &ECC_Test_SDL_DSS_EDP0_K3_DSS_EDP_MHDPTX_WRAPPER_ECC_AGGR_CORE_initConfig,
         "SDL_DSS_EDP0_2"
     },
-    {//
+    {//29
         &ECC_Test_SDL_DSS_EDP0_K3_DSS_EDP_MHDPTX_WRAPPER_ECC_AGGR_PHY_initConfig,
         "SDL_DSS_EDP0_0"
     },
-    {//
+    {//30
         &ECC_Test_SDL_DSS_EDP0_K3_DSS_EDP_MHDPTX_WRAPPER_ECC_AGGR_DSC_initConfig,
         "SDL_DSS_EDP0_1"
     },    
-    {//
+    {//31
         &ECC_Test_SDL_MCAN10_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN10"
     },
-    {//
+    {//32
         &ECC_Test_SDL_SA2_UL0_SA2_UL_SA2_UL_ECC_AGGR_initConfig,
         "SDL_SA2_UL0"
     },
-    {//
+    {//33
         &ECC_Test_SDL_MMCSD0_EMMC8SS_16FFC_ECC_AGGR_RXMEM_initConfig,
         "SDL_MMCSD0_0"
     },
-    {//
+    {//34
         &ECC_Test_SDL_MMCSD0_EMMC8SS_16FFC_ECC_AGGR_TXMEM_initConfig,
         "SDL_MMCSD0_1"
     },
-    {//
+    {//35
         &ECC_Test_SDL_ECC_AGGR10_initConfig,
         "SDL_ECC_AGGR10"
     },
-    {//38
+    {//36
         &ECC_Test_SDL_CSI_TX_IF_V2_1_CSI_TX_IF_V2_ECC_AGGR_initConfig,
         "SDL_CSI_TX_IF_V2_1_0"
     },
-    {//
+    {//37
         &ECC_Test_SDL_CSI_TX_IF_V2_1_CSI_TX_IF_V2_ECC_AGGR_BYTE_initConfig,
         "SDL_CSI_TX_IF_V2_1_1"
     },
-    {//40
+    {//38
         &ECC_Test_SDL_CSI_TX_IF_V2_0_CSI_TX_IF_V2_ECC_AGGR_initConfig,
         "SDL_CSI_TX_IF_V2_0_0"
     },
-    {//
+    {//39
         &ECC_Test_SDL_CSI_TX_IF_V2_0_CSI_TX_IF_V2_ECC_AGGR_BYTE_initConfig,
         "SDL_CSI_TX_IF_V2_0_1"
     },
-    {//
+    {//40
         &ECC_Test_SDL_MCU_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCU_MCAN0"
     },
-    {//
+    {//41
         &ECC_Test_SDL_MCU_ADC12FCC1_ADC12FC_16FFC_ADC12_CORE_FIFO_RAM_ECC_AGGR_initConfig,
         "SDL_MCU_ADC12FCC1"
     },
-    {//
+    {//42
         &ECC_Test_SDL_MCU_ADC12FCC0_ADC12FC_16FFC_ADC12_CORE_FIFO_RAM_ECC_AGGR_initConfig,
         "SDL_MCU_ADC12FCC0"
     },
-    {//
+    {//43
         &ECC_Test_SDL_CSI_RX_IF1_CSI_RX_IF_ECC_AGGR_initConfig,
         "SDL_CSI_RX_IF1"
     },
-    {//
+    {//44
         &ECC_Test_SDL_NAVSS0_NAVSS512J7AM_VIRTSS_ECCAGGR_initConfig,
         "SDL_NAVSS0_0"
     },
-    {//
+    {//45
         &ECC_Test_SDL_NAVSS0_NAVSS512J7AM_MODSS_ECCAGGR0_initConfig,
         "SDL_NAVSS0_1"
     },
-    {//48
+    {//46
         &ECC_Test_SDL_NAVSS0_NAVSS512J7AM_NBSS_ECCAGGR0_initConfig,
         "SDL_NAVSS0_2"
     },
-    {//
+    {//47
         &ECC_Test_SDL_NAVSS0_NAVSS512J7AM_UDMASS_UDMASS_ECCAGGR0_initConfig,
         "SDL_NAVSS0_3"
     },
-    {//50
+    {//48
         &ECC_Test_SDL_MAIN_IP_ECC_AGGR0_J7AM_MAIN_IP_ECC_AGGR_initConfig,
         "SDL_MAIN_IP_ECC_AGGR0"
     },
-    {//
+    {//49
         &ECC_Test_SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCU_MCAN1"
     },
-    {//
+    {//50
         &ECC_Test_SDL_CPSW1_CPSW_2GUSS_CORE_ECC_CPSW_ECC_AGGR_initConfig,
         "SDL_CPSW1"
     },
-    {//
+    {//51
         &ECC_Test_SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_RXMEM_initConfig,
         "SDL_MMCSD1_0"
     },
-    {//
+    {//52
         &ECC_Test_SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_TXMEM_initConfig,
         "SDL_MMCSD1_1"
     },
-    {//
+    {//53
         &ECC_Test_SDL_MCUM_MCU_ECC_AGGR0_J7AM_MCU_ECC_AGGR_initConfig,
         "SDL_MCUM_MCU_ECC_AGGR0"
     },
-    {//
+    {//54
         &ECC_Test_SDL_MCU_FSS0_FSS_HB_WRAP_ECC_AGGR_initConfig,
         "SDL_MCU_FSS0_0"
     },
-    {//
+    {//55
         &ECC_Test_SDL_MCU_FSS0_FSS_OSPI0_OSPI_WRAP_ECC_AGGR_initConfig,
         "SDL_MCU_FSS0_1"
     },
-    {//58
+    {//56
         &ECC_Test_SDL_MCU_FSS0_FSS_OSPI1_OSPI_WRAP_ECC_AGGR_initConfig,
         "SDL_MCU_FSS0_2"
     },
-    {//
+    {//57
         &ECC_Test_SDL_WKUP_SMS0_SMS_TIFS_ECC_initConfig,
         "SDL_WKUP_SMS0_TIFS_ECC_AGGR_0"
     },
-    {//60
+    {//58
         &ECC_Test_SDL_MCU_CPSW0_CPSW_2GUSS_CORE_ECC_CPSW_ECC_AGGR_initConfig,
         "SDL_MCU_CPSW0"
     },
-    {//
+    {//59
         &ECC_Test_SDL_MCU_I3C0_I3C_P_ECC_AGGR_initConfig,
         "SDL_MCU_I3C0_0"
     },
-    {//
+    {//60
         &ECC_Test_SDL_MCU_I3C0_I3C_S_ECC_AGGR_initConfig,
         "SDL_MCU_I3C0_1"
     },
-    {//
+    {//61
         &ECC_Test_SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_initConfig,
         "SDL_R5FSS0_0"
     },
-    {//
+    {//62
         &ECC_Test_SDL_R5FSS0_PULSAR_SL_CPU1_ECC_AGGR_initConfig,
         "SDL_R5FSS0_1"
     },
-    {//
+    {//63
         &ECC_Test_SDL_R5FSS1_PULSAR_SL_CPU0_ECC_AGGR_initConfig,
         "SDL_R5FSS1_0"
     },
-    {//
+    {//64
         &ECC_Test_SDL_R5FSS1_PULSAR_SL_CPU1_ECC_AGGR_initConfig,
         "SDL_R5FSS1_1"
     },
-    {//
+    {//65
         &ECC_Test_SDL_DMPAC0_DMPAC_TOP_DOF_INFRA_DMPAC_BASE_KSDW_ECC_AGGR_initConfig,
         "SDL_DMPAC0"
     },
-    {//68
+    {//66
         &ECC_Test_SDL_ECC_AGGR9_J7AM_AC_PIPE_ECC_AGGR_initConfig,
         "SDL_ECC_AGGR9"
     },
-    {//
+    {//67
         &ECC_Test_SDL_ECC_AGGR6_J7AM_MAIN_AC_ECC_AGGR_initConfig,
         "SDL_ECC_AGGR6"
     },
-    {//70
+    {//68
         &ECC_Test_SDL_MCAN9_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN9"
     },
-    {//
+    {//69
         &ECC_Test_SDL_MCAN8_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN8"
     },
-    {//
+    {//70
         &ECC_Test_SDL_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN1"
     },
-    {//
+    {//71
         &ECC_Test_SDL_MCAN3_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN3"
     },
-    {//
+    {//72
         &ECC_Test_SDL_MCAN2_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN2"
     },
-    {//
+    {//73
         &ECC_Test_SDL_MCAN7_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN7"
     },
-    {//
+    {//74
         &ECC_Test_SDL_MCAN6_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN6"
     },
-    {//
+    {//75
         &ECC_Test_SDL_DSS_DSI1_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS_initConfig,
         "SDL_DSS_DSI1"
     },
-    {//78
+    {//76
         &ECC_Test_SDL_IVC_DOM1_ECC_AGGR19_IJ7VC_DOM1_ECC_AGGR_initConfig,
         "SDL_IVC_DOM1_ECC_AGGR19"
     },
-    {//
+    {//77
         &ECC_Test_SDL_WKUP_SMS0_SMS_HSM_ECC_initConfig,
         "SDL_WKUP_SMS0_HSM_ECC_AGGR_0"
     },
-    {//80
+    {//78
         &ECC_Test_SDL_PDMA5_PDMA_J7VC_MAIN_MCAN_ECCAGGR_initConfig,
         "SDL_PDMA5"
     },
@@ -4405,7 +4354,7 @@ static SDL_Test_EccConfig ECC_Test_config[SDL_ECC_MEMTYPE_MAX] =
         &ECC_Test_SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN0"
     },
-    {//88
+    {//86
         &ECC_Test_SDL_ECC_AGGR11_initConfig,
         "SDL_ECC_AGGR11"
     },
@@ -4413,78 +4362,78 @@ static SDL_Test_EccConfig ECC_Test_config[SDL_ECC_MEMTYPE_MAX] =
         &ECC_Test_SDL_MCAN4_MCANSS_MSGMEM_WRAP_ECC_AGGR_initConfig,
         "SDL_MCAN4"
     },
-    {//90
+    {//88
         &ECC_Test_SDL_WKUP_ECC_AGGR0_J7AM_WAKEUP_ECC_AGGR_initConfig,
         "SDL_WKUP_ECC_AGGR0"
     },
-    {//91
+    {//89
         &ECC_Test_SDL_MCU_SA3_SS0_SA3SS_AM62_SA_UL_ECC_AGGR_initConfig,
         "SDL_MCU_SA3_SS0_1"
     },
-    {//92
+    {//90
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_MSMC_EN_DRU_MSMC_EN_4MB_WRAP_MSMC_4MB_MSMC_WRAP_ECC_AGGR0_initConfig,
         "SDL_COMPUTE_CLUSTER0_0"
     },
 	
-    {//93
+    {//91
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_MSMC_EN_DRU_MSMC_EN_4MB_WRAP_MSMC_4MB_MSMC_WRAP_ECC_AGGR1_initConfig,
         "SDL_COMPUTE_CLUSTER0_1"
     },
 	
-    {//94
+    {//92
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_MSMC_EN_DRU_MSMC_EN_4MB_WRAP_MSMC_4MB_MSMC_WRAP_ECC_AGGR3_initConfig,
         "SDL_COMPUTE_CLUSTER0_3"
     },
-    {//95
+    {//93
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_P0_A72_DUAL_1MB_A72_DUAL_MID_ECC_AGGR_COREPAC_initConfig,
         "SDL_COMPUTE_CLUSTER0_4"
     },
-    {//96
+    {//94
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_P0_A72_DUAL_1MB_A72_DUAL_MID_ECC_AGGR_CPU1_initConfig, //25
         "SDL_COMPUTE_CLUSTER0_6"
     },
-    {//97
+    {//95
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_P4_C711_512KB_AC71_L2_AC71_ECC_AGGR_initConfig, //19
         "SDL_COMPUTE_CLUSTER0_7"
     },  	
-    {//98
+    {//96
         &ECC_Test_SDL_DDR0_J7AM_DDR_EW_WRAP_DV_WRAP_DDRSS_BRCTL_SC_ECC_AGGR_VBUS_initConfig, //1
         "SDL_DDR0_0"
     },
-    {//99
+    {//97
         &ECC_Test_SDL_DDR1_J7AM_DDR_EW_WRAP_DV_WRAP_DDRSS_BRCTL_SC_ECC_AGGR_VBUS_initConfig, //1
         "SDL_DDR1_0"
     },
-    {//100
+    {//98
         &ECC_Test_SDL_DDR0_J7AM_DDR_EW_WRAP_DV_WRAP_DDRSS_BRCTL_SC_ECC_AGGR_CTL_initConfig, //6 
         "SDL_DDR0_1"
     },
-    {//101
+    {//99
         &ECC_Test_SDL_DDR1_J7AM_DDR_EW_WRAP_DV_WRAP_DDRSS_BRCTL_SC_ECC_AGGR_CTL_initConfig, //6 
         "SDL_DDR1_1"
     },
-    {//102
+    {//100
         &ECC_Test_SDL_DDR0_J7AM_DDR_EW_WRAP_DV_WRAP_DDRSS_BRCTL_SC_ECC_AGGR_CFG_initConfig, // 6
         "SDL_DDR0_2"
     },
-    {//103
+    {//101
         &ECC_Test_SDL_DDR1_J7AM_DDR_EW_WRAP_DV_WRAP_DDRSS_BRCTL_SC_ECC_AGGR_CFG_initConfig, // 6
         "SDL_DDR1_2"
     },
 
-    {//104
+    {//102
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_P5_C711_512KB_AC71_L2_AC71_ECC_AGGR_initConfig,
         "SDL_COMPUTE_CLUSTER0_8"
     },
-    {//105
+    {//103
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_P0_A72_DUAL_1MB_A72_DUAL_MID_ECC_AGGR_CPU0_initConfig,
         "SDL_COMPUTE_CLUSTER0_5"
     },
-    {//106
+    {//104
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_MSMC_EN_DRU_MSMC_EN_4MB_WRAP_MSMC_4MB_MSMC_WRAP_GIC500SS_ECC_AGGR_initConfig,
         "SDL_COMPUTE_CLUSTER0_9"
     },
-    {//107
+    {//105
         &ECC_Test_SDL_COMPUTE_CLUSTER0_COMPUTE_CLUSTER_J7AE_MSMC_EN_DRU_MSMC_EN_4MB_WRAP_MSMC_4MB_MSMC_WRAP_ECC_AGGR2_initConfig,
         "SDL_COMPUTE_CLUSTER0_2"
     },      

@@ -758,8 +758,7 @@ int32_t ecc_aggr_test(void)
                                 (mainMem == SDL_DSS_EDP0_K3_DSS_EDP_MHDPTX_WRAPPER_ECC_AGGR_CORE) || (mainMem == SDL_DSS_DSI0_K3_DSS_DSI_TOP_ECC_AGGR_SYS) ||
                                 (mainMem == SDL_I3C0_I3C_P_ECC_AGGR) || (mainMem == SDL_MCU_I3C0_I3C_P_ECC_AGGR) || (mainMem == SDL_MCU_I3C1_I3C_P_ECC_AGGR))
 #elif (SOC_J7200)
-                            if( (mainMem == SDL_ECC_MCU_I3C0_0_ECC_AGGR) || (mainMem == SDL_ECC_MCU_I3C0_1_ECC_AGGR) ||
-                                (mainMem == SDL_ECC_MCU_I3C1_0_ECC_AGGR) || (mainMem == SDL_ECC_MCU_I3C1_1_ECC_AGGR) )
+                            if( (mainMem == SDL_ECC_MCU_I3C0_0_ECC_AGGR) || (mainMem == SDL_ECC_MCU_I3C0_1_ECC_AGGR)
 #elif (SOC_J721S2)
                             if(0)
 #elif (SOC_J784S4)
@@ -1006,8 +1005,7 @@ int32_t ecc_aggr_test(void)
                             (mainMem == SDL_DSS_EDP0_K3_DSS_EDP_MHDPTX_WRAPPER_ECC_AGGR_CORE) || (mainMem == SDL_DSS_DSI0_K3_DSS_DSI_TOP_ECC_AGGR_SYS) ||
                             (mainMem == SDL_I3C0_I3C_P_ECC_AGGR) || (mainMem == SDL_MCU_I3C0_I3C_P_ECC_AGGR) || (mainMem == SDL_MCU_I3C1_I3C_P_ECC_AGGR))
 #elif (SOC_J7200)
-                        if( (mainMem == SDL_ECC_MCU_I3C0_0_ECC_AGGR) || (mainMem == SDL_ECC_MCU_I3C0_1_ECC_AGGR) ||
-                            (mainMem == SDL_ECC_MCU_I3C1_0_ECC_AGGR) || (mainMem == SDL_ECC_MCU_I3C1_1_ECC_AGGR) )
+                        if( (mainMem == SDL_ECC_MCU_I3C0_0_ECC_AGGR) || (mainMem == SDL_ECC_MCU_I3C0_1_ECC_AGGR)
 #elif (SOC_J721S2)
                         if(0)
 #elif (SOC_J784S4)
