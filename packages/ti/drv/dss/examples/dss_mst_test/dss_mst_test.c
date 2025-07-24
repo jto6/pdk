@@ -823,7 +823,7 @@ static int32_t DssMst_pipeCbFxn(Fvid2_Handle handle, void *appData)
 
 void DssMst_print(const char *format, ...)
 {
-    char printBuffer[4000];
+    char printBuffer[DSS_MST_MAX_PRINT_BUFFER];
     va_list arguments;
 
     /* Start the var args processing. */

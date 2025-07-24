@@ -40,15 +40,9 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-#include <stdint.h>
-#include <stdio.h>
-#include "ti/osal/osal.h"
-#include "ti/osal/TaskP.h"
-#include "ti/osal/LoadP.h"
-
+#include <ti/osal/osal.h>
+#include <ti/osal/TaskP.h>
 #include <ti/board/board.h>
-#include <ti/drv/dss/examples/utils/app_utils.h>
-#include <ti/csl/soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -108,6 +102,13 @@ int main(void)
 
 static void taskFxn(void* a0, void* a1)
 {
+    Board_initCfg boardCfg;
+    
+    boardCfg = BOARD_INIT_PINMUX_CONFIG |
+                BOARD_INIT_UNLOCK_MMR |
+                BOARD_INIT_UART_STDIO;
+    Board_init(boardCfg);
+
     DssMst_test();
     return;
 }

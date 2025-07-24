@@ -57,7 +57,7 @@ extern "C" {
 
 #define DSS_MST_RUN_COUNT               ((uint32_t)2000U)
 #define DSS_MST_MAX_FRAMES_PER_HANDLE   (2U)
-#define DSS_MST_LOG                     printf
+#define DSS_MST_LOG                     UART_printf
 
 /* To be updated as per usecase */
 #define DSS_MST_NUM_STREAMS             (4U)
