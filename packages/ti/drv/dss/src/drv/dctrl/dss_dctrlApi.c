@@ -180,6 +180,7 @@ static int32_t Dss_dctrlSetDsiParamsIoctl(Dss_DctrlDrvInstObj *instObj,
                                           const Dss_DctrlDsiParams *dsiPrms);
 static uint32_t Dss_dctrlDrvIsOutputDSI(uint32_t vpId);
 static int32_t Dss_dctrlIsDPConnectedIoctl(uint32_t *isDpConnected);
+static uint32_t Dss_dctrlDrvIsOutputDPMst(uint32_t vpId);
 #endif
 
 
@@ -1277,6 +1278,31 @@ static uint32_t Dss_dctrlDrvIsOutputDP(uint32_t vpId)
     return vpFound;
 }
 
+static uint32_t Dss_dctrlDrvIsOutputDPMst(uint32_t vpId)
+{
+    int32_t retVal;
+    uint32_t i;
+    uint32_t nodeId, vpFound = UFALSE;
+    Fvid2_GraphEdgeInfo *currEdge;
+
+    retVal = Dss_convModuletoNode(&nodeId, vpId, DSS_DCTRL_NODE_TYPE_VP);
+    GT_assert(DssTrace,
+            ((DSS_DCTRL_NODE_INVALID != nodeId) ||
+             (FVID2_SOK == retVal)));
+
+    for(i = 0U; i < gDss_DctrlDrvGraphObj.dctrlEdgeList.numEdges; i++)
+    {
+        currEdge = &gDss_DctrlDrvGraphObj.dctrlEdgeList.list[i];
+        if((DSS_DCTRL_NODE_EDP_MST == currEdge->endNode) &&
+                (nodeId == currEdge->startNode))
+        {
+            vpFound = UTRUE;
+            break;
+        }
+    }
+    return vpFound;
+}
+
 static uint32_t Dss_dctrlEnableDpMstIoctl(Dss_DctrlDrvInstObj *instObj,
                                         const Dss_DctrlDpMstParams *mstParams)
 {
@@ -1948,7 +1974,7 @@ static int32_t Dss_dctrlDrvStopVpIoctl(Dss_DctrlDrvInstObj *instObj,
     }
 
 #if defined (SOC_J721E) || defined (SOC_J721S2) || defined (SOC_J784S4) || defined (SOC_J742S2)
-    if((FVID2_SOK == retVal) && (UTRUE == Dss_dctrlDrvIsOutputDP(vpId)))
+    if((FVID2_SOK == retVal) && ((UTRUE == Dss_dctrlDrvIsOutputDP(vpId)) || (UTRUE == Dss_dctrlDrvIsOutputDPMst(vpId))))
     {
         retVal = Dss_dctrlDrvDisableVideoDP();
     }

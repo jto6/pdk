@@ -36,6 +36,7 @@ ifeq ($(dss_component_make_include), )
 
 drvdss_SOCLIST         = am65xx j721e j721s2 j784s4 j742s2
 drvdss_BOARDLIST       = am65xx_evm j721e_evm j721s2_evm j784s4_evm j742s2_evm
+drvdssmst_BOARDLIST    = j784s4_evm j742s2_evm
 drvdss_am65xx_CORELIST = mpu1_0
 drvdss_j721e_CORELIST  = mcu2_0
 drvdss_j721s2_CORELIST  = mcu2_0
@@ -229,7 +230,7 @@ export dss_mst_testapp_$(1)_CORE_DEPENDENCY = yes
 export dss_mst_testapp_$(1)_MAKEFILE = -f makefile BUILD_OS_TYPE=$(1)
 dss_mst_testapp_$(1)_PKG_LIST = dss_mst_testapp_$(1)
 dss_mst_testapp_$(1)_INCLUDE = $(dss_mst_testapp_$(1)_PATH)
-export dss_mst_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvdss_BOARDLIST) )
+export dss_mst_testapp_$(1)_BOARDLIST = $(filter $(DEFAULT_BOARDLIST_$(1)), $(drvdssmst_BOARDLIST) )
 export dss_mst_testapp_$(1)_$(SOC)_CORELIST = $(filter $(DEFAULT_$(SOC)_CORELIST_$(1)), $(drvdss_$(SOC)_CORELIST))
 export dss_mst_testapp_$(1)_SBL_APPIMAGEGEN = yes
 ifneq ($(1),$(filter $(1), safertos))

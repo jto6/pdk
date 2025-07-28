@@ -314,15 +314,15 @@ int32_t DssTest_powerOffModules()
     
     if (DSS_TEST_EDP == gIntfSelected)
     {
-        // retVal += Sciclient_pmSetModuleState(TISCI_DEV_DSS_EDP0,
-        //     TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-        //     TISCI_MSG_FLAG_AOP,
-        //     SCICLIENT_SERVICE_WAIT_FOREVER);
+        retVal += Sciclient_pmSetModuleState(TISCI_DEV_DSS_EDP0,
+            TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+            TISCI_MSG_FLAG_AOP,
+            SCICLIENT_SERVICE_WAIT_FOREVER);
 
-        // retVal = Sciclient_pmSetModuleState(TISCI_DEV_SERDES_10G0,
-        //     TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-        //     TISCI_MSG_FLAG_AOP,
-        //     SCICLIENT_SERVICE_WAIT_FOREVER);
+        retVal = Sciclient_pmSetModuleState(TISCI_DEV_SERDES_10G0,
+            TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+            TISCI_MSG_FLAG_AOP,
+            SCICLIENT_SERVICE_WAIT_FOREVER);
     }
     else if (DSS_TEST_DSI == gIntfSelected)
     {

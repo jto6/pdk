@@ -303,6 +303,7 @@ static int32_t DssMst_runTest()
         mstParams.vpIds[streamId] = gDssMstDctrlInfo[streamId].vpId;
     }
     
+    /* DP is enabled only after VPs have been configured */
     retVal = Fvid2_control(
         appObj->dctrlHandle,
         IOCTL_DSS_DCTRL_ENABLE_DP_MST,
@@ -591,16 +592,8 @@ static void DssMst_delete(DssMst_testConfig *appObj, uint32_t streamId)
         DssMst_print("Sync Lost did not occur\r\n");
     }
 
-    retVal = Fvid2_control(
-        appObj->dctrlHandle,
-        IOCTL_DSS_DCTRL_CLEAR_PATH,
-        pathInfo,
-        NULL);
-    if(FVID2_SOK != retVal)
-    {
-        DssMst_print("Clear Path Failed!!!\r\n");
-    }
-
+    /* Clear path only after stopping VP, as we validate the output interface is DP MST
+       before calling the disableVideoDP API */
     retVal = Fvid2_control(
         appObj->dctrlHandle,
         IOCTL_DSS_DCTRL_STOP_VP,
@@ -609,6 +602,16 @@ static void DssMst_delete(DssMst_testConfig *appObj, uint32_t streamId)
     if(FVID2_SOK != retVal)
     {
         DssMst_print("VP Stop Failed!!!\r\n");
+    }
+
+    retVal = Fvid2_control(
+        appObj->dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        pathInfo,
+        NULL);
+    if(FVID2_SOK != retVal)
+    {
+        DssMst_print("Clear Path Failed!!!\r\n");
     }
 
     if(FVID2_SOK == retVal)

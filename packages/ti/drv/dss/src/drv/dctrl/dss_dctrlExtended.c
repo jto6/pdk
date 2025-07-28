@@ -584,7 +584,28 @@ static void Dss_dctrlDrvDpIntr(uintptr_t arg)
 static int32_t Dss_dctrlDrvDpStopVideo(Dss_DctrlDisplayPortDrvObj *pObj)
 {
     /* XXX framer off */
-    return FVID2_SOK;
+    uint32_t dpApiRet = CDN_EOK;
+    int32_t retVal = FVID2_SOK;
+    if (pObj->isMstEnabled == UTRUE)
+    {
+        dpApiRet = DP_MstDisable(pObj->dpPrivData);
+        if (CDN_EOK != dpApiRet)
+        {
+            GT_0trace(DssTrace, GT_ERR, "error : DP_MstDisable\r\n");
+            retVal = FVID2_EFAIL;
+        }
+    }
+    else /* Single Stream Mode */
+    {
+        dpApiRet = DP_SetVideoSst(pObj->dpPrivData, BFALSE);
+        if(CDN_EOK != dpApiRet)
+        {
+            GT_0trace(DssTrace, GT_ERR, "error : DP_SetVideoSst\r\n");
+            retVal = FVID2_EFAIL;
+        }
+    }
+
+    return retVal;
 }
 
 static int32_t Dss_dctrlDrvDpStartVideo(Dss_DctrlDisplayPortDrvObj *pObj)
@@ -592,7 +613,6 @@ static int32_t Dss_dctrlDrvDpStartVideo(Dss_DctrlDisplayPortDrvObj *pObj)
     int32_t retVal = FVID2_SOK;
     uint32_t dpApiRet = CDN_EOK;
     DP_AudioVideoClkCfg clkCfg;
-    /* TODO : Update this for num of video streams as input from user */
     uint32_t numStreams = pObj->numStreams;
     uint32_t isMstEnabled = pObj->isMstEnabled;
     uint32_t streamId;
