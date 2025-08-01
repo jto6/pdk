@@ -51,6 +51,10 @@
 #include <ti/drv/uart/UART_stdio.h>
 #include "OSAL_log.h"
 
+#if defined(BUILD_C7X)
+#include <ti/csl/arch/c7x/Exception.h>
+#endif
+
 /*===========================================================================*/
 /*                             Macros & Typedefs                             */
 /*===========================================================================*/
@@ -139,6 +143,8 @@ extern const CSL_ArmR5MpuRegionCfg __attribute__((section(".startupData"))) gCsl
 #endif
 static uint8_t  gAppTskStackMain[APP_TSK_STACK_MAIN] __attribute__(( aligned( APP_TSK_STACK_MAIN ))) = { 0 };
 
+uint32_t gExceptionHookCount = 0U;
+
 /* ==========================================================================*/
 /*                         Structure Declarations                            */
 /* ==========================================================================*/
@@ -172,12 +178,30 @@ static Board_STATUS OsalApp_boardInit(void)
     return Board_init(BOARD_INIT_PINMUX_CONFIG | BOARD_INIT_UART_STDIO);
 }
 
+void OsalApp_defaultExceptionHook(void)
+{
+    gExceptionHookCount++;
+}
+
+void OsalApp_returnHook(void)
+{
+    gExceptionHookCount++;
+    DebugP_exceptionLog(" \n Exception Hook count is %x  \n", gExceptionHookCount, 0U);
+    while (1U) {
+    }
+}
+
 static void OsalApp_generateException(void)
 {
     volatile uint64_t *myBadAddr;
 #if defined (BUILD_MCU)
     myBadAddr = (uint64_t *)(0xFFFFFF003);
 #elif defined (BUILD_C7X)
+    Exception_Hooks exceptionHooks;
+    exceptionHooks.exceptionHook = &OsalApp_defaultExceptionHook;
+    exceptionHooks.internalHook = &OsalApp_defaultExceptionHook;
+    exceptionHooks.returnHook = &OsalApp_returnHook;
+    Exception_registerHooks(&exceptionHooks);
     myBadAddr = (uint64_t*)(0xC000B000);
 #endif
     *myBadAddr = (0xDEADFADE);
