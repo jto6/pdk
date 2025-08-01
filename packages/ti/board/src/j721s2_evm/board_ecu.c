@@ -73,14 +73,8 @@ static uint32_t gBoardEcuClkModuleMcuIDInit_powerConfig2[] ={
 static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig0[] = {
     // Fixed config - None
     // GUI configured
-    TISCI_DEV_A72SS0,
-    TISCI_DEV_R5FSS0_CORE0,
-    TISCI_DEV_R5FSS1_CORE0,
-    TISCI_DEV_COMPUTE_CLUSTER0_C71SS0_0,
-    TISCI_DEV_COMPUTE_CLUSTER0_C71SS1_0,
     TISCI_DEV_VPAC0,
     TISCI_DEV_DMPAC0,
-    TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_GPU_SS_0,
     TISCI_DEV_CODEC0,
     TISCI_DEV_EMIF_DATA_0_VD,
     TISCI_DEV_DDR0,
@@ -91,14 +85,8 @@ static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig0[] = {
 static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig1[] = {
     // Fixed config - None
     // GUI configured
-    TISCI_DEV_A72SS0,
-    TISCI_DEV_R5FSS0_CORE0,
-    TISCI_DEV_R5FSS1_CORE0,
-    TISCI_DEV_COMPUTE_CLUSTER0_C71SS0_0,
-    TISCI_DEV_COMPUTE_CLUSTER0_C71SS1_0,
     TISCI_DEV_VPAC0,
     TISCI_DEV_DMPAC0,
-    TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_GPU_SS_0,
     TISCI_DEV_CODEC0,
     TISCI_DEV_EMIF_DATA_0_VD,
     TISCI_DEV_DDR0,
@@ -109,14 +97,8 @@ static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig1[] = {
 static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig2[] = {
     // Fixed config - None
     // GUI configured
-    TISCI_DEV_A72SS0,
-    TISCI_DEV_R5FSS0_CORE0,
-    TISCI_DEV_R5FSS1_CORE0,
-    TISCI_DEV_COMPUTE_CLUSTER0_C71SS0_0,
-    TISCI_DEV_COMPUTE_CLUSTER0_C71SS1_0,
     TISCI_DEV_VPAC0,
     TISCI_DEV_DMPAC0,
-    TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_GPU_SS_0,
     TISCI_DEV_CODEC0,
     TISCI_DEV_EMIF_DATA_0_VD,
     TISCI_DEV_DDR0,
