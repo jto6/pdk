@@ -637,8 +637,6 @@ void vApplicationIdleHook( void )
     vApplicationLoadHook();
 #endif
 
-   asm(" IDLE ");
-
 }
 
 /*****************************************************************************/
