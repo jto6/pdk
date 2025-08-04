@@ -778,6 +778,15 @@ ifneq ($(safety_checkers_EXAMPLE_LIST),)
   pdk_EXAMPLE_LIST += $(safety_checkers_EXAMPLE_LIST)
 endif
 
+# - used to ignore include if component not present
+-include $(PDM_UTILS_COMP_PATH)/pdm_utils_component.mk
+ifneq ($(pdm_utils_LIB_LIST),)
+  pdk_LIB_LIST += $(pdm_utils_LIB_LIST)
+endif
+ifneq ($(pdm_utils_EXAMPLE_LIST),)
+  pdk_EXAMPLE_LIST += $(pdm_utils_EXAMPLE_LIST)
+endif
+
 # Adding new component to the packages/ti/build which is not part of the PDK.
 # An example would be some demo which is not built from packages/ti/build but
 # would still like to use the ti/build/ infrastructure
