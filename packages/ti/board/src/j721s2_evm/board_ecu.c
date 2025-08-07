@@ -75,6 +75,7 @@ static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig0[] = {
     // GUI configured
     TISCI_DEV_VPAC0,
     TISCI_DEV_DMPAC0,
+    TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_GPU_SS_0,
     TISCI_DEV_CODEC0,
     TISCI_DEV_EMIF_DATA_0_VD,
     TISCI_DEV_DDR0,
@@ -87,6 +88,7 @@ static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig1[] = {
     // GUI configured
     TISCI_DEV_VPAC0,
     TISCI_DEV_DMPAC0,
+    TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_GPU_SS_0,
     TISCI_DEV_CODEC0,
     TISCI_DEV_EMIF_DATA_0_VD,
     TISCI_DEV_DDR0,
@@ -99,6 +101,7 @@ static uint32_t gBoardEcuClkModuleMainIDInit_powerConfig2[] = {
     // GUI configured
     TISCI_DEV_VPAC0,
     TISCI_DEV_DMPAC0,
+    TISCI_DEV_J7AEP_GPU_BXS464_WRAP0_GPU_SS_0,
     TISCI_DEV_CODEC0,
     TISCI_DEV_EMIF_DATA_0_VD,
     TISCI_DEV_DDR0,
