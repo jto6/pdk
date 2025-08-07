@@ -373,6 +373,7 @@ int main()
 #endif
 
 /* Patch for errata ID: i2437 */
+#if !defined(SBL_USE_MCU_DOMAIN_ONLY)
 #if defined(SOC_J721S2) || defined(SOC_J784S4)
 SBL_log(SBL_LOG_MAX,"Initializing RAT for COMPUTE_CLUSTER_CFG_WRAP_0_CC_CNTRL Register ...");
 /* Register defined at 0x4D21000200 */
@@ -398,6 +399,7 @@ SBL_log(SBL_LOG_MAX,"Clearing RAT for COMPUTE_CLUSTER_CFG_WRAP_0_CC_CNTRL Regist
 *(unsigned int *)(RAT_BASE_REGION0 + 0x28) = 0x00000000;
 *(unsigned int *)(RAT_BASE_REGION0 + 0x2C) = 0x00000000;
 SBL_log(SBL_LOG_MAX,"done.\n");
+#endif
 #endif
 
 #if defined (SBL_ENABLE_BIST)
