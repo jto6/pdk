@@ -608,6 +608,10 @@ uint32_t Udma_getCoreId(void)
         {
             coreId = UDMA_CORE_ID_MCU1_1;
         }
+        else
+        {
+            /* Do Nothing */
+        }
     }
     else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1)
     {
@@ -618,6 +622,10 @@ uint32_t Udma_getCoreId(void)
         else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
         {
             coreId = UDMA_CORE_ID_MCU2_1;
+        }
+        else
+        {
+            /* Do Nothing */
         }
     }
     else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_2)
@@ -630,6 +638,14 @@ uint32_t Udma_getCoreId(void)
         {
             coreId = UDMA_CORE_ID_MCU3_1;
         }
+        else
+        {
+            /* Do Nothing */
+        }
+    }
+    else
+    {
+        /* Do Nothing */
     }
 #endif
 #if defined (BUILD_MPU1_0)
@@ -669,6 +685,10 @@ uint16_t Udma_getCoreSciDevId(void)
         {
             coreSciDevId = TISCI_DEV_MCU_R5FSS0_CORE1;
         }
+        else
+        {
+            /* Do Nothing */
+        }
     }
     else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1)
     {
@@ -679,6 +699,10 @@ uint16_t Udma_getCoreSciDevId(void)
         else if (cpuInfo.cpuID == CSL_ARM_R5_CPU_ID_1)
         {
             coreSciDevId = TISCI_DEV_R5FSS0_CORE1;
+        }
+        else
+        {
+            /* Do Nothing */
         }
     }
     else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_2)
@@ -691,6 +715,14 @@ uint16_t Udma_getCoreSciDevId(void)
         {
             coreSciDevId = TISCI_DEV_R5FSS1_CORE1;
         }
+        else
+        {
+            /* Do Nothing */
+        }
+    }
+    else
+    {
+        /* Do Nothing */
     }
 #endif
 #if defined (BUILD_C7X_1)

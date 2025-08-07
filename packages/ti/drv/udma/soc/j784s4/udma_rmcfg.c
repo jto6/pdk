@@ -466,6 +466,10 @@ Udma_RmSharedResPrms *Udma_rmGetSharedResPrms(uint32_t resId)
             gUdmaRmSharedResPrms[2].instShare = gVintInstShare_Mcu;
             gUdmaRmSharedResPrms[3].instShare = gIntrInstShare_Mcu;
         }
+        else
+        {
+            /* Do Nothing */
+        }
     }
     else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_1)
     {
@@ -485,6 +489,10 @@ Udma_RmSharedResPrms *Udma_rmGetSharedResPrms(uint32_t resId)
             gUdmaRmSharedResPrms[2].minReq = UDMA_RM_SHARED_RES_PRMS_MINREQ_VINTR_MCU2_1;
             gUdmaRmSharedResPrms[3].minReq = UDMA_RM_SHARED_RES_PRMS_MINREQ_IR_INTR_MCU2_1;
         }
+        else
+        {
+            /* Do Nothing */
+        }
     }
     else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_2)
     {
@@ -499,6 +507,10 @@ Udma_RmSharedResPrms *Udma_rmGetSharedResPrms(uint32_t resId)
             gUdmaRmSharedResPrms[1].minReq = UDMA_RM_SHARED_RES_PRMS_MINREQ_GLOBAL_EVENT_MCU3_1;
             gUdmaRmSharedResPrms[2].minReq = UDMA_RM_SHARED_RES_PRMS_MINREQ_VINTR_MCU3_1;
             gUdmaRmSharedResPrms[3].minReq = UDMA_RM_SHARED_RES_PRMS_MINREQ_IR_INTR_MCU3_1;
+        }
+        else
+        {
+            /* Do Nothing */
         }
     }
     else if (cpuInfo.grpId == CSL_ARM_R5_CLUSTER_GROUP_ID_3)
@@ -515,6 +527,14 @@ Udma_RmSharedResPrms *Udma_rmGetSharedResPrms(uint32_t resId)
             gUdmaRmSharedResPrms[2].minReq = UDMA_RM_SHARED_RES_PRMS_MINREQ_VINTR_MCU4_1;
             gUdmaRmSharedResPrms[3].minReq = UDMA_RM_SHARED_RES_PRMS_MINREQ_IR_INTR_MCU4_1;
         }
+        else
+        {
+            /* Do Nothing */
+        }
+    }
+    else
+    {
+        /* Do Nothing */
     }
 #endif
 
