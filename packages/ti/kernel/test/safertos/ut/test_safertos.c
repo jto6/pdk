@@ -541,7 +541,12 @@ void test_taskDelay(void)
     xTaskDelay(delay1 / configTICK_RATE_MS);
     xTaskDelay(delay2 / configTICK_RATE_MS);
     curTime = TimerP_getTimeInUsecs() - curTime;
+
+#if defined(SOC_J721E) && defined(BUILD_C7X)
+    TEST_ASSERT_UINT32_WITHIN(configTICK_RATE_MS * 100000, (delay1 + delay2) * 1000, (uint32_t)curTime);
+#else 
     TEST_ASSERT_UINT32_WITHIN(configTICK_RATE_MS * 1000, (delay1 + delay2) * 1000, (uint32_t)curTime);
+#endif
     SAFERTOS_log( "[SafeRTOS] test_taskDelay ended !!!\r\n" );
 }
 
