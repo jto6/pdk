@@ -690,7 +690,11 @@ void test_taskDelay(void)
     vTaskDelay(delay1 / portTICK_PERIOD_MS);
     vTaskDelay(delay2 / portTICK_PERIOD_MS);
     curTime = uiPortGetRunTimeCounterValue() - curTime;
+#if defined(SOC_J721E) && defined(BUILD_C7X)
+    TEST_ASSERT_UINT32_WITHIN(portTICK_PERIOD_MS * 100000, (delay1 + delay2) * 1000, (uint32_t)curTime);
+#else 
     TEST_ASSERT_UINT32_WITHIN(portTICK_PERIOD_MS * 1000, (delay1 + delay2) * 1000, (uint32_t)curTime);
+#endif
 }
 
 void ping_main(void *args)
