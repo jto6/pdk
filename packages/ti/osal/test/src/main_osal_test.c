@@ -1462,8 +1462,10 @@ bool OSAL_cache_test()
 #if defined (BARE_METAL)
   #define SEMP_BLOCK_SIZE (OSAL_TEST_NUM_EXT_SEMAPHORES * OSAL_NONOS_SEMAPHOREP_SIZE_BYTES)
   #define HWIP_BLOCK_SIZE (OSAL_TEST_NUM_EXT_HWIPS * OSAL_NONOS_HWIP_SIZE_BYTES)
-  uint8_t semPMemBlock[SEMP_BLOCK_SIZE];
-  uint8_t hwiPMemBlock[HWIP_BLOCK_SIZE];
+  uint8_t semPMemBlock[SEMP_BLOCK_SIZE]
+  __attribute__ ((aligned(64)));
+  uint8_t hwiPMemBlock[HWIP_BLOCK_SIZE]
+  __attribute__ ((aligned(64)));
 #elif defined (FREERTOS)
   #define SEMP_BLOCK_SIZE (OSAL_TEST_NUM_EXT_SEMAPHORES * OSAL_FREERTOS_SEMAPHOREP_SIZE_BYTES)
   #if defined (BUILD_C7X)
