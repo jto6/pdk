@@ -44,8 +44,8 @@ endif
 ifeq ($(HLOS_BOOT), no)
 MAX_APP_SIZE_EMMC ?= 0x7D000
 else
-# HLOS Image size - 22 MB
-MAX_APP_SIZE_EMMC ?= 0x1600000
+# HLOS Image size - 24 MB
+MAX_APP_SIZE_EMMC ?= 0x1800000
 endif
 
 # If no address is specified from command prompt, SBL copies EEPROM content to 0x90000000 

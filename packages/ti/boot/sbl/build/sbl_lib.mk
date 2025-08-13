@@ -196,8 +196,8 @@ SRCS_j742s2 += j784s4_qos_data.c
 ifeq ($(HLOS_BOOT), no)
 MAX_APP_SIZE_EMMC ?= 0x7D000
 else
-# HLOS Image size - 22 MB
-MAX_APP_SIZE_EMMC ?= 0x1600000
+# HLOS Image size - 24 MB
+MAX_APP_SIZE_EMMC ?= 0x1800000
 endif
 
 SBL_CFLAGS += -DMAX_APP_SIZE_EMMC=$(MAX_APP_SIZE_EMMC)
