@@ -135,7 +135,9 @@ else
 
 # Set the default gcc based on the version of Ubuntu
 OS_VERSION := $(shell cat /etc/os-release | grep VERSION_ID= | sed -e "s|VERSION_ID=\"||" | sed -e "s|\"||")
-ifeq ($(OS_VERSION),22.04)
+ifeq ($(OS_VERSION),24.04)
+PDK_GCC_VERSION?=13
+else ifeq ($(OS_VERSION),22.04)
 PDK_GCC_VERSION?=11
 else
 PDK_GCC_VERSION?=5
