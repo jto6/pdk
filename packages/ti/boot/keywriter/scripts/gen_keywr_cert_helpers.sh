@@ -246,7 +246,7 @@ calc_hash(){
 
 # priv_pem_to_pub_der <INPUT> <OUTPUT>
 priv_pem_to_pub_der(){
-	openssl rsa -in "$1" -outform der -pubout -out "$2"
+	openssl pkey -in "$1" -pubout -outform DER > "$2"
 }
 
 # gen_iv <OUTFILE>

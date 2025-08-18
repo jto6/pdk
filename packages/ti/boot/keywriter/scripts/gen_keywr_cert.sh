@@ -3,10 +3,10 @@
 ##################################################################
 # File: gen_keywr_cert.sh
 # 
-# Description: Script to generate x509 certificate for key wirter, 
+# Description: Script to generate x509 certificate for key writer, 
 #              which has encrypted customer key information.
 # 
-# (c) Texas Instruments 2020, All rights reserved.
+# (c) Texas Instruments 2020-2025, All rights reserved.
 ##################################################################
 
 source gen_keywr_cert_helpers.sh
@@ -15,6 +15,7 @@ source gen_keywr_cert_helpers.sh
 KEYWRITER_VERSION="00000200"
 ENABLE_VAL="5A"
 DISABLE_VAL="A5"
+VALID_KEY_TYPES="rsa ec"
 
 HELPTXT="
 	./gen_keywr_cert.sh - creates a x509 certificate from the keys input to this script.
@@ -31,6 +32,9 @@ HELPTXT="
 	-b-wp
 	-b-rp
 	-b-ovrd
+	-b-type | --bmpk-type
+		The type of bmpk key, ec (for elliptic curve) or rsa (for rsa).
+		If not specified script assumes bmpk key to be of rsa type.
 	--bmek
 		Path to file
 		256 bit (symmetric key, binary file)
@@ -74,6 +78,9 @@ HELPTXT="
 	-s-wp
 	-s-rp
 	-s-ovrd
+	-s-type | --smpk-type
+		The type of smpk key, ec (for elliptic curve) or rsa (for rsa).
+		If not specified script assumes smpk key to be of rsa type.
 	--smek 
 		Path to file
 		256 bit (symmetric key, binary file)
@@ -174,8 +181,10 @@ declare -A secondary_cert_info
 declare -A output_info
 
 smpk_info[flag]="no"
+smpk_info[type]="rsa"
 smek_info[flag]="no"
 bmpk_info[flag]="no"
+bmpk_info[type]="rsa"
 bmek_info[flag]="no"
 # 20 bits
 msv_info[val]="00000000"
@@ -294,6 +303,27 @@ case $key in
 		smpk_info[ovrd]="yes"
 	shift
 	;;
+	-s-type|--smpk-type)
+	if [[ "${smpk_info[flag]}" == "yes" ]]; then
+		key_type_valid=0
+		for tkeytype in $VALID_KEY_TYPES
+		do
+			if [ "$tkeytype" == "$2" ]; then
+				key_type_valid=1
+			fi
+		done
+		if [ $key_type_valid == 0 ]; then
+			echo "Invalid KEY TYPE $2"
+			exit
+		fi
+		smpk_info[type]=$2
+	else
+		echo "ERR: SMPK not provided yet"
+		exit
+	fi
+	shift # pass argument
+	shift # pass value
+	;;
 	--smek)
 	if [[ "${smek_info[flag]}" == "no" ]]; then
 		smek_info[flag]="yes"
@@ -407,6 +437,27 @@ case $key in
 		bmpk_info[ovrd]="yes"
 	shift
 	;;
+	-b-type|--bmpk-type)
+	if [[ "${bmpk_info[flag]}" == "yes" ]]; then
+		key_type_valid=0
+		for tkeytype in $VALID_KEY_TYPES
+		do
+			if [ "$tkeytype" == "$2" ]; then
+				key_type_valid=1
+			fi
+		done
+		if [ $key_type_valid == 0 ]; then
+			echo "Invalid KEY TYPE $2"
+			exit
+		fi
+		bmpk_info[type]=$2
+	else
+		echo "ERR: BMPK not provided yet"
+		exit
+	fi
+	shift # pass argument
+	shift # pass value
+	;;
 	--bmek)
 	if [[ "${bmek_info[flag]}" == "no" ]]; then
 		bmek_info[flag]="yes"
@@ -449,6 +500,11 @@ case $key in
 	openssl genrsa -out keys/bmpk.pem 4096
 	openssl rand 32 > keys/smek.key
 	openssl rand 32 > keys/bmek.key
+	echo "# Generating ec dummy keys in keys/V37 folder"
+	rm -rf keys/v37
+	mkdir keys/v37
+	openssl ecparam -genkey -name secp384r1 | openssl ec -out keys/v37/smpk.pem
+	openssl ecparam -genkey -name secp384r1 | openssl ec -out keys/v37/bmpk.pem
 	exit
 	shift # past argument
 	shift # past value
@@ -586,6 +642,20 @@ encrypt "${tifek_info[file]}" "${aes256key_info[file]}" tmpdir/enc_aes_key.enc
 echo "# encrypt SMPK-priv signed aes256 key(hash) with tifek public part"
 # sign_the_hash <PRIV-KEY.PEM> <OUTPUT> <INPUT>
 sign_the_hash "${smpk_info[file]}" tmpdir/smpk_sign_aes256.sign "${aes256key_info[file]}"
+
+if [ "${smpk_info[type]}" == "ec" ]; then
+	# Get the sizes of the two parts
+	sig_len=$(wc -c < tmpdir/smpk_sign_aes256.sign)
+	pad_len=$((512-sig_len))
+	
+	# Create the padding blob
+	dd if=/dev/zero of=tmpdir/pad.bin bs=$pad_len count=1
+
+	cp tmpdir/smpk_sign_aes256.sign tmpdir/smpk_sign_aes256.sign.tmp
+	cat tmpdir/smpk_sign_aes256.sign.tmp tmpdir/pad.bin > tmpdir/smpk_sign_aes256.sign
+	rm -f tmpdir/smpk_sign_aes256.sign.tmp tmpdir/pad.bin
+fi
+
 # Block Size is 256 Bytes => 2048 bits
 dd if=tmpdir/smpk_sign_aes256.sign of=tmpdir/smpk_sign_aes256_1.sign bs=256 count=1 status=none
 dd if=tmpdir/smpk_sign_aes256.sign of=tmpdir/smpk_sign_aes256_2.sign bs=256 skip=1 count=1 status=none
@@ -617,6 +687,20 @@ if [[ "${secondary_cert_info[flag]}" == "yes" ]]; then
 	echo "# encrypt BMPK-priv signed aes256 key(hash) with tifek public part"
 	# sign_the_hash <PRIV-KEY.PEM> <OUTPUT> <INPUT>
 	sign_the_hash "${bmpk_info[file]}" tmpdir/bmpk_sign_aes256.sign "${aes256key_info[file]}"
+	
+	if [ "${bmpk_info[type]}" == "ec" ]; then
+		# Get the sizes of the two parts
+		sig_len=$(wc -c < tmpdir/bmpk_sign_aes256.sign)
+		pad_len=$((512-sig_len))
+		
+		# Create the padding blob
+		dd if=/dev/zero of=tmpdir/pad.bin bs=$pad_len count=1
+
+		cp tmpdir/bmpk_sign_aes256.sign tmpdir/bmpk_sign_aes256.sign.tmp
+		cat tmpdir/bmpk_sign_aes256.sign.tmp tmpdir/pad.bin > tmpdir/bmpk_sign_aes256.sign
+		rm -f tmpdir/bmpk_sign_aes256.sign.tmp tmpdir/pad.bin
+	fi
+	
 	dd if=tmpdir/bmpk_sign_aes256.sign of=tmpdir/bmpk_sign_aes256_1.sign bs=256 count=1 status=none
 	dd if=tmpdir/bmpk_sign_aes256.sign of=tmpdir/bmpk_sign_aes256_2.sign bs=256 skip=1 count=1 status=none
 	# encrypt <PUBLIC-KEY.PEM> <DATA> <ENCRYPTED-OUTPUT>
