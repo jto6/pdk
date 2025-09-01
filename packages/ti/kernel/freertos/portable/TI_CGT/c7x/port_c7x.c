@@ -233,7 +233,7 @@ void Task_enter(void);
 void ti_sysbios_knl_Task_Func(uint32_t arg1, uint32_t arg2);
 void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
                                     StackType_t **ppxTimerTaskStackBuffer,
-                                    uint32_t *pulTimerTaskStackSize);
+                                    configSTACK_DEPTH_TYPE *pulTimerTaskStackSize);
 
 void vApplicationIdleHook(void);
 int32_t _system_pre_init(void);
@@ -483,7 +483,7 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
  */
 void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
                                     StackType_t **ppxIdleTaskStackBuffer,
-                                    uint32_t *pulIdleTaskStackSize )
+                                    configSTACK_DEPTH_TYPE * puxIdleTaskStackSize )
 {
 /* If the buffers to be provided to the Idle task are declared inside this
  * function then they must be declared static – otherwise they will be allocated on
@@ -504,7 +504,7 @@ static StackType_t uxIdleTaskStack[ (32 * 1024) ];
      * Note that, as the array is necessarily of type StackType_t,
      * configMINIMAL_STACK_SIZE is specified in words, not bytes.
      */
-    *pulIdleTaskStackSize = sizeof(uxIdleTaskStack)/sizeof(uxIdleTaskStack[0]);
+    *puxIdleTaskStackSize = sizeof(uxIdleTaskStack)/sizeof(uxIdleTaskStack[0]);
 }
 
 /* configSUPPORT_STATIC_ALLOCATION and configUSE_TIMERS are both set to 1, so the
@@ -513,7 +513,7 @@ static StackType_t uxIdleTaskStack[ (32 * 1024) ];
  */
 void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer,
                                      StackType_t **ppxTimerTaskStackBuffer,
-                                     uint32_t *pulTimerTaskStackSize )
+                                     configSTACK_DEPTH_TYPE *pulTimerTaskStackSize )
 {
 /* If the buffers to be provided to the Timer task are declared inside this
  * function then they must be declared static – otherwise they will be allocated on

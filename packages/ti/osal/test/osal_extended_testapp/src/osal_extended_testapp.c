@@ -364,7 +364,6 @@ extern void vPortTimerTickHandler(void);
 vPortTimerTickHandler();
 #endif
 
-OS_stop();
 Osal_getThreadType();
 
 #if defined(BUILD_C7X)

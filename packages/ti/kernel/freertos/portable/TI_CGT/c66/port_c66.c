@@ -422,7 +422,7 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
  */
 void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
                                     StackType_t **ppxIdleTaskStackBuffer,
-                                    uint32_t *pulIdleTaskStackSize )
+                                    configSTACK_DEPTH_TYPE * puxIdleTaskStackSize )
 {
 /* If the buffers to be provided to the Idle task are declared inside this
  * function then they must be declared static – otherwise they will be allocated on
@@ -435,7 +435,6 @@ static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
      * state will be stored.
      */
     *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
-
     /* Pass out the array that will be used as the Idle task’s stack. */
     *ppxIdleTaskStackBuffer = uxIdleTaskStack;
 
@@ -443,7 +442,7 @@ static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
      * Note that, as the array is necessarily of type StackType_t,
      * configMINIMAL_STACK_SIZE is specified in words, not bytes.
      */
-    *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+    *puxIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
 
 /* configSUPPORT_STATIC_ALLOCATION and configUSE_TIMERS are both set to 1, so the
