@@ -804,7 +804,7 @@ static int32_t Dss_dctrlDrvInitDPTX(uint32_t isHpdSupported, uint32_t multilinkP
     pObj->dpCbInfo.event     = NULL;
     pObj->dpClkInfo.mhz      = 125;
 #if defined (SOC_J721S2)
-    pObj->srcCaps.maxLinkRate = DP_LINK_RATE_2_70;
+    pObj->srcCaps.maxLinkRate = DP_LINK_RATE_8_10;
     pObj->srcCaps.laneCount   = 2;
 #else
     pObj->srcCaps.maxLinkRate = DP_LINK_RATE_8_10;

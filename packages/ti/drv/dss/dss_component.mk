@@ -36,7 +36,7 @@ ifeq ($(dss_component_make_include), )
 
 drvdss_SOCLIST         = am65xx j721e j721s2 j784s4 j742s2
 drvdss_BOARDLIST       = am65xx_evm j721e_evm j721s2_evm j784s4_evm j742s2_evm
-drvdssmst_BOARDLIST    = j784s4_evm j742s2_evm
+drvdssmst_BOARDLIST    = j784s4_evm j742s2_evm j721s2_evm
 drvdss_am65xx_CORELIST = mpu1_0
 drvdss_j721e_CORELIST  = mcu2_0
 drvdss_j721s2_CORELIST  = mcu2_0

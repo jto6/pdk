@@ -4285,11 +4285,35 @@ uint32_t DP_MstDeallocateVcpi(DP_PrivateData *pD, uint8_t streamId, DP_SinkDevic
     return retVal;
 }
 
+static uint32_t sinkReadMstCap(DP_PrivateData* pD)
+{
+    uint32_t retVal;
+    uint8_t mstmCap[1];
+    DP_DpcdTransfer transfer = {0};
+
+    transfer.size = 1U;
+    transfer.addr = MST_DPCD_MSTM_CAP;
+    transfer.buff = mstmCap;
+
+    retVal = DP_ReadDpcd(pD, &transfer);
+    if (CDN_EOK == retVal) {
+        if ((mstmCap[0] & MST_DPCD_MST_CAP) == 0U) {
+            DbgMsg(DBG_GEN_MSG, DBG_CRIT, "Sink does not support MST\n");
+            retVal = CDN_ENOTSUP;
+        }
+    }
+    return retVal;
+}
+
 uint32_t DP_MstEnable(DP_PrivateData* pD)
 {
     uint32_t retVal;
 
     retVal = DP_MstEnableSF(pD);
+
+    if (retVal == CDN_EOK) {
+        retVal = sinkReadMstCap(pD);
+    }
 
     if (retVal == CDN_EOK) {
         retVal = DP_MST_SetMstEnable(pD, true);
