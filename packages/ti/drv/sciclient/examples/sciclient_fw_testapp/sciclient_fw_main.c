@@ -574,8 +574,9 @@ static int32_t SciclientApp_fw_test(
         {
             value += *(pointer + i);
         }
-        /* Added value check to if condition to remove variable set but not used error */
-        if ((gAbortRecieved == (fail_end_address + 1 - fail_start_address)/4U) && value == 0 )
+        /* Suppress unused variable warnings */
+        (void)value;
+        if (gAbortRecieved == (fail_end_address + 1 - fail_start_address)/4U)
         {
                 r = CSL_PASS;
         }
@@ -595,4 +596,3 @@ static void Sciclient_fw_abort_C_handler()
 {
     gAbortRecieved++;
 }
-
