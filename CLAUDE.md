@@ -1,56 +1,100 @@
-# CLAUDE.md - TI PDK Quick Reference
+# CLAUDE.md
 
-## /init - Quick Codebase Understanding
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-This is the **Texas Instruments Platform Development Kit (PDK)** - a comprehensive hardware abstraction layer for TI embedded processors.
+## Build System
 
-### Essential Commands
+This is a Texas Instruments Platform Development Kit (PDK) using GNU Make build system.
+
+### Primary Build Commands
+
+Navigate to `packages/ti/build/` directory for all build operations:
+
 ```bash
-# Build everything
-make all
-
-# Build specific target
-make all LIMIT_SOCS=j721e LIMIT_BOARDS=j721e_evm LIMIT_CORES=mcu1_0
-
-# Build only libraries
-make all_libs
-
-# Debug build
-make all BUILD_PROFILE=debug
-
-# Clean
-make clean
-
-# Get help
-make help
+cd packages/ti/build
 ```
 
-### Key Directories
-```
-packages/ti/
-├── drv/          # 40+ device drivers (UART, SPI, Ethernet, etc.)
-├── board/        # Board support packages and hardware init
-├── osal/         # OS abstraction layer (FreeRTOS/SafeRTOS/bare-metal)
-├── kernel/       # RTOS integration (FreeRTOS, SafeRTOS)
-├── boot/         # Secondary bootloader (SBL)
-├── build/        # Build infrastructure and toolchain configs
-├── transport/    # Network stacks (NDK, LwIP, TSN)
-└── fs/           # File systems (FATFS)
-```
+- **Build everything**: `gmake -s all` - Clean all and build all PDK drivers and examples
+- **Build incrementally**: `gmake -s examples` - Build PDK drivers and all examples incrementally
+- **Clean everything**: `gmake -s clean` - Clean all drivers and examples
+- **Build specific example**: `gmake -s <examplename>` - Build PDK drivers and specific example only
 
-### Architecture Overview
-- **Target SoCs**: J721E, J7200, AM64x, AWR294x (automotive/industrial)
-- **Processors**: ARM R5F, ARM A72, C66x DSP, C7x DSP, PRU-ICSS
-- **RTOS**: FreeRTOS (primary), SafeRTOS (safety), bare-metal
-- **Languages**: C (99%), Assembly, Makefiles
+### Build Configuration
 
-### Quick Navigation
-- **Entry points**: `packages/makefile` (top-level), `ti/build/Rules.make` (config)
-- **Driver examples**: Look in `ti/drv/*/test/` or `ti/drv/*/example/`
-- **Board configs**: `ti/board/src/*/board_init.c`
-- **Build rules**: `ti/build/makerules/`
+Main configuration is in `packages/ti/build/Rules.make`:
+
+- **BOARD**: Supported boards include j721e_evm, j7200_evm, j721s2_evm, j784s4_evm, j742s2_evm
+- **BUILD_PROFILE**: debug (no optimizations) or release (full optimizations)
+- **SOC**: Automatically determined from BOARD selection
+- **CORE**: Automatically determined based on BOARD (e.g., mcu1_0 for J7 family)
+
+### Advanced Build Options
+
+- **Limit builds**: Use `LIMIT_SOCS`, `LIMIT_BOARDS`, `LIMIT_CORES` to restrict builds
+- **Component inclusion**: Control via `PDK_*_INCLUDE` variables in Rules.make
+- **Package selection**: Use `PACKAGE_SELECT` for VPS component builds
+
+### Build Artifacts
+
+- **Executables**: `$(DEST_ROOT)/<APP_NAME>/bin/$(BOARD)/<APP_NAME>_$(CORE)_$(BUILD_PROFILE).xe$(ISA)`
+- **Libraries**: `$(DEST_ROOT)/<MODULE_RELPATH>/lib/$(BOARD)/$(ISA)/$(BUILD_PROFILE)/*.ae$(ISA)`
+- **Objects**: `$(DEST_ROOT)/<MODULE_RELPATH>/obj/$(BOARD)/$(ISA)/$(BUILD_PROFILE)/*.oe$(ISA)`
+
+## Architecture Overview
+
+### Directory Structure
+
+- **`packages/ti/build/`**: Main build system with makefiles and rules
+- **`packages/ti/drv/`**: Device drivers (40+ drivers: EMAC, UART, SPI, GPIO, etc.)
+- **`packages/ti/board/`**: Board-specific code and diagnostics
+- **`packages/ti/boot/`**: Boot loaders (SBL - Secondary Boot Loader)
+- **`packages/ti/diag/`**: Diagnostic and test utilities
+- **`packages/ti/utils/`**: Utility libraries and profiling tools
+- **`packages/ti/transport/`**: IPC and transport layer components (NDK, LwIP, TSN)
+- **`packages/ti/osal/`**: OS abstraction layer (FreeRTOS/SafeRTOS/bare-metal)
+- **`packages/ti/kernel/`**: RTOS integration (FreeRTOS, SafeRTOS)
+- **`packages/ti/fs/`**: File systems (FATFS)
+
+### Build Infrastructure
+
+The codebase uses two build methodologies:
+1. **Build Infrastructure**: Modern components using `ti/build/component.mk` with standardized targets
+2. **Non-Build Infrastructure**: Legacy components with custom makefiles (mostly K1/K2 targets)
+
+### Target Platforms
+
+Primary focus on J7 family SoCs:
+- J721E, J7200, J721S2, J784S4, J742S2
+- Also supports: AM64x, AWR294x (automotive/industrial)
+- Supports multiple cores: ARM Cortex-A72, ARM Cortex-R5F, C66x DSP, C7x DSP, PRU-ICSS
+- RTOS support: FreeRTOS (primary), SafeRTOS (safety-certified), bare-metal
+
+### Testing
+
+Tests are scattered throughout driver directories in `test/` subdirectories. Many include unit tests and example applications. Test binaries follow naming convention `*UnitTest*` or `*Test*`.
+
+### Key Components
+
+- **EMAC**: Ethernet MAC driver with CPSW support
+- **SBL**: Secondary Boot Loader for device initialization
+- **Board Library**: Hardware abstraction for different EVMs
+- **SCICLIENT**: System Controller Interface for power/clock management
+- **IPC**: Inter-processor communication between cores
+- **UDMA**: Unified DMA driver for data movement
+
+### Key Build Variables
+
+- **LIMIT_SOCS**: Restrict to specific SoC (j721e, am64x, etc.)
+- **LIMIT_BOARDS**: Restrict to specific board (j721e_evm, etc.)
+- **LIMIT_CORES**: Restrict to specific core (mcu1_0, c66xdsp_1, etc.)
+- **BUILD_PROFILE**: release|debug
+- **BUILD_OS_TYPE**: freertos|baremetal|safertos
+- **PACKAGE_SELECT**: For VPS component builds
 
 ### Common Driver Pattern
+
+Most PDK drivers follow a consistent API pattern:
+
 ```c
 // 1. Include driver header
 #include <ti/drv/uart/UART.h>
@@ -69,54 +113,36 @@ UART_close(handle);
 ```
 
 ### Finding Things Fast
+
 ```bash
 # Find driver APIs
-find ti/drv -name "*.h" | head -10
+find packages/ti/drv -name "*.h" | head -10
 
 # Find examples for a driver
-find ti/drv/uart -name "*example*" -o -name "*test*"
+find packages/ti/drv/uart -name "*example*" -o -name "*test*"
 
 # Find build configs
-find . -name "*component.mk" | head -5
+find packages/ti -name "*component.mk" | head -5
 
 # Find board initialization
-find ti/board -name "board_init.c"
+find packages/ti/board -name "board_init.c"
 
 # Search for specific functionality
-grep -r "UART_open" ti/drv/uart/
+grep -r "UART_open" packages/ti/drv/uart/
 ```
 
-### Key Build Variables
-- `LIMIT_SOCS`: Restrict to specific SoC (j721e, am64x, etc.)
-- `LIMIT_BOARDS`: Restrict to specific board (j721e_evm, etc.)
-- `LIMIT_CORES`: Restrict to specific core (mcu1_0, c66xdsp_1, etc.)
-- `BUILD_PROFILE`: release|debug
-- `BUILD_OS_TYPE`: freertos|baremetal|safertos
-
-### Most Important Files
-1. `packages/makefile` - Top-level build orchestration
-2. `ti/build/Rules.make` - Core build configuration  
-3. `ti/osal/osal.h` - OS abstraction APIs
-4. `ti/board/board.h` - Board initialization APIs
-5. `code_analysis.md` - Comprehensive codebase analysis
-
-### Understanding the Build System
-- **Component-based**: Each module has `*_component.mk` defining its interface
-- **Multi-target**: Single codebase supports many SoCs/boards/cores
-- **Hierarchical**: Top-level makefile delegates to `ti/build/makefile`
-- **Profile-based**: Debug/release with different optimizations
-
 ### Safety & Automotive Features
+
 - **Functional Safety**: SafeRTOS, Safety Diagnostic Reference (SDR)
 - **Security**: Secure boot, crypto engines, secure communication
 - **Real-time**: Deterministic I/O via PRU-ICSS
 - **Multi-core**: Heterogeneous ARM+DSP coordination
 
-### When You Need Help
-- Check `code_analysis.md` for detailed architecture analysis
-- Look for `*_test.c` or `*_example.c` files in driver directories
-- Build system help: `make help`
-- Driver documentation: Doxygen comments in header files
+### Important Files
 
----
-*Use this file to quickly orient yourself in the TI PDK codebase. For deeper analysis, see `code_analysis.md`.*
+1. `packages/makefile` - Top-level build orchestration
+2. `packages/ti/build/Rules.make` - Core build configuration
+3. `packages/ti/osal/osal.h` - OS abstraction APIs
+4. `packages/ti/board/board.h` - Board initialization APIs
+
+Always use the `-s` flag with gmake for user-friendly build output.
